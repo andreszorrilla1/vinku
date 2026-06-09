@@ -1519,7 +1519,7 @@ export default function App() {
                       <div className="bg-card-bg border border-border-dark rounded-xl p-5 space-y-3">
                         <h3 className="text-base font-bold text-white font-display">Arquitectura del Backend Modular SaaS (Node.js + Express.js)</h3>
                         <p className="text-xs text-text-dim leading-relaxed">
-                          Diseño técnico enfocado en alta disponibilidad para conectar las tres fuerzas de Vinkupass. Presenta patrones desacoplados de ruteo, middleware, seguridad robusta y estrategia de base de datos relacional híbrida.
+                          Diseño técnico enfocado en alta disponibilidad para conectar las tres fuerzas de Campus Pass. Presenta patrones desacoplados de ruteo, middleware, seguridad robusta y estrategia de base de datos relacional híbrida.
                         </p>
                       </div>
 

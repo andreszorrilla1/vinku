@@ -29,7 +29,7 @@ export default function SitemapView() {
       logoClass: "bg-accent-yellow text-black",
       pages: [
         {
-          name: "Home Principal (Vinkupass.com)",
+          name: "Home Principal (CampusPass.com)",
           type: "Relume Hero Vinku + Dynamic Course Finder",
           desc: "Presentación del Pasaporte de Destinos/Sellos/Insignias. Buscador en vivo de cursos modularizados de universidades prestigiosas.",
           integrations: "Google Analytics, HubSpot",
@@ -73,7 +73,7 @@ export default function SitemapView() {
       logoClass: "bg-emerald-500 text-black",
       pages: [
         {
-          name: "Dashboard de Control / Mi Pasaporte VinkuPass",
+          name: "Dashboard de Control / Mi Pasaporte Campus Pass",
           type: "Relume High-Fidelity Stats Grid + Physical Card",
           desc: "Muestra Destinos (Universidades matriculadas), Sellos (Acreditación de cursos), Insignias (Habilidades duras) e Hitos profesionales.",
           integrations: "Firebase Firestore, JWT session metadata",
@@ -196,7 +196,7 @@ export default function SitemapView() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
             <h4 className="text-sm font-mono font-bold text-accent-yellow uppercase tracking-wider">MAPA DEL SITIO Y RUTAS SaaS</h4>
-            <h3 className="text-xl font-bold text-white font-display">Navegación Unificada de Vinkupass (4 Portales en 1)</h3>
+            <h3 className="text-xl font-bold text-white font-display">Navegación Unificada de Campus Pass (4 Portales en 1)</h3>
             <p className="text-xs text-text-dim max-w-2xl leading-relaxed">
               El MVP está estructurado en torno a 4 navegaciones independientes pero sincronizadas bajo un modelo de datos relacional de Node (in-memory para simulación web, listo para Postgres / Firestore).
             </p>

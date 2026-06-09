@@ -118,7 +118,7 @@ export default function MarketingView({
 
   const handleFinishOnboarding = (e: React.FormEvent) => {
     e.preventDefault();
-    triggerToast(`¡Bienvenido a Vinkupass! Cuenta creada como ${onboardingRole === "student" ? "Estudiante" : onboardingRole === "corporate" ? "Empresa" : "Universidad"}.`, "success");
+    triggerToast(`¡Bienvenido a Campus Pass! Cuenta creada como ${onboardingRole === "student" ? "Estudiante" : onboardingRole === "corporate" ? "Empresa" : "Universidad"}.`, "success");
     setActiveRole(onboardingRole);
     if (onboardingRole === "student") {
       setStudentTab("diag"); // Take straight to logical diagnosis 
@@ -140,7 +140,7 @@ export default function MarketingView({
           </div>
           <div className="flex flex-col">
             <span className="text-xl font-extrabold tracking-vinku text-[#1A1A1A] font-display">
-              Vinku<span className="text-[#6C47FF]">pass</span>
+              Campus <span className="text-[#6C47FF]">Pass</span>
             </span>
             <span className="text-[8px] font-mono font-bold uppercase tracking-widest text-[#6C47FF]">Del campus, de todos.</span>
           </div>
@@ -276,7 +276,7 @@ export default function MarketingView({
                       V
                     </div>
                     <div>
-                      <h4 className="text-[10px] font-mono font-bold text-[#6C47FF] uppercase leading-none">VINKUPASS PORTFOLIO</h4>
+                      <h4 className="text-[10px] font-mono font-bold text-[#6C47FF] uppercase leading-none">CAMPUS PASS PORTFOLIO</h4>
                       <p className="text-sm font-extrabold text-[#1A1A1A] mt-1.5 leading-none">Diana Prince (Demo)</p>
                     </div>
                   </div>
@@ -305,7 +305,7 @@ export default function MarketingView({
                   </div>
 
                   <p className="text-[10px] text-zinc-700 text-center italic font-mono pt-1">
-                    * Tu "Vinkupass" centraliza Destinos, Sellos, Insignias y una Billetera.
+                    * Tu "Campus Pass" centraliza Destinos, Sellos, Insignias y una Billetera.
                   </p>
 
                   <button
@@ -376,7 +376,7 @@ export default function MarketingView({
                   <div className="border-t-2 border-[#1A1A1A] pt-3 mt-3 flex items-center justify-between">
                     <div>
                       <div className="text-[9px] uppercase font-mono text-zinc-600 font-extrabold">Monto Créditos</div>
-                      <span className="text-sm font-black text-[#1A1A1A] font-mono">USD {cur.cost}</span>
+                      <span className="text-sm font-black text-[#1A1A1A] font-mono">${cur.cost.toLocaleString("es-CO")} COP</span>
                     </div>
 
                     <button
@@ -455,10 +455,10 @@ export default function MarketingView({
             </div>
           </div>
 
-          {/* SECCIÓN INTERACTIVA "EL CONCEPTO VINKUPASS" */}
+          {/* SECCIÓN INTERACTIVA "EL CONCEPTO CAMPUS PASS" */}
           <div className="space-y-6">
             <div className="text-center space-y-1.5">
-              <h3 className="text-xl md:text-2xl font-bold text-white font-display">El Concepto Vinkupass</h3>
+              <h3 className="text-xl md:text-2xl font-bold text-white font-display">El Concepto Campus Pass</h3>
               <p className="text-xs text-text-dim max-w-md mx-auto leading-relaxed">
                 Cómo se compone tu pasaporte educativo digital sincrónico descentralizado.
               </p>
@@ -601,7 +601,7 @@ export default function MarketingView({
                     <div className="border-t border-border-dark/40 pt-3 mt-3 flex items-center justify-between">
                       <div>
                         <div className="text-[8px] uppercase font-mono text-text-dim">Monto Créditos</div>
-                        <span className="text-xs font-mono font-bold text-white">USD {cur.cost}</span>
+                        <span className="text-xs font-mono font-bold text-white">${cur.cost.toLocaleString("es-CO")} COP</span>
                       </div>
 
                       <button
@@ -715,7 +715,7 @@ export default function MarketingView({
             {/* ESTIMADOR ROI COMPONENT */}
             <div className="bg-[#121216] border border-border-dark p-6 md:p-8 rounded-2xl relative">
               <div className="absolute top-0 right-0 p-3 text-[10px] font-mono text-accent-yellow">
-                ESTIMADOR ROI DE APRENDIZAJE VINKU
+                ESTIMADOR ROI DE APRENDIZAJE CAMPUS PASS
               </div>
 
               <h4 className="text-base font-bold text-white font-display mb-4">Calcula el Retorno de tu Inversión</h4>
@@ -745,7 +745,7 @@ export default function MarketingView({
 
                   <div>
                     <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-2">
-                      Costo Estimado de Matrícula (USD): <strong className="text-white text-xs">USD {avgCourseCost} por curso</strong>
+                      Costo Estimado de Matrícula (COP): <strong className="text-white text-xs">${avgCourseCost.toLocaleString("es-CO")} COP por curso</strong>
                     </label>
                     <input
                       type="range"
@@ -757,9 +757,9 @@ export default function MarketingView({
                       className="w-full accent-accent-yellow bg-neutral-800 rounded-lg appearance-none h-1.5 cursor-pointer"
                     />
                     <div className="flex justify-between text-[10px] font-mono text-text-dim mt-1">
-                      <span>USD 200</span>
-                      <span>USD 850</span>
-                      <span>USD 1500</span>
+                      <span>$200 COP</span>
+                      <span>$850 COP</span>
+                      <span>$1.500 COP</span>
                     </div>
                   </div>
                 </div>
@@ -767,14 +767,14 @@ export default function MarketingView({
                 {/* Metrics Outputs */}
                 <div className="grid grid-cols-2 gap-4 bg-black/40 p-5 rounded-xl border border-border-dark">
                   <div>
-                    <div className="text-[9px] font-mono text-text-dim uppercase">Costo Vinkupass</div>
-                    <div className="text-lg font-bold text-white font-mono mt-1">USD {vinkuCost.toLocaleString()}</div>
+                    <div className="text-[9px] font-mono text-text-dim uppercase">Costo Campus Pass</div>
+                    <div className="text-lg font-bold text-white font-mono mt-1">${vinkuCost.toLocaleString("es-CO")} COP</div>
                     <span className="text-[9px] text-text-dim block mt-1">Suscripción modular ágil</span>
                   </div>
 
                   <div>
                     <div className="text-[9px] font-mono text-text-dim uppercase">Ahorro vs Tradicional</div>
-                    <div className="text-lg font-bold text-accent-emerald font-mono mt-1">USD {savings.toLocaleString()}</div>
+                    <div className="text-lg font-bold text-accent-emerald font-mono mt-1">${savings.toLocaleString("es-CO")} COP</div>
                     <span className="text-[9px] text-accent-emerald block mt-1">ROI del {Math.round((savings / vinkuCost) * 100)}%</span>
                   </div>
 
@@ -912,7 +912,7 @@ export default function MarketingView({
                 }}
                 className="bg-accent-yellow hover:bg-yellow-400 text-black text-xs md:text-sm font-bold py-4 px-8 rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(255,210,0,0.25)] transition-all cursor-pointer"
               >
-                <span>Unir mi Universidad a Vinkupass</span>
+                <span>Unir mi Universidad a Campus Pass</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -970,7 +970,7 @@ export default function MarketingView({
             <div className="space-y-2 max-w-md">
               <h4 className="text-sm font-bold text-white flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-accent-yellow shrink-0" />
-                <span>Filtro de Calidad Vinkupass</span>
+                <span>Filtro de Calidad Campus Pass</span>
               </h4>
               <p className="text-xs text-text-dim leading-relaxed">
                 Todas las instituciones académicas asociadas pasan por una rigurosa auditoría de registro legal y fiscal por el SuperAdmin para garantizar la excelencia del marketplace de upskilling.
@@ -985,15 +985,15 @@ export default function MarketingView({
               <div className="space-y-2 text-[11px] font-mono">
                 <div className="p-2 bg-[#09090c] rounded border border-border-dark flex justify-between items-center">
                   <span className="text-white">U. de los Andes</span>
-                  <span className="text-accent-emerald font-semibold">USD 9,900</span>
+                  <span className="text-accent-emerald font-semibold">$9.900 COP</span>
                 </div>
                 <div className="p-2 bg-[#09090c] rounded border border-border-dark flex justify-between items-center">
                   <span className="text-white">Tec de Monterrey</span>
-                  <span className="text-accent-emerald font-semibold">USD 27,900</span>
+                  <span className="text-accent-emerald font-semibold">$27.900 COP</span>
                 </div>
                 <div className="p-2 bg-[#09090c] rounded border border-border-dark flex justify-between items-center">
                   <span className="text-white">IE Business School</span>
-                  <span className="text-accent-emerald font-semibold">USD 12,460</span>
+                  <span className="text-accent-emerald font-semibold">$12.460 COP</span>
                 </div>
               </div>
             </div>
@@ -1009,7 +1009,7 @@ export default function MarketingView({
         <div id="mkt_auth_section" className="max-w-md mx-auto bg-card-bg border border-border-dark rounded-3xl p-6 md:p-8 space-y-6 animate-fade-in relative z-10">
           
           <div className="text-center space-y-1">
-            <h3 className="text-lg md:text-xl font-bold text-white font-display">Ingreso Unificado Vinkupass</h3>
+            <h3 className="text-lg md:text-xl font-bold text-white font-display">Ingreso Unificado Campus Pass</h3>
             <p className="text-xs text-text-dim">Completa tu cuenta o prueba el asistente interactivo de onboarding multi-rol.</p>
           </div>
 

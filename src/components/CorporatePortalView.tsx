@@ -35,15 +35,16 @@ export default function CorporatePortalView({
   triggerToast,
   fetchState,
 }: CorporatePortalViewProps) {
-  const [isRegistered, setIsRegistered] = useState(
-    () =>
+  const [isRegistered, setIsRegistered] = useState(false);
+  useEffect(() => {
+    if (
       localStorage.getItem("vinku_corp_registered") === "true" ||
       corporate.employees.length > 0 ||
       corporate.budgetLeft > 0
-  );
-  useEffect(() => {
-    if (corporate.employees.length > 0 || corporate.budgetLeft > 0) {
+    ) {
       setIsRegistered(true);
+    } else {
+      setIsRegistered(false);
     }
   }, [corporate.employees.length, corporate.budgetLeft]);
 

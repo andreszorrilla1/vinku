@@ -271,7 +271,7 @@ export default function UniversityPortalView({
         logoColor: primaryColor,
         logo: "CustomLogo"
       });
-      triggerToast("¡Auditoría de Registro Aprobada por SuperAdmin! Bienvenido a Vinkupass.", "success");
+      triggerToast("¡Auditoría de Registro Aprobada por SuperAdmin! Bienvenido a Campus Pass.", "success");
     }, 4000);
   };
 
@@ -331,11 +331,11 @@ export default function UniversityPortalView({
       return;
     }
     setIsWithdrawing(true);
-    triggerToast(`Iniciando transferencia de USD ${liquidBalance.toLocaleString()} hacia la cuenta ${bankAccountType} en ${bankName}...`, "info");
-    
+    triggerToast(`Iniciando transferencia de $${liquidBalance.toLocaleString("es-CO")} COP hacia la cuenta ${bankAccountType} en ${bankName}...`, "info");
+
     setTimeout(() => {
       setIsWithdrawing(false);
-      triggerToast(`¡Dispersión Exitosa! USD ${liquidBalance.toLocaleString()} transferidos. Recibido en tu portal corporativo bancario.`, "success");
+      triggerToast(`¡Dispersión Exitosa! $${liquidBalance.toLocaleString("es-CO")} COP transferidos. Recibido en tu portal corporativo bancario.`, "success");
       setLiquidBalance(0);
     }, 3000);
   };
@@ -441,7 +441,7 @@ export default function UniversityPortalView({
         });
 
         if (res.ok) {
-          triggerToast(`Sello e insignia emitidos exitosamente en el Vinkupass de ${student.name}!`, "success");
+          triggerToast(`Sello e insignia emitidos exitosamente en el Campus Pass de ${student.name}!`, "success");
           
           // Actualiza visualmente el estado del alumno local
           setEnrolledStudents(prev => 
@@ -476,7 +476,7 @@ export default function UniversityPortalView({
     triggerToast("Generando reporte de avance estudiantil integral...", "info");
     setTimeout(() => {
       setIsExporting(false);
-      triggerToast("¡Descarga Exitosa! Guardado 'vinkupass-matriculados-andes.csv' en tu computadora.", "success");
+      triggerToast("¡Descarga Exitosa! Guardado 'campuspass-matriculados-andes.csv' en tu computadora.", "success");
     }, 2000);
   };
 
@@ -513,7 +513,7 @@ export default function UniversityPortalView({
             </h2>
             
             <p className="text-xs text-text-dim leading-relaxed">
-              Vinkupass te permite disgregar diplomados, asignaturas y posgrados vigentes en micro-cursos consumibles directamente por corporativos nacionales e internacionales, cobrando matrículas de forma directa.
+              Campus Pass te permite disgregar diplomados, asignaturas y posgrados vigentes en micro-cursos consumibles directamente por corporativos nacionales e internacionales, cobrando matrículas de forma directa.
             </p>
           </div>
 
@@ -538,7 +538,7 @@ export default function UniversityPortalView({
                 V
               </div>
               <span className="text-[11px] uppercase tracking-widest text-white font-bold font-display">
-                Vinku<strong className="text-accent-yellow font-bold">pass</strong> Academico
+                Campus <strong className="text-accent-yellow font-bold">Pass</strong> Academico
               </span>
             </div>
           </div>
@@ -800,7 +800,7 @@ export default function UniversityPortalView({
         {/* Header and Step Indicators */}
         <div className="space-y-4">
           <div className="space-y-1.5 text-center">
-            <h3 className="text-xl font-bold text-white font-display">Asistente de Acreditación Vinkupass</h3>
+            <h3 className="text-xl font-bold text-white font-display">Asistente de Acreditación Campus Pass</h3>
             <p className="text-xs text-text-dim max-w-sm mx-auto leading-relaxed">
               Configura tu identidad visual y canal de retiros reales para entrar al portal activo.
             </p>
@@ -1013,7 +1013,7 @@ export default function UniversityPortalView({
               </div>
               <div>
                 <span className="text-[11px] font-bold tracking-wider text-white uppercase block leading-tight font-display">
-                  Vinku<span className="text-accent-yellow">pass</span>
+                  Campus <span className="text-accent-yellow">Pass</span>
                 </span>
                 <span className="text-[9px] text-text-dim uppercase font-mono block leading-none">Portal Académico</span>
               </div>
@@ -1112,7 +1112,7 @@ export default function UniversityPortalView({
                 {(activeUniStats.totalEarnings + (activeUniStats.uploadedCoursesCount * 450)).toLocaleString()} Vinku
               </h3>
             </div>
-            <span className="text-[10px] text-text-dim mt-2 block font-medium">Equivalente a ${(activeUniStats.totalEarnings + (activeUniStats.uploadedCoursesCount * 450)).toLocaleString()} USD</span>
+            <span className="text-[10px] text-text-dim mt-2 block font-medium">Equivalente a ${(activeUniStats.totalEarnings + (activeUniStats.uploadedCoursesCount * 450)).toLocaleString("es-CO")} COP</span>
           </div>
 
           {/* Tarjeta 2 - Saldo Líquido */}
@@ -1214,7 +1214,7 @@ export default function UniversityPortalView({
                   <div key={id} className="flex-1 flex flex-col items-center group relative cursor-pointer z-10">
                     {/* Tooltip on Hover */}
                     <div className="absolute bottom-full mb-2 bg-[#1b1b22] border border-border-dark text-white px-2 py-1 text-[10px] font-mono rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap shadow-lg">
-                      USD {item.val.toLocaleString()}
+                      ${item.val.toLocaleString("es-CO")} COP
                     </div>
                     {/* Bar */}
                     <div className="w-8 md:w-12 bg-neutral-900 rounded-t-lg overflow-hidden h-44 flex items-end">
@@ -1239,7 +1239,7 @@ export default function UniversityPortalView({
                 </div>
                 <div className="p-3.5 bg-black/30 border border-border-dark/60 rounded-xl text-xs space-y-1">
                   <span className="text-text-dim text-[10px] uppercase font-mono tracking-wide">Valor Unitario por Crédito</span>
-                  <div className="font-extrabold text-accent-yellow text-sm font-mono">1 CRÉDITO = USD 1.00</div>
+                  <div className="font-extrabold text-accent-yellow text-sm font-mono">1 CRÉDITO = $1 COP</div>
                   <p className="text-[10px] text-text-dim">Tratamiento sincrónico descentralizado.</p>
                 </div>
               </div>
@@ -1702,7 +1702,7 @@ export default function UniversityPortalView({
             <div className="bg-[#121216] border border-border-dark p-6 rounded-2xl space-y-2">
               <h3 className="text-base font-bold text-white font-display">Aprobación de Contenidos & Sello Digital</h3>
               <p className="text-xs text-text-dim leading-relaxed max-w-3xl">
-                Valida los entregables y la asistencia teórica de tus matriculados. Carga el soporte PDF oficial para que el Pasaporte Vinkupass del estudiante se estampe de forma inmediata con el Certificado, Firma y Sellos Institucionales.
+                Valida los entregables y la asistencia teórica de tus matriculados. Carga el soporte PDF oficial para que el Pasaporte Campus Pass del estudiante se estampe de forma inmediata con el Certificado, Firma y Sellos Institucionales.
               </p>
             </div>
 

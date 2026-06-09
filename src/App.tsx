@@ -614,7 +614,7 @@ export default function App() {
           {isLoading ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#FAFAFA]">
               <RefreshCw className="w-8 h-8 text-[#6C47FF] animate-spin" />
-              <p className="text-sm text-[#1A1A1A] font-mono font-bold">Iniciando Ecosistema Vinkupass...</p>
+              <p className="text-sm text-[#1A1A1A] font-mono font-bold">Iniciando Ecosistema Campus Pass...</p>
             </div>
           ) : (
             <div className="animate-fade-in space-y-8">
@@ -990,12 +990,12 @@ export default function App() {
                                       <div className="text-[10px] text-text-dim mt-1">{cur.duration} • Enfoque en: {cur.skills.join(", ")}</div>
                                     </div>
                                     <div className="flex items-center gap-3 shrink-0">
-                                      <span className="font-bold text-white font-mono">USD {cur.cost}</span>
+                                      <span className="font-bold text-white font-mono">{cur.cost.toLocaleString("es-CO")} COP</span>
                                       <button
                                         onClick={() => handleEnrollCourse(cur.id, "student")}
                                         className="bg-[#1a1c29] border border-accent-violet/30 hover:bg-accent-violet hover:text-black py-1.5 px-3 rounded text-[11px] font-bold text-accent-violet transition-all cursor-pointer"
                                       >
-                                        Inscribir en Vinkupass
+                                        Inscribir en Campus Pass
                                       </button>
                                     </div>
                                   </div>
@@ -1072,7 +1072,7 @@ export default function App() {
                                 <div className="flex items-center justify-between">
                                   <div>
                                     <div className="text-[9px] text-text-dim uppercase font-mono tracking-wide leading-none">Matrícula Única</div>
-                                    <span className="text-base font-bold text-white font-mono mt-1 block">USD {cur.cost}</span>
+                                    <span className="text-base font-bold text-white font-mono mt-1 block">{cur.cost.toLocaleString("es-CO")} COP</span>
                                   </div>
 
                                   {alreadyInrolled ? (
@@ -1110,7 +1110,7 @@ export default function App() {
                         
                         <div>
                           <span className="text-[10px] font-mono font-bold text-accent-violet uppercase tracking-wider block mb-1">Tu Pasaporte de Fondos</span>
-                          <h3 className="text-lg font-bold text-white font-display">Billetera Vinkupass Wallet</h3>
+                          <h3 className="text-lg font-bold text-white font-display">Billetera Campus Pass</h3>
                           <p className="text-xs text-text-dim leading-relaxed mt-1">
                             Tu pasaporte actúa a la vez como billetera digital para comprar créditos y adquirir cursos de universidades afiliadas de manera libre y ágil.
                           </p>
@@ -1119,17 +1119,17 @@ export default function App() {
                         <div className="bg-black/40 p-5 rounded-xl border border-border-dark flex justify-between items-center my-4 select-none">
                           <div>
                             <span className="text-[10px] font-mono text-text-dim uppercase tracking-wide">Saldo Disponible</span>
-                            <div className="text-3xl font-bold text-white font-mono mt-1">USD {student.walletBalance}</div>
+                            <div className="text-3xl font-bold text-white font-mono mt-1">${student.walletBalance.toLocaleString("es-CO")} COP</div>
                           </div>
                           <div className="text-right">
                             <span className="text-[10px] font-mono text-text-dim uppercase tracking-wide">Línea de Crédito Aprobada</span>
-                            <div className="text-lg font-bold text-accent-emerald font-mono mt-1">USD {student.creditApproved}</div>
+                            <div className="text-lg font-bold text-accent-emerald font-mono mt-1">${student.creditApproved.toLocaleString("es-CO")} COP</div>
                           </div>
                         </div>
 
                         <div className="text-xs text-text-dim flex items-center gap-2 bg-border-dark/60 p-3 rounded-lg border border-border-dark leading-relaxed">
                           <CheckCircle className="w-4 h-4 text-accent-emerald shrink-0" />
-                          <span>Tu crédito VinkuPass te permite adquirir cursos instantáneamente con amortización flexible.</span>
+                          <span>Tu crédito Campus Pass te permite adquirir cursos instantáneamente con amortización flexible.</span>
                         </div>
                       </div>
 
@@ -1139,7 +1139,7 @@ export default function App() {
                         
                         <form onSubmit={handleWalletRechargeSubmit} className="space-y-4">
                           <div>
-                            <label className="text-[10px] font-mono text-text-dim block mb-1.5 uppercase tracking-wide">Monto de Recarga (USD)</label>
+                            <label className="text-[10px] font-mono text-text-dim block mb-1.5 uppercase tracking-wide">Monto de Recarga (COP)</label>
                             <input
                               type="number"
                               value={rechargeAmt}
@@ -1153,7 +1153,7 @@ export default function App() {
                             <label className="text-[10px] font-mono text-text-dim block mb-1.5 uppercase tracking-wide">Método de Recarga Autorizado</label>
                             <div className="space-y-2">
                               {[
-                                { id: "VinkuCrédito Fácil", label: "Crédito Digital VinkuPass (Fácil Acceso)" },
+                                { id: "VinkuCrédito Fácil", label: "Crédito Digital Campus Pass (Fácil Acceso)" },
                                 { id: "Tarjeta de Crédito", label: "Tarjeta de Crédito Corporativa/Personal" },
                                 { id: "PSE / Transferencia", label: "Cuentas Bancarias / Transferencia Directa" }
                               ].map(source => (
@@ -1302,7 +1302,7 @@ export default function App() {
                           <Briefcase className="w-4 h-4 text-accent-yellow" />
                           <span className="text-[10px] font-mono font-bold text-accent-yellow uppercase tracking-wider">Vitrina de Talento Verificable</span>
                         </div>
-                        <h3 className="text-xl font-bold text-white font-display">Mi Portafolio de Logros Vinkupass</h3>
+                        <h3 className="text-xl font-bold text-white font-display">Mi Portafolio de Logros Campus Pass</h3>
                         <p className="text-xs text-text-dim max-w-2xl mt-1 leading-relaxed">
                           La respuesta ágil al currículo tradicional: acumula hitos de formación desagregados ligados directamente a código y mockups de productos reales verificados por empresas aliadas.
                         </p>

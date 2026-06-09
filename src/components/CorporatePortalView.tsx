@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Users, Wallet, Compass, TrendingUp, Building, Upload,
   Mail, CheckCircle, AlertCircle, Clock, Plus, X, BarChart3,
@@ -36,8 +36,17 @@ export default function CorporatePortalView({
   fetchState,
 }: CorporatePortalViewProps) {
   const [isRegistered, setIsRegistered] = useState(
-    () => localStorage.getItem("vinku_corp_registered") === "true"
+    () =>
+      localStorage.getItem("vinku_corp_registered") === "true" ||
+      corporate.employees.length > 0 ||
+      corporate.budgetLeft > 0
   );
+  useEffect(() => {
+    if (corporate.employees.length > 0 || corporate.budgetLeft > 0) {
+      setIsRegistered(true);
+    }
+  }, [corporate.employees.length, corporate.budgetLeft]);
+
   const [regForm, setRegForm] = useState({ company: "", nit: "", industry: "", size: "", contact: "", email: "" });
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [talentView, setTalentView] = useState<"map" | "table">("map");

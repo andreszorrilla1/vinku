@@ -30,6 +30,13 @@ body {
   margin: 0;
   height: 100vh;
   overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
 }
 
 /* 80s Pop-Art Sombra Offset Dura: Solid flat shadows with no blur */

@@ -39,8 +39,12 @@ import SitemapView from "./components/SitemapView";
 import UniversityPortalView from "./components/UniversityPortalView";
 import StudentPortalView from "./components/StudentPortalView";
 import CorporatePortalView from "./components/CorporatePortalView";
+import { useAuth } from "./contexts/AuthContext";
+import * as api from "./lib/api";
 
 export default function App() {
+  const { user, role } = useAuth();
+
   // Navigation states
   const [activeRole, setActiveRole] = useState<"marketing" | "student" | "corporate" | "university" | "architecture">("marketing");
   const [marketingTab, setMarketingTab] = useState<"home" | "b2c" | "b2b" | "universidad" | "auth">("b2c");
@@ -49,7 +53,7 @@ export default function App() {
   const [uniTab, setUniTab] = useState<"dashboard" | "catalogo" | "matriculados" | "certificaciones">("dashboard");
   const [archTab, setArchTab] = useState<"sitemap" | "blueprint" | "crypto">("sitemap");
 
-  // Live state from backend
+  // Live state from Supabase
   const [courses, setCourses] = useState<Course[]>([]);
   const [student, setStudent] = useState<Student | null>(null);
   const [corporate, setCorporate] = useState<{ budgetLeft: number; employees: Employee[] }>({ budgetLeft: 0, employees: [] });
@@ -104,15 +108,10 @@ export default function App() {
   // General Notification toast representation
   const [toastMsg, setToastMsg] = useState<{ text: string; type: "success" | "error" | "info" } | null>(null);
 
-  // Setup initial polling/fetching
+  // Cargar datos iniciales desde Supabase
   useEffect(() => {
     fetchState();
-    // Simulate auto-fetch state every 8 seconds
-    const interval = setInterval(() => {
-      fetchStateSilently();
-    }, 8000);
-    return () => clearInterval(interval);
-  }, []);
+  }, [user]);
 
   const triggerToast = (text: string, type: "success" | "error" | "info" = "success") => {
     setToastMsg({ text, type });
@@ -122,159 +121,231 @@ export default function App() {
   const fetchState = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/vinkupass/state");
-      if (res.ok) {
-        const data = await res.json();
-        setCourses(data.courses);
-        setStudent(data.student);
-        setCorporate(data.corporate);
-        setUniversities(data.universities);
-        setFellowships(data.fellowshipSessions);
-        setAuthLogs(data.authLogs);
-        setRecentActivity(data.recentActivity);
+      // Cursos públicos (sin auth requerida)
+      const rawCourses = await api.fetchCourses();
+      const mappedCourses: Course[] = rawCourses.map((c: any) => ({
+        id: c.id,
+        title: c.title,
+        university: c.universities?.name ?? '',
+        level: c.level,
+        duration: c.duration,
+        cost: c.cost_credits,
+        skills: c.skills ?? [],
+        description: c.description ?? '',
+        category: c.category,
+      }));
+      setCourses(mappedCourses);
+
+      // Universidades aprobadas
+      const rawUnis = await api.fetchUniversities();
+      const mappedUnis: UniversityStats[] = rawUnis.map((u: any) => ({
+        id: u.id,
+        name: u.name,
+        logo: u.logo_url ?? '',
+        uploadedCoursesCount: 0,
+        enrolledStudentsCount: 0,
+        totalEarnings: u.total_earnings ?? 0,
+        certificationsPending: [],
+      }));
+      setUniversities(mappedUnis);
+
+      // Perfil del usuario autenticado
+      if (user) {
+        const profile = await api.fetchProfile(user.id);
+        if (profile && profile.role === 'student') {
+          const [enrollments, stamps, badges, achievements, sessions] = await Promise.all([
+            api.fetchEnrollments(user.id),
+            api.fetchPassportStamps(user.id),
+            api.fetchSkillBadges(user.id),
+            api.fetchAchievements(user.id),
+            api.fetchMentorSessions(user.id),
+          ]);
+
+          const mappedStudent: Student = {
+            id: profile.id,
+            name: profile.full_name ?? user.email ?? '',
+            email: profile.email,
+            walletBalance: profile.wallet_balance ?? 0,
+            creditApproved: profile.credit_approved ?? 0,
+            diagnosed: profile.diagnosed ?? false,
+            suggestedRoute: (profile.suggested_route as string[]) ?? [],
+            passport: {
+              destinations: stamps.map((s: any) => ({
+                university: s.universities?.name ?? '',
+                stampLogo: s.universities?.logo_url ?? '',
+                enrollCount: s.enroll_count,
+              })),
+              sellos: enrollments.map((e: any) => ({
+                courseId: e.course_id,
+                courseTitle: e.courses?.title ?? '',
+                university: e.courses?.universities?.name ?? '',
+                dateApproved: e.completed_at ?? undefined,
+                status: e.status as 'Cursando' | 'Certificado',
+              })),
+              insignias: badges.map((b: any) => ({
+                skillName: b.skill_name,
+                iconName: b.icon_name ?? '',
+                dateEarned: b.earned_at,
+              })),
+              perfiles: [],
+              logros: achievements.map((a: any) => ({
+                id: a.id,
+                goal: a.goal,
+                associatedProducts: a.associated_products ?? [],
+                status: a.status as 'Definido' | 'En Progreso' | 'Cumplido',
+              })),
+            },
+          };
+          setStudent(mappedStudent);
+
+          const mappedSessions: MentorSession[] = sessions.map((s: any) => ({
+            id: s.id,
+            mentorName: s.mentor_name,
+            topic: s.topic,
+            dateTime: s.scheduled_at,
+            zoomLink: s.zoom_link ?? '',
+          }));
+          setFellowships(mappedSessions);
+        }
+
+        if (profile && profile.role === 'corporate_admin' && profile.company_id) {
+          const [company, employees] = await Promise.all([
+            api.fetchCompany(profile.company_id),
+            api.fetchEmployees(profile.company_id),
+          ]);
+          const mappedEmployees: Employee[] = employees.map((e: any) => ({
+            id: e.id,
+            name: e.name,
+            email: e.email,
+            role: e.role_title ?? '',
+            department: e.department ?? '',
+            diagStatus: e.diag_status as any,
+            activePath: e.active_path ?? [],
+            progress: e.progress_pct,
+            assignedBudget: e.assigned_budget,
+            suggestedRouteCost: e.suggested_route_cost ?? undefined,
+          }));
+          setCorporate({
+            budgetLeft: company?.wallet_balance ?? 0,
+            employees: mappedEmployees,
+          });
+        }
       }
     } catch (e) {
       console.error(e);
-      triggerToast("Error de conexión con el backend", "error");
+      triggerToast("Error cargando datos", "error");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const fetchStateSilently = async () => {
-    try {
-      const res = await fetch("/api/vinkupass/state");
-      if (res.ok) {
-        const data = await res.json();
-        setCourses(data.courses);
-        setStudent(data.student);
-        setCorporate(data.corporate);
-        setUniversities(data.universities);
-        setFellowships(data.fellowshipSessions);
-        setAuthLogs(data.authLogs);
-        setRecentActivity(data.recentActivity);
-      }
-    } catch (e) {
-      console.error(e);
-    }
+  const handleResetState = () => {
+    setDiagStep(1);
+    setDiagResult(null);
+    triggerToast("Estado reiniciado", "info");
   };
 
-  // Trigger default reset
-  const handleResetState = async () => {
-    try {
-      const res = await fetch("/api/vinkupass/reset", { method: "POST" });
-      if (res.ok) {
-        const data = await res.json();
-        triggerToast(data.message, "success");
-        fetchState();
-        // Reset sub forms
-        setDiagStep(1);
-        setDiagResult(null);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // Submit diagnostic quiz
+  // Diagnóstico: algoritmo heurístico local (sin backend)
   const handleDiagnoseSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/vinkupass/diagnose", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(diagAnswers)
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setDiagResult(data);
-        setDiagStep(3);
-        triggerToast("Ruta inteligente recomendada!", "success");
-        fetchStateSilently();
+      const categoryMap: Record<string, string[]> = {
+        Engineering: ['Tecnología', 'Ingeniería & Tech'],
+        Marketing: ['Marketing'],
+        AI: ['Datos', 'Tecnología'],
+        Design: ['Diseño', 'Tecnología'],
+        Sustainability: ['Gestión'],
+        Cybersecurity: ['Tecnología'],
+      };
+      const targetCats = categoryMap[diagAnswers.primaryGoal] ?? [];
+      const maxCourses = parseInt(diagAnswers.lengthPreference) || 3;
+      const filtered = courses
+        .filter(c => targetCats.includes(c.category))
+        .slice(0, maxCourses);
+      const route = filtered.map(c => c.id);
+      const label = `Ruta ${diagAnswers.primaryGoal} — ${filtered.length} cursos seleccionados`;
+
+      if (user) {
+        await api.saveDiagnosticResult(user.id, route, label);
       }
+      setDiagResult({ route: filtered, label });
+      setDiagStep(3);
+      triggerToast("¡Ruta de aprendizaje recomendada!", "success");
+      await fetchState();
     } catch (err) {
       console.error(err);
-      triggerToast("Error de diagnóstico", "error");
+      triggerToast("Error generando diagnóstico", "error");
     }
   };
 
-  // Enroll in course via digital wallet
-  const handleEnrollCourse = async (courseId: string, actor: "student" | "corporate" = "student") => {
+  // Matrícula de curso via Supabase
+  const handleEnrollCourse = async (courseId: string, _actor: "student" | "corporate" = "student") => {
+    if (!user) { triggerToast("Debes iniciar sesión para matricularte", "error"); return; }
+    const course = courses.find(c => c.id === courseId);
+    if (!course) return;
     try {
-      const res = await fetch("/api/vinkupass/course/enroll", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ courseId, actor })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        triggerToast("Inscripción exitosa cargada al Vinkupass!", "success");
-        fetchStateSilently();
-      } else {
-        const errorData = await res.json();
-        triggerToast(errorData.error || "Fondos insuficientes o ya inscrito", "error");
-      }
-    } catch (err) {
-      console.error(err);
-      triggerToast("Error en pasarela de pasaporte", "error");
+      await api.enrollCourse(user.id, courseId, course.cost);
+      triggerToast("¡Inscripción exitosa! Sello agregado al Campus Pass", "success");
+      await fetchState();
+    } catch (err: any) {
+      triggerToast(err.message ?? "Error en la matrícula", "error");
     }
   };
 
-  // Add course (U View)
+  // Publicar curso (portal universidad)
   const handleAddCourseSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCourse.title || !newCourse.cost) {
       triggerToast("Por favor ingresa título y costo", "error");
       return;
     }
+    if (!user) { triggerToast("Debes iniciar sesión como universidad", "error"); return; }
     try {
-      const res = await fetch("/api/vinkupass/course/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...newCourse,
-          skills: newCourse.skills.split(",").map(s => s.trim())
-        })
+      const profile = await api.fetchProfile(user.id);
+      if (!profile?.university_id) { triggerToast("Tu cuenta no está vinculada a una universidad", "error"); return; }
+      await api.addCourse({
+        university_id: profile.university_id,
+        title: newCourse.title,
+        description: newCourse.description,
+        level: newCourse.level,
+        duration: newCourse.duration,
+        cost_credits: parseFloat(newCourse.cost),
+        skills: newCourse.skills.split(",").map(s => s.trim()).filter(Boolean),
+        category: newCourse.category,
+        is_active: true,
       });
-      if (res.ok) {
-        setCourseSuccess(true);
-        triggerToast("Curso publicado exitosamente!", "success");
-        setNewCourse({
-          title: "",
-          university: "Universidad de los Andes",
-          level: "Educación Continua",
-          duration: "8 Semanas",
-          cost: "400",
-          skills: "",
-          description: "",
-          category: "Ingeniería & Tech"
-        });
-        setTimeout(() => setCourseSuccess(false), 3000);
-        fetchState();
-      }
-    } catch (err) {
-      triggerToast("Error publicando curso", "error");
+      setCourseSuccess(true);
+      triggerToast("¡Curso publicado exitosamente!", "success");
+      setNewCourse({ title: "", university: "Universidad de los Andes", level: "Educación Continua", duration: "8 Semanas", cost: "400", skills: "", description: "", category: "Ingeniería & Tech" });
+      setTimeout(() => setCourseSuccess(false), 3000);
+      await fetchState();
+    } catch (err: any) {
+      triggerToast(err.message ?? "Error publicando curso", "error");
     }
   };
 
-  // Approve Certification (U View)
-  const handleApproveSello = async (studentId: string, courseId: string, universityId: string) => {
+  // Certificar matrícula (portal universidad)
+  const handleApproveSello = async (_studentId: string, courseId: string, _universityId: string) => {
     try {
-      const res = await fetch("/api/vinkupass/university/certify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId, courseId, universityId })
-      });
-      if (res.ok) {
-        triggerToast("Sellos certificados y sincronizados en Vinkupass del alumno!", "success");
-        fetchState();
+      // Buscar el enrollment por course_id
+      const { supabase } = await import(/* @vite-ignore */ './lib/supabase');
+      const { data: enrollments } = await supabase
+        .from('enrollments')
+        .select('id')
+        .eq('course_id', courseId)
+        .eq('status', 'Cursando')
+        .limit(1);
+      if (enrollments && enrollments.length > 0) {
+        await api.certifyEnrollment(enrollments[0].id);
+        triggerToast("¡Sello certificado y sincronizado en el Campus Pass del alumno!", "success");
+        await fetchState();
       }
-    } catch (err) {
-      triggerToast("Error aprobando sello", "error");
+    } catch (err: any) {
+      triggerToast(err.message ?? "Error aprobando sello", "error");
     }
   };
 
-  // Recharge digital wallet
+  // Recargar billetera estudiante
   const handleWalletRechargeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const amount = parseFloat(rechargeAmt);
@@ -282,90 +353,73 @@ export default function App() {
       triggerToast("Ingresa un monto válido", "error");
       return;
     }
+    if (!user) { triggerToast("Debes iniciar sesión", "error"); return; }
     try {
-      const res = await fetch("/api/vinkupass/student/wallet-recharge", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount, source: rechargeSource })
-      });
-      if (res.ok) {
-        triggerToast(`Recarga por $${rechargeAmt} completada con ${rechargeSource}!`, "success");
-        fetchStateSilently();
-      }
-    } catch (err) {
-      triggerToast("Error en recarga", "error");
+      await api.rechargeStudentWallet(user.id, amount);
+      triggerToast(`Recarga por $${Number(rechargeAmt).toLocaleString('es-CO')} COP completada`, "success");
+      await fetchState();
+    } catch (err: any) {
+      triggerToast(err.message ?? "Error en recarga", "error");
     }
   };
 
-  // Add personal achievement goal
+  // Agregar logro al portafolio
   const handleAddGoal = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newGoalText) return;
+    if (!newGoalText || !user) return;
     try {
-      const res = await fetch("/api/vinkupass/student/achievement", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          goal: newGoalText,
-          associatedProducts: newGoalProducts ? newGoalProducts.split(",").map(p => p.trim()) : []
-        })
+      await api.addAchievement({
+        student_id: user.id,
+        goal: newGoalText,
+        associated_products: newGoalProducts ? newGoalProducts.split(",").map(p => p.trim()).filter(Boolean) : [],
+        status: 'Definido',
       });
-      if (res.ok) {
-        triggerToast("Meta y productos asociados agregados al portafolio!", "success");
-        setNewGoalText("");
-        setNewGoalProducts("");
-        fetchState();
-      }
-    } catch (e) {
-      triggerToast("Error al registrar meta", "error");
+      triggerToast("¡Meta agregada al portafolio!", "success");
+      setNewGoalText("");
+      setNewGoalProducts("");
+      await fetchState();
+    } catch (err: any) {
+      triggerToast(err.message ?? "Error al registrar meta", "error");
     }
   };
 
-  // Book mentoring session síncrona
+  // Agendar sesión de mentoría
   const handleFellowshipSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fellowshipForm.topic) {
-      triggerToast("Describe el tema a revisar", "error");
-      return;
-    }
+    if (!fellowshipForm.topic) { triggerToast("Describe el tema a revisar", "error"); return; }
+    if (!user) { triggerToast("Debes iniciar sesión", "error"); return; }
     try {
-      const res = await fetch("/api/vinkupass/fellowship/book", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(fellowshipForm)
+      await api.bookMentorSession({
+        student_id: user.id,
+        mentor_name: fellowshipForm.mentorName,
+        topic: fellowshipForm.topic,
+        scheduled_at: new Date(fellowshipForm.dateTime).toISOString(),
+        zoom_link: null,
       });
-      if (res.ok) {
-        setFellowshipSuccess(true);
-        setFellowshipForm(prev => ({ ...prev, topic: "" }));
-        triggerToast("Sesión agendada de Vinku Fellowship!", "success");
-        setTimeout(() => setFellowshipSuccess(false), 3000);
-        fetchState();
-      }
-    } catch (e) {
-      triggerToast("Error al apartar mentor", "error");
+      setFellowshipSuccess(true);
+      setFellowshipForm(prev => ({ ...prev, topic: "" }));
+      triggerToast("¡Sesión de Fellowship agendada!", "success");
+      setTimeout(() => setFellowshipSuccess(false), 3000);
+      await fetchState();
+    } catch (err: any) {
+      triggerToast(err.message ?? "Error al agendar mentoría", "error");
     }
   };
 
-  // Request Bcrypt Hashing & JWT Authorization telemetry results
+  // Simulación de auth (modo demo — muestra flujo Supabase Auth)
   const handleSimulateAuthentication = async (mode: "login" | "register" | "oauth") => {
     setAuthIsLoading(true);
     try {
-      const res = await fetch("/api/vinkupass/auth/simulate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mode,
-          email: authEmail,
-          password: authPass,
-          provider: authProvider
-        })
+      const { useAuth: _u, ...authInfo } = { useAuth: null, mode, provider: authProvider, email: authEmail };
+      setAuthSimResults({
+        mode,
+        provider: mode === 'oauth' ? authProvider : 'email',
+        email: authEmail,
+        supabaseAuth: 'Supabase Auth — JWT RS256',
+        rls: 'Row Level Security activo',
+        timestamp: new Date().toISOString(),
       });
-      if (res.ok) {
-        const data = await res.json();
-        setAuthSimResults(data);
-        triggerToast("Criptografía de credenciales calculada!", "success");
-        fetchStateSilently();
-      }
+      triggerToast("Flujo de autenticación Supabase simulado", "success");
     } catch (err) {
       triggerToast("Error en simulación", "error");
     } finally {
@@ -633,17 +687,19 @@ export default function App() {
         {/* FOOTER CONTROLS / SIMULATION STATUS */}
         <div id="sidebar_bottom_controls" className="p-4 border-t border-border-dark bg-[#0b0b0d]">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-mono text-text-dim uppercase tracking-wider">Simulador Express</span>
+            <span className="text-[10px] font-mono text-text-dim uppercase tracking-wider">Campus Pass by VinkU</span>
             <span className="w-2 h-2 rounded-full bg-accent-emerald animate-pulse" />
           </div>
           <div className="text-[11px] text-zinc-300 bg-brand-bg p-2 rounded-lg border border-border-dark font-mono flex flex-col gap-1">
             <div className="flex justify-between">
-              <span>Port Rec:</span>
-              <span className="text-white font-bold">3000</span>
+              <span>Backend:</span>
+              <span className="text-white font-bold">Supabase</span>
             </div>
             <div className="flex justify-between">
-              <span>DB State:</span>
-              <span className="text-accent-emerald font-semibold">Active</span>
+              <span>Auth:</span>
+              <span className={user ? "text-accent-emerald font-semibold" : "text-zinc-500 font-semibold"}>
+                {user ? "Activo" : "Anónimo"}
+              </span>
             </div>
           </div>
           <button

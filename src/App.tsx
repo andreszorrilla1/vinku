@@ -120,10 +120,13 @@ export default function App() {
 
   const fetchState = async () => {
     setIsLoading(true);
+    const timeout = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('timeout')), 8000)
+    );
     try {
       // Cursos públicos (sin auth requerida)
-      const rawCourses = await api.fetchCourses();
-      const mappedCourses: Course[] = rawCourses.map((c: any) => ({
+      const rawCourses = await Promise.race([api.fetchCourses(), timeout]);
+      const mappedCourses: Course[] = (rawCourses as any[]).map((c: any) => ({
         id: c.id,
         title: c.title,
         university: c.universities?.name ?? '',
@@ -428,7 +431,7 @@ export default function App() {
   };
 
   return (
-    <div id="vinkupass_app" className="flex h-screen w-screen bg-[#FAFAFA] text-[#1A1A1A] font-sans overflow-hidden">
+    <div id="vinkupass_app" className="flex flex-col h-screen w-screen bg-[#FAFAFA] text-[#1A1A1A] font-sans overflow-hidden">
       
       {/* GLOBAL TOAST NOTIFICATION CONTAINER */}
       {toastMsg && (
@@ -445,330 +448,165 @@ export default function App() {
         </div>
       )}
 
-      {/* LEFT NAVIGATION SIDEBAR PANEL */}
-      <aside id="aistudio_sidebar" className="w-[260px] bg-[#1A1A1A] border-r-4 border-[#1A1A1A] flex flex-col shrink-0 z-10 text-white">
-        
-        {/* Core Vinkupass Brand Segment */}
-        <div id="vinku_brand" className="p-6 border-b-2 border-zinc-800 flex flex-col gap-1 select-none bg-benday-black text-[#FAFAFA]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] flex items-center justify-center font-display font-extrabold text-[#1A1A1A] text-xl">
-              V
-            </div>
-            <div className="flex flex-col">
-              <span className="font-display font-extrabold tracking-vinku text-[#FFD000] text-lg leading-tight">VinkuPass</span>
-              <span className="text-[9px] tracking-wider text-[#6C47FF] font-mono font-bold uppercase leading-tight mt-1 bg-[#FAFAFA] px-1.5 py-0.5 rounded border border-[#1A1A1A]">neo-educación</span>
+      {/* TOP NAVIGATION BAR */}
+      <header id="app_topnav" className="shrink-0 bg-[#1A1A1A] border-b-4 border-[#1A1A1A] flex items-center justify-between px-5 py-3 gap-4 z-20">
+
+        {/* VinkU Brand Logo */}
+        <div className="flex items-center gap-3 select-none shrink-0">
+          {/* Logo: "Vink" + stacked U square */}
+          <div className="flex items-center gap-0 leading-none">
+            <span className="font-display font-extrabold text-white text-2xl tracking-tight leading-none">Vink</span>
+            <div className="relative ml-0.5" style={{ width: 30, height: 30 }}>
+              {/* shadow square */}
+              <div className="absolute bg-[#FFD000] border-2 border-[#1A1A1A]" style={{ width: 26, height: 26, top: 4, left: 4 }} />
+              {/* front square */}
+              <div className="absolute bg-[#FFD000] border-2 border-[#1A1A1A] flex items-center justify-center" style={{ width: 26, height: 26, top: 0, left: 0 }}>
+                <span className="font-display font-extrabold text-[#1A1A1A] text-base leading-none">U</span>
+              </div>
             </div>
           </div>
-          <p className="text-[11px] text-zinc-300 mt-2 font-medium">
-            Del campus, de todos. Pasaporte oficial de upskilling.
-          </p>
-        </div>
-
-        {/* ROLE PICKER SELECTOR BRACKET */}
-        <div id="role_picker_block" className="p-4 border-b border-zinc-800 bg-[#121212]">
-          <label className="text-[10px] font-mono font-bold text-[#FFD000] uppercase tracking-wider block mb-2">
-            Ver Interfaz del Rol:
-          </label>
-          <div className="grid grid-cols-2 gap-1.5">
-            <button
-              id="role_is_marketing"
-              onClick={() => setActiveRole("marketing")}
-              className={`text-[10px] font-bold font-display py-1.5 px-1.5 rounded border-2 text-center transition-all cursor-pointer col-span-2 ${
-                activeRole === "marketing"
-                  ? "bg-[#FFD000] text-[#1A1A1A] border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] translate-y-[-1px] translate-x-[-1px]"
-                  : "bg-transparent text-zinc-400 border-zinc-700 hover:text-white"
-              }`}
-            >
-              Sitio Público (MVP Marketing)
-            </button>
-            <button
-              id="role_is_student"
-              onClick={() => setActiveRole("student")}
-              className={`text-[10px] font-bold font-display py-1.5 px-1 rounded border-2 text-center transition-all cursor-pointer ${
-                activeRole === "student"
-                  ? "bg-[#FFD000] text-[#1A1A1A] border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] translate-y-[-1px] translate-x-[-1px]"
-                  : "bg-transparent text-zinc-400 border-zinc-700 hover:text-white"
-              }`}
-            >
-              Estudiante
-            </button>
-            <button
-              id="role_is_corporate"
-              onClick={() => setActiveRole("corporate")}
-              className={`text-[10px] font-bold font-display py-1.5 px-1 rounded border-2 text-center transition-all cursor-pointer ${
-                activeRole === "corporate"
-                  ? "bg-[#FFD000] text-[#1A1A1A] border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] translate-y-[-1px] translate-x-[-1px]"
-                  : "bg-transparent text-zinc-400 border-zinc-700 hover:text-white"
-              }`}
-            >
-              Empresa
-            </button>
-            <button
-              id="role_is_university"
-              onClick={() => setActiveRole("university")}
-              className={`text-[10px] font-bold font-display py-1.5 px-1 rounded border-2 text-center transition-all cursor-pointer ${
-                activeRole === "university"
-                  ? "bg-[#FFD000] text-[#1A1A1A] border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] translate-y-[-1px] translate-x-[-1px]"
-                  : "bg-transparent text-[#FAFAFA]/70 border-zinc-700 hover:text-white"
-              }`}
-            >
-              Universidad
-            </button>
-            <button
-              id="role_is_architecture"
-              onClick={() => setActiveRole("architecture")}
-              className={`text-[10px] font-bold font-display py-1.5 px-1 rounded border-2 text-center transition-all cursor-pointer ${
-                activeRole === "architecture"
-                  ? "bg-[#FFD000] text-[#1A1A1A] border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] translate-y-[-1px] translate-x-[-1px]"
-                  : "bg-transparent text-[#FAFAFA]/70 border-zinc-700 hover:text-white"
-              }`}
-            >
-              Sitemap & Arq.
-            </button>
+          <div className="border-l-2 border-white/20 pl-3 leading-tight">
+            <div className="font-display font-extrabold text-white text-sm leading-none">Campus Pass</div>
+            <div className="text-[10px] font-bold text-[#FFD000] leading-tight mt-0.5 uppercase tracking-wider">by VinkU</div>
           </div>
         </div>
 
-        {/* CONTROLLER SUBNARVIGATION BASED ON ACTIVE ROLE */}
-        <nav id="sidebar_tabs_nav" className="flex-1 p-4 space-y-1 overflow-y-auto no-scrollbar">
-          
-          {/* Marketing Navigation Links */}
-          {activeRole === "marketing" && (
-            <>
-              {[
-                { id: "home", label: "Página Inicio", icon: Globe },
-                { id: "b2c", label: "Para Personas (B2C)", icon: Users },
-                { id: "b2b", label: "Para Empresas (B2B)", icon: Building },
-                { id: "universidad", label: "Universidades", icon: GraduationCap },
-                { id: "auth", label: "Iniciar Sesión / Reg", icon: Lock },
-              ].map(tab => {
-                const Icon = tab.icon;
-                const isSelected = marketingTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    id={`marketing_tab_${tab.id}`}
-                    onClick={() => setMarketingTab(tab.id as any)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-semibold tab-transition ${
-                      isSelected 
-                        ? "bg-border-dark text-white border-l-2 border-accent-yellow pl-2" 
-                        : "text-text-dim hover:text-white hover:bg-border-dark/50"
-                    }`}
-                  >
-                    <Icon className={`w-4 h-4 shrink-0 ${isSelected ? "text-accent-yellow" : "text-text-dim"}`} />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </>
-          )}
+        {/* Context navigation tabs */}
+        <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar flex-1 justify-center">
+          {activeRole === "marketing" && [
+            { id: "b2c", label: "Para Personas" },
+            { id: "b2b", label: "Para Empresas" },
+            { id: "universidad", label: "Universidades" },
+            { id: "auth", label: "Acceso" },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              id={`marketing_tab_${tab.id}`}
+              onClick={() => setMarketingTab(tab.id as any)}
+              className={`px-4 py-2 rounded-lg text-xs font-bold border-2 whitespace-nowrap transition-all cursor-pointer ${
+                marketingTab === tab.id
+                  ? "bg-[#FFD000] text-[#1A1A1A] border-[#FFD000] shadow-[3px_3px_0px_rgba(255,255,255,0.3)]"
+                  : "text-white/70 border-transparent hover:text-white hover:border-white/20"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
 
-          {/* Estudiante Menu Links */}
           {activeRole === "student" && (
-            <>
-              {[
-                { id: "pass", label: "Pasaporte VinkuPass", icon: Award },
-                { id: "diag", label: "Diagnóstico de Ruta", icon: Compass },
-                { id: "market", label: "Marketplace / Cursos", icon: BookOpen },
-                { id: "portfolio", label: "Mi Portafolio", icon: Briefcase },
-                { id: "wallet", label: "Billetera & Créditos", icon: Wallet },
-                { id: "fellowship", label: "Fellowship Mentoring", icon: Calendar },
-              ].map(tab => {
-                const Icon = tab.icon;
-                const isSelected = studentTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    id={`student_tab_${tab.id}`}
-                    onClick={() => setStudentTab(tab.id as any)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-semibold tab-transition ${
-                      isSelected 
-                        ? "bg-border-dark text-white border-l-2 border-accent-yellow pl-2" 
-                        : "text-text-dim hover:text-white hover:bg-border-dark/50"
-                    }`}
-                  >
-                    <Icon className={`w-4 h-4 shrink-0 ${isSelected ? "text-accent-yellow" : "text-text-dim"}`} />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </>
-          )}
+            [
+              { id: "pass", label: "Pasaporte", Icon: Award },
+              { id: "diag", label: "Diagnóstico", Icon: Compass },
+              { id: "market", label: "Marketplace", Icon: BookOpen },
+              { id: "wallet", label: "Billetera", Icon: Wallet },
+              { id: "fellowship", label: "Fellowship", Icon: Calendar },
+              { id: "portfolio", label: "Portafolio", Icon: Briefcase },
+            ] as Array<{ id: string; label: string; Icon: React.ComponentType<{ className?: string }> }>
+          ).map(({ id, label, Icon }) => (
+            <button
+              key={id}
+              id={`student_tab_${id}`}
+              onClick={() => setStudentTab(id as any)}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold border-2 whitespace-nowrap transition-all cursor-pointer ${
+                studentTab === id
+                  ? "bg-[#FFD000] text-[#1A1A1A] border-[#FFD000] shadow-[3px_3px_0px_rgba(255,255,255,0.3)]"
+                  : "text-white/70 border-transparent hover:text-white hover:border-white/20"
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden lg:inline">{label}</span>
+            </button>
+          ))}
 
-          {/* Corporativo Menu Links */}
           {activeRole === "corporate" && (
-            <>
-              {[
-                { id: "dashboard", label: "Dashboard Ejecutivo", icon: TrendingUp },
-                { id: "talent", label: "Gestión de Talento", icon: Users },
-                { id: "wallet", label: "Billetera Corporativa", icon: Wallet },
-                { id: "diagnosis", label: "Consola de Diagnóstico", icon: Compass },
-              ].map(tab => {
-                const Icon = tab.icon;
-                const isSelected = corpTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    id={`corp_tab_${tab.id}`}
-                    onClick={() => setCorpTab(tab.id as any)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-semibold tab-transition ${
-                      isSelected 
-                        ? "bg-border-dark text-white border-l-2 border-accent-yellow pl-2" 
-                        : "text-text-dim hover:text-white hover:bg-border-dark/50"
-                    }`}
-                  >
-                    <Icon className={`w-4 h-4 shrink-0 ${isSelected ? "text-accent-yellow" : "text-text-dim"}`} />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </>
-          )}
+            [
+              { id: "dashboard", label: "Dashboard", Icon: TrendingUp },
+              { id: "talent", label: "Talento", Icon: Users },
+              { id: "wallet", label: "Billetera", Icon: Wallet },
+              { id: "diagnosis", label: "Diagnóstico", Icon: Compass },
+            ] as Array<{ id: string; label: string; Icon: React.ComponentType<{ className?: string }> }>
+          ).map(({ id, label, Icon }) => (
+            <button
+              key={id}
+              id={`corp_tab_${id}`}
+              onClick={() => setCorpTab(id as any)}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold border-2 whitespace-nowrap transition-all cursor-pointer ${
+                corpTab === id
+                  ? "bg-[#FFD000] text-[#1A1A1A] border-[#FFD000] shadow-[3px_3px_0px_rgba(255,255,255,0.3)]"
+                  : "text-white/70 border-transparent hover:text-white hover:border-white/20"
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5 shrink-0" />
+              <span>{label}</span>
+            </button>
+          ))}
 
-          {/* Universidad Menu Links */}
           {activeRole === "university" && (
-            <>
-              {[
-                { id: "dashboard", label: "Dashboard de Control", icon: TrendingUp },
-                { id: "catalogo", label: "CMS de Catálogo", icon: BookOpen },
-                { id: "matriculados", label: "Lista de Matriculados", icon: Users },
-                { id: "certificaciones", label: "Centro Certificaciones", icon: Award },
-              ].map(tab => {
-                const Icon = tab.icon;
-                const isSelected = uniTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    id={`uni_tab_${tab.id}`}
-                    onClick={() => setUniTab(tab.id as any)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-semibold tab-transition ${
-                      isSelected 
-                        ? "bg-border-dark text-white border-l-2 border-accent-yellow pl-2" 
-                        : "text-text-dim hover:text-white hover:bg-border-dark/50"
-                    }`}
-                  >
-                    <Icon className={`w-4 h-4 shrink-0 ${isSelected ? "text-accent-yellow" : "text-text-dim"}`} />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </>
-          )}
-
-          {/* Arquitectura & Sitemap links */}
-          {activeRole === "architecture" && (
-            <>
-              {[
-                { id: "sitemap", label: "Sitemap Saas MVP", icon: Map },
-                { id: "blueprint", label: "Arquitectura Backend", icon: Database },
-                { id: "crypto", label: "Criptografía y JWT", icon: Lock },
-              ].map(tab => {
-                const Icon = tab.icon;
-                const isSelected = archTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    id={`arch_tab_${tab.id}`}
-                    onClick={() => setArchTab(tab.id as any)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-semibold tab-transition ${
-                      isSelected 
-                        ? "bg-border-dark text-white border-l-2 border-accent-yellow pl-2" 
-                        : "text-text-dim hover:text-white hover:bg-border-dark/50"
-                    }`}
-                  >
-                    <Icon className={`w-4 h-4 shrink-0 ${isSelected ? "text-accent-yellow" : "text-text-dim"}`} />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </>
-          )}
+            [
+              { id: "dashboard", label: "Dashboard", Icon: TrendingUp },
+              { id: "catalogo", label: "Catálogo", Icon: BookOpen },
+              { id: "matriculados", label: "Matriculados", Icon: Users },
+              { id: "certificaciones", label: "Certificaciones", Icon: Award },
+            ] as Array<{ id: string; label: string; Icon: React.ComponentType<{ className?: string }> }>
+          ).map(({ id, label, Icon }) => (
+            <button
+              key={id}
+              id={`uni_tab_${id}`}
+              onClick={() => setUniTab(id as any)}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold border-2 whitespace-nowrap transition-all cursor-pointer ${
+                uniTab === id
+                  ? "bg-[#FFD000] text-[#1A1A1A] border-[#FFD000] shadow-[3px_3px_0px_rgba(255,255,255,0.3)]"
+                  : "text-white/70 border-transparent hover:text-white hover:border-white/20"
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5 shrink-0" />
+              <span>{label}</span>
+            </button>
+          ))}
         </nav>
 
-        {/* FOOTER CONTROLS / SIMULATION STATUS */}
-        <div id="sidebar_bottom_controls" className="p-4 border-t border-border-dark bg-[#0b0b0d]">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-mono text-text-dim uppercase tracking-wider">Campus Pass by VinkU</span>
-            <span className="w-2 h-2 rounded-full bg-accent-emerald animate-pulse" />
-          </div>
-          <div className="text-[11px] text-zinc-300 bg-brand-bg p-2 rounded-lg border border-border-dark font-mono flex flex-col gap-1">
-            <div className="flex justify-between">
-              <span>Backend:</span>
-              <span className="text-white font-bold">Supabase</span>
+        {/* Right side: demo role picker (hidden when authenticated) + auth button */}
+        <div className="flex items-center gap-2 shrink-0">
+          {!user && (
+            <div className="hidden md:flex items-center gap-1 border border-white/10 rounded-lg p-1">
+              <button id="role_is_marketing" onClick={() => setActiveRole("marketing")}
+                className={`px-2 py-1 text-[10px] font-bold rounded transition-all cursor-pointer ${activeRole === "marketing" ? "bg-[#FFD000] text-[#1A1A1A]" : "text-white/50 hover:text-white"}`}>
+                Público
+              </button>
+              <button id="role_is_student" onClick={() => setActiveRole("student")}
+                className={`px-2 py-1 text-[10px] font-bold rounded transition-all cursor-pointer ${activeRole === "student" ? "bg-[#FFD000] text-[#1A1A1A]" : "text-white/50 hover:text-white"}`}>
+                Est.
+              </button>
+              <button id="role_is_corporate" onClick={() => setActiveRole("corporate")}
+                className={`px-2 py-1 text-[10px] font-bold rounded transition-all cursor-pointer ${activeRole === "corporate" ? "bg-[#FFD000] text-[#1A1A1A]" : "text-white/50 hover:text-white"}`}>
+                Corp.
+              </button>
+              <button id="role_is_university" onClick={() => setActiveRole("university")}
+                className={`px-2 py-1 text-[10px] font-bold rounded transition-all cursor-pointer ${activeRole === "university" ? "bg-[#FFD000] text-[#1A1A1A]" : "text-white/50 hover:text-white"}`}>
+                Uni.
+              </button>
             </div>
-            <div className="flex justify-between">
-              <span>Auth:</span>
-              <span className={user ? "text-accent-emerald font-semibold" : "text-zinc-500 font-semibold"}>
-                {user ? "Activo" : "Anónimo"}
-              </span>
+          )}
+          {user ? (
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-[#6C47FF] border-2 border-white/30 flex items-center justify-center text-white font-bold text-xs shrink-0">
+                {(user.email ?? "U")[0].toUpperCase()}
+              </div>
+              <span className="text-xs font-bold text-white/80 hidden lg:block max-w-[120px] truncate">{user.email}</span>
             </div>
-          </div>
-          <button
-            id="reset_state_btn"
-            onClick={handleResetState}
-            className="w-full mt-3 bg-red-950/20 hover:bg-red-900/30 border border-red-500/30 hover:border-red-500/60 text-red-400 font-bold text-[10px] uppercase py-1.5 px-2 rounded-md transition-all flex items-center justify-center gap-1 cursor-pointer"
-          >
-            <RefreshCw className="w-3 h-3" />
-            <span>Reiniciar Datos</span>
-          </button>
+          ) : (
+            <button
+              onClick={() => { setActiveRole("marketing"); setMarketingTab("auth"); }}
+              className="px-4 py-2 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold text-xs rounded-lg border-2 border-[#FFD000] shadow-[3px_3px_0px_rgba(255,208,0,0.4)] hover:shadow-[5px_5px_0px_rgba(255,208,0,0.4)] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all whitespace-nowrap cursor-pointer"
+            >
+              Iniciar sesión →
+            </button>
+          )}
         </div>
-      </aside>
+      </header>
 
-      {/* RIGHT WORKSPACE CONTEXT VIEWPORT */}
+      {/* MAIN CONTENT VIEWPORT */}
       <main id="app_viewport" className="flex-1 flex flex-col overflow-hidden bg-[#FAFAFA]">
-        
-        {/* HEADER TOP-BAR */}
-        <header id="viewport_header" className="px-8 py-5 border-b-4 border-[#1A1A1A] bg-[#FAFAFA] flex items-center justify-between shrink-0">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-mono tracking-widest text-[#1A1A1A] uppercase bg-[#FFD000] border border-[#1A1A1A] px-2.5 py-0.5 rounded font-extrabold">
-                {activeRole === "marketing" && "Sitio Público & Onboarding"}
-                {activeRole === "student" && "Perfil Estudiante"}
-                {activeRole === "corporate" && "SaaS Corporativo"}
-                {activeRole === "university" && "Portal Institucional"}
-                {activeRole === "architecture" && "Arquitectura & Sitemap"}
-              </span>
-              <span className="text-zinc-500 text-[11px] font-bold">/</span>
-              <span className="text-zinc-700 text-[11px] font-bold font-mono">
-                {activeRole === "marketing" && marketingTab === "home" && "Página de Inicio"}
-                {activeRole === "marketing" && marketingTab === "b2c" && "Vinkupass para Personas (B2C)"}
-                {activeRole === "marketing" && marketingTab === "b2b" && "Licitación Corporativa (B2B)"}
-                {activeRole === "marketing" && marketingTab === "universidad" && "Alianza para Universidades"}
-                {activeRole === "marketing" && marketingTab === "auth" && "Hub de Onboarding / Autenticación"}
-                {activeRole === "student" && studentTab === "pass" && "Pasaporte Educativo Vinkupass"}
-                {activeRole === "student" && studentTab === "diag" && "Diagnóstico de Competencias"}
-                {activeRole === "student" && studentTab === "market" && "Catálogo de Universidades"}
-                {activeRole === "student" && studentTab === "portfolio" && "Portafolio de Logros"}
-                {activeRole === "student" && studentTab === "wallet" && "Billetera Digital"}
-                {activeRole === "student" && studentTab === "fellowship" && "Mentorías Vinku Fellowship"}
-                {activeRole === "corporate" && corpTab === "dashboard" && "Panel Ejecutivo de Control"}
-                {activeRole === "corporate" && corpTab === "talent" && "Gestión de Talento y Avances"}
-                {activeRole === "corporate" && corpTab === "wallet" && "Línea de Crédito y Billetera"}
-                {activeRole === "corporate" && corpTab === "diagnosis" && "Consola de Diagnóstico de Equipo"}
-                {activeRole === "university" && uniTab === "dashboard" && "Panel de Control de Ingresos"}
-                {activeRole === "university" && uniTab === "catalogo" && "CMS de Catálogo Universitario"}
-                {activeRole === "university" && uniTab === "matriculados" && "Alumnos Enrolados y Avances"}
-                {activeRole === "university" && uniTab === "certificaciones" && "Validación y Centro Certificaciones"}
-                {activeRole === "architecture" && "Documentación Estructurada"}
-              </span>
-            </div>
-            
-            <h1 id="header_title" className="text-2xl font-extrabold tracking-vinku text-[#1A1A1A] font-display">
-              {activeRole === "marketing" && "Plataforma EdTech Vinkupass"}
-              {activeRole === "student" && "Diana Prince (Up-skilling Journey)"}
-              {activeRole === "corporate" && "Enterprise Dashboard - Vinkupass Corp"}
-              {activeRole === "university" && "Console de Certificación e Ingesta de Cursos"}
-              {activeRole === "architecture" && "Vinkupass SaaS Roadmap & System Architecture"}
-            </h1>
-          </div>
-
-          <div className="flex items-center gap-4">
-            {/* Real-time sync notifier with rigid border style */}
-            <div className="hidden sm:flex items-center gap-1.5 text-xs text-[#1A1A1A] font-bold font-mono bg-[#FFD000] py-1.5 px-3 rounded border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A]">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#6C47FF] animate-ping" />
-              <span>Sincronizado</span>
-            </div>
-          </div>
-        </header>
 
         {/* CONTAINER FOR ACTIVE LAYOUT */}
         <section id="main_content_area" className="flex-1 overflow-y-auto p-8 no-scrollbar relative bg-[#FAFAFA]">
@@ -800,6 +638,23 @@ export default function App() {
               {/* ========================================================== */}
               {/*                    1. ESTUDIANTE VIEW                      */}
               {/* ========================================================== */}
+              {activeRole === "student" && !student && (
+                <div className="flex flex-col items-center justify-center py-20 gap-6 animate-fade-in">
+                  <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-2xl p-8 max-w-sm text-center">
+                    <div className="w-16 h-16 rounded-full bg-[#1A1A1A] border-4 border-[#FFD000] flex items-center justify-center mx-auto mb-4">
+                      <Lock className="w-7 h-7 text-[#FFD000]" />
+                    </div>
+                    <h2 className="font-display font-extrabold text-[#1A1A1A] text-xl mb-2">Inicia sesión para continuar</h2>
+                    <p className="text-sm text-[#1A1A1A]/70 mb-5">Accede con tu cuenta de Campus Pass para ver tu pasaporte, cursos y diagnóstico personalizado.</p>
+                    <button
+                      onClick={() => { setActiveRole("marketing"); setMarketingTab("auth"); }}
+                      className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#6C47FF] hover:shadow-[6px_6px_0px_0px_#6C47FF] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm"
+                    >
+                      Iniciar sesión →
+                    </button>
+                  </div>
+                </div>
+              )}
               {activeRole === "student" && student && (
                 <StudentPortalView
                   student={student}

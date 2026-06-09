@@ -1,0 +1,6 @@
+{
+  "name": "Vinkupass SaaS EdTech",
+  "description": "Plataforma edtech que conecta la oferta inbuilding de universidades con empresas y personas para upskilling y reskilling ágil.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-vinku-amarillo: #FFD000;
+  --color-vinku-yellow: #FFD000;
+  --color-vinku-negro: #1A1A1A;
+  --color-vinku-black: #1A1A1A;
+  --color-vinku-violeta: #6C47FF;
+  --color-vinku-violet: #6C47FF;
+  --color-vinku-base: #FAFAFA;
+  
+  --color-brand-bg: #121214;
+  --color-card-bg: #1A1A1E;
+  --color-border-dark: #2C2C35;
+  --color-text-dim: #A1A1B2;
+  --color-text-gray: #71717A;
+  --color-accent-yellow: #FFD000;
+  --color-accent-violet: #6C47FF;
+  --color-accent-emerald: #10B981;
+  
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+  background-color: #FAFAFA;
+  color: #1A1A1A;
+  font-family: var(--font-sans);
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 80s Pop-Art Sombra Offset Dura: Solid flat shadows with no blur */
+.shadow-rigid-black {
+  border: 3px solid #1A1A1A !important;
+  box-shadow: 8px 8px 0px 0px #1A1A1A !important;
+}
+
+.shadow-rigid-violet {
+  border: 3px solid #1A1A1A !important;
+  box-shadow: 8px 8px 0px 0px #6C47FF !important;
+}
+
+.shadow-rigid-yellow {
+  border: 3px solid #1A1A1A !important;
+  box-shadow: 8px 8px 0px 0px #FFD000 !important;
+}
+
+.shadow-rigid-button {
+  border: 3px solid #1A1A1A !important;
+  box-shadow: 5px 5px 0px 0px #1A1A1A !important;
+  transition: all 0.15s ease-in-out;
+}
+
+.shadow-rigid-button:hover:not(:disabled) {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 7px 7px 0px 0px #1A1A1A !important;
+}
+
+.shadow-rigid-button:active:not(:disabled) {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 3px 3px 0px 0px #1A1A1A !important;
+}
+
+.shadow-rigid-sm-black {
+  border: 2px solid #1A1A1A !important;
+  box-shadow: 4px 4px 0px 0px #1A1A1A !important;
+}
+
+.shadow-rigid-sm-violet {
+  border: 2px solid #1A1A1A !important;
+  box-shadow: 4px 4px 0px 0px #6C47FF !important;
+}
+
+/* Slogan Eyebrows and headings with extreme tracking */
+.tracking-vinku {
+  letter-spacing: -0.04em !important;
+}
+
+/* Trama Ben-Day: Subtle radial dots on yellow, black, or violet */
+.bg-benday-yellow {
+  background-color: #FFD000 !important;
+  background-image: radial-gradient(#1A1A1A 2px, transparent 2px) !important;
+  background-size: 11px 11px !important;
+}
+
+.bg-benday-black {
+  background-color: #1A1A1A !important;
+  background-image: radial-gradient(#FAFAFA 1.2px, transparent 1.2px) !important;
+  background-size: 12px 12px !important;
+}
+
+.bg-benday-violet {
+  background-color: #6C47FF !important;
+  background-image: radial-gradient(#FFD000 1.8px, transparent 1.8px) !important;
+  background-size: 11px 11px !important;
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom table border adjustments */
+.vinku-table th, .vinku-table td {
+  border-bottom: 2px solid #1A1A1A;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.tab-transition {
+  transition: all 0.2s ease-in-out;
+}

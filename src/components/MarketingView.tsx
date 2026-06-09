@@ -1,32 +1,35 @@
 import React, { useState } from "react";
-import { 
-  Sparkles, 
-  ArrowRight, 
-  Search, 
-  BookOpen, 
-  GraduationCap, 
-  Users, 
-  Award, 
-  Shield, 
-  DollarSign, 
-  Wallet, 
-  Calendar, 
-  CheckCircle, 
-  TrendingUp, 
-  HelpCircle, 
-  Star, 
-  Target, 
-  Zap, 
-  Globe, 
-  Building, 
-  BarChart, 
+import {
+  Sparkles,
+  ArrowRight,
+  Search,
+  BookOpen,
+  GraduationCap,
+  Users,
+  Award,
+  Shield,
+  DollarSign,
+  Wallet,
+  Calendar,
+  CheckCircle,
+  TrendingUp,
+  HelpCircle,
+  Star,
+  Target,
+  Zap,
+  Globe,
+  Building,
+  BarChart,
   ArrowUpRight,
   ChevronRight,
   Code,
   ShieldCheck,
-  Check
+  Check,
+  Loader2,
+  AlertCircle
 } from "lucide-react";
 import { Course } from "../types";
+import { useAuth } from "../contexts/AuthContext";
 
 interface MarketingViewProps {
   courses: Course[];
@@ -49,6 +52,8 @@ export default function MarketingView({
   handleEnrollCourse,
   triggerToast
 }: MarketingViewProps) {
+  const { signIn, signUp } = useAuth();
+
   // Homepage state
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todos");
@@ -57,7 +62,7 @@ export default function MarketingView({
   const [numEmployees, setNumEmployees] = useState(25);
   const [avgCourseCost, setAvgCourseCost] = useState(500);
 
-  // B2B Lead Contact Form state for Prospectos_Empresas
+  // B2B Lead Contact Form state
   const [b2bCompanyName, setB2bCompanyName] = useState("");
   const [b2bEmail, setB2bEmail] = useState("");
   const [b2bEmployees, setB2bEmployees] = useState("50");
@@ -67,27 +72,14 @@ export default function MarketingView({
   const handleB2bLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/vinkupass/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          companyName: b2bCompanyName,
-          workEmail: b2bEmail,
-          employeeCount: b2bEmployees
-        })
-      });
-      const data = await response.json();
-      if (data.success) {
-        setB2bSuccess(true);
-        setB2bSubmittedLead(data.lead);
-        triggerToast("¡Suscripción de Convenio Exitosa! Registrado en la tabla Prospectos_Empresas", "success");
-        setB2bCompanyName("");
-        setB2bEmail("");
-      } else {
-        triggerToast("Error al enviar formulario", "error");
-      }
+      const { submitLead } = await import("../lib/api");
+      await submitLead({ company_name: b2bCompanyName, work_email: b2bEmail, employee_count: parseInt(b2bEmployees) });
+      setB2bSuccess(true);
+      setB2bSubmittedLead({ companyName: b2bCompanyName });
+      triggerToast("¡Convenio registrado! Nos pondremos en contacto pronto.", "success");
+      setB2bCompanyName(""); setB2bEmail("");
     } catch (err) {
-      triggerToast("Error de conexión al enviar prospecto", "error");
+      triggerToast("Error al enviar formulario", "error");
     }
   };
 
@@ -98,6 +90,9 @@ export default function MarketingView({
   const [formEmail, setFormEmail] = useState("");
   const [formName, setFormName] = useState("");
   const [formCompany, setFormCompany] = useState("");
+  const [formPassword, setFormPassword] = useState("");
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const filteredCourses = courses.filter(c => {
     const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -116,13 +111,45 @@ export default function MarketingView({
 
   const categories = ["Todos", "Ingeniería & Tech", "Negocios & Marketing", "AI & Data Science", "Diseño & UX"];
 
-  const handleFinishOnboarding = (e: React.FormEvent) => {
+  const handleFinishOnboarding = async (e: React.FormEvent) => {
     e.preventDefault();
-    triggerToast(`¡Bienvenido a Campus Pass! Cuenta creada como ${onboardingRole === "student" ? "Estudiante" : onboardingRole === "corporate" ? "Empresa" : "Universidad"}.`, "success");
-    setActiveRole(onboardingRole);
-    if (onboardingRole === "student") {
-      setStudentTab("diag"); // Take straight to logical diagnosis 
+    if (!formPassword || formPassword.length < 6) {
+      setAuthError("La contraseña debe tener mínimo 6 caracteres.");
+      return;
     }
+    setAuthLoading(true);
+    setAuthError(null);
+    const roleMap: Record<string, import("../lib/database.types").UserRole> = {
+      student: "student",
+      corporate: "corporate_admin",
+      university: "university_admin",
+    };
+    const { error } = await signUp(formEmail, formPassword, formName, roleMap[onboardingRole]);
+    setAuthLoading(false);
+    if (error) {
+      setAuthError(error);
+      return;
+    }
+    triggerToast(`¡Bienvenido a Campus Pass! Verifica tu correo para activar la cuenta.`, "success");
+    setActiveRole(onboardingRole);
+    if (onboardingRole === "student") setStudentTab("diag");
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formEmail || !formPassword) {
+      setAuthError("Ingresa tu correo y contraseña.");
+      return;
+    }
+    setAuthLoading(true);
+    setAuthError(null);
+    const { error } = await signIn(formEmail, formPassword);
+    setAuthLoading(false);
+    if (error) {
+      setAuthError(error === "Invalid login credentials" ? "Correo o contraseña incorrectos." : error);
+      return;
+    }
+    triggerToast("¡Sesión iniciada exitosamente!", "success");
   };
 
   return (
@@ -1033,39 +1060,46 @@ export default function MarketingView({
             </div>
           )}
 
-          {/* Step 1: Default Login vs Standard Simple Form */}
+          {/* Step 1: Login Form */}
           {onboardingStep === 1 && authMode === "login" && (
-            <div className="space-y-4 font-sans text-xs">
+            <form onSubmit={handleLogin} className="space-y-4 font-sans text-xs">
               <div>
                 <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Correo Electrónico</label>
                 <input
                   type="email"
+                  required
                   value={formEmail}
-                  onChange={(e) => setFormEmail(e.target.value)}
-                  placeholder="ej. diana.prince@vinkupass.com"
+                  onChange={(e) => { setFormEmail(e.target.value); setAuthError(null); }}
+                  placeholder="ej. diana@empresa.com"
                   className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
                 />
               </div>
-
               <div>
                 <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Contraseña</label>
                 <input
                   type="password"
-                  placeholder="********"
+                  required
+                  value={formPassword}
+                  onChange={(e) => { setFormPassword(e.target.value); setAuthError(null); }}
+                  placeholder="••••••••"
                   className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
                 />
               </div>
-
+              {authError && (
+                <div className="flex items-center gap-2 text-red-400 text-xs bg-red-950/30 border border-red-500/30 p-3 rounded-lg">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{authError}</span>
+                </div>
+              )}
               <button
-                onClick={() => {
-                  triggerToast("Credenciales simuladas correctamente. Cargando portal.", "success");
-                  setActiveRole("student"); // Default demo student
-                }}
-                className="w-full bg-accent-yellow hover:bg-yellow-400 text-black font-bold p-3 rounded-lg text-xs transition-all cursor-pointer text-center font-sans uppercase tracking-widest"
+                type="submit"
+                disabled={authLoading}
+                className="w-full bg-accent-yellow hover:bg-yellow-400 text-black font-bold p-3 rounded-lg text-xs transition-all cursor-pointer text-center font-sans uppercase tracking-widest flex items-center justify-center gap-2 disabled:opacity-60"
               >
-                Ingresar Al Sistema
+                {authLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                Ingresar al Sistema
               </button>
-            </div>
+            </form>
           )}
 
           {/* Step 2: Multi-role Onboarding Wizard Start */}
@@ -1148,9 +1182,29 @@ export default function MarketingView({
                     required
                     value={formCompany}
                     onChange={(e) => setFormCompany(e.target.value)}
-                    placeholder="ej. Stark Industries"
+                    placeholder="ej. Bancolombia S.A."
                     className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
                   />
+                </div>
+              )}
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Contraseña</label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={formPassword}
+                  onChange={(e) => { setFormPassword(e.target.value); setAuthError(null); }}
+                  placeholder="Mínimo 6 caracteres"
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                />
+              </div>
+
+              {authError && (
+                <div className="flex items-center gap-2 text-red-400 text-xs bg-red-950/30 border border-red-500/30 p-3 rounded-lg">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{authError}</span>
                 </div>
               )}
 
@@ -1164,38 +1218,20 @@ export default function MarketingView({
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-accent-yellow hover:bg-yellow-400 text-black font-bold p-3 rounded-lg text-xs transition-all cursor-pointer text-center uppercase tracking-wider"
+                  disabled={authLoading}
+                  className="flex-1 bg-accent-yellow hover:bg-yellow-400 text-black font-bold p-3 rounded-lg text-xs transition-all cursor-pointer text-center uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-60"
                 >
-                  Finalizar Onboarding
+                  {authLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  Crear Cuenta
                 </button>
               </div>
             </form>
           )}
 
-          {/* Social login simulated */}
           <div className="border-t border-border-dark/60 pt-4 text-center">
-            <span className="text-[10px] font-mono text-text-dim uppercase tracking-wider block mb-3">O Conecta Rápidamente Con:</span>
-            
-            <div className="grid grid-cols-2 gap-2 text-xs font-bold">
-              <button
-                onClick={() => {
-                  triggerToast("Simulación de Google Auth conectada.", "success");
-                  setActiveRole("student");
-                }}
-                className="bg-black hover:bg-neutral-900 border border-border-dark text-white p-2 text-[11px] rounded-lg cursor-pointer transition-all flex items-center justify-center gap-1.5"
-              >
-                <span>Google Cloud</span>
-              </button>
-              <button
-                onClick={() => {
-                  triggerToast("Simulación de GitHub OAuth conectada.", "success");
-                  setActiveRole("student");
-                }}
-                className="bg-black hover:bg-neutral-900 border border-border-dark text-white p-2 text-[11px] rounded-lg cursor-pointer transition-all flex items-center justify-center gap-1.5"
-              >
-                <span>GitHub OAuth</span>
-              </button>
-            </div>
+            <p className="text-[10px] font-mono text-text-dim">
+              Al registrarte aceptas los términos de uso de Campus Pass by VinkU.
+            </p>
           </div>
 
         </div>

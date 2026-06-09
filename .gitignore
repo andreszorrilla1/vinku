@@ -2,6 +2,9 @@ node_modules/
 dist/
 .env
 .env.local
+.env.*.local
 extracted/
 metadata.json
 .claude/
+*.cjs.map
+server.ts

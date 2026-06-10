@@ -230,7 +230,7 @@ export default function MarketingView({
         </div>
 
         {/* Botones de Acción */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             id="login_trigger_btn"
             onClick={() => {
@@ -238,24 +238,51 @@ export default function MarketingView({
               setAuthMode("login");
               setOnboardingStep(1);
             }}
-            className="text-[#1A1A1A] hover:bg-zinc-200 text-xs font-extrabold py-2 px-4 border-2 border-transparent hover:border-[#1A1A1A] rounded-none transition-all cursor-pointer"
+            className="text-[#1A1A1A] hover:bg-zinc-200 text-xs font-extrabold py-2 px-3 border-2 border-transparent hover:border-[#1A1A1A] rounded-none transition-all cursor-pointer"
           >
             Iniciar Sesión
           </button>
-          
+
           <button
-            id="diagnostico_trigger_btn"
+            id="register_student_btn"
             onClick={() => {
               setMarketingTab("auth");
               setAuthMode("register");
               setOnboardingRole("student");
-              setOnboardingStep(1);
-              triggerToast("Iniciando tu Diagnóstico. Regístrate gratis para empezar.", "info");
+              setOnboardingStep(2);
             }}
-            className="bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#1A1A1A] text-xs font-extrabold py-2.5 px-4 rounded-none flex items-center gap-1.5 transition-all cursor-pointer shadow-[3px_3px_0px_#1A1A1A] active:translate-x-[1px] active:translate-y-[1px]"
+            className="bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#1A1A1A] text-xs font-extrabold py-2 px-3 rounded-none flex items-center gap-1 transition-all cursor-pointer shadow-[2px_2px_0px_#1A1A1A]"
           >
-            <span>Haz tu Diagnóstico</span>
-            <Sparkles className="w-3.5 h-3.5" />
+            <GraduationCap className="w-3.5 h-3.5" />
+            <span>Estudiante</span>
+          </button>
+
+          <button
+            id="register_corporate_btn"
+            onClick={() => {
+              setMarketingTab("auth");
+              setAuthMode("register");
+              setOnboardingRole("corporate");
+              setOnboardingStep(2);
+            }}
+            className="bg-[#1A1A1A] hover:bg-zinc-800 text-white border-2 border-[#1A1A1A] text-xs font-extrabold py-2 px-3 rounded-none flex items-center gap-1 transition-all cursor-pointer shadow-[2px_2px_0px_#6C47FF]"
+          >
+            <Building className="w-3.5 h-3.5" />
+            <span>Empresa</span>
+          </button>
+
+          <button
+            id="register_university_btn"
+            onClick={() => {
+              setMarketingTab("auth");
+              setAuthMode("register");
+              setOnboardingRole("university");
+              setOnboardingStep(2);
+            }}
+            className="bg-[#6C47FF] hover:bg-indigo-600 text-white border-2 border-[#1A1A1A] text-xs font-extrabold py-2 px-3 rounded-none flex items-center gap-1 transition-all cursor-pointer shadow-[2px_2px_0px_#1A1A1A]"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Universidad</span>
           </button>
         </div>
       </div>
@@ -290,7 +317,7 @@ export default function MarketingView({
                       setMarketingTab("auth");
                       setAuthMode("register");
                       setOnboardingRole("student");
-                      setOnboardingStep(1);
+                      setOnboardingStep(2);
                     }}
                     className="bg-[#FAFAFA] hover:bg-zinc-100 text-[#1A1A1A] text-xs md:text-sm font-extrabold py-3.5 px-6 border-3 border-[#1A1A1A] rounded-none flex items-center gap-2 shadow-[5px_5px_0px_#1A1A1A] active:translate-y-[1px] active:translate-x-[1px]"
                   >
@@ -491,8 +518,7 @@ export default function MarketingView({
                   setMarketingTab("auth");
                   setAuthMode("register");
                   setOnboardingRole("student");
-                  setOnboardingStep(1);
-                  triggerToast("Cargando asistente de diagnóstico. Por favor regístrate para guardar tu pasaporte", "info");
+                  setOnboardingStep(2);
                 }}
                 className="bg-accent-yellow hover:bg-yellow-400 text-black text-xs md:text-sm font-bold py-4 px-8 rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(255,210,0,0.25)] hover:shadow-[0_0_30px_rgba(255,210,0,0.4)] transition-all cursor-pointer"
               >
@@ -718,8 +744,7 @@ export default function MarketingView({
                   setMarketingTab("auth");
                   setAuthMode("register");
                   setOnboardingRole("corporate");
-                  setOnboardingStep(1);
-                  triggerToast("Cargando onboarding para Empresas.", "info");
+                  setOnboardingStep(2);
                 }}
                 className="bg-accent-yellow hover:bg-yellow-400 text-black text-xs md:text-sm font-bold py-4 px-8 rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(255,210,0,0.25)] transition-all cursor-pointer"
               >
@@ -970,8 +995,7 @@ export default function MarketingView({
                   setMarketingTab("auth");
                   setAuthMode("register");
                   setOnboardingRole("university");
-                  setOnboardingStep(1);
-                  triggerToast("Cargando formulario de validación legal para Universidades.", "info");
+                  setOnboardingStep(2);
                 }}
                 className="bg-accent-yellow hover:bg-yellow-400 text-black text-xs md:text-sm font-bold py-4 px-8 rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(255,210,0,0.25)] transition-all cursor-pointer"
               >
@@ -1072,8 +1096,32 @@ export default function MarketingView({
         <div id="mkt_auth_section" className="max-w-md mx-auto bg-card-bg border border-border-dark rounded-3xl p-6 md:p-8 space-y-6 animate-fade-in relative z-10">
           
           <div className="text-center space-y-1">
-            <h3 className="text-lg md:text-xl font-bold text-white font-display">Ingreso Unificado Campus Pass</h3>
-            <p className="text-xs text-text-dim">Completa tu cuenta o prueba el asistente interactivo de onboarding multi-rol.</p>
+            {authMode === "login" ? (
+              <>
+                <h3 className="text-lg md:text-xl font-bold text-white font-display">Ingresar a Campus Pass</h3>
+                <p className="text-xs text-text-dim">Accede a tu portal con tu correo y contraseña.</p>
+              </>
+            ) : onboardingStep === 2 && onboardingRole === "student" ? (
+              <>
+                <h3 className="text-lg md:text-xl font-bold text-white font-display">Crea tu cuenta de Estudiante</h3>
+                <p className="text-xs text-text-dim">Regístrate gratis y activa tu pasaporte educativo.</p>
+              </>
+            ) : onboardingStep === 2 && onboardingRole === "corporate" ? (
+              <>
+                <h3 className="text-lg md:text-xl font-bold text-white font-display">Registro de Empresa</h3>
+                <p className="text-xs text-text-dim">Accede a la consola de formación corporativa.</p>
+              </>
+            ) : onboardingStep === 2 && onboardingRole === "university" ? (
+              <>
+                <h3 className="text-lg md:text-xl font-bold text-white font-display">Registro de Universidad</h3>
+                <p className="text-xs text-text-dim">Une tu institución al ecosistema Campus Pass.</p>
+              </>
+            ) : (
+              <>
+                <h3 className="text-lg md:text-xl font-bold text-white font-display">¿Cómo quieres ingresar?</h3>
+                <p className="text-xs text-text-dim">Selecciona tu perfil para personalizar el registro.</p>
+              </>
+            )}
           </div>
 
           {/* Toggle Login vs Register */}

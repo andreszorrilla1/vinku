@@ -94,6 +94,17 @@ export default function MarketingView({
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
 
+  // Per-role registration fields
+  const [formCity, setFormCity] = useState("");
+  const [formInterest, setFormInterest] = useState("");
+  const [formCompanyName, setFormCompanyName] = useState("");
+  const [formNit, setFormNit] = useState("");
+  const [formSector, setFormSector] = useState("");
+  const [formEmployeeCount, setFormEmployeeCount] = useState("");
+  const [formUniName, setFormUniName] = useState("");
+  const [formUniNit, setFormUniNit] = useState("");
+  const [formUniCity, setFormUniCity] = useState("");
+
   const filteredCourses = courses.filter(c => {
     const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           c.university.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -129,6 +140,26 @@ export default function MarketingView({
     if (error) {
       setAuthError(error);
       return;
+    }
+    // Fire-and-forget lead capture for corporate and university
+    if (onboardingRole === "corporate") {
+      import("../lib/api").then(({ submitLead }) => submitLead({
+        company_name: formCompanyName || formName,
+        contact_name: formName,
+        contact_email: formEmail,
+        employee_count: parseInt(formEmployeeCount) || null,
+        message: `Sector: ${formSector}, Ciudad: ${formCity}, NIT: ${formNit}`,
+        source: 'registro_portal'
+      }).catch(() => {}));
+    } else if (onboardingRole === "university") {
+      import("../lib/api").then(({ submitLead }) => submitLead({
+        company_name: formUniName || formName,
+        contact_name: formName,
+        contact_email: formEmail,
+        employee_count: null,
+        message: `NIT: ${formUniNit}, Ciudad: ${formUniCity}`,
+        source: 'registro_universidad'
+      }).catch(() => {}));
     }
     triggerToast(`¡Bienvenido a Campus Pass! Verifica tu correo para activar la cuenta.`, "success");
     setActiveRole(onboardingRole);
@@ -1140,18 +1171,26 @@ export default function MarketingView({
             </div>
           )}
 
-          {/* Step 3: Complete roll details */}
-          {onboardingStep === 2 && (
+          {/* Step 2: Role-specific registration forms */}
+          {onboardingStep === 2 && onboardingRole === "student" && (
             <form onSubmit={handleFinishOnboarding} className="space-y-4 font-sans text-xs">
-              <div className="bg-black/40 border border-border-dark p-3 rounded-xl flex items-center gap-2 justify-between">
-                <span className="text-text-dim">Rol Seleccionado:</span>
-                <span className="text-accent-yellow font-bold uppercase font-mono text-[10px] bg-accent-yellow/10 px-2 py-0.5 rounded border border-accent-yellow/30">
-                  {onboardingRole}
-                </span>
+              {/* Header card */}
+              <div className="border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-xl bg-[#FFD000]/10 p-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <GraduationCap className="w-5 h-5 text-[#1A1A1A]" />
+                  <span className="font-extrabold text-[#1A1A1A] text-[11px] uppercase tracking-wide">Estudiante</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOnboardingStep(1)}
+                  className="text-[10px] text-text-dim hover:text-accent-yellow font-mono cursor-pointer underline"
+                >
+                  ← Cambiar rol
+                </button>
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Nombre Completo</label>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Nombre completo *</label>
                 <input
                   type="text"
                   required
@@ -1163,40 +1202,202 @@ export default function MarketingView({
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Correo Electrónico de Trabajo</label>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Correo electrónico *</label>
                 <input
                   type="email"
                   required
                   value={formEmail}
                   onChange={(e) => setFormEmail(e.target.value)}
-                  placeholder="ej. diana.prince@empresa.com"
+                  placeholder="ej. diana@correo.com"
                   className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
                 />
               </div>
 
-              {onboardingRole === "corporate" && (
-                <div>
-                  <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Empresa / Razón Social</label>
-                  <input
-                    type="text"
-                    required
-                    value={formCompany}
-                    onChange={(e) => setFormCompany(e.target.value)}
-                    placeholder="ej. Bancolombia S.A."
-                    className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
-                  />
-                </div>
-              )}
-
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Contraseña</label>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Contraseña * (mín. 6 caracteres)</label>
                 <input
                   type="password"
                   required
                   minLength={6}
                   value={formPassword}
                   onChange={(e) => { setFormPassword(e.target.value); setAuthError(null); }}
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder="••••••••"
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Ciudad</label>
+                <select
+                  value={formCity}
+                  onChange={(e) => setFormCity(e.target.value)}
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                >
+                  <option value="">Selecciona tu ciudad</option>
+                  <option value="Bogotá">Bogotá</option>
+                  <option value="Medellín">Medellín</option>
+                  <option value="Cali">Cali</option>
+                  <option value="Barranquilla">Barranquilla</option>
+                  <option value="Bucaramanga">Bucaramanga</option>
+                  <option value="Otra">Otra</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Área de interés</label>
+                <select
+                  value={formInterest}
+                  onChange={(e) => setFormInterest(e.target.value)}
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                >
+                  <option value="">Selecciona un área</option>
+                  <option value="Tecnología">Tecnología</option>
+                  <option value="Negocios">Negocios</option>
+                  <option value="Diseño">Diseño</option>
+                  <option value="Datos & IA">Datos & IA</option>
+                  <option value="Derecho">Derecho</option>
+                  <option value="Salud">Salud</option>
+                </select>
+              </div>
+
+              {authError && (
+                <div className="flex items-center gap-2 text-red-400 text-xs bg-red-950/30 border border-red-500/30 p-3 rounded-lg">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{authError}</span>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={authLoading}
+                className="w-full bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] font-extrabold p-3 rounded-xl text-xs transition-all cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-60"
+              >
+                {authLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                Crear mi cuenta gratis
+              </button>
+            </form>
+          )}
+
+          {onboardingStep === 2 && onboardingRole === "corporate" && (
+            <form onSubmit={handleFinishOnboarding} className="space-y-4 font-sans text-xs">
+              {/* Header card */}
+              <div className="border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-xl bg-[#FFD000]/10 p-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Building className="w-5 h-5 text-[#1A1A1A]" />
+                  <span className="font-extrabold text-[#1A1A1A] text-[11px] uppercase tracking-wide">Empresa</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOnboardingStep(1)}
+                  className="text-[10px] text-text-dim hover:text-accent-yellow font-mono cursor-pointer underline"
+                >
+                  ← Cambiar rol
+                </button>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Nombre del contacto *</label>
+                <input
+                  type="text"
+                  required
+                  value={formName}
+                  onChange={(e) => setFormName(e.target.value)}
+                  placeholder="ej. Carlos Ramírez"
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Correo corporativo *</label>
+                <input
+                  type="email"
+                  required
+                  value={formEmail}
+                  onChange={(e) => setFormEmail(e.target.value)}
+                  placeholder="ej. carlos@empresa.com"
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Contraseña * (mín. 6 caracteres)</label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={formPassword}
+                  onChange={(e) => { setFormPassword(e.target.value); setAuthError(null); }}
+                  placeholder="••••••••"
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Nombre de la empresa *</label>
+                <input
+                  type="text"
+                  required
+                  value={formCompanyName}
+                  onChange={(e) => setFormCompanyName(e.target.value)}
+                  placeholder="ej. Bancolombia S.A."
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">NIT de la empresa</label>
+                <input
+                  type="text"
+                  value={formNit}
+                  onChange={(e) => setFormNit(e.target.value)}
+                  placeholder="ej. 900.123.456-7"
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Ciudad</label>
+                <select
+                  value={formCity}
+                  onChange={(e) => setFormCity(e.target.value)}
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                >
+                  <option value="">Selecciona ciudad</option>
+                  <option value="Bogotá">Bogotá</option>
+                  <option value="Medellín">Medellín</option>
+                  <option value="Cali">Cali</option>
+                  <option value="Barranquilla">Barranquilla</option>
+                  <option value="Bucaramanga">Bucaramanga</option>
+                  <option value="Otra">Otra</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Sector / Industria</label>
+                <select
+                  value={formSector}
+                  onChange={(e) => setFormSector(e.target.value)}
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                >
+                  <option value="">Selecciona sector</option>
+                  <option value="Tecnología">Tecnología</option>
+                  <option value="Finanzas">Finanzas</option>
+                  <option value="Salud">Salud</option>
+                  <option value="Manufactura">Manufactura</option>
+                  <option value="Retail">Retail</option>
+                  <option value="Servicios">Servicios</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Número de empleados</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={formEmployeeCount}
+                  onChange={(e) => setFormEmployeeCount(e.target.value)}
+                  placeholder="ej. 150"
                   className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
                 />
               </div>
@@ -1208,23 +1409,126 @@ export default function MarketingView({
                 </div>
               )}
 
-              <div className="flex gap-2 pt-2">
+              <button
+                type="submit"
+                disabled={authLoading}
+                className="w-full bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] font-extrabold p-3 rounded-xl text-xs transition-all cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-60"
+              >
+                {authLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                Registrar empresa en Campus Pass
+              </button>
+            </form>
+          )}
+
+          {onboardingStep === 2 && onboardingRole === "university" && (
+            <form onSubmit={handleFinishOnboarding} className="space-y-4 font-sans text-xs">
+              {/* Header card */}
+              <div className="border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-xl bg-[#FFD000]/10 p-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-[#1A1A1A]" />
+                  <span className="font-extrabold text-[#1A1A1A] text-[11px] uppercase tracking-wide">Universidad</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => setOnboardingStep(1)}
-                  className="w-1/3 bg-transparent hover:bg-neutral-800 border border-border-dark text-white font-bold p-3 rounded-lg text-xs transition-all cursor-pointer text-center"
+                  className="text-[10px] text-text-dim hover:text-accent-yellow font-mono cursor-pointer underline"
                 >
-                  Atrás
-                </button>
-                <button
-                  type="submit"
-                  disabled={authLoading}
-                  className="flex-1 bg-accent-yellow hover:bg-yellow-400 text-black font-bold p-3 rounded-lg text-xs transition-all cursor-pointer text-center uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-60"
-                >
-                  {authLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                  Crear Cuenta
+                  ← Cambiar rol
                 </button>
               </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Nombre del responsable *</label>
+                <input
+                  type="text"
+                  required
+                  value={formName}
+                  onChange={(e) => setFormName(e.target.value)}
+                  placeholder="ej. María González"
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Correo institucional *</label>
+                <input
+                  type="email"
+                  required
+                  value={formEmail}
+                  onChange={(e) => setFormEmail(e.target.value)}
+                  placeholder="ej. maria@universidad.edu.co"
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Contraseña * (mín. 6 caracteres)</label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={formPassword}
+                  onChange={(e) => { setFormPassword(e.target.value); setAuthError(null); }}
+                  placeholder="••••••••"
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Nombre de la universidad *</label>
+                <input
+                  type="text"
+                  required
+                  value={formUniName}
+                  onChange={(e) => setFormUniName(e.target.value)}
+                  placeholder="ej. Universidad de los Andes"
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">NIT institucional</label>
+                <input
+                  type="text"
+                  value={formUniNit}
+                  onChange={(e) => setFormUniNit(e.target.value)}
+                  placeholder="ej. 800.123.456-1"
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Ciudad</label>
+                <select
+                  value={formUniCity}
+                  onChange={(e) => setFormUniCity(e.target.value)}
+                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                >
+                  <option value="">Selecciona ciudad</option>
+                  <option value="Bogotá">Bogotá</option>
+                  <option value="Medellín">Medellín</option>
+                  <option value="Cali">Cali</option>
+                  <option value="Barranquilla">Barranquilla</option>
+                  <option value="Bucaramanga">Bucaramanga</option>
+                  <option value="Otra">Otra</option>
+                </select>
+              </div>
+
+              {authError && (
+                <div className="flex items-center gap-2 text-red-400 text-xs bg-red-950/30 border border-red-500/30 p-3 rounded-lg">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{authError}</span>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={authLoading}
+                className="w-full bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] font-extrabold p-3 rounded-xl text-xs transition-all cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-60"
+              >
+                {authLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                Registrar mi universidad
+              </button>
             </form>
           )}
 

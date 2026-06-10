@@ -503,54 +503,86 @@ export default function MarketingView({
         <div id="mkt_b2c_section" className="space-y-16 animate-fade-in">
           
           {/* SECCIÓN HERO DE CAPTACIÓN EMOCIONAL */}
-          <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-none p-8 md:p-12 text-center space-y-6 text-[#1A1A1A]">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#FAFAFA] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] rounded-none text-[10px] md:text-xs text-[#1A1A1A] font-mono font-extrabold uppercase tracking-widest mx-auto">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Pasaporte de Empleabilidad Activo</span>
-            </div>
+          <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-none overflow-hidden relative">
+            {/* Patrón Ben-Day esquina inferior derecha */}
+            <div aria-hidden="true" className="absolute bottom-0 right-0 w-64 h-64 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#1A1A1A 2px, transparent 2px)', backgroundSize: '16px 16px' }} />
 
-            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-[#1A1A1A] leading-tight font-display max-w-4xl mx-auto">
-              Tu pasaporte al empleo del futuro.
-            </h1>
+            <div className="relative z-10 p-8 md:p-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+              {/* Texto hero */}
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] rounded-none text-[10px] md:text-xs text-[#1A1A1A] font-mono font-extrabold uppercase tracking-widest">
+                  <span>🎓 Pasaporte de Empleabilidad Activo</span>
+                </div>
 
-            <p className="text-sm md:text-base font-bold text-[#1A1A1A]/80 max-w-2xl mx-auto leading-relaxed">
-              Arma una ruta de 3, 5 o 7 cursos de las mejores universidades del país, adaptada a tu perfil, tu presupuesto y tus metas.
-            </p>
+                <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-[#1A1A1A] leading-tight font-display max-w-xl">
+                  Tu pasaporte al empleo del futuro.
+                </h1>
 
-            <div className="flex justify-center pt-2">
-              <button
-                id="hero_start_b2c_diagnostico_btn"
-                onClick={() => {
-                  setMarketingTab("auth");
-                  setAuthMode("register");
-                  setOnboardingRole("student");
-                  setOnboardingStep(2);
-                }}
-                className="bg-[#1A1A1A] text-[#FFD000] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#FAFAFA] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#FAFAFA]"
-              >
-                <span>Iniciar Diagnóstico Gratuito</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+                <p className="text-sm md:text-base font-bold text-[#1A1A1A]/80 max-w-xl leading-relaxed">
+                  Arma una ruta de 3, 5 o 7 cursos de las mejores universidades del país, adaptada a tu perfil, tu presupuesto y tus metas. Conecta con estudiantes y docentes de las mejores universidades, y crea tantas rutas como roles quieras desarrollar.
+                </p>
 
-            <div className="flex flex-wrap items-center justify-center gap-6 pt-4 text-xs font-mono font-bold uppercase text-[#1A1A1A]">
-              <div className="flex items-center gap-1.5">
-                <CheckCircle className="w-4 h-4 text-[#1A1A1A]" />
-                <span>100% Sincrónico & Modular</span>
+                <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                  <button
+                    id="hero_start_b2c_diagnostico_btn"
+                    onClick={() => {
+                      setMarketingTab("auth");
+                      setAuthMode("register");
+                      setOnboardingRole("student");
+                      setOnboardingStep(2);
+                    }}
+                    className="bg-[#1A1A1A] text-[#FFD000] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#6C47FF] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#6C47FF]"
+                  >
+                    <span>Iniciar Diagnóstico Gratuito</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setMarketingTab("home")}
+                    className="bg-[#FFD000] text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]"
+                  >
+                    <span>Ver cursos</span>
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4 pt-2 text-xs font-mono font-bold uppercase text-[#1A1A1A]">
+                  {["100% Sincrónico & Modular", "Validado por Universidades", "Créditos Transferibles"].map(label => (
+                    <div key={label} className="flex items-center gap-2">
+                      <span className="w-5 h-5 bg-[#1A1A1A] text-[#FFD000] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
+                      <span>{label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle className="w-4 h-4 text-[#1A1A1A]" />
-                <span>Validado por Universidades</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle className="w-4 h-4 text-[#1A1A1A]" />
-                <span>Créditos Transferibles</span>
+
+              {/* Composición pop-art — stats en tarjetas rotadas */}
+              <div className="relative h-72 hidden lg:block" aria-hidden="true">
+                {/* Tarjeta 1 */}
+                <div className="absolute left-0 top-4 z-10" style={{ transform: 'rotate(3deg)' }}>
+                  <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#1A1A1A] p-5">
+                    <div className="text-3xl font-black font-mono text-[#1A1A1A] leading-none">+500</div>
+                    <div className="text-xs font-extrabold font-mono text-[#1A1A1A] mt-1 uppercase tracking-wide">cursos disponibles</div>
+                  </div>
+                </div>
+                {/* Tarjeta 2 */}
+                <div className="absolute left-40 top-12 z-20" style={{ transform: 'rotate(-2deg)' }}>
+                  <div className="bg-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] p-5">
+                    <div className="text-3xl font-black font-mono text-[#FFD000] leading-none">5 min</div>
+                    <div className="text-xs font-extrabold font-mono text-white mt-1 uppercase tracking-wide">para tu diagnóstico</div>
+                  </div>
+                </div>
+                {/* Tarjeta 3 */}
+                <div className="absolute left-20 top-44 z-30" style={{ transform: 'rotate(1deg)' }}>
+                  <div className="bg-[#6C47FF] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#1A1A1A] p-5">
+                    <div className="text-xl font-black font-mono text-[#FFD000] leading-tight">Certificado</div>
+                    <div className="text-xs font-extrabold font-mono text-white mt-1 uppercase tracking-wide">por universidades reales</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* SECCIÓN INTERACTIVA "EL CONCEPTO CAMPUS PASS" */}
-          <div className="space-y-6">
+          <div className="space-y-6 border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] p-8 md:p-10" style={{ backgroundColor: '#FAFAFA', backgroundImage: 'repeating-linear-gradient(45deg, #1A1A1A 0px, #1A1A1A 1px, transparent 1px, transparent 10px)' }}>
             <div className="text-center space-y-1.5">
               <h3 className="text-xl md:text-2xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">El Concepto Campus Pass</h3>
               <p className="text-xs font-bold text-zinc-700 max-w-md mx-auto leading-relaxed">
@@ -727,34 +759,67 @@ export default function MarketingView({
         <div id="mkt_b2b_section" className="space-y-16 animate-fade-in">
           
           {/* HERO B2B (Propuesta de Valor de Neoeducación) */}
-          <div className="bg-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#FFD000] rounded-none p-8 md:p-12 text-center space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#6C47FF] rounded-none text-[10px] md:text-xs text-[#1A1A1A] font-mono font-extrabold uppercase tracking-widest mx-auto">
-              <Building className="w-3.5 h-3.5" />
-              <span>Neoeducación Corporativa B2B</span>
-            </div>
+          <div className="bg-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#FFD000] rounded-none overflow-hidden relative">
+            {/* Patrón de puntos amarillos sobre negro */}
+            <div aria-hidden="true" className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#FFD000 2.5px, transparent 2.5px)', backgroundSize: '20px 20px' }} />
 
-            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-display max-w-4xl mx-auto">
-              El talento de tu equipo, potenciado con formación universitaria real.
-            </h1>
+            <div className="relative z-10 p-8 md:p-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+              {/* Texto */}
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#6C47FF] rounded-none text-[10px] md:text-xs text-[#1A1A1A] font-mono font-extrabold uppercase tracking-widest">
+                  <Building className="w-3.5 h-3.5" />
+                  <span>Neoeducación Corporativa B2B</span>
+                </div>
 
-            <p className="text-sm md:text-base font-bold text-zinc-300 max-w-3xl mx-auto leading-relaxed">
-              Diagnostica brechas de habilidades, asigna presupuestos en COP y mide el progreso de cada colaborador desde una sola consola.
-            </p>
+                <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-display max-w-xl">
+                  El talento de tu equipo, potenciado con formación universitaria real.
+                </h1>
 
-            <div className="flex justify-center pt-2">
-              <button
-                id="hero_b2b_start_btn"
-                onClick={() => {
-                  setMarketingTab("auth");
-                  setAuthMode("register");
-                  setOnboardingRole("corporate");
-                  setOnboardingStep(2);
-                }}
-                className="bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#FAFAFA] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#FAFAFA]"
-              >
-                <span>Crear Cuenta Corporativa / Agendar Demo</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+                <p className="text-sm md:text-base font-bold text-zinc-300 max-w-xl leading-relaxed">
+                  Diagnostica brechas de habilidades, asigna presupuestos en COP y mide el progreso de cada colaborador desde una sola consola. Construye equipos con habilidades reales y conecta a tus colaboradores con redes universitarias de primer nivel.
+                </p>
+
+                <div className="pt-2">
+                  <button
+                    id="hero_b2b_start_btn"
+                    onClick={() => {
+                      setMarketingTab("auth");
+                      setAuthMode("register");
+                      setOnboardingRole("corporate");
+                      setOnboardingStep(2);
+                    }}
+                    className="bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#FAFAFA] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#FAFAFA]"
+                  >
+                    <span>Crear Cuenta Corporativa / Agendar Demo</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Métricas pop-art rotadas */}
+              <div className="relative h-72 hidden lg:block" aria-hidden="true">
+                {/* Tarjeta 1 */}
+                <div className="absolute left-0 top-4 z-10" style={{ transform: 'rotate(-3deg)' }}>
+                  <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#FAFAFA] p-5">
+                    <div className="text-3xl font-black font-mono text-[#1A1A1A] leading-none">3x</div>
+                    <div className="text-xs font-extrabold font-mono text-[#1A1A1A] mt-1 uppercase tracking-wide">más retención</div>
+                  </div>
+                </div>
+                {/* Tarjeta 2 */}
+                <div className="absolute left-40 top-10 z-20" style={{ transform: 'rotate(2deg)' }}>
+                  <div className="bg-[#6C47FF] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#FFD000] p-5">
+                    <div className="text-3xl font-black font-mono text-[#FFD000] leading-none">-67%</div>
+                    <div className="text-xs font-extrabold font-mono text-white mt-1 uppercase tracking-wide">vs educación tradicional</div>
+                  </div>
+                </div>
+                {/* Tarjeta 3 */}
+                <div className="absolute left-20 top-44 z-30" style={{ transform: 'rotate(-1deg)' }}>
+                  <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] p-5">
+                    <div className="text-xl font-black font-mono text-[#1A1A1A] leading-tight">ROI medible</div>
+                    <div className="text-xs font-extrabold font-mono text-[#6C47FF] mt-1 uppercase tracking-wide">desde semana 1</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -976,34 +1041,78 @@ export default function MarketingView({
         <div id="mkt_uni_section" className="space-y-16 animate-fade-in">
           
           {/* SECCIÓN HERO INSTITUCIONAL (University) */}
-          <div className="bg-[#6C47FF] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-none p-8 md:p-12 text-center space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] rounded-none text-[10px] md:text-xs text-[#1A1A1A] font-mono font-extrabold uppercase tracking-widest mx-auto">
-              <GraduationCap className="w-3.5 h-3.5" />
-              <span>Plataforma para Universidades Socias</span>
-            </div>
+          <div className="bg-[#6C47FF] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-none overflow-hidden relative">
+            {/* Puntos blancos semi-transparentes */}
+            <div aria-hidden="true" className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#FAFAFA 2px, transparent 2px)', backgroundSize: '18px 18px' }} />
 
-            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-display max-w-4xl mx-auto">
-              Tu catálogo académico, nuevas fuentes de ingreso.
-            </h1>
+            {/* Relámpagos decorativos SVG */}
+            <svg aria-hidden="true" className="absolute top-4 right-6 opacity-60" width="24" height="36" viewBox="0 0 32 48" fill="none">
+              <polygon points="18,0 6,26 16,26 14,48 26,18 16,18" fill="#FFD000" stroke="#1A1A1A" strokeWidth="2"/>
+            </svg>
+            <svg aria-hidden="true" className="absolute bottom-6 right-20 opacity-40" width="16" height="24" viewBox="0 0 32 48" fill="none">
+              <polygon points="18,0 6,26 16,26 14,48 26,18 16,18" fill="#FFD000" stroke="#1A1A1A" strokeWidth="2"/>
+            </svg>
+            <svg aria-hidden="true" className="absolute top-16 left-4 opacity-30" width="20" height="30" viewBox="0 0 32 48" fill="none">
+              <polygon points="18,0 6,26 16,26 14,48 26,18 16,18" fill="#FFD000" stroke="#1A1A1A" strokeWidth="2"/>
+            </svg>
 
-            <p className="text-sm md:text-base font-bold text-indigo-100 max-w-3xl mx-auto leading-relaxed">
-              Desagrega tus programas en cursos individuales, llega a miles de estudiantes y empresas, y recibe ingresos por cada matrícula. Sin cambiar tu operación académica.
-            </p>
+            <div className="relative z-10 p-8 md:p-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+              {/* Texto */}
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] rounded-none text-[10px] md:text-xs text-[#1A1A1A] font-mono font-extrabold uppercase tracking-widest">
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  <span>Plataforma para Universidades Socias</span>
+                </div>
 
-            <div className="flex justify-center pt-2">
-              <button
-                id="hero_university_join_btn"
-                onClick={() => {
-                  setMarketingTab("auth");
-                  setAuthMode("register");
-                  setOnboardingRole("university");
-                  setOnboardingStep(2);
-                }}
-                className="bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]"
-              >
-                <span>Unir mi Universidad a Campus Pass</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+                <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-display max-w-xl">
+                  Tu catálogo académico, nuevas fuentes de ingreso.
+                </h1>
+
+                <p className="text-sm md:text-base font-bold text-indigo-100 max-w-xl leading-relaxed">
+                  Desagrega tus programas en cursos individuales, llega a miles de estudiantes y empresas, y recibe ingresos por cada matrícula. Sin cambiar tu estructura académica, multiplica tu alcance y genera ingresos recurrentes por cada matrícula.
+                </p>
+
+                <div className="pt-2">
+                  <button
+                    id="hero_university_join_btn"
+                    onClick={() => {
+                      setMarketingTab("auth");
+                      setAuthMode("register");
+                      setOnboardingRole("university");
+                      setOnboardingStep(2);
+                    }}
+                    className="bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]"
+                  >
+                    <span>Unir mi Universidad a Campus Pass</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Tarjetas de métricas rotadas */}
+              <div className="relative h-72 hidden lg:block" aria-hidden="true">
+                {/* Tarjeta 1 */}
+                <div className="absolute left-0 top-4 z-10" style={{ transform: 'rotate(2deg)' }}>
+                  <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#1A1A1A] p-5">
+                    <div className="text-3xl font-black font-mono text-[#1A1A1A] leading-none">5</div>
+                    <div className="text-xs font-extrabold font-mono text-[#1A1A1A] mt-1 uppercase tracking-wide">universidades aliadas</div>
+                  </div>
+                </div>
+                {/* Tarjeta 2 */}
+                <div className="absolute left-40 top-10 z-20" style={{ transform: 'rotate(-3deg)' }}>
+                  <div className="bg-[#1A1A1A] border-4 border-[#FFD000] shadow-[6px_6px_0px_#FFD000] p-5">
+                    <div className="text-3xl font-black font-mono text-[#FFD000] leading-none">15+</div>
+                    <div className="text-xs font-extrabold font-mono text-white mt-1 uppercase tracking-wide">cursos activos</div>
+                  </div>
+                </div>
+                {/* Tarjeta 3 */}
+                <div className="absolute left-20 top-44 z-30" style={{ transform: 'rotate(1deg)' }}>
+                  <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] p-5">
+                    <div className="text-xl font-black font-mono text-[#6C47FF] leading-tight">Pagos</div>
+                    <div className="text-xs font-extrabold font-mono text-[#1A1A1A] mt-1 uppercase tracking-wide">en COP</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1052,6 +1161,19 @@ export default function MarketingView({
               </div>
 
             </div>
+          </div>
+
+          {/* SECCIÓN "MÁS QUE CURSOS: UNA COMUNIDAD" */}
+          <div className="border-4 border-[#1A1A1A] bg-[#FFD000] shadow-[6px_6px_0px_#1A1A1A] p-6 md:p-8 rounded-none text-center space-y-3 max-w-3xl mx-auto">
+            <div aria-hidden="true" className="flex justify-center gap-3 mb-2">
+              <div className="w-8 h-8 bg-[#1A1A1A]" style={{ clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)' }} />
+              <div className="w-8 h-8 bg-[#6C47FF]" style={{ clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)' }} />
+              <div className="w-8 h-8 bg-[#1A1A1A]" style={{ clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)' }} />
+            </div>
+            <h4 className="text-xl font-extrabold font-display text-[#1A1A1A]">Más que cursos: una comunidad</h4>
+            <p className="text-sm font-bold text-[#1A1A1A]/80 max-w-xl mx-auto leading-relaxed">
+              Cada curso conecta a tu institución con profesionales y empresas que buscan exactamente lo que tú enseñas. Networking real, visibilidad nacional.
+            </p>
           </div>
 
           {/* SECCIÓN DE CREDIBILIDAD Y SEGURIDAD */}

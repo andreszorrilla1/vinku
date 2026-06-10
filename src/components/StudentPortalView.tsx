@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import {
-  Award, GraduationCap, Sparkles, Compass, BookOpen, Briefcase,
-  Wallet, Calendar, CheckCircle, Target, Clock, Plus, Search,
-  ChevronRight, Star, TrendingUp, Users
+  Award, Compass, BookOpen, Briefcase,
+  Wallet, Calendar, CheckCircle, Target, Plus, Search,
 } from "lucide-react";
 import { Student, Course, UniversityStats } from "../types";
 
@@ -11,24 +10,24 @@ interface StudentPortalViewProps {
   courses: Course[];
   universities: UniversityStats[];
   studentTab: "pass" | "diag" | "market" | "wallet" | "fellowship" | "portfolio";
-  setStudentTab: (tab: "pass" | "diag" | "market" | "wallet" | "fellowship" | "portfolio") => void;
-  onDiagnoseSubmit: (e: React.FormEvent) => void;
-  onEnrollCourse: (courseId: string, actor: "student" | "corporate") => void | Promise<void>;
-  onWalletRecharge: (e: React.FormEvent) => void;
-  onAddGoal: (e: React.FormEvent) => void;
-  onBookFellowship: (e: React.FormEvent) => void;
+  setStudentTab: (tab: any) => void;
+  onDiagnoseSubmit: (e: React.FormEvent) => Promise<void>;
+  onEnrollCourse: (courseId: string) => void;
+  onWalletRecharge: (e: React.FormEvent) => Promise<void>;
+  onAddGoal: (e: React.FormEvent) => Promise<void>;
+  onBookFellowship: (e: React.FormEvent) => Promise<void>;
   rechargeAmt: string;
-  setRechargeAmt: (val: string) => void;
+  setRechargeAmt: (v: string) => void;
   rechargeSource: string;
-  setRechargeSource: (val: string) => void;
+  setRechargeSource: (v: string) => void;
   fellowshipForm: { mentorName: string; topic: string; dateTime: string };
-  setFellowshipForm: (val: any) => void;
+  setFellowshipForm: (v: any) => void;
   newGoalText: string;
-  setNewGoalText: (val: string) => void;
+  setNewGoalText: (v: string) => void;
   newGoalProducts: string;
-  setNewGoalProducts: (val: string) => void;
+  setNewGoalProducts: (v: string) => void;
   diagAnswers: { primaryGoal: string; technicalExperience: string; budgetRange: string; lengthPreference: string };
-  setDiagAnswers: (val: any) => void;
+  setDiagAnswers: (v: any) => void;
   triggerToast: (msg: string, type?: "success" | "error" | "info") => void;
   fetchState: () => void;
 }
@@ -80,7 +79,7 @@ const DIAG_STEPS = [
 ];
 
 function formatCOP(n: number) {
-  return `$${n.toLocaleString("es-CO")} COP`;
+  return `${n.toLocaleString("es-CO")} COP`;
 }
 
 function PassportTab({ student }: { student: Student }) {
@@ -92,7 +91,7 @@ function PassportTab({ student }: { student: Student }) {
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="bg-[#1A1A1A] rounded-2xl border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#6C47FF] overflow-hidden">
-        <div className="bg-benday-black px-6 py-4 flex items-center justify-between">
+        <div className="bg-[#1A1A1A] px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-[#FFD000] font-mono text-xs font-bold tracking-widest uppercase">Campus Pass</span>
             <span className="text-zinc-500 font-mono text-xs">by VinkU</span>
@@ -128,7 +127,7 @@ function PassportTab({ student }: { student: Student }) {
               </div>
               <p className="text-zinc-400 font-display font-bold text-sm">Tu pasaporte está en blanco</p>
               <p className="text-zinc-600 text-xs mt-1 max-w-xs mx-auto leading-relaxed">
-                Cada curso que completes estampará tu historia aquí. ¡Empieza hoy!
+                Aún no tienes cursos matriculados. ¡Explora el Marketplace!
               </p>
             </div>
           ) : (
@@ -156,7 +155,7 @@ function PassportTab({ student }: { student: Student }) {
             </div>
           )}
 
-          {student.passport.sellos.length > 0 && (
+          {student.passport.sellos.length > 0 ? (
             <div className="mt-6">
               <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest mb-3">Sellos de formación</p>
               <div className="flex flex-wrap gap-2">
@@ -174,9 +173,9 @@ function PassportTab({ student }: { student: Student }) {
                 ))}
               </div>
             </div>
-          )}
+          ) : null}
 
-          {student.passport.insignias.length > 0 && (
+          {student.passport.insignias.length > 0 ? (
             <div className="mt-6">
               <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest mb-3">Habilidades ganadas</p>
               <div className="flex flex-wrap gap-2">
@@ -186,6 +185,11 @@ function PassportTab({ student }: { student: Student }) {
                   </span>
                 ))}
               </div>
+            </div>
+          ) : (
+            <div className="mt-6">
+              <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest mb-3">Habilidades ganadas</p>
+              <p className="text-zinc-500 text-xs">Aún no tienes insignias. ¡Completa cursos para ganarlas!</p>
             </div>
           )}
         </div>
@@ -232,8 +236,8 @@ function DiagnosticTab({
 
   function handleNext() {
     if (isLastStep) {
-      onDiagnoseSubmit({ preventDefault: () => {} } as React.FormEvent);
-      setStep(4);
+      const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+      onDiagnoseSubmit(fakeEvent).then(() => setStep(4)).catch(() => setStep(4));
     } else {
       setStep(s => s + 1);
     }
@@ -321,7 +325,7 @@ function DiagnosticTab({
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{opt.emoji}</span>
                 <div className="flex-1">
-                  <p className={`font-display font-bold text-sm ${isSelected ? "text-[#1A1A1A]" : "text-[#1A1A1A]"}`}>{opt.title}</p>
+                  <p className="font-display font-bold text-sm text-[#1A1A1A]">{opt.title}</p>
                   <p className={`text-xs mt-0.5 ${isSelected ? "text-[#1A1A1A]/70" : "text-zinc-500"}`}>{opt.desc}</p>
                 </div>
                 {isSelected && <CheckCircle className="w-5 h-5 text-[#1A1A1A] shrink-0" />}
@@ -477,18 +481,24 @@ export default function StudentPortalView({
                         <span className="text-xs font-bold text-[#10B981] flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> Inscrito</span>
                       ) : (
                         <button
-                          onClick={() => onEnrollCourse(course.id, "student")}
+                          onClick={() => onEnrollCourse(course.id)}
                           disabled={!canAfford}
+                          title={!canAfford ? "Saldo insuficiente para este curso" : undefined}
                           className={`px-3 py-1.5 text-xs font-bold rounded-lg border-2 transition-all ${
                             canAfford
                               ? "bg-[#1A1A1A] text-[#FFD000] border-[#1A1A1A] hover:shadow-[2px_2px_0px_0px_#FFD000]"
                               : "bg-zinc-100 text-zinc-400 border-zinc-200 cursor-not-allowed"
                           }`}
                         >
-                          {canAfford ? "Matricularme" : "Saldo insuficiente"}
+                          {canAfford ? "Inscribir" : "Saldo insuficiente"}
                         </button>
                       )}
                     </div>
+                    {!canAfford && !enrolled && (
+                      <p className="text-[10px] text-amber-600 font-bold">
+                        Necesitas {formatCOP(course.cost - student.walletBalance)} más para inscribirte.
+                      </p>
+                    )}
                   </div>
                 </div>
               );
@@ -524,7 +534,7 @@ export default function StudentPortalView({
                       : "bg-white text-zinc-600 border-zinc-200 hover:border-[#1A1A1A]"
                   }`}
                 >
-                  ${(amt / 1000).toFixed(0)}k
+                  {(amt / 1000).toFixed(0)}k COP
                 </button>
               ))}
             </div>
@@ -536,6 +546,17 @@ export default function StudentPortalView({
                 placeholder="Monto en COP"
                 className="w-full border-2 border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:shadow-[2px_2px_0px_0px_#FFD000]"
               />
+              <select
+                value={rechargeSource}
+                onChange={e => setRechargeSource(e.target.value)}
+                className="w-full border-2 border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none bg-white"
+              >
+                <option value="">Selecciona medio de pago</option>
+                <option value="PSE">PSE</option>
+                <option value="Nequi">Nequi</option>
+                <option value="Daviplata">Daviplata</option>
+                <option value="Tarjeta">Tarjeta de crédito/débito</option>
+              </select>
               <button type="submit" className="w-full py-3 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] hover:shadow-[6px_6px_0px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm">
                 Recargar billetera
               </button>
@@ -569,7 +590,9 @@ export default function StudentPortalView({
             ))}
           </div>
           <form onSubmit={onBookFellowship} className="bg-white border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#6C47FF] rounded-xl p-5 space-y-4 max-w-md">
-            <h3 className="font-display font-bold text-sm text-[#1A1A1A]">Agendar sesión con {fellowshipForm.mentorName}</h3>
+            <h3 className="font-display font-bold text-sm text-[#1A1A1A]">
+              Agendar sesión{fellowshipForm.mentorName ? ` con ${fellowshipForm.mentorName}` : ""}
+            </h3>
             <input
               value={fellowshipForm.topic}
               onChange={e => setFellowshipForm((p: any) => ({ ...p, topic: e.target.value }))}
@@ -583,7 +606,11 @@ export default function StudentPortalView({
               placeholder="Fecha y hora (ej: Lunes 4:00 PM)"
               className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none"
             />
-            <button type="submit" className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm">
+            <button
+              type="submit"
+              disabled={!fellowshipForm.mentorName || !fellowshipForm.topic || !fellowshipForm.dateTime}
+              className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
+            >
               Confirmar sesión
             </button>
           </form>

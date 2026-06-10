@@ -1450,6 +1450,8 @@ export default function App() {
                   <UniversityPortalView
                     courses={courses}
                     universities={universities}
+                    uniTab={uniTab}
+                    setUniTab={setUniTab}
                     onCourseAdded={fetchState}
                     onCertifyApprove={handleApproveSello}
                     triggerToast={triggerToast}

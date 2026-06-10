@@ -26,7 +26,8 @@ import {
   ShieldCheck,
   Check,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Layers
 } from "lucide-react";
 import { Course } from "../types";
 import { useAuth } from "../contexts/AuthContext";
@@ -193,44 +194,72 @@ export default function MarketingView({
         <div id="mkt_home_section" className="space-y-20 animate-fade-in text-[#1A1A1A]">
 
           {/* A) HERO GENERAL */}
-          <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-none px-6 py-14 md:px-16 md:py-20 text-center space-y-8">
-            <span className="inline-block bg-[#FAFAFA] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] px-4 py-1.5 text-[10px] md:text-xs font-mono font-extrabold uppercase tracking-widest">
-              🎓 La primera plataforma de educación desagregada de Colombia
-            </span>
+          <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-none px-6 py-14 md:px-16 md:py-20 grid grid-cols-1 lg:grid-cols-3 gap-10 items-center">
+            {/* Texto hero */}
+            <div className="lg:col-span-1 space-y-8 text-center lg:text-left">
+              <span className="inline-block bg-[#FAFAFA] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] px-4 py-1.5 text-[10px] md:text-xs font-mono font-extrabold uppercase tracking-widest">
+                🎓 La primera plataforma de educación desagregada de Colombia
+              </span>
 
-            <h1 className="text-4xl md:text-6xl font-extrabold font-display leading-[1.05] tracking-tight max-w-3xl mx-auto">
-              La universidad, a tu medida. Un curso a la vez.
-            </h1>
+              <h1 className="text-4xl md:text-6xl font-extrabold font-display leading-[1.05] tracking-tight max-w-3xl mx-auto lg:mx-0">
+                La universidad, a tu medida. Un curso a la vez.
+              </h1>
 
-            <p className="text-sm md:text-base font-bold text-[#1A1A1A]/80 max-w-2xl mx-auto leading-relaxed">
-              Campus Pass conecta estudiantes, empresas y universidades en un solo ecosistema: toma materias individuales de universidades aliadas, acumúlalas en tu pasaporte digital y conviértelas en empleabilidad real.
-            </p>
+              <p className="text-sm md:text-base font-bold text-[#1A1A1A]/80 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                Campus Pass conecta estudiantes, empresas y universidades en un solo ecosistema: toma materias individuales de universidades aliadas, acumúlalas en tu pasaporte digital y conviértelas en empleabilidad real.
+              </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-              <button
-                id="home_hero_start_btn"
-                onClick={() => {
-                  setMarketingTab("auth");
-                  setAuthMode("register");
-                  setOnboardingRole("student");
-                  setOnboardingStep(2);
-                }}
-                className="bg-[#1A1A1A] text-[#FFD000] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#FAFAFA] text-sm font-extrabold py-3.5 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#FAFAFA]"
-              >
-                <span>Comenzar gratis</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-              <a
-                href="#como-funciona"
-                className="bg-[#FAFAFA] text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-sm font-extrabold py-3.5 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]"
-              >
-                <span>Ver cómo funciona</span>
-              </a>
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                <button
+                  id="home_hero_start_btn"
+                  onClick={() => {
+                    setMarketingTab("auth");
+                    setAuthMode("register");
+                    setOnboardingRole("student");
+                    setOnboardingStep(2);
+                  }}
+                  className="bg-[#1A1A1A] text-[#FFD000] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#FAFAFA] text-sm font-extrabold py-3.5 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#FAFAFA]"
+                >
+                  <span>Comenzar gratis</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+                <a
+                  href="#como-funciona"
+                  className="bg-[#FAFAFA] text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-sm font-extrabold py-3.5 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]"
+                >
+                  <span>Ver cómo funciona</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Composición de tarjetas recortadas pop-art */}
+            <div className="lg:col-span-2 relative h-72 hidden lg:block" aria-hidden="true">
+              {/* Tarjeta 1 — Estudia */}
+              <div className="absolute left-0 top-0 z-10" style={{ transform: 'rotate(-4deg)' }}>
+                <div className="p-6 border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#1A1A1A]" style={{ backgroundImage: 'radial-gradient(#FFD000 2.5px, transparent 2.5px)', backgroundSize: '20px 20px', backgroundColor: '#1A1A1A' }}>
+                  <div className="text-6xl mb-2">🎓</div>
+                  <div className="text-white font-mono font-extrabold text-xl tracking-widest">ESTUDIA</div>
+                </div>
+              </div>
+              {/* Tarjeta 2 — Crece */}
+              <div className="absolute left-36 top-8 z-20" style={{ transform: 'rotate(2deg)' }}>
+                <div className="bg-[#FFD000] p-6 border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#1A1A1A]">
+                  <div className="text-6xl mb-2">💼</div>
+                  <div className="text-[#1A1A1A] font-mono font-extrabold text-xl tracking-widest">CRECE</div>
+                </div>
+              </div>
+              {/* Tarjeta 3 — Certifícate */}
+              <div className="absolute left-72 top-16 z-30" style={{ transform: 'rotate(-1deg)' }}>
+                <div className="bg-[#6C47FF] p-6 border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#1A1A1A]">
+                  <div className="text-6xl mb-2">🏛️</div>
+                  <div className="text-white font-mono font-extrabold text-xl tracking-widest">CERTIFÍCATE</div>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* B) ¿CÓMO FUNCIONA? */}
-          <div id="como-funciona" className="space-y-10 scroll-mt-24">
+          <div id="como-funciona" className="scroll-mt-24 border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] p-8 md:p-12 space-y-10" style={{ backgroundColor: '#FAFAFA', backgroundImage: 'repeating-linear-gradient(45deg, #1A1A1A 0px, #1A1A1A 1px, transparent 1px, transparent 8px)' }}>
             <div className="text-center space-y-2">
               <h2 className="text-2xl md:text-3xl font-extrabold font-display tracking-vinku">¿Cómo funciona?</h2>
               <p className="text-sm text-zinc-700 font-bold">Tres pasos para convertir cursos en empleabilidad</p>
@@ -243,7 +272,7 @@ export default function MarketingView({
                 { num: "03", title: "Certifícate y crece", desc: "Cada curso aprobado es un sello verificable en tu pasaporte digital." },
               ].map(step => (
                 <div key={step.num} className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-8 space-y-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]">
-                  <span className="text-5xl font-black font-mono text-[#6C47FF] leading-none block">{step.num}</span>
+                  <span className="inline-flex items-center justify-center w-16 h-16 bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] text-2xl font-black font-mono text-[#1A1A1A] leading-none">{step.num}</span>
                   <h3 className="text-xl font-extrabold font-display text-[#1A1A1A]">{step.title}</h3>
                   <p className="text-xs font-bold text-zinc-700 leading-relaxed">{step.desc}</p>
                 </div>
@@ -258,7 +287,7 @@ export default function MarketingView({
               <p className="text-sm text-zinc-700 font-bold">Por qué Campus Pass cambia las reglas del juego</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
               <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#6C47FF] rounded-none p-6 space-y-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#6C47FF]">
                 <Wallet className="w-10 h-10 text-[#1A1A1A]" />
                 <h3 className="text-base font-extrabold font-display text-[#1A1A1A]">Paga solo lo que cursas</h3>
@@ -273,6 +302,16 @@ export default function MarketingView({
                 <TrendingUp className="w-10 h-10 text-[#1A1A1A]" />
                 <h3 className="text-base font-extrabold font-display text-[#1A1A1A]">Empleabilidad medible</h3>
                 <p className="text-xs font-bold text-zinc-700 leading-relaxed">Tu pasaporte muestra habilidades concretas que las empresas buscan hoy.</p>
+              </div>
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#6C47FF] rounded-none p-6 space-y-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#6C47FF]">
+                <Users className="w-10 h-10 text-[#1A1A1A]" />
+                <h3 className="text-base font-extrabold font-display text-[#1A1A1A]">Red de contactos reales</h3>
+                <p className="text-xs font-bold text-zinc-700 leading-relaxed">Haz networking con estudiantes y docentes de las mejores universidades del país. Cada curso es también una comunidad.</p>
+              </div>
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#6C47FF] rounded-none p-6 space-y-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#6C47FF]">
+                <Layers className="w-10 h-10 text-[#1A1A1A]" />
+                <h3 className="text-base font-extrabold font-display text-[#1A1A1A]">Tantas rutas como roles quieras</h3>
+                <p className="text-xs font-bold text-zinc-700 leading-relaxed">¿Quieres ser Data Analyst y también Product Manager? Crea rutas paralelas sin límite. Cada perfil profesional, un pasaporte.</p>
               </div>
             </div>
           </div>

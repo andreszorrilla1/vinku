@@ -60,7 +60,7 @@ export default function MarketingView({
 
   // B2B Landing ROI calculator state
   const [numEmployees, setNumEmployees] = useState(25);
-  const [avgCourseCost, setAvgCourseCost] = useState(500);
+  const [avgCourseCost, setAvgCourseCost] = useState(500000);
 
   // B2B Lead Contact Form state
   const [b2bCompanyName, setB2bCompanyName] = useState("");
@@ -115,7 +115,7 @@ export default function MarketingView({
   });
 
   // Calculate ROI Metrics
-  const traditionalCost = numEmployees * 2800; // traditional average continuous education
+  const traditionalCost = numEmployees * 2800000; // costo promedio de educación continua tradicional
   const vinkuCost = numEmployees * avgCourseCost;
   const savings = traditionalCost - vinkuCost;
   const productivityGain = Math.round(numEmployees * 48); // active retention hours estimated
@@ -190,9 +190,94 @@ export default function MarketingView({
       {/* 1. MARKETING STATION A: HOMEPAGE (LANDING PRINCIPAL)       */}
       {/* ========================================================== */}
       {marketingTab === "home" && (
-        <div id="mkt_home_section" className="space-y-16 animate-fade-in text-[#1A1A1A]">
+        <div id="mkt_home_section" className="space-y-20 animate-fade-in text-[#1A1A1A]">
 
-          {/* HUB DE 3 PERFILES */}
+          {/* A) HERO GENERAL */}
+          <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-none px-6 py-14 md:px-16 md:py-20 text-center space-y-8">
+            <span className="inline-block bg-[#FAFAFA] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] px-4 py-1.5 text-[10px] md:text-xs font-mono font-extrabold uppercase tracking-widest">
+              🎓 La primera plataforma de educación desagregada de Colombia
+            </span>
+
+            <h1 className="text-4xl md:text-6xl font-extrabold font-display leading-[1.05] tracking-tight max-w-3xl mx-auto">
+              La universidad, a tu medida. Un curso a la vez.
+            </h1>
+
+            <p className="text-sm md:text-base font-bold text-[#1A1A1A]/80 max-w-2xl mx-auto leading-relaxed">
+              Campus Pass conecta estudiantes, empresas y universidades en un solo ecosistema: toma materias individuales de universidades aliadas, acumúlalas en tu pasaporte digital y conviértelas en empleabilidad real.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+              <button
+                id="home_hero_start_btn"
+                onClick={() => {
+                  setMarketingTab("auth");
+                  setAuthMode("register");
+                  setOnboardingRole("student");
+                  setOnboardingStep(2);
+                }}
+                className="bg-[#1A1A1A] text-[#FFD000] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#FAFAFA] text-sm font-extrabold py-3.5 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#FAFAFA]"
+              >
+                <span>Comenzar gratis</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+              <a
+                href="#como-funciona"
+                className="bg-[#FAFAFA] text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-sm font-extrabold py-3.5 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]"
+              >
+                <span>Ver cómo funciona</span>
+              </a>
+            </div>
+          </div>
+
+          {/* B) ¿CÓMO FUNCIONA? */}
+          <div id="como-funciona" className="space-y-10 scroll-mt-24">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl md:text-3xl font-extrabold font-display tracking-vinku">¿Cómo funciona?</h2>
+              <p className="text-sm text-zinc-700 font-bold">Tres pasos para convertir cursos en empleabilidad</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[
+                { num: "01", title: "Diagnostica", desc: "Descubre en 5 minutos qué habilidades necesitas según tu meta profesional." },
+                { num: "02", title: "Estudia a tu ritmo", desc: "Matricula solo las materias que necesitas, de la universidad que prefieras, pagando en COP." },
+                { num: "03", title: "Certifícate y crece", desc: "Cada curso aprobado es un sello verificable en tu pasaporte digital." },
+              ].map(step => (
+                <div key={step.num} className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-8 space-y-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]">
+                  <span className="text-5xl font-black font-mono text-[#6C47FF] leading-none block">{step.num}</span>
+                  <h3 className="text-xl font-extrabold font-display text-[#1A1A1A]">{step.title}</h3>
+                  <p className="text-xs font-bold text-zinc-700 leading-relaxed">{step.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* C) BENEFICIOS CLAVE */}
+          <div className="space-y-10">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl md:text-3xl font-extrabold font-display tracking-vinku">Beneficios clave</h2>
+              <p className="text-sm text-zinc-700 font-bold">Por qué Campus Pass cambia las reglas del juego</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#6C47FF] rounded-none p-6 space-y-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#6C47FF]">
+                <Wallet className="w-10 h-10 text-[#1A1A1A]" />
+                <h3 className="text-base font-extrabold font-display text-[#1A1A1A]">Paga solo lo que cursas</h3>
+                <p className="text-xs font-bold text-zinc-700 leading-relaxed">Sin matrículas de 5 años. Créditos en pesos colombianos, sin deudas eternas.</p>
+              </div>
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#6C47FF] rounded-none p-6 space-y-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#6C47FF]">
+                <Award className="w-10 h-10 text-[#1A1A1A]" />
+                <h3 className="text-base font-extrabold font-display text-[#1A1A1A]">Certificación universitaria real</h3>
+                <p className="text-xs font-bold text-zinc-700 leading-relaxed">Cada sello lo emite directamente la universidad aliada. Verificable, no un PDF genérico.</p>
+              </div>
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#6C47FF] rounded-none p-6 space-y-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#6C47FF]">
+                <TrendingUp className="w-10 h-10 text-[#1A1A1A]" />
+                <h3 className="text-base font-extrabold font-display text-[#1A1A1A]">Empleabilidad medible</h3>
+                <p className="text-xs font-bold text-zinc-700 leading-relaxed">Tu pasaporte muestra habilidades concretas que las empresas buscan hoy.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* D) HUB DE 3 PERFILES */}
           <div className="space-y-8">
             <div className="text-center space-y-2">
               <h2 className="text-2xl md:text-3xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">¿Quién eres en Campus Pass?</h2>
@@ -202,7 +287,7 @@ export default function MarketingView({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
               {/* Tarjeta 1 — Estudiante */}
-              <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] p-6 flex flex-col gap-4 rounded-none">
+              <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] p-6 flex flex-col gap-4 rounded-none transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]">
                 <GraduationCap className="w-12 h-12 text-[#1A1A1A]" />
                 <div>
                   <h3 className="text-xl font-extrabold text-[#1A1A1A] font-display">Soy Estudiante</h3>
@@ -232,7 +317,7 @@ export default function MarketingView({
               </div>
 
               {/* Tarjeta 2 — Empresa */}
-              <div className="bg-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#6C47FF] p-6 flex flex-col gap-4 rounded-none">
+              <div className="bg-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#6C47FF] p-6 flex flex-col gap-4 rounded-none transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#6C47FF]">
                 <Building className="w-12 h-12 text-[#FFD000]" />
                 <div>
                   <h3 className="text-xl font-extrabold text-white font-display">Soy Empresa</h3>
@@ -262,7 +347,7 @@ export default function MarketingView({
               </div>
 
               {/* Tarjeta 3 — Universidad */}
-              <div className="bg-[#6C47FF] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] p-6 flex flex-col gap-4 rounded-none">
+              <div className="bg-[#6C47FF] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] p-6 flex flex-col gap-4 rounded-none transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]">
                 <BookOpen className="w-12 h-12 text-[#FFD000]" />
                 <div>
                   <h3 className="text-xl font-extrabold text-white font-display">Soy Universidad</h3>
@@ -388,11 +473,11 @@ export default function MarketingView({
             </div>
 
             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-display max-w-4xl mx-auto">
-              Tu pasaporte al empleo del futuro sin las barreras de la educación tradicional.
+              Tu pasaporte al empleo del futuro.
             </h1>
 
             <p className="text-sm md:text-base text-text-dim max-w-2xl mx-auto leading-relaxed">
-              Diseña una ruta de aprendizaje ágil de 3, 5 o 7 cursos de las mejores universidades del país adaptada a tu perfil y objetivos profesionales.
+              Arma una ruta de 3, 5 o 7 cursos de las mejores universidades del país, adaptada a tu perfil, tu presupuesto y tus metas.
             </p>
 
             <div className="flex justify-center pt-2">
@@ -404,7 +489,7 @@ export default function MarketingView({
                   setOnboardingRole("student");
                   setOnboardingStep(2);
                 }}
-                className="bg-accent-yellow hover:bg-yellow-400 text-black text-xs md:text-sm font-bold py-4 px-8 rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(255,210,0,0.25)] hover:shadow-[0_0_30px_rgba(255,210,0,0.4)] transition-all cursor-pointer"
+                className="bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]"
               >
                 <span>Iniciar Diagnóstico Gratuito</span>
                 <ArrowRight className="w-4 h-4" />
@@ -614,11 +699,11 @@ export default function MarketingView({
             </div>
 
             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-display max-w-4xl mx-auto">
-              Potencia el talento de tu empresa con rutas de aprendizaje universitarias a la medida.
+              El talento de tu equipo, potenciado con formación universitaria real.
             </h1>
 
             <p className="text-sm md:text-base text-text-dim max-w-3xl mx-auto leading-relaxed">
-              Mapea las brechas de habilidades de tus colaboradores de forma automatizada, asigna presupuestos educativos flexibles y audita el progreso real de tu equipo desde una sola consola gerencial.
+              Diagnostica brechas de habilidades, asigna presupuestos en COP y mide el progreso de cada colaborador desde una sola consola.
             </p>
 
             <div className="flex justify-center pt-2">
@@ -630,7 +715,7 @@ export default function MarketingView({
                   setOnboardingRole("corporate");
                   setOnboardingStep(2);
                 }}
-                className="bg-accent-yellow hover:bg-yellow-400 text-black text-xs md:text-sm font-bold py-4 px-8 rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(255,210,0,0.25)] transition-all cursor-pointer"
+                className="bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]"
               >
                 <span>Crear Cuenta Corporativa / Agendar Demo</span>
                 <ArrowRight className="w-4 h-4" />
@@ -721,17 +806,17 @@ export default function MarketingView({
                     </label>
                     <input
                       type="range"
-                      min="200"
-                      max="1500"
-                      step="50"
+                      min="200000"
+                      max="1500000"
+                      step="50000"
                       value={avgCourseCost}
                       onChange={(e) => setAvgCourseCost(parseInt(e.target.value))}
                       className="w-full accent-accent-yellow bg-neutral-800 rounded-lg appearance-none h-1.5 cursor-pointer"
                     />
                     <div className="flex justify-between text-[10px] font-mono text-text-dim mt-1">
-                      <span>$200 COP</span>
-                      <span>$850 COP</span>
-                      <span>$1.500 COP</span>
+                      <span>${(200000).toLocaleString("es-CO")} COP</span>
+                      <span>${(850000).toLocaleString("es-CO")} COP</span>
+                      <span>${(1500000).toLocaleString("es-CO")} COP</span>
                     </div>
                   </div>
                 </div>
@@ -865,11 +950,11 @@ export default function MarketingView({
             </div>
 
             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-display max-w-4xl mx-auto">
-              Monetiza el catálogo de tu universidad disgregando tus programas tradicionales.
+              Tu catálogo académico, nuevas fuentes de ingreso.
             </h1>
 
             <p className="text-sm md:text-base text-text-dim max-w-3xl mx-auto leading-relaxed">
-              Conecta tu oferta académica de pregrado, posgrado y educación continua con miles de empresas y profesionales que demandan upskilling inmediato y ágil.
+              Desagrega tus programas en cursos individuales, llega a miles de estudiantes y empresas, y recibe ingresos por cada matrícula. Sin cambiar tu operación académica.
             </p>
 
             <div className="flex justify-center pt-2">
@@ -881,7 +966,7 @@ export default function MarketingView({
                   setOnboardingRole("university");
                   setOnboardingStep(2);
                 }}
-                className="bg-accent-yellow hover:bg-yellow-400 text-black text-xs md:text-sm font-bold py-4 px-8 rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(255,210,0,0.25)] transition-all cursor-pointer"
+                className="bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]"
               >
                 <span>Unir mi Universidad a Campus Pass</span>
                 <ArrowRight className="w-4 h-4" />
@@ -955,16 +1040,16 @@ export default function MarketingView({
               <h5 className="text-[9px] font-mono font-bold text-text-dim uppercase tracking-wider">Universidades Conectadas (Balance)</h5>
               <div className="space-y-2 text-[11px] font-mono">
                 <div className="p-2 bg-[#09090c] rounded border border-border-dark flex justify-between items-center">
-                  <span className="text-white">U. de los Andes</span>
-                  <span className="text-accent-emerald font-semibold">$9.900 COP</span>
+                  <span className="text-white">U. Andina del Futuro</span>
+                  <span className="text-accent-emerald font-semibold">${(3200000).toLocaleString("es-CO")} COP</span>
                 </div>
                 <div className="p-2 bg-[#09090c] rounded border border-border-dark flex justify-between items-center">
-                  <span className="text-white">Tec de Monterrey</span>
-                  <span className="text-accent-emerald font-semibold">$27.900 COP</span>
+                  <span className="text-white">Instituto Colombo Digital</span>
+                  <span className="text-accent-emerald font-semibold">${(1850000).toLocaleString("es-CO")} COP</span>
                 </div>
                 <div className="p-2 bg-[#09090c] rounded border border-border-dark flex justify-between items-center">
-                  <span className="text-white">IE Business School</span>
-                  <span className="text-accent-emerald font-semibold">$12.460 COP</span>
+                  <span className="text-white">Politécnico Innovación Sur</span>
+                  <span className="text-accent-emerald font-semibold">${(2100000).toLocaleString("es-CO")} COP</span>
                 </div>
               </div>
             </div>

@@ -47,7 +47,7 @@ export default function App() {
 
   // Navigation states
   const [activeRole, setActiveRole] = useState<"marketing" | "student" | "corporate" | "university" | "architecture">("marketing");
-  const [marketingTab, setMarketingTab] = useState<"home" | "b2c" | "b2b" | "universidad" | "auth">("b2c");
+  const [marketingTab, setMarketingTab] = useState<"home" | "b2c" | "b2b" | "universidad" | "auth">("home");
   const [studentTab, setStudentTab] = useState<"pass" | "diag" | "market" | "wallet" | "fellowship" | "portfolio">("pass");
   const [corpTab, setCorpTab] = useState<"dashboard" | "talent" | "wallet" | "diagnosis">("dashboard");
   const [uniTab, setUniTab] = useState<"dashboard" | "catalogo" | "matriculados" | "certificaciones">("dashboard");
@@ -493,10 +493,10 @@ export default function App() {
         {/* Context navigation tabs */}
         <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar flex-1 justify-center">
           {activeRole === "marketing" && [
+            { id: "home", label: "Inicio" },
             { id: "b2c", label: "Para Personas" },
             { id: "b2b", label: "Para Empresas" },
             { id: "universidad", label: "Universidades" },
-            { id: "auth", label: "Acceso" },
           ].map(tab => (
             <button
               key={tab.id}
@@ -608,7 +608,8 @@ export default function App() {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              {/* Demo role switcher — solo visible sin sesión */}
+              {/* Demo role switcher — solo en desarrollo */}
+              {import.meta.env.DEV && (
               <div className="hidden md:flex items-center gap-1 border border-white/10 rounded-lg p-1">
                 <button id="role_is_marketing" onClick={() => setActiveRole("marketing")}
                   className={`px-2 py-1 text-[10px] font-bold rounded transition-all cursor-pointer ${activeRole === "marketing" ? "bg-[#FFD000] text-[#1A1A1A]" : "text-white/50 hover:text-white"}`}>
@@ -627,6 +628,7 @@ export default function App() {
                   Uni.
                 </button>
               </div>
+              )}
               <button
                 onClick={() => { setActiveRole("marketing"); setMarketingTab("auth"); }}
                 className="px-4 py-2 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold text-xs rounded-lg border-2 border-[#FFD000] shadow-[3px_3px_0px_rgba(255,208,0,0.4)] hover:shadow-[5px_5px_0px_rgba(255,208,0,0.4)] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all whitespace-nowrap cursor-pointer"

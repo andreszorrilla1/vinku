@@ -43,7 +43,7 @@ import { useAuth } from "./contexts/AuthContext";
 import * as api from "./lib/api";
 
 export default function App() {
-  const { user, role } = useAuth();
+  const { user, role, signOut } = useAuth();
 
   // Navigation states
   const [activeRole, setActiveRole] = useState<"marketing" | "student" | "corporate" | "university" | "architecture">("marketing");
@@ -112,6 +112,19 @@ export default function App() {
   useEffect(() => {
     fetchState();
   }, [user]);
+
+  // Redirigir al portal correcto según el rol autenticado
+  useEffect(() => {
+    if (!user) {
+      setActiveRole("marketing");
+    } else if (role === 'student') {
+      setActiveRole("student");
+    } else if (role === 'corporate_admin') {
+      setActiveRole("corporate");
+    } else if (role === 'university_admin') {
+      setActiveRole("university");
+    }
+  }, [user, role]);
 
   const triggerToast = (text: string, type: "success" | "error" | "info" = "success") => {
     setToastMsg({ text, type });
@@ -565,42 +578,56 @@ export default function App() {
           ))}
         </nav>
 
-        {/* Right side: demo role picker (hidden when authenticated) + auth button */}
+        {/* Right side: user info + cerrar sesión / botón login */}
         <div className="flex items-center gap-2 shrink-0">
-          {!user && (
-            <div className="hidden md:flex items-center gap-1 border border-white/10 rounded-lg p-1">
-              <button id="role_is_marketing" onClick={() => setActiveRole("marketing")}
-                className={`px-2 py-1 text-[10px] font-bold rounded transition-all cursor-pointer ${activeRole === "marketing" ? "bg-[#FFD000] text-[#1A1A1A]" : "text-white/50 hover:text-white"}`}>
-                Público
-              </button>
-              <button id="role_is_student" onClick={() => setActiveRole("student")}
-                className={`px-2 py-1 text-[10px] font-bold rounded transition-all cursor-pointer ${activeRole === "student" ? "bg-[#FFD000] text-[#1A1A1A]" : "text-white/50 hover:text-white"}`}>
-                Est.
-              </button>
-              <button id="role_is_corporate" onClick={() => setActiveRole("corporate")}
-                className={`px-2 py-1 text-[10px] font-bold rounded transition-all cursor-pointer ${activeRole === "corporate" ? "bg-[#FFD000] text-[#1A1A1A]" : "text-white/50 hover:text-white"}`}>
-                Corp.
-              </button>
-              <button id="role_is_university" onClick={() => setActiveRole("university")}
-                className={`px-2 py-1 text-[10px] font-bold rounded transition-all cursor-pointer ${activeRole === "university" ? "bg-[#FFD000] text-[#1A1A1A]" : "text-white/50 hover:text-white"}`}>
-                Uni.
-              </button>
-            </div>
-          )}
           {user ? (
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#6C47FF] border-2 border-white/30 flex items-center justify-center text-white font-bold text-xs shrink-0">
-                {(user.email ?? "U")[0].toUpperCase()}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-[#6C47FF] border-2 border-white/30 flex items-center justify-center text-white font-bold text-xs shrink-0">
+                  {(user.email ?? "U")[0].toUpperCase()}
+                </div>
+                <div className="hidden lg:flex flex-col leading-tight">
+                  <span className="text-xs font-bold text-white max-w-[130px] truncate">{user.email}</span>
+                  <span className="text-[10px] text-[#FFD000] font-mono uppercase">
+                    {role === 'student' ? 'Estudiante' : role === 'corporate_admin' ? 'Empresa' : role === 'university_admin' ? 'Universidad' : role}
+                  </span>
+                </div>
               </div>
-              <span className="text-xs font-bold text-white/80 hidden lg:block max-w-[120px] truncate">{user.email}</span>
+              <button
+                onClick={() => signOut()}
+                className="px-3 py-1.5 text-[11px] font-bold text-white/60 hover:text-white border border-white/20 hover:border-white/50 rounded-lg transition-all cursor-pointer"
+              >
+                Cerrar sesión
+              </button>
             </div>
           ) : (
-            <button
-              onClick={() => { setActiveRole("marketing"); setMarketingTab("auth"); }}
-              className="px-4 py-2 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold text-xs rounded-lg border-2 border-[#FFD000] shadow-[3px_3px_0px_rgba(255,208,0,0.4)] hover:shadow-[5px_5px_0px_rgba(255,208,0,0.4)] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all whitespace-nowrap cursor-pointer"
-            >
-              Iniciar sesión →
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Demo role switcher — solo visible sin sesión */}
+              <div className="hidden md:flex items-center gap-1 border border-white/10 rounded-lg p-1">
+                <button id="role_is_marketing" onClick={() => setActiveRole("marketing")}
+                  className={`px-2 py-1 text-[10px] font-bold rounded transition-all cursor-pointer ${activeRole === "marketing" ? "bg-[#FFD000] text-[#1A1A1A]" : "text-white/50 hover:text-white"}`}>
+                  Público
+                </button>
+                <button id="role_is_student" onClick={() => setActiveRole("student")}
+                  className={`px-2 py-1 text-[10px] font-bold rounded transition-all cursor-pointer ${activeRole === "student" ? "bg-[#FFD000] text-[#1A1A1A]" : "text-white/50 hover:text-white"}`}>
+                  Est.
+                </button>
+                <button id="role_is_corporate" onClick={() => setActiveRole("corporate")}
+                  className={`px-2 py-1 text-[10px] font-bold rounded transition-all cursor-pointer ${activeRole === "corporate" ? "bg-[#FFD000] text-[#1A1A1A]" : "text-white/50 hover:text-white"}`}>
+                  Corp.
+                </button>
+                <button id="role_is_university" onClick={() => setActiveRole("university")}
+                  className={`px-2 py-1 text-[10px] font-bold rounded transition-all cursor-pointer ${activeRole === "university" ? "bg-[#FFD000] text-[#1A1A1A]" : "text-white/50 hover:text-white"}`}>
+                  Uni.
+                </button>
+              </div>
+              <button
+                onClick={() => { setActiveRole("marketing"); setMarketingTab("auth"); }}
+                className="px-4 py-2 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold text-xs rounded-lg border-2 border-[#FFD000] shadow-[3px_3px_0px_rgba(255,208,0,0.4)] hover:shadow-[5px_5px_0px_rgba(255,208,0,0.4)] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all whitespace-nowrap cursor-pointer"
+              >
+                Iniciar sesión →
+              </button>
+            </div>
           )}
         </div>
       </header>

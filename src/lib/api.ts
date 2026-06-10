@@ -402,3 +402,57 @@ export async function fetchCorporateTransactions(companyId: string) {
   if (error) throw error;
   return data ?? [];
 }
+
+// ============================================================
+// UNIVERSITY ADMIN — SETUP & MANAGEMENT
+// ============================================================
+
+export async function fetchUniversityList(): Promise<{ id: string; name: string }[]> {
+  const { data, error } = await supabase
+    .from('universities')
+    .select('id, name')
+    .order('name');
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function linkUniversityToProfile(userId: string, universityId: string) {
+  const { error } = await supabase
+    .from('profiles')
+    .update({ university_id: universityId })
+    .eq('id', userId);
+  if (error) throw error;
+}
+
+export async function createUniversity(data: { name: string; city?: string; nit?: string }) {
+  const { data: uni, error } = await supabase
+    .from('universities')
+    .insert({
+      name: data.name,
+      legal_nit: data.nit ?? null,
+      contact_email: '',
+      approval_status: 'Pendiente' as const,
+      total_earnings: 0,
+      liquid_balance: 0,
+    })
+    .select('id, name')
+    .single();
+  if (error) throw error;
+  return uni;
+}
+
+export async function markEnrollmentCompleted(enrollmentId: string) {
+  const { error } = await supabase
+    .from('enrollments')
+    .update({ completed_at: new Date().toISOString() })
+    .eq('id', enrollmentId);
+  if (error) throw error;
+}
+
+export async function deleteCourse(courseId: string) {
+  const { error } = await supabase
+    .from('courses')
+    .delete()
+    .eq('id', courseId);
+  if (error) throw error;
+}

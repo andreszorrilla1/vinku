@@ -244,45 +244,11 @@ export default function MarketingView({
           </button>
 
           <button
-            id="register_student_btn"
-            onClick={() => {
-              setMarketingTab("auth");
-              setAuthMode("register");
-              setOnboardingRole("student");
-              setOnboardingStep(2);
-            }}
+            id="register_trigger_btn"
+            onClick={() => setMarketingTab("home")}
             className="bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#1A1A1A] text-xs font-extrabold py-2 px-3 rounded-none flex items-center gap-1 transition-all cursor-pointer shadow-[2px_2px_0px_#1A1A1A]"
           >
-            <GraduationCap className="w-3.5 h-3.5" />
-            <span>Estudiante</span>
-          </button>
-
-          <button
-            id="register_corporate_btn"
-            onClick={() => {
-              setMarketingTab("auth");
-              setAuthMode("register");
-              setOnboardingRole("corporate");
-              setOnboardingStep(2);
-            }}
-            className="bg-[#1A1A1A] hover:bg-zinc-800 text-white border-2 border-[#1A1A1A] text-xs font-extrabold py-2 px-3 rounded-none flex items-center gap-1 transition-all cursor-pointer shadow-[2px_2px_0px_#6C47FF]"
-          >
-            <Building className="w-3.5 h-3.5" />
-            <span>Empresa</span>
-          </button>
-
-          <button
-            id="register_university_btn"
-            onClick={() => {
-              setMarketingTab("auth");
-              setAuthMode("register");
-              setOnboardingRole("university");
-              setOnboardingStep(2);
-            }}
-            className="bg-[#6C47FF] hover:bg-indigo-600 text-white border-2 border-[#1A1A1A] text-xs font-extrabold py-2 px-3 rounded-none flex items-center gap-1 transition-all cursor-pointer shadow-[2px_2px_0px_#1A1A1A]"
-          >
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>Universidad</span>
+            <span>Registrarse</span>
           </button>
         </div>
       </div>
@@ -292,197 +258,182 @@ export default function MarketingView({
       {/* ========================================================== */}
       {marketingTab === "home" && (
         <div id="mkt_home_section" className="space-y-16 animate-fade-in text-[#1A1A1A]">
-          
-          {/* HERO BANNER - AMARILLO ENERGÉTICO & TRAMA BEN-DAY */}
-          <div className="relative overflow-hidden bg-[#FFD000] border-4 border-[#1A1A1A] p-8 md:p-12 shadow-rigid-black bg-benday-yellow rounded-none text-[#1A1A1A]">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center relative z-10">
-              <div className="lg:col-span-3 space-y-6">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#1A1A1A] border-2 border-[#1A1A1A] text-xs text-[#FFD000] font-extrabold shadow-[2px_2px_0px_#6C47FF]">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Del campus, de todos.</span>
-                </div>
-                
-                <h2 className="text-3xl md:text-5xl font-extrabold tracking-vinku text-[#1A1A1A] leading-none font-display">
-                  Tus materias universitarias en tu pasaporte de upskilling ágil.
-                </h2>
-                
-                <p className="text-sm md:text-base text-[#1A1A1A] font-bold max-w-xl leading-snug">
-                  48 horas. Plan con números reales. Desagrega cursos universitarios y conviértelos en créditos con respaldo corporativo oficial.
-                </p>
 
-                <div className="flex flex-wrap gap-4 pt-2">
-                  <button
-                    id="hero_start_journey_btn"
-                    onClick={() => {
-                      setMarketingTab("auth");
-                      setAuthMode("register");
-                      setOnboardingRole("student");
-                      setOnboardingStep(2);
-                    }}
-                    className="bg-[#FAFAFA] hover:bg-zinc-100 text-[#1A1A1A] text-xs md:text-sm font-extrabold py-3.5 px-6 border-3 border-[#1A1A1A] rounded-none flex items-center gap-2 shadow-[5px_5px_0px_#1A1A1A] active:translate-y-[1px] active:translate-x-[1px]"
-                  >
-                    <span>Empezar Como Estudiante</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+          {/* HUB DE 3 PERFILES */}
+          <div className="space-y-8">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">¿Quién eres en Campus Pass?</h2>
+              <p className="text-sm text-zinc-700 font-bold">Elige tu perfil para acceder a tu portal</p>
+            </div>
 
-                  <button
-                    id="hero_b2b_demo_btn"
-                    onClick={() => setMarketingTab("b2b")}
-                    className="bg-[#6C47FF] hover:bg-indigo-700 text-[#FAFAFA] text-xs md:text-sm font-extrabold py-3.5 px-6 border-3 border-[#1A1A1A] rounded-none flex items-center gap-2 shadow-[5px_5px_0px_#1A1A1A] active:translate-y-[1px] active:translate-x-[1px]"
-                  >
-                    <span>Ver Plataforma B2B</span>
-                    <Building className="w-4 h-4 text-white" />
-                  </button>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                <div className="flex flex-wrap items-center gap-4 pt-4 text-xs font-bold font-mono text-[#1A1A1A]">
-                  <div className="flex items-center gap-1.5 bg-[#FAFAFA] px-2.5 py-1 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A]">
-                    <CheckCircle className="w-4 h-4 text-[#6C47FF]" />
-                    <span>MVP ÁGIL LISTO</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 bg-[#FAFAFA] px-2.5 py-1 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A]">
-                    <CheckCircle className="w-4 h-4 text-[#6C47FF]" />
-                    <span>SELLO UNIVERSITAS</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 bg-[#FAFAFA] px-2.5 py-1 border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A]">
-                    <CheckCircle className="w-4 h-4 text-[#6C47FF]" />
-                    <span>CRÉDITO VINKU ACTIVO</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* CONCEPTO INTERACTIVO DEL PASAPORTE (TEASER CARD) - BLANCO ROTO CON SOMBRA VIOLETA RIGIDA */}
-              <div className="lg:col-span-2">
-                <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] p-6 shadow-rigid-violet rounded-none relative overflow-hidden space-y-4 text-[#1A1A1A]">
-                  <div className="absolute top-0 right-0 px-3 py-1 bg-[#1A1A1A] text-[#FFD000] border-b-2 border-l-2 border-[#1A1A1A] font-mono text-[9px] font-extrabold uppercase tracking-widest">
-                    PASAPORTE ACTIVO
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-none bg-[#FFD000] border-2 border-[#1A1A1A] flex items-center justify-center font-extrabold text-black text-xl shadow-[2px_2px_0px_#1A1A1A]">
-                      V
-                    </div>
-                    <div>
-                      <h4 className="text-[10px] font-mono font-bold text-[#6C47FF] uppercase leading-none">CAMPUS PASS PORTFOLIO</h4>
-                      <p className="text-sm font-extrabold text-[#1A1A1A] mt-1.5 leading-none">Diana Prince (Demo)</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 text-xs pt-2">
-                    <div className="flex items-center justify-between p-2.5 bg-[#FAFAFA] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A]">
-                      <span className="text-[#1A1A1A] font-mono text-[9px] font-bold">Sello Andes:</span>
-                      <span className="text-[#6C47FF] font-extrabold flex items-center gap-1 text-[11px]">
-                        <Check className="w-3.5 h-3.5" /> Certificado
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between p-2.5 bg-[#FAFAFA] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A]">
-                      <span className="text-[#1A1A1A] font-mono text-[9px] font-bold">Sello TecMTY:</span>
-                      <span className="text-[#1A1A1A] font-extrabold flex items-center gap-1 text-[11px] bg-[#FFD000] px-1 border border-[#1A1A1A]">
-                        ● Cursando
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between p-2.5 bg-[#FAFAFA] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A]">
-                      <span className="text-[#1A1A1A] font-mono text-[9px] font-bold">Habilidades:</span>
-                      <span className="text-[#1A1A1A] font-mono text-[10px] bg-[#FFD000] px-1.5 py-0.5 border border-[#1A1A1A] font-extrabold shadow-[1px_1px_0px_#1A1A1A]">
-                        Cloud / Full Stack
-                      </span>
-                    </div>
-                  </div>
-
-                  <p className="text-[10px] text-zinc-700 text-center italic font-mono pt-1">
-                    * Tu "Campus Pass" centraliza Destinos, Sellos, Insignias y una Billetera.
+              {/* Tarjeta 1 — Estudiante */}
+              <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] p-6 flex flex-col gap-4 rounded-none">
+                <GraduationCap className="w-12 h-12 text-[#1A1A1A]" />
+                <div>
+                  <h3 className="text-xl font-extrabold text-[#1A1A1A] font-display">Soy Estudiante</h3>
+                  <p className="text-xs text-[#1A1A1A] font-bold mt-1 leading-snug">
+                    Diagnóstico gratuito, ruta personalizada y pasaporte educativo con cursos de las mejores universidades.
                   </p>
-
+                </div>
+                <ul className="space-y-1 text-xs font-bold text-[#1A1A1A]">
+                  <li>✓ Diagnóstico de habilidades</li>
+                  <li>✓ Marketplace de cursos</li>
+                  <li>✓ Pasaporte digital</li>
+                </ul>
+                <div className="mt-auto space-y-2">
                   <button
-                    onClick={() => {
-                      setActiveRole("student");
-                      setStudentTab("pass");
-                    }}
-                    className="w-full bg-[#FAFAFA] border-2 border-[#1A1A1A] text-[#1A1A1A] hover:bg-[#FFD000] font-extrabold text-xs py-2 rounded-none transition-all cursor-pointer text-center shadow-[3px_3px_0px_#1A1A1A] active:translate-y-[1px]"
+                    onClick={() => setMarketingTab("b2c")}
+                    className="w-full bg-[#1A1A1A] hover:bg-zinc-800 text-[#FFD000] border-2 border-[#1A1A1A] text-xs font-extrabold py-2.5 px-4 rounded-none transition-all cursor-pointer shadow-[2px_2px_0px_#1A1A1A]"
                   >
-                    Abrir Demo Real del Pasaporte →
+                    Explorar portal estudiantil →
+                  </button>
+                  <button
+                    onClick={() => { setMarketingTab("auth"); setAuthMode("login"); setOnboardingStep(1); }}
+                    className="w-full text-[10px] text-[#1A1A1A] font-mono font-bold underline cursor-pointer hover:opacity-70"
+                  >
+                    ¿Ya tienes cuenta? Inicia sesión
                   </button>
                 </div>
               </div>
+
+              {/* Tarjeta 2 — Empresa */}
+              <div className="bg-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#6C47FF] p-6 flex flex-col gap-4 rounded-none">
+                <Building className="w-12 h-12 text-[#FFD000]" />
+                <div>
+                  <h3 className="text-xl font-extrabold text-white font-display">Soy Empresa</h3>
+                  <p className="text-xs text-zinc-300 font-bold mt-1 leading-snug">
+                    Gestiona la formación de tu equipo, asigna presupuestos y mide el progreso de cada colaborador.
+                  </p>
+                </div>
+                <ul className="space-y-1 text-xs font-bold text-white">
+                  <li>✓ Consola de empleados</li>
+                  <li>✓ Billetera corporativa</li>
+                  <li>✓ Diagnóstico masivo</li>
+                </ul>
+                <div className="mt-auto space-y-2">
+                  <button
+                    onClick={() => setMarketingTab("b2b")}
+                    className="w-full bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#FFD000] text-xs font-extrabold py-2.5 px-4 rounded-none transition-all cursor-pointer shadow-[2px_2px_0px_#6C47FF]"
+                  >
+                    Explorar portal empresarial →
+                  </button>
+                  <button
+                    onClick={() => { setMarketingTab("auth"); setAuthMode("login"); setOnboardingStep(1); }}
+                    className="w-full text-[10px] text-zinc-400 font-mono font-bold underline cursor-pointer hover:opacity-70"
+                  >
+                    ¿Ya tienes cuenta? Inicia sesión
+                  </button>
+                </div>
+              </div>
+
+              {/* Tarjeta 3 — Universidad */}
+              <div className="bg-[#6C47FF] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] p-6 flex flex-col gap-4 rounded-none">
+                <BookOpen className="w-12 h-12 text-[#FFD000]" />
+                <div>
+                  <h3 className="text-xl font-extrabold text-white font-display">Soy Universidad</h3>
+                  <p className="text-xs text-indigo-100 font-bold mt-1 leading-snug">
+                    Monetiza tu catálogo académico, emite certificados digitales y conecta con miles de estudiantes y empresas.
+                  </p>
+                </div>
+                <ul className="space-y-1 text-xs font-bold text-white">
+                  <li>✓ Catálogo de cursos</li>
+                  <li>✓ Panel de matrículas</li>
+                  <li>✓ Certificaciones digitales</li>
+                </ul>
+                <div className="mt-auto space-y-2">
+                  <button
+                    onClick={() => setMarketingTab("universidad")}
+                    className="w-full bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#FFD000] text-xs font-extrabold py-2.5 px-4 rounded-none transition-all cursor-pointer shadow-[2px_2px_0px_#1A1A1A]"
+                  >
+                    Explorar portal universitario →
+                  </button>
+                  <button
+                    onClick={() => { setMarketingTab("auth"); setAuthMode("login"); setOnboardingStep(1); }}
+                    className="w-full text-[10px] text-indigo-200 font-mono font-bold underline cursor-pointer hover:opacity-70"
+                  >
+                    ¿Ya tienes cuenta? Inicia sesión
+                  </button>
+                </div>
+              </div>
+
             </div>
           </div>
 
-          {/* BUSCADOR DE CURSOS / EXPLORADOR MODULAR */}
+          {/* BANNER BUSCADOR DE CURSOS */}
           <div className="space-y-6">
-            <div className="text-center space-y-2">
-              <h3 className="text-xl md:text-2xl font-extrabold text-[#1A1A1A] font-display uppercase tracking-vinku">Busca Tu Próxima Unidad Académica</h3>
-              <p className="text-xs text-zinc-700 max-w-md mx-auto leading-relaxed font-bold">
-                Navega el portafolio descentralizado agregador de materias certificadoras.
-              </p>
-            </div>
+            <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] p-6 shadow-[4px_4px_0px_#1A1A1A] rounded-none">
+              <div className="text-center space-y-2 mb-6">
+                <h3 className="text-lg font-extrabold text-[#1A1A1A] font-display uppercase tracking-vinku">¿Quieres ver los cursos disponibles?</h3>
+                <p className="text-xs text-zinc-700 font-bold">Explora el catálogo de cursos universitarios disponibles</p>
+              </div>
 
-            {/* TAB CATEGORIES */}
-            <div className="flex flex-wrap justify-center gap-2">
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`text-xs px-4 py-2 font-extrabold rounded-none border-2 transition-all cursor-pointer ${
-                    selectedCategory === cat
-                      ? "bg-[#FFD000] text-black border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A]"
-                      : "bg-[#FAFAFA] text-[#1A1A1A] border-[#1A1A1A] hover:bg-zinc-200"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
+              {/* TAB CATEGORIES */}
+              <div className="flex flex-wrap justify-center gap-2 mb-4">
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`text-xs px-4 py-2 font-extrabold rounded-none border-2 transition-all cursor-pointer ${
+                      selectedCategory === cat
+                        ? "bg-[#FFD000] text-black border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A]"
+                        : "bg-white text-[#1A1A1A] border-[#1A1A1A] hover:bg-zinc-200"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
 
-            {/* BUSCADOR INPUT */}
-            <div className="max-w-md mx-auto flex items-center gap-2 bg-white border-3 border-[#1A1A1A] rounded-none px-4 py-3 shadow-[4px_4px_0px_#1A1A1A]">
-              <Search className="w-5 h-5 text-[#1A1A1A]" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Busca por temas (AWS, React, IA, Growth...)"
-                className="bg-transparent text-xs text-[#1A1A1A] outline-none w-full font-bold placeholder-zinc-500"
-              />
-            </div>
+              {/* BUSCADOR INPUT */}
+              <div className="max-w-md mx-auto flex items-center gap-2 bg-white border-3 border-[#1A1A1A] rounded-none px-4 py-3 shadow-[4px_4px_0px_#1A1A1A] mb-6">
+                <Search className="w-5 h-5 text-[#1A1A1A]" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Busca por temas (AWS, React, IA, Growth...)"
+                  className="bg-transparent text-xs text-[#1A1A1A] outline-none w-full font-bold placeholder-zinc-500"
+                />
+              </div>
 
-            {/* GRID OF INBUILDING MATERIALS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCourses.slice(0, 6).map(cur => (
-                <div key={cur.id} className="bg-[#FAFAFA] border-3 border-[#1A1A1A] p-5 flex flex-col justify-between h-[255px] relative shadow-rigid-violet rounded-none">
-                  <div>
-                    <div className="flex items-center justify-between text-[10px] font-mono mb-2">
-                      <span className="text-[#6C47FF] font-extrabold uppercase">{cur.university}</span>
-                      <span className="text-zinc-600 font-extrabold">{cur.level}</span>
-                    </div>
-                    <h4 className="text-sm font-extrabold text-[#1A1A1A] leading-tight line-clamp-2 uppercase font-display tracking-tight">{cur.title}</h4>
-                    <p className="text-xs text-zinc-700 mt-2 line-clamp-3 font-semibold">{cur.description}</p>
-                  </div>
-
-                  <div className="border-t-2 border-[#1A1A1A] pt-3 mt-3 flex items-center justify-between">
+              {/* GRID OF COURSES */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredCourses.slice(0, 6).map(cur => (
+                  <div key={cur.id} className="bg-white border-3 border-[#1A1A1A] p-5 flex flex-col justify-between h-[255px] relative shadow-rigid-violet rounded-none">
                     <div>
-                      <div className="text-[9px] uppercase font-mono text-zinc-600 font-extrabold">Monto Créditos</div>
-                      <span className="text-sm font-black text-[#1A1A1A] font-mono">${cur.cost.toLocaleString("es-CO")} COP</span>
+                      <div className="flex items-center justify-between text-[10px] font-mono mb-2">
+                        <span className="text-[#6C47FF] font-extrabold uppercase">{cur.university}</span>
+                        <span className="text-zinc-600 font-extrabold">{cur.level}</span>
+                      </div>
+                      <h4 className="text-sm font-extrabold text-[#1A1A1A] leading-tight line-clamp-2 uppercase font-display tracking-tight">{cur.title}</h4>
+                      <p className="text-xs text-zinc-700 mt-2 line-clamp-3 font-semibold">{cur.description}</p>
                     </div>
 
-                    <button
-                      onClick={() => {
-                        triggerToast("Crea tu cuenta para inscribirte en este curso.", "info");
-                        setStudentTab("market");
-                        setMarketingTab("auth");
-                        setAuthMode("register");
-                      }}
-                      className="bg-[#FFD000] hover:bg-yellow-400 border-2 border-[#1A1A1A] text-black text-xs font-bold py-1.5 px-3 rounded-none transition-all cursor-pointer flex items-center gap-1.5 shadow-[2px_2px_0px_#1A1A1A]"
-                    >
-                      <span>Inscribirse</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="border-t-2 border-[#1A1A1A] pt-3 mt-3 flex items-center justify-between">
+                      <div>
+                        <div className="text-[9px] uppercase font-mono text-zinc-600 font-extrabold">Monto Créditos</div>
+                        <span className="text-sm font-black text-[#1A1A1A] font-mono">${cur.cost.toLocaleString("es-CO")} COP</span>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          triggerToast("Crea tu cuenta para inscribirte en este curso.", "info");
+                          setStudentTab("market");
+                          setMarketingTab("auth");
+                          setAuthMode("register");
+                        }}
+                        className="bg-[#FFD000] hover:bg-yellow-400 border-2 border-[#1A1A1A] text-black text-xs font-bold py-1.5 px-3 rounded-none transition-all cursor-pointer flex items-center gap-1.5 shadow-[2px_2px_0px_#1A1A1A]"
+                      >
+                        <span>Inscribirse</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-            
           </div>
 
         </div>
@@ -1094,7 +1045,11 @@ export default function MarketingView({
       {/* ========================================================== */}
       {marketingTab === "auth" && (
         <div id="mkt_auth_section" className="max-w-md mx-auto bg-card-bg border border-border-dark rounded-3xl p-6 md:p-8 space-y-6 animate-fade-in relative z-10">
-          
+
+          <button onClick={() => setMarketingTab("home")} className="text-xs text-text-dim hover:text-white font-mono cursor-pointer flex items-center gap-1">
+            <span>← Volver al inicio</span>
+          </button>
+
           <div className="text-center space-y-1">
             {authMode === "login" ? (
               <>

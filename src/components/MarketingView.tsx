@@ -464,19 +464,17 @@ export default function MarketingView({
         <div id="mkt_b2c_section" className="space-y-16 animate-fade-in">
           
           {/* SECCIÓN HERO DE CAPTACIÓN EMOCIONAL */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-[#121217] to-black rounded-3xl border border-border-dark p-8 md:p-12 text-center space-y-6">
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-accent-yellow/5 rounded-full blur-3xl pointer-events-none" />
-            
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-accent-yellow/10 border border-accent-yellow/20 rounded-full text-xs text-accent-yellow font-medium mx-auto">
-              <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+          <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-none p-8 md:p-12 text-center space-y-6 text-[#1A1A1A]">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#FAFAFA] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] rounded-none text-[10px] md:text-xs text-[#1A1A1A] font-mono font-extrabold uppercase tracking-widest mx-auto">
+              <Sparkles className="w-3.5 h-3.5" />
               <span>Pasaporte de Empleabilidad Activo</span>
             </div>
 
-            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-display max-w-4xl mx-auto">
+            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-[#1A1A1A] leading-tight font-display max-w-4xl mx-auto">
               Tu pasaporte al empleo del futuro.
             </h1>
 
-            <p className="text-sm md:text-base text-text-dim max-w-2xl mx-auto leading-relaxed">
+            <p className="text-sm md:text-base font-bold text-[#1A1A1A]/80 max-w-2xl mx-auto leading-relaxed">
               Arma una ruta de 3, 5 o 7 cursos de las mejores universidades del país, adaptada a tu perfil, tu presupuesto y tus metas.
             </p>
 
@@ -489,24 +487,24 @@ export default function MarketingView({
                   setOnboardingRole("student");
                   setOnboardingStep(2);
                 }}
-                className="bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]"
+                className="bg-[#1A1A1A] text-[#FFD000] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#FAFAFA] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#FAFAFA]"
               >
                 <span>Iniciar Diagnóstico Gratuito</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-6 pt-4 text-xs font-mono text-text-dim">
+            <div className="flex flex-wrap items-center justify-center gap-6 pt-4 text-xs font-mono font-bold uppercase text-[#1A1A1A]">
               <div className="flex items-center gap-1.5">
-                <CheckCircle className="w-4 h-4 text-accent-emerald" />
+                <CheckCircle className="w-4 h-4 text-[#1A1A1A]" />
                 <span>100% Sincrónico & Modular</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <CheckCircle className="w-4 h-4 text-accent-emerald" />
+                <CheckCircle className="w-4 h-4 text-[#1A1A1A]" />
                 <span>Validado por Universidades</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <CheckCircle className="w-4 h-4 text-accent-emerald" />
+                <CheckCircle className="w-4 h-4 text-[#1A1A1A]" />
                 <span>Créditos Transferibles</span>
               </div>
             </div>
@@ -515,8 +513,8 @@ export default function MarketingView({
           {/* SECCIÓN INTERACTIVA "EL CONCEPTO CAMPUS PASS" */}
           <div className="space-y-6">
             <div className="text-center space-y-1.5">
-              <h3 className="text-xl md:text-2xl font-bold text-white font-display">El Concepto Campus Pass</h3>
-              <p className="text-xs text-text-dim max-w-md mx-auto leading-relaxed">
+              <h3 className="text-xl md:text-2xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">El Concepto Campus Pass</h3>
+              <p className="text-xs font-bold text-zinc-700 max-w-md mx-auto leading-relaxed">
                 Cómo se compone tu pasaporte educativo digital sincrónico descentralizado.
               </p>
             </div>
@@ -524,83 +522,83 @@ export default function MarketingView({
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               
               {/* Columna 1 */}
-              <div className="bg-card-bg border border-border-dark rounded-xl p-5 hover:border-accent-yellow/40 transition-all flex flex-col justify-between space-y-4">
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A] flex flex-col justify-between space-y-4">
                 <div>
-                  <div className="w-8 h-8 rounded-lg bg-accent-yellow/10 flex items-center justify-center text-accent-yellow font-bold text-sm mb-1.5">
+                  <div className="w-8 h-8 rounded-none bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] flex items-center justify-center text-[#1A1A1A] font-mono font-extrabold text-sm mb-1.5">
                     01
                   </div>
-                  <h4 className="text-sm font-bold text-white mb-2 leading-snug">Destinos</h4>
-                  <p className="text-xs text-text-dim leading-relaxed text-left">
+                  <h4 className="text-sm font-extrabold font-display text-[#1A1A1A] mb-2 leading-snug">Destinos</h4>
+                  <p className="text-xs font-semibold text-zinc-700 leading-relaxed text-left">
                     Las universidades prestigiosas donde cursas tus asignaturas disgregadas.
                   </p>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-accent-yellow uppercase tracking-wider text-left">Universidades Socias →</span>
+                <span className="text-[10px] font-mono font-bold text-[#6C47FF] uppercase tracking-wider text-left">Universidades Socias →</span>
               </div>
 
               {/* Columna 2 */}
-              <div className="bg-card-bg border border-border-dark rounded-xl p-5 hover:border-accent-yellow/40 transition-all flex flex-col justify-between space-y-4">
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A] flex flex-col justify-between space-y-4">
                 <div>
-                  <div className="w-8 h-8 rounded-lg bg-accent-yellow/10 flex items-center justify-center text-accent-yellow font-bold text-sm mb-1.5">
+                  <div className="w-8 h-8 rounded-none bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] flex items-center justify-center text-[#1A1A1A] font-mono font-extrabold text-sm mb-1.5">
                     02
                   </div>
-                  <h4 className="text-sm font-bold text-white mb-2 leading-snug">Sellos</h4>
-                  <p className="text-xs text-text-dim leading-relaxed text-left">
+                  <h4 className="text-sm font-extrabold font-display text-[#1A1A1A] mb-2 leading-snug">Sellos</h4>
+                  <p className="text-xs font-semibold text-zinc-700 leading-relaxed text-left">
                     Tus cursos aprobados estampados digitalmente en tiempo real.
                   </p>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-accent-yellow uppercase tracking-wider text-left">Validación Segura →</span>
+                <span className="text-[10px] font-mono font-bold text-[#6C47FF] uppercase tracking-wider text-left">Validación Segura →</span>
               </div>
 
               {/* Columna 3 */}
-              <div className="bg-card-bg border border-border-dark rounded-xl p-5 hover:border-accent-yellow/40 transition-all flex flex-col justify-between space-y-4">
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A] flex flex-col justify-between space-y-4">
                 <div>
-                  <div className="w-8 h-8 rounded-lg bg-accent-yellow/10 flex items-center justify-center text-accent-yellow font-bold text-sm mb-1.5">
+                  <div className="w-8 h-8 rounded-none bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] flex items-center justify-center text-[#1A1A1A] font-mono font-extrabold text-sm mb-1.5">
                     03
                   </div>
-                  <h4 className="text-sm font-bold text-white mb-2 leading-snug">Insignias</h4>
-                  <p className="text-xs text-text-dim leading-relaxed text-left">
+                  <h4 className="text-sm font-extrabold font-display text-[#1A1A1A] mb-2 leading-snug">Insignias</h4>
+                  <p className="text-xs font-semibold text-zinc-700 leading-relaxed text-left">
                     Las habilidades técnicas que desarrollas y demuestras sobre la marcha.
                   </p>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-accent-yellow uppercase tracking-wider text-left">Skill Mapping →</span>
+                <span className="text-[10px] font-mono font-bold text-[#6C47FF] uppercase tracking-wider text-left">Skill Mapping →</span>
               </div>
 
               {/* Columna 4 */}
-              <div className="bg-card-bg border border-border-dark rounded-xl p-5 hover:border-accent-yellow/40 transition-all flex flex-col justify-between space-y-4">
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A] flex flex-col justify-between space-y-4">
                 <div>
-                  <div className="w-8 h-8 rounded-lg bg-accent-yellow/10 flex items-center justify-center text-accent-yellow font-bold text-sm mb-1.5">
+                  <div className="w-8 h-8 rounded-none bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] flex items-center justify-center text-[#1A1A1A] font-mono font-extrabold text-sm mb-1.5">
                     04
                   </div>
-                  <h4 className="text-sm font-bold text-white mb-2 leading-snug">Salida Laboral</h4>
-                  <p className="text-xs text-text-dim leading-relaxed text-left">
+                  <h4 className="text-sm font-extrabold font-display text-[#1A1A1A] mb-2 leading-snug">Salida Laboral</h4>
+                  <p className="text-xs font-semibold text-zinc-700 leading-relaxed text-left">
                     Los roles profesionales activos que desbloqueas al completar tu ruta.
                   </p>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-accent-yellow uppercase tracking-wider text-left">Empleabilidad Real →</span>
+                <span className="text-[10px] font-mono font-bold text-[#6C47FF] uppercase tracking-wider text-left">Empleabilidad Real →</span>
               </div>
 
             </div>
           </div>
 
           {/* COMPONENTE "BUSCADOR RÁPIDO DE CURSOS MODULARES" */}
-          <div className="bg-[#111116] border border-border-dark rounded-2xl p-6 md:p-8 space-y-6">
+          <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-6 md:p-8 space-y-6">
             <div className="space-y-1 text-left">
-              <h3 className="text-lg font-bold text-white font-display">Buscador Rápido de Cursos Modulares</h3>
-              <p className="text-xs text-text-dim max-w-xl leading-relaxed">
+              <h3 className="text-lg font-extrabold text-[#1A1A1A] font-display tracking-vinku uppercase">Buscador Rápido de Cursos Modulares</h3>
+              <p className="text-xs font-bold text-zinc-700 max-w-xl leading-relaxed">
                 Busca habilidades de asignaturas atomizadas en tiempo real. Utiliza los filtros seleccionables para descubrir rutas universitarias y sus créditos equivalentes de inmediato.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
               {/* Input de Búsqueda */}
-              <div className="md:col-span-2 flex items-center gap-2.5 bg-[#09090c] border border-border-dark rounded-xl px-4 py-3">
-                <Search className="w-5 h-5 text-text-dim shrink-0" />
+              <div className="md:col-span-2 flex items-center gap-2.5 bg-white border-3 border-[#1A1A1A] rounded-none px-4 py-3 shadow-[4px_4px_0px_#1A1A1A]">
+                <Search className="w-5 h-5 text-[#1A1A1A] shrink-0" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="¿Qué habilidad o curso quieres aprender hoy?"
-                  className="bg-transparent text-xs text-white outline-none w-full"
+                  className="bg-transparent text-xs text-[#1A1A1A] font-bold placeholder-zinc-500 outline-none w-full"
                 />
               </div>
 
@@ -611,7 +609,7 @@ export default function MarketingView({
                     setSearchQuery("");
                     setSelectedCategory("Todos");
                   }}
-                  className="text-accent-yellow text-xs font-semibold hover:underline cursor-pointer text-left md:text-right"
+                  className="text-[#6C47FF] text-xs font-mono font-bold uppercase hover:underline cursor-pointer text-left md:text-right"
                 >
                   Limpiar Filtros ×
                 </button>
@@ -630,10 +628,10 @@ export default function MarketingView({
                 <button
                   key={tag.filter}
                   onClick={() => setSelectedCategory(tag.filter)}
-                  className={`text-xs px-4 py-2 rounded-full border transition-all cursor-pointer ${
+                  className={`text-xs px-4 py-2 rounded-none border-2 font-extrabold transition-all cursor-pointer ${
                     selectedCategory === tag.filter
-                      ? "bg-accent-yellow text-black font-bold border-accent-yellow"
-                      : "bg-black/40 text-text-dim border-border-dark hover:text-white hover:border-gray-600"
+                      ? "bg-[#FFD000] text-black border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A]"
+                      : "bg-white text-[#1A1A1A] border-[#1A1A1A] hover:bg-zinc-200"
                   }`}
                 >
                   {tag.label}
@@ -645,20 +643,20 @@ export default function MarketingView({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
               {filteredCourses.length > 0 ? (
                 filteredCourses.slice(0, 6).map(cur => (
-                  <div key={cur.id} className="bg-card-bg/60 border border-border-dark rounded-xl p-5 flex flex-col justify-between h-[230px] hover:border-gray-700 transition-all">
+                  <div key={cur.id} className="bg-white border-3 border-[#1A1A1A] rounded-none p-5 flex flex-col justify-between h-[230px] shadow-[4px_4px_0px_#1A1A1A] transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]">
                     <div>
-                      <div className="flex items-center justify-between text-[9px] font-mono uppercase text-text-dim mb-1">
-                        <span className="text-accent-yellow font-bold">{cur.university}</span>
+                      <div className="flex items-center justify-between text-[9px] font-mono uppercase text-zinc-600 font-extrabold mb-1">
+                        <span className="text-[#6C47FF] font-extrabold">{cur.university}</span>
                         <span>{cur.level}</span>
                       </div>
-                      <h4 className="text-xs font-bold text-white line-clamp-2 leading-snug">{cur.title}</h4>
-                      <p className="text-[11px] text-text-dim mt-1.5 line-clamp-3 leading-relaxed">{cur.description}</p>
+                      <h4 className="text-xs font-extrabold text-[#1A1A1A] line-clamp-2 leading-snug font-display uppercase tracking-tight">{cur.title}</h4>
+                      <p className="text-[11px] text-zinc-700 font-semibold mt-1.5 line-clamp-3 leading-relaxed">{cur.description}</p>
                     </div>
 
-                    <div className="border-t border-border-dark/40 pt-3 mt-3 flex items-center justify-between">
+                    <div className="border-t-2 border-[#1A1A1A] pt-3 mt-3 flex items-center justify-between">
                       <div>
-                        <div className="text-[8px] uppercase font-mono text-text-dim">Monto Créditos</div>
-                        <span className="text-xs font-mono font-bold text-white">${cur.cost.toLocaleString("es-CO")} COP</span>
+                        <div className="text-[8px] uppercase font-mono text-zinc-600 font-extrabold">Monto Créditos</div>
+                        <span className="text-xs font-mono font-black text-[#1A1A1A]">${cur.cost.toLocaleString("es-CO")} COP</span>
                       </div>
 
                       <button
@@ -668,17 +666,17 @@ export default function MarketingView({
                           setMarketingTab("auth");
                           setAuthMode("register");
                         }}
-                        className="bg-black hover:bg-neutral-800 border border-border-dark text-white hover:border-accent-yellow text-[10px] py-1.5 px-3 rounded-lg transition-all cursor-pointer flex items-center gap-1"
+                        className="bg-[#FFD000] hover:bg-yellow-400 border-2 border-[#1A1A1A] text-black text-[10px] font-bold py-1.5 px-3 rounded-none shadow-[2px_2px_0px_#1A1A1A] transition-all cursor-pointer flex items-center gap-1"
                       >
                         <span>Inscribirse</span>
-                        <ArrowUpRight className="w-3 h-3 text-accent-yellow" />
+                        <ArrowUpRight className="w-3 h-3" />
                       </button>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="col-span-full py-8 text-center bg-black/20 border border-dashed border-border-dark rounded-xl">
-                  <p className="text-xs text-text-dim font-mono">No se encontraron cursos de '{searchQuery}' para la categoría seleccionada.</p>
+                <div className="col-span-full py-8 text-center bg-white border-2 border-dashed border-[#1A1A1A] rounded-none">
+                  <p className="text-xs text-zinc-600 font-mono font-bold">No se encontraron cursos de '{searchQuery}' para la categoría seleccionada.</p>
                 </div>
               )}
             </div>
@@ -690,11 +688,9 @@ export default function MarketingView({
         <div id="mkt_b2b_section" className="space-y-16 animate-fade-in">
           
           {/* HERO B2B (Propuesta de Valor de Neoeducación) */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-[#121217] to-black rounded-3xl border border-border-dark p-8 md:p-12 text-center space-y-6">
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-accent-yellow/5 rounded-full blur-3xl pointer-events-none" />
-            
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-accent-yellow/10 border border-accent-yellow/20 rounded-full text-xs text-accent-yellow font-medium mx-auto">
-              <Building className="w-3.5 h-3.5 animate-pulse" />
+          <div className="bg-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#FFD000] rounded-none p-8 md:p-12 text-center space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#6C47FF] rounded-none text-[10px] md:text-xs text-[#1A1A1A] font-mono font-extrabold uppercase tracking-widest mx-auto">
+              <Building className="w-3.5 h-3.5" />
               <span>Neoeducación Corporativa B2B</span>
             </div>
 
@@ -702,7 +698,7 @@ export default function MarketingView({
               El talento de tu equipo, potenciado con formación universitaria real.
             </h1>
 
-            <p className="text-sm md:text-base text-text-dim max-w-3xl mx-auto leading-relaxed">
+            <p className="text-sm md:text-base font-bold text-zinc-300 max-w-3xl mx-auto leading-relaxed">
               Diagnostica brechas de habilidades, asigna presupuestos en COP y mide el progreso de cada colaborador desde una sola consola.
             </p>
 
@@ -715,7 +711,7 @@ export default function MarketingView({
                   setOnboardingRole("corporate");
                   setOnboardingStep(2);
                 }}
-                className="bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]"
+                className="bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#FAFAFA] text-xs md:text-sm font-extrabold py-4 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#FAFAFA]"
               >
                 <span>Crear Cuenta Corporativa / Agendar Demo</span>
                 <ArrowRight className="w-4 h-4" />
@@ -726,8 +722,8 @@ export default function MarketingView({
           {/* SECCIÓN DE INDICADORES DE VALOR (Métricas de Impacto y ROI) */}
           <div className="space-y-8">
             <div className="text-center space-y-2">
-              <h3 className="text-xl md:text-2xl font-bold text-white font-display">Métricas de Impacto & Beneficios Corporativos</h3>
-              <p className="text-xs text-text-dim max-w-md mx-auto leading-relaxed">
+              <h3 className="text-xl md:text-2xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Métricas de Impacto & Beneficios Corporativos</h3>
+              <p className="text-xs font-bold text-zinc-700 max-w-md mx-auto leading-relaxed">
                 Cómo transformamos la capacitación tradicional en una ventaja competitiva medible.
               </p>
             </div>
@@ -735,34 +731,34 @@ export default function MarketingView({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               
               {/* Bloque 1 */}
-              <div className="bg-card-bg border border-border-dark rounded-2xl p-6 space-y-3 hover:border-accent-yellow/30 transition-all">
-                <div className="w-10 h-10 rounded-xl bg-accent-yellow/10 flex items-center justify-center text-accent-yellow">
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-6 space-y-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]">
+                <div className="w-10 h-10 rounded-none bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] flex items-center justify-center text-[#1A1A1A]">
                   <Wallet className="w-5 h-5" />
                 </div>
-                <h4 className="text-sm font-bold text-white">Billetera Corporativa Centralizada</h4>
-                <p className="text-xs text-text-dim leading-relaxed">
+                <h4 className="text-sm font-extrabold font-display text-[#1A1A1A]">Billetera Corporativa Centralizada</h4>
+                <p className="text-xs font-semibold text-zinc-700 leading-relaxed">
                   Fondea la cuenta de tu empresa una sola vez y distribuye créditos de manera personalizada para que tus empleados elijan cursos en el marketplace de forma autónoma.
                 </p>
               </div>
 
               {/* Bloque 2 */}
-              <div className="bg-card-bg border border-border-dark rounded-2xl p-6 space-y-3 hover:border-accent-yellow/30 transition-all">
-                <div className="w-10 h-10 rounded-xl bg-accent-yellow/10 flex items-center justify-center text-accent-yellow">
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-6 space-y-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]">
+                <div className="w-10 h-10 rounded-none bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] flex items-center justify-center text-[#1A1A1A]">
                   <Target className="w-5 h-5" />
                 </div>
-                <h4 className="text-sm font-bold text-white">Consola de Diagnóstico Masivo</h4>
-                <p className="text-xs text-text-dim leading-relaxed">
+                <h4 className="text-sm font-extrabold font-display text-[#1A1A1A]">Consola de Diagnóstico Masivo</h4>
+                <p className="text-xs font-semibold text-zinc-700 leading-relaxed">
                   Envía evaluaciones automáticas a cientos de colaboradores en minutos. Olvídate de armar planes manuales; el sistema calcula sus rutas óptimas por ti.
                 </p>
               </div>
 
               {/* Bloque 3 */}
-              <div className="bg-card-bg border border-border-dark rounded-2xl p-6 space-y-3 hover:border-accent-yellow/30 transition-all">
-                <div className="w-10 h-10 rounded-xl bg-accent-yellow/10 flex items-center justify-center text-accent-yellow">
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-6 space-y-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]">
+                <div className="w-10 h-10 rounded-none bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] flex items-center justify-center text-[#1A1A1A]">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
-                <h4 className="text-sm font-bold text-white">Auditoría de Pasaportes en Tiempo Real</h4>
-                <p className="text-xs text-text-dim leading-relaxed">
+                <h4 className="text-sm font-extrabold font-display text-[#1A1A1A]">Auditoría de Pasaportes en Tiempo Real</h4>
+                <p className="text-xs font-semibold text-zinc-700 leading-relaxed">
                   Monitorea las insignias de habilidades y sellos académicos que tus empleados van desbloqueando sin necesidad de solicitar diplomas físicos.
                 </p>
               </div>
@@ -770,20 +766,20 @@ export default function MarketingView({
             </div>
 
             {/* ESTIMADOR ROI COMPONENT */}
-            <div className="bg-[#121216] border border-border-dark p-6 md:p-8 rounded-2xl relative">
-              <div className="absolute top-0 right-0 p-3 text-[10px] font-mono text-accent-yellow">
+            <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#6C47FF] p-6 md:p-8 rounded-none relative">
+              <div className="absolute top-0 right-0 p-3 text-[10px] font-mono font-bold uppercase text-[#6C47FF]">
                 ESTIMADOR ROI DE APRENDIZAJE CAMPUS PASS
               </div>
 
-              <h4 className="text-base font-bold text-white font-display mb-4">Calcula el Retorno de tu Inversión</h4>
+              <h4 className="text-base font-extrabold text-[#1A1A1A] font-display tracking-vinku mb-4">Calcula el Retorno de tu Inversión</h4>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center font-sans">
                 
                 {/* Inputs */}
                 <div className="space-y-4">
                   <div>
-                    <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-2">
-                      Número de Colaboradores: <strong className="text-white text-xs">{numEmployees} empleados</strong>
+                    <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-2">
+                      Número de Colaboradores: <strong className="text-[#1A1A1A] text-xs">{numEmployees} empleados</strong>
                     </label>
                     <input
                       type="range"
@@ -791,9 +787,9 @@ export default function MarketingView({
                       max="200"
                       value={numEmployees}
                       onChange={(e) => setNumEmployees(parseInt(e.target.value))}
-                      className="w-full accent-accent-yellow bg-neutral-800 rounded-lg appearance-none h-1.5 cursor-pointer"
+                      className="w-full accent-[#6C47FF] bg-zinc-300 border border-[#1A1A1A] rounded-none appearance-none h-1.5 cursor-pointer"
                     />
-                    <div className="flex justify-between text-[10px] font-mono text-text-dim mt-1">
+                    <div className="flex justify-between text-[10px] font-mono font-bold text-zinc-600 mt-1">
                       <span>5</span>
                       <span>100</span>
                       <span>200</span>
@@ -801,8 +797,8 @@ export default function MarketingView({
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-2">
-                      Costo Estimado de Matrícula (COP): <strong className="text-white text-xs">${avgCourseCost.toLocaleString("es-CO")} COP por curso</strong>
+                    <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-2">
+                      Costo Estimado de Matrícula (COP): <strong className="text-[#1A1A1A] text-xs">${avgCourseCost.toLocaleString("es-CO")} COP por curso</strong>
                     </label>
                     <input
                       type="range"
@@ -811,9 +807,9 @@ export default function MarketingView({
                       step="50000"
                       value={avgCourseCost}
                       onChange={(e) => setAvgCourseCost(parseInt(e.target.value))}
-                      className="w-full accent-accent-yellow bg-neutral-800 rounded-lg appearance-none h-1.5 cursor-pointer"
+                      className="w-full accent-[#6C47FF] bg-zinc-300 border border-[#1A1A1A] rounded-none appearance-none h-1.5 cursor-pointer"
                     />
-                    <div className="flex justify-between text-[10px] font-mono text-text-dim mt-1">
+                    <div className="flex justify-between text-[10px] font-mono font-bold text-zinc-600 mt-1">
                       <span>${(200000).toLocaleString("es-CO")} COP</span>
                       <span>${(850000).toLocaleString("es-CO")} COP</span>
                       <span>${(1500000).toLocaleString("es-CO")} COP</span>
@@ -822,23 +818,23 @@ export default function MarketingView({
                 </div>
 
                 {/* Metrics Outputs */}
-                <div className="grid grid-cols-2 gap-4 bg-black/40 p-5 rounded-xl border border-border-dark">
+                <div className="grid grid-cols-2 gap-4 bg-white p-5 rounded-none border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A]">
                   <div>
-                    <div className="text-[9px] font-mono text-text-dim uppercase">Costo Campus Pass</div>
-                    <div className="text-lg font-bold text-white font-mono mt-1">${vinkuCost.toLocaleString("es-CO")} COP</div>
-                    <span className="text-[9px] text-text-dim block mt-1">Suscripción modular ágil</span>
+                    <div className="text-[9px] font-mono font-bold text-zinc-600 uppercase">Costo Campus Pass</div>
+                    <div className="text-lg font-black text-[#1A1A1A] font-mono mt-1">${vinkuCost.toLocaleString("es-CO")} COP</div>
+                    <span className="text-[9px] font-bold text-zinc-600 block mt-1">Suscripción modular ágil</span>
                   </div>
 
                   <div>
-                    <div className="text-[9px] font-mono text-text-dim uppercase">Ahorro vs Tradicional</div>
-                    <div className="text-lg font-bold text-accent-emerald font-mono mt-1">${savings.toLocaleString("es-CO")} COP</div>
-                    <span className="text-[9px] text-accent-emerald block mt-1">ROI del {Math.round((savings / vinkuCost) * 100)}%</span>
+                    <div className="text-[9px] font-mono font-bold text-zinc-600 uppercase">Ahorro vs Tradicional</div>
+                    <div className="text-lg font-black text-emerald-600 font-mono mt-1">${savings.toLocaleString("es-CO")} COP</div>
+                    <span className="text-[9px] font-bold text-emerald-600 block mt-1">ROI del {Math.round((savings / vinkuCost) * 100)}%</span>
                   </div>
 
-                  <div className="border-t border-border-dark/60 pt-3 mt-1 col-span-2">
-                    <div className="text-[9px] font-mono text-text-dim uppercase">Horas de Productividad Recuperadas</div>
-                    <div className="text-xl font-bold text-accent-yellow font-mono mt-1">{productivityGain} Horas</div>
-                    <span className="text-[9px] text-text-dim block mt-0.5">Calculadas por retención modular activa</span>
+                  <div className="border-t-2 border-[#1A1A1A] pt-3 mt-1 col-span-2">
+                    <div className="text-[9px] font-mono font-bold text-zinc-600 uppercase">Horas de Productividad Recuperadas</div>
+                    <div className="text-xl font-black text-[#6C47FF] font-mono mt-1">{productivityGain} Horas</div>
+                    <span className="text-[9px] font-bold text-zinc-600 block mt-0.5">Calculadas por retención modular activa</span>
                   </div>
                 </div>
 
@@ -847,34 +843,34 @@ export default function MarketingView({
           </div>
 
           {/* SECCCIÓN CONEXIÓN CON EL BACKEND - FORMULARIO DE CONTACTO B2B INTEGRADO */}
-          <div className="max-w-xl mx-auto bg-card-bg border border-border-dark rounded-3xl p-6 md:p-8 space-y-6 relative">
+          <div className="max-w-xl mx-auto bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#FFD000] rounded-none p-6 md:p-8 space-y-6 relative">
             <div className="space-y-1 text-center">
-              <span className="text-xs font-mono font-bold text-accent-yellow uppercase tracking-widest bg-accent-yellow/10 px-3 py-1 rounded-full">
+              <span className="text-xs font-mono font-bold text-[#1A1A1A] uppercase tracking-widest bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] px-3 py-1 rounded-none inline-block">
                 Solicitud de Convenio
               </span>
-              <h3 className="text-xl font-bold text-white font-display pt-2">Solicitar Información de Convenio</h3>
-              <p className="text-xs text-text-dim">Mándanos tus datos corporativos. Los prospectos se registran directamente en la base de datos temporal.</p>
+              <h3 className="text-xl font-extrabold text-[#1A1A1A] font-display tracking-vinku pt-2">Solicitar Información de Convenio</h3>
+              <p className="text-xs font-bold text-zinc-700">Mándanos tus datos corporativos. Los prospectos se registran directamente en la base de datos temporal.</p>
             </div>
 
             {b2bSuccess ? (
-              <div className="bg-accent-emerald/10 border border-accent-emerald/40 rounded-2xl p-6 text-center space-y-4 animate-fade-in">
-                <div className="w-12 h-12 rounded-full bg-accent-emerald/10 border border-accent-emerald/30 flex items-center justify-center mx-auto text-accent-emerald">
+              <div className="bg-white border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-6 text-center space-y-4 animate-fade-in">
+                <div className="w-12 h-12 rounded-none bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] flex items-center justify-center mx-auto text-[#1A1A1A]">
                   <Check className="w-6 h-6" />
                 </div>
-                <h4 className="text-sm font-bold text-white">¡Prospecto Ingresado Satisfactoriamente!</h4>
-                <p className="text-xs text-text-dim max-w-sm mx-auto leading-relaxed">
-                  Los detalles de la empresa <strong className="text-white">"{b2bSubmittedLead?.companyName}"</strong> se guardaron exitosamente en 'Prospectos_Empresas' del servidor.
+                <h4 className="text-sm font-extrabold font-display text-[#1A1A1A]">¡Prospecto Ingresado Satisfactoriamente!</h4>
+                <p className="text-xs font-bold text-zinc-700 max-w-sm mx-auto leading-relaxed">
+                  Los detalles de la empresa <strong className="text-[#1A1A1A]">"{b2bSubmittedLead?.companyName}"</strong> se guardaron exitosamente en 'Prospectos_Empresas' del servidor.
                 </p>
-                <div className="p-3 bg-black/45 rounded-xl border border-border-dark text-[10px] text-left font-mono space-y-1 max-w-xs mx-auto">
-                  <div><span className="text-text-dim">Empresa:</span> {b2bSubmittedLead?.companyName}</div>
-                  <div><span className="text-text-dim">Email:</span> {b2bSubmittedLead?.workEmail}</div>
-                  <div><span className="text-text-dim">Colaboradores:</span> {b2bSubmittedLead?.employeeCount}</div>
-                  <div><span className="text-text-dim">Timestamp:</span> {new Date(b2bSubmittedLead?.createdAt).toLocaleString()}</div>
+                <div className="p-3 bg-[#FAFAFA] rounded-none border-2 border-[#1A1A1A] text-[10px] text-left font-mono font-bold text-[#1A1A1A] space-y-1 max-w-xs mx-auto">
+                  <div><span className="text-zinc-600">Empresa:</span> {b2bSubmittedLead?.companyName}</div>
+                  <div><span className="text-zinc-600">Email:</span> {b2bSubmittedLead?.workEmail}</div>
+                  <div><span className="text-zinc-600">Colaboradores:</span> {b2bSubmittedLead?.employeeCount}</div>
+                  <div><span className="text-zinc-600">Timestamp:</span> {new Date(b2bSubmittedLead?.createdAt).toLocaleString()}</div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setB2bSuccess(false)}
-                  className="text-accent-yellow text-xs font-semibold hover:underline cursor-pointer"
+                  className="text-[#6C47FF] text-xs font-mono font-bold uppercase hover:underline cursor-pointer"
                 >
                   Registrar otra empresa
                 </button>
@@ -882,35 +878,35 @@ export default function MarketingView({
             ) : (
               <form onSubmit={handleB2bLeadSubmit} className="space-y-4 text-xs font-sans">
                 <div>
-                  <label className="text-[10px] font-mono text-text-dim uppercase tracking-widest block mb-1.5">Nombre de la Empresa o Razón Social</label>
+                  <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-widest block mb-1.5">Nombre de la Empresa o Razón Social</label>
                   <input
                     type="text"
                     required
                     value={b2bCompanyName}
                     onChange={(e) => setB2bCompanyName(e.target.value)}
                     placeholder="ej. Acme Corp Latam"
-                    className="w-full bg-[#0a0a0d] border border-border-dark rounded-xl p-3 text-white outline-none focus:border-accent-yellow"
+                    className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-mono text-text-dim uppercase tracking-widest block mb-1.5">Correo Corporativo de Contacto</label>
+                  <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-widest block mb-1.5">Correo Corporativo de Contacto</label>
                   <input
                     type="email"
                     required
                     value={b2bEmail}
                     onChange={(e) => setB2bEmail(e.target.value)}
                     placeholder="ej. rrhh@acmecorp.com"
-                    className="w-full bg-[#0a0a0d] border border-border-dark rounded-xl p-3 text-white outline-none focus:border-accent-yellow"
+                    className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-mono text-text-dim uppercase tracking-widest block mb-1.5">Número aproximado de Colaboradores</label>
+                  <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-widest block mb-1.5">Número aproximado de Colaboradores</label>
                   <select
                     value={b2bEmployees}
                     onChange={(e) => setB2bEmployees(e.target.value)}
-                    className="w-full bg-[#0a0a0d] border border-border-dark rounded-xl p-3 text-white outline-none focus:border-accent-yellow"
+                    className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                   >
                     <option value="1-20">1 a 20 colaboradores</option>
                     <option value="21-100">21 a 100 colaboradores</option>
@@ -922,7 +918,7 @@ export default function MarketingView({
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full bg-accent-yellow hover:bg-yellow-400 text-black font-extrabold p-3.5 rounded-xl text-xs uppercase tracking-widest transition-all cursor-pointer font-sans shadow-lg shadow-yellow-500/10"
+                    className="w-full bg-[#FFD000] hover:bg-yellow-400 text-black border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] font-extrabold p-3.5 rounded-none text-xs uppercase tracking-widest transition-all cursor-pointer font-sans hover:-translate-y-1 hover:shadow-[6px_6px_0px_#1A1A1A]"
                   >
                     Solicitar Información de Convenio
                   </button>
@@ -941,11 +937,9 @@ export default function MarketingView({
         <div id="mkt_uni_section" className="space-y-16 animate-fade-in">
           
           {/* SECCIÓN HERO INSTITUCIONAL (University) */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-[#121217] to-black rounded-3xl border border-border-dark p-8 md:p-12 text-center space-y-6">
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-accent-yellow/5 rounded-full blur-3xl pointer-events-none" />
-            
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-accent-yellow/10 border border-accent-yellow/20 rounded-full text-xs text-accent-yellow font-medium mx-auto">
-              <GraduationCap className="w-3.5 h-3.5 animate-pulse" />
+          <div className="bg-[#6C47FF] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-none p-8 md:p-12 text-center space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] rounded-none text-[10px] md:text-xs text-[#1A1A1A] font-mono font-extrabold uppercase tracking-widest mx-auto">
+              <GraduationCap className="w-3.5 h-3.5" />
               <span>Plataforma para Universidades Socias</span>
             </div>
 
@@ -953,7 +947,7 @@ export default function MarketingView({
               Tu catálogo académico, nuevas fuentes de ingreso.
             </h1>
 
-            <p className="text-sm md:text-base text-text-dim max-w-3xl mx-auto leading-relaxed">
+            <p className="text-sm md:text-base font-bold text-indigo-100 max-w-3xl mx-auto leading-relaxed">
               Desagrega tus programas en cursos individuales, llega a miles de estudiantes y empresas, y recibe ingresos por cada matrícula. Sin cambiar tu operación académica.
             </p>
 
@@ -977,8 +971,8 @@ export default function MarketingView({
           {/* SECCIÓN "PILARES DE LA NEOEDUCACIÓN ASOCIADA" */}
           <div className="space-y-8">
             <div className="text-center space-y-2">
-              <h3 className="text-xl md:text-2xl font-bold text-white font-display">Pilares de la Neoeducación Asociada</h3>
-              <p className="text-xs text-text-dim max-w-md mx-auto leading-relaxed">
+              <h3 className="text-xl md:text-2xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Pilares de la Neoeducación Asociada</h3>
+              <p className="text-xs font-bold text-zinc-700 max-w-md mx-auto leading-relaxed">
                 Cómo la distribución del catálogo modular impulsa tus ingresos institucionales.
               </p>
             </div>
@@ -986,34 +980,34 @@ export default function MarketingView({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               
               {/* Pilar 1 */}
-              <div className="bg-card-bg border border-border-dark rounded-2xl p-6 space-y-3 hover:border-accent-yellow/30 transition-all">
-                <div className="w-10 h-10 rounded-xl bg-accent-yellow/10 flex items-center justify-center text-accent-yellow">
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-6 space-y-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]">
+                <div className="w-10 h-10 rounded-none bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] flex items-center justify-center text-[#1A1A1A]">
                   <BookOpen className="w-5 h-5" />
                 </div>
-                <h4 className="text-sm font-bold text-white">Distribución Modular</h4>
-                <p className="text-xs text-text-dim leading-relaxed">
+                <h4 className="text-sm font-extrabold font-display text-[#1A1A1A]">Distribución Modular</h4>
+                <p className="text-xs font-semibold text-zinc-700 leading-relaxed">
                   Permite que los estudiantes cursen materias específicas y asignaturas individuales de tus carreras existentes sin los procesos burocráticos de una matrícula completa de 5 años.
                 </p>
               </div>
 
               {/* Pilar 2 */}
-              <div className="bg-card-bg border border-border-dark rounded-2xl p-6 space-y-3 hover:border-accent-yellow/30 transition-all">
-                <div className="w-10 h-10 rounded-xl bg-accent-yellow/10 flex items-center justify-center text-accent-yellow">
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-6 space-y-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]">
+                <div className="w-10 h-10 rounded-none bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] flex items-center justify-center text-[#1A1A1A]">
                   <DollarSign className="w-5 h-5" />
                 </div>
-                <h4 className="text-sm font-bold text-white">Ingresos Predecibles en Créditos</h4>
-                <p className="text-xs text-text-dim leading-relaxed">
+                <h4 className="text-sm font-extrabold font-display text-[#1A1A1A]">Ingresos Predecibles en Créditos</h4>
+                <p className="text-xs font-semibold text-zinc-700 leading-relaxed">
                   Recibe transferencias directas a tu balance institucional cada vez que un profesional o colaborador corporativo redima créditos educativos en tus asignaturas.
                 </p>
               </div>
 
               {/* Pilar 3 */}
-              <div className="bg-card-bg border border-border-dark rounded-2xl p-6 space-y-3 hover:border-accent-yellow/30 transition-all">
-                <div className="w-10 h-10 rounded-xl bg-accent-yellow/10 flex items-center justify-center text-accent-yellow">
+              <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none p-6 space-y-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]">
+                <div className="w-10 h-10 rounded-none bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[2px_2px_0px_#1A1A1A] flex items-center justify-center text-[#1A1A1A]">
                   <Award className="w-5 h-5" />
                 </div>
-                <h4 className="text-sm font-bold text-white">Emisión de Certificados Sin Fricción</h4>
-                <p className="text-xs text-text-dim leading-relaxed">
+                <h4 className="text-sm font-extrabold font-display text-[#1A1A1A]">Emisión de Certificados Sin Fricción</h4>
+                <p className="text-xs font-semibold text-zinc-700 leading-relaxed">
                   Nuestra consola te permite cargar las constancias de aprobación en PDF. El sistema se encarga de estampar de forma automática el sello en el pasaporte digital del alumno.
                 </p>
               </div>
@@ -1022,34 +1016,34 @@ export default function MarketingView({
           </div>
 
           {/* SECCIÓN DE CREDIBILIDAD Y SEGURIDAD */}
-          <div className="border border-border-dark/80 bg-black/40 p-6 md:p-8 rounded-2xl flex flex-col md:flex-row items-center gap-6 justify-between max-w-4xl mx-auto">
+          <div className="border-4 border-[#1A1A1A] bg-[#FAFAFA] shadow-[4px_4px_0px_#6C47FF] p-6 md:p-8 rounded-none flex flex-col md:flex-row items-center gap-6 justify-between max-w-4xl mx-auto">
             <div className="space-y-2 max-w-md">
-              <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-accent-yellow shrink-0" />
+              <h4 className="text-sm font-extrabold font-display text-[#1A1A1A] flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-[#6C47FF] shrink-0" />
                 <span>Filtro de Calidad Campus Pass</span>
               </h4>
-              <p className="text-xs text-text-dim leading-relaxed">
+              <p className="text-xs font-semibold text-zinc-700 leading-relaxed">
                 Todas las instituciones académicas asociadas pasan por una rigurosa auditoría de registro legal y fiscal por el SuperAdmin para garantizar la excelencia del marketplace de upskilling.
               </p>
-              <p className="text-[10px] text-accent-yellow font-mono mt-1">
+              <p className="text-[10px] text-[#6C47FF] font-mono font-bold mt-1">
                 * El proceso de onboarding valida de manera estricta los dominios de correo .edu y requiere documentación KYB.
               </p>
             </div>
 
-            <div className="bg-card-bg border border-border-dark p-5 rounded-xl space-y-3 w-full md:w-80 shrink-0">
-              <h5 className="text-[9px] font-mono font-bold text-text-dim uppercase tracking-wider">Universidades Conectadas (Balance)</h5>
+            <div className="bg-white border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] p-5 rounded-none space-y-3 w-full md:w-80 shrink-0">
+              <h5 className="text-[9px] font-mono font-bold text-zinc-600 uppercase tracking-wider">Universidades Conectadas (Balance)</h5>
               <div className="space-y-2 text-[11px] font-mono">
-                <div className="p-2 bg-[#09090c] rounded border border-border-dark flex justify-between items-center">
-                  <span className="text-white">U. Andina del Futuro</span>
-                  <span className="text-accent-emerald font-semibold">${(3200000).toLocaleString("es-CO")} COP</span>
+                <div className="p-2 bg-[#FAFAFA] rounded-none border-2 border-[#1A1A1A] flex justify-between items-center">
+                  <span className="text-[#1A1A1A] font-bold">U. Andina del Futuro</span>
+                  <span className="text-emerald-600 font-bold">${(3200000).toLocaleString("es-CO")} COP</span>
                 </div>
-                <div className="p-2 bg-[#09090c] rounded border border-border-dark flex justify-between items-center">
-                  <span className="text-white">Instituto Colombo Digital</span>
-                  <span className="text-accent-emerald font-semibold">${(1850000).toLocaleString("es-CO")} COP</span>
+                <div className="p-2 bg-[#FAFAFA] rounded-none border-2 border-[#1A1A1A] flex justify-between items-center">
+                  <span className="text-[#1A1A1A] font-bold">Instituto Colombo Digital</span>
+                  <span className="text-emerald-600 font-bold">${(1850000).toLocaleString("es-CO")} COP</span>
                 </div>
-                <div className="p-2 bg-[#09090c] rounded border border-border-dark flex justify-between items-center">
-                  <span className="text-white">Politécnico Innovación Sur</span>
-                  <span className="text-accent-emerald font-semibold">${(2100000).toLocaleString("es-CO")} COP</span>
+                <div className="p-2 bg-[#FAFAFA] rounded-none border-2 border-[#1A1A1A] flex justify-between items-center">
+                  <span className="text-[#1A1A1A] font-bold">Politécnico Innovación Sur</span>
+                  <span className="text-emerald-600 font-bold">${(2100000).toLocaleString("es-CO")} COP</span>
                 </div>
               </div>
             </div>
@@ -1062,57 +1056,57 @@ export default function MarketingView({
       {/* 5. MARKETING STATION E: AUTHENTICATION + MULTIROLE ONBOARDI */}
       {/* ========================================================== */}
       {marketingTab === "auth" && (
-        <div id="mkt_auth_section" className="max-w-md mx-auto bg-card-bg border border-border-dark rounded-3xl p-6 md:p-8 space-y-6 animate-fade-in relative z-10">
+        <div id="mkt_auth_section" className="max-w-md mx-auto bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] rounded-none p-6 md:p-8 space-y-6 animate-fade-in relative z-10">
 
-          <button onClick={() => setMarketingTab("home")} className="text-xs text-text-dim hover:text-white font-mono cursor-pointer flex items-center gap-1">
+          <button onClick={() => setMarketingTab("home")} className="text-xs text-zinc-600 hover:text-[#1A1A1A] font-mono font-bold cursor-pointer flex items-center gap-1">
             <span>← Volver al inicio</span>
           </button>
 
           <div className="text-center space-y-1">
             {authMode === "login" ? (
               <>
-                <h3 className="text-lg md:text-xl font-bold text-white font-display">Ingresar a Campus Pass</h3>
-                <p className="text-xs text-text-dim">Accede a tu portal con tu correo y contraseña.</p>
+                <h3 className="text-lg md:text-xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Ingresar a Campus Pass</h3>
+                <p className="text-xs font-bold text-zinc-600">Accede a tu portal con tu correo y contraseña.</p>
               </>
             ) : onboardingStep === 2 && onboardingRole === "student" ? (
               <>
-                <h3 className="text-lg md:text-xl font-bold text-white font-display">Crea tu cuenta de Estudiante</h3>
-                <p className="text-xs text-text-dim">Regístrate gratis y activa tu pasaporte educativo.</p>
+                <h3 className="text-lg md:text-xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Crea tu cuenta de Estudiante</h3>
+                <p className="text-xs font-bold text-zinc-600">Regístrate gratis y activa tu pasaporte educativo.</p>
               </>
             ) : onboardingStep === 2 && onboardingRole === "corporate" ? (
               <>
-                <h3 className="text-lg md:text-xl font-bold text-white font-display">Registro de Empresa</h3>
-                <p className="text-xs text-text-dim">Accede a la consola de formación corporativa.</p>
+                <h3 className="text-lg md:text-xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Registro de Empresa</h3>
+                <p className="text-xs font-bold text-zinc-600">Accede a la consola de formación corporativa.</p>
               </>
             ) : onboardingStep === 2 && onboardingRole === "university" ? (
               <>
-                <h3 className="text-lg md:text-xl font-bold text-white font-display">Registro de Universidad</h3>
-                <p className="text-xs text-text-dim">Une tu institución al ecosistema Campus Pass.</p>
+                <h3 className="text-lg md:text-xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Registro de Universidad</h3>
+                <p className="text-xs font-bold text-zinc-600">Une tu institución al ecosistema Campus Pass.</p>
               </>
             ) : (
               <>
-                <h3 className="text-lg md:text-xl font-bold text-white font-display">¿Cómo quieres ingresar?</h3>
-                <p className="text-xs text-text-dim">Selecciona tu perfil para personalizar el registro.</p>
+                <h3 className="text-lg md:text-xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">¿Cómo quieres ingresar?</h3>
+                <p className="text-xs font-bold text-zinc-600">Selecciona tu perfil para personalizar el registro.</p>
               </>
             )}
           </div>
 
           {/* Toggle Login vs Register */}
           {onboardingStep === 1 && (
-            <div className="flex border-b border-border-dark pb-2 text-xs font-bold gap-4 justify-center">
-              <button 
+            <div className="flex border-b-2 border-[#1A1A1A] pb-2 text-xs font-bold gap-4 justify-center">
+              <button
                 onClick={() => setAuthMode("register")}
-                className={`pb-2 relative cursor-pointer ${authMode === "register" ? "text-accent-yellow font-bold" : "text-text-dim hover:text-white"}`}
+                className={`pb-2 relative cursor-pointer ${authMode === "register" ? "text-[#1A1A1A] font-extrabold" : "text-zinc-500 hover:text-[#1A1A1A]"}`}
               >
                 <span>Registro Nuevo</span>
-                {authMode === "register" && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-accent-yellow rounded" />}
+                {authMode === "register" && <span className="absolute bottom-0 left-0 w-full h-1 bg-[#6C47FF] rounded-none" />}
               </button>
-              <button 
+              <button
                 onClick={() => setAuthMode("login")}
-                className={`pb-2 relative cursor-pointer ${authMode === "login" ? "text-accent-yellow font-bold" : "text-text-dim hover:text-white"}`}
+                className={`pb-2 relative cursor-pointer ${authMode === "login" ? "text-[#1A1A1A] font-extrabold" : "text-zinc-500 hover:text-[#1A1A1A]"}`}
               >
                 <span>Iniciar Sesión</span>
-                {authMode === "login" && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-accent-yellow rounded" />}
+                {authMode === "login" && <span className="absolute bottom-0 left-0 w-full h-1 bg-[#6C47FF] rounded-none" />}
               </button>
             </div>
           )}
@@ -1121,29 +1115,29 @@ export default function MarketingView({
           {onboardingStep === 1 && authMode === "login" && (
             <form onSubmit={handleLogin} className="space-y-4 font-sans text-xs">
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Correo Electrónico</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Correo Electrónico</label>
                 <input
                   type="email"
                   required
                   value={formEmail}
                   onChange={(e) => { setFormEmail(e.target.value); setAuthError(null); }}
                   placeholder="ej. diana@empresa.com"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Contraseña</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Contraseña</label>
                 <input
                   type="password"
                   required
                   value={formPassword}
                   onChange={(e) => { setFormPassword(e.target.value); setAuthError(null); }}
                   placeholder="••••••••"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
               {authError && (
-                <div className="flex items-center gap-2 text-red-400 text-xs bg-red-950/30 border border-red-500/30 p-3 rounded-lg">
+                <div className="flex items-center gap-2 text-red-600 text-xs font-bold bg-red-100 border-2 border-red-600 p-3 rounded-none">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{authError}</span>
                 </div>
@@ -1151,7 +1145,7 @@ export default function MarketingView({
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full bg-accent-yellow hover:bg-yellow-400 text-black font-bold p-3 rounded-lg text-xs transition-all cursor-pointer text-center font-sans uppercase tracking-widest flex items-center justify-center gap-2 disabled:opacity-60"
+                className="w-full bg-[#FFD000] hover:bg-yellow-400 text-black border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] font-extrabold p-3 rounded-none text-xs transition-all cursor-pointer text-center font-sans uppercase tracking-widest flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 {authLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                 Ingresar al Sistema
@@ -1163,7 +1157,7 @@ export default function MarketingView({
           {onboardingStep === 1 && authMode === "register" && (
             <div className="space-y-4 font-sans text-xs">
               <div>
-                <label className="text-xs font-semibold text-white block mb-2">1. Selecciona tu rol organizacional:</label>
+                <label className="text-xs font-extrabold text-[#1A1A1A] block mb-2">1. Selecciona tu rol organizacional:</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { id: "student", label: "Estudiante", sub: "Upskilling" },
@@ -1173,10 +1167,10 @@ export default function MarketingView({
                     <button
                       key={role.id}
                       onClick={() => setOnboardingRole(role.id as any)}
-                      className={`p-3 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
-                        onboardingRole === role.id 
-                          ? "bg-accent-yellow/10 border-accent-yellow text-white shadow-md" 
-                          : "bg-black/40 border-border-dark text-text-dim hover:text-white"
+                      className={`p-3 rounded-none border-2 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
+                        onboardingRole === role.id
+                          ? "bg-[#FFD000] border-[#1A1A1A] text-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A]"
+                          : "bg-white border-[#1A1A1A] text-zinc-600 hover:text-[#1A1A1A] hover:bg-zinc-100"
                       }`}
                     >
                       <span className="font-bold text-[11px] leading-tight">{role.label}</span>
@@ -1189,7 +1183,7 @@ export default function MarketingView({
               <div className="pt-2">
                 <button
                   onClick={() => setOnboardingStep(2)}
-                  className="w-full bg-accent-yellow hover:bg-yellow-400 text-black font-bold p-3 rounded-lg text-xs transition-all cursor-pointer text-center uppercase tracking-wider"
+                  className="w-full bg-[#FFD000] hover:bg-yellow-400 text-black border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] font-extrabold p-3 rounded-none text-xs transition-all cursor-pointer text-center uppercase tracking-wider"
                 >
                   Continuar Al Siguiente Paso
                 </button>
@@ -1201,7 +1195,7 @@ export default function MarketingView({
           {onboardingStep === 2 && onboardingRole === "student" && (
             <form onSubmit={handleFinishOnboarding} className="space-y-4 font-sans text-xs">
               {/* Header card */}
-              <div className="border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-xl bg-[#FFD000]/10 p-3 flex items-center justify-between">
+              <div className="border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none bg-[#FFD000] p-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <GraduationCap className="w-5 h-5 text-[#1A1A1A]" />
                   <span className="font-extrabold text-[#1A1A1A] text-[11px] uppercase tracking-wide">Estudiante</span>
@@ -1209,38 +1203,38 @@ export default function MarketingView({
                 <button
                   type="button"
                   onClick={() => setOnboardingStep(1)}
-                  className="text-[10px] text-text-dim hover:text-accent-yellow font-mono cursor-pointer underline"
+                  className="text-[10px] text-[#1A1A1A] hover:text-[#6C47FF] font-mono font-bold cursor-pointer underline"
                 >
                   ← Cambiar rol
                 </button>
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Nombre completo *</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Nombre completo *</label>
                 <input
                   type="text"
                   required
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="ej. Diana Prince"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Correo electrónico *</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Correo electrónico *</label>
                 <input
                   type="email"
                   required
                   value={formEmail}
                   onChange={(e) => setFormEmail(e.target.value)}
                   placeholder="ej. diana@correo.com"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Contraseña * (mín. 6 caracteres)</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Contraseña * (mín. 6 caracteres)</label>
                 <input
                   type="password"
                   required
@@ -1248,16 +1242,16 @@ export default function MarketingView({
                   value={formPassword}
                   onChange={(e) => { setFormPassword(e.target.value); setAuthError(null); }}
                   placeholder="••••••••"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Ciudad</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Ciudad</label>
                 <select
                   value={formCity}
                   onChange={(e) => setFormCity(e.target.value)}
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 >
                   <option value="">Selecciona tu ciudad</option>
                   <option value="Bogotá">Bogotá</option>
@@ -1270,11 +1264,11 @@ export default function MarketingView({
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Área de interés</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Área de interés</label>
                 <select
                   value={formInterest}
                   onChange={(e) => setFormInterest(e.target.value)}
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 >
                   <option value="">Selecciona un área</option>
                   <option value="Tecnología">Tecnología</option>
@@ -1287,7 +1281,7 @@ export default function MarketingView({
               </div>
 
               {authError && (
-                <div className="flex items-center gap-2 text-red-400 text-xs bg-red-950/30 border border-red-500/30 p-3 rounded-lg">
+                <div className="flex items-center gap-2 text-red-600 text-xs font-bold bg-red-100 border-2 border-red-600 p-3 rounded-none">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{authError}</span>
                 </div>
@@ -1296,7 +1290,7 @@ export default function MarketingView({
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] font-extrabold p-3 rounded-xl text-xs transition-all cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-60"
+                className="w-full bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] font-extrabold p-3 rounded-none text-xs transition-all cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 {authLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                 Crear mi cuenta gratis
@@ -1307,7 +1301,7 @@ export default function MarketingView({
           {onboardingStep === 2 && onboardingRole === "corporate" && (
             <form onSubmit={handleFinishOnboarding} className="space-y-4 font-sans text-xs">
               {/* Header card */}
-              <div className="border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-xl bg-[#FFD000]/10 p-3 flex items-center justify-between">
+              <div className="border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none bg-[#FFD000] p-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Building className="w-5 h-5 text-[#1A1A1A]" />
                   <span className="font-extrabold text-[#1A1A1A] text-[11px] uppercase tracking-wide">Empresa</span>
@@ -1315,38 +1309,38 @@ export default function MarketingView({
                 <button
                   type="button"
                   onClick={() => setOnboardingStep(1)}
-                  className="text-[10px] text-text-dim hover:text-accent-yellow font-mono cursor-pointer underline"
+                  className="text-[10px] text-[#1A1A1A] hover:text-[#6C47FF] font-mono font-bold cursor-pointer underline"
                 >
                   ← Cambiar rol
                 </button>
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Nombre del contacto *</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Nombre del contacto *</label>
                 <input
                   type="text"
                   required
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="ej. Carlos Ramírez"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Correo corporativo *</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Correo corporativo *</label>
                 <input
                   type="email"
                   required
                   value={formEmail}
                   onChange={(e) => setFormEmail(e.target.value)}
                   placeholder="ej. carlos@empresa.com"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Contraseña * (mín. 6 caracteres)</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Contraseña * (mín. 6 caracteres)</label>
                 <input
                   type="password"
                   required
@@ -1354,39 +1348,39 @@ export default function MarketingView({
                   value={formPassword}
                   onChange={(e) => { setFormPassword(e.target.value); setAuthError(null); }}
                   placeholder="••••••••"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Nombre de la empresa *</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Nombre de la empresa *</label>
                 <input
                   type="text"
                   required
                   value={formCompanyName}
                   onChange={(e) => setFormCompanyName(e.target.value)}
                   placeholder="ej. Bancolombia S.A."
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">NIT de la empresa</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">NIT de la empresa</label>
                 <input
                   type="text"
                   value={formNit}
                   onChange={(e) => setFormNit(e.target.value)}
                   placeholder="ej. 900.123.456-7"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Ciudad</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Ciudad</label>
                 <select
                   value={formCity}
                   onChange={(e) => setFormCity(e.target.value)}
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 >
                   <option value="">Selecciona ciudad</option>
                   <option value="Bogotá">Bogotá</option>
@@ -1399,11 +1393,11 @@ export default function MarketingView({
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Sector / Industria</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Sector / Industria</label>
                 <select
                   value={formSector}
                   onChange={(e) => setFormSector(e.target.value)}
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 >
                   <option value="">Selecciona sector</option>
                   <option value="Tecnología">Tecnología</option>
@@ -1417,19 +1411,19 @@ export default function MarketingView({
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Número de empleados</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Número de empleados</label>
                 <input
                   type="number"
                   min="1"
                   value={formEmployeeCount}
                   onChange={(e) => setFormEmployeeCount(e.target.value)}
                   placeholder="ej. 150"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               {authError && (
-                <div className="flex items-center gap-2 text-red-400 text-xs bg-red-950/30 border border-red-500/30 p-3 rounded-lg">
+                <div className="flex items-center gap-2 text-red-600 text-xs font-bold bg-red-100 border-2 border-red-600 p-3 rounded-none">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{authError}</span>
                 </div>
@@ -1438,7 +1432,7 @@ export default function MarketingView({
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] font-extrabold p-3 rounded-xl text-xs transition-all cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-60"
+                className="w-full bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] font-extrabold p-3 rounded-none text-xs transition-all cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 {authLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                 Registrar empresa en Campus Pass
@@ -1449,7 +1443,7 @@ export default function MarketingView({
           {onboardingStep === 2 && onboardingRole === "university" && (
             <form onSubmit={handleFinishOnboarding} className="space-y-4 font-sans text-xs">
               {/* Header card */}
-              <div className="border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-xl bg-[#FFD000]/10 p-3 flex items-center justify-between">
+              <div className="border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-none bg-[#FFD000] p-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <BookOpen className="w-5 h-5 text-[#1A1A1A]" />
                   <span className="font-extrabold text-[#1A1A1A] text-[11px] uppercase tracking-wide">Universidad</span>
@@ -1457,38 +1451,38 @@ export default function MarketingView({
                 <button
                   type="button"
                   onClick={() => setOnboardingStep(1)}
-                  className="text-[10px] text-text-dim hover:text-accent-yellow font-mono cursor-pointer underline"
+                  className="text-[10px] text-[#1A1A1A] hover:text-[#6C47FF] font-mono font-bold cursor-pointer underline"
                 >
                   ← Cambiar rol
                 </button>
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Nombre del responsable *</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Nombre del responsable *</label>
                 <input
                   type="text"
                   required
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="ej. María González"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Correo institucional *</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Correo institucional *</label>
                 <input
                   type="email"
                   required
                   value={formEmail}
                   onChange={(e) => setFormEmail(e.target.value)}
                   placeholder="ej. maria@universidad.edu.co"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Contraseña * (mín. 6 caracteres)</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Contraseña * (mín. 6 caracteres)</label>
                 <input
                   type="password"
                   required
@@ -1496,39 +1490,39 @@ export default function MarketingView({
                   value={formPassword}
                   onChange={(e) => { setFormPassword(e.target.value); setAuthError(null); }}
                   placeholder="••••••••"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Nombre de la universidad *</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Nombre de la universidad *</label>
                 <input
                   type="text"
                   required
                   value={formUniName}
                   onChange={(e) => setFormUniName(e.target.value)}
                   placeholder="ej. Universidad de los Andes"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">NIT institucional</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">NIT institucional</label>
                 <input
                   type="text"
                   value={formUniNit}
                   onChange={(e) => setFormUniNit(e.target.value)}
                   placeholder="ej. 800.123.456-1"
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono text-text-dim uppercase tracking-wide block mb-1">Ciudad</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Ciudad</label>
                 <select
                   value={formUniCity}
                   onChange={(e) => setFormUniCity(e.target.value)}
-                  className="w-full bg-brand-bg border border-border-dark rounded-lg p-3 text-white outline-none focus:border-accent-yellow"
+                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
                 >
                   <option value="">Selecciona ciudad</option>
                   <option value="Bogotá">Bogotá</option>
@@ -1541,7 +1535,7 @@ export default function MarketingView({
               </div>
 
               {authError && (
-                <div className="flex items-center gap-2 text-red-400 text-xs bg-red-950/30 border border-red-500/30 p-3 rounded-lg">
+                <div className="flex items-center gap-2 text-red-600 text-xs font-bold bg-red-100 border-2 border-red-600 p-3 rounded-none">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{authError}</span>
                 </div>
@@ -1550,7 +1544,7 @@ export default function MarketingView({
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] font-extrabold p-3 rounded-xl text-xs transition-all cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-60"
+                className="w-full bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] font-extrabold p-3 rounded-none text-xs transition-all cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 {authLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                 Registrar mi universidad
@@ -1558,8 +1552,8 @@ export default function MarketingView({
             </form>
           )}
 
-          <div className="border-t border-border-dark/60 pt-4 text-center">
-            <p className="text-[10px] font-mono text-text-dim">
+          <div className="border-t-2 border-[#1A1A1A] pt-4 text-center">
+            <p className="text-[10px] font-mono font-bold text-zinc-600">
               Al registrarte aceptas los términos de uso de Campus Pass by VinkU.
             </p>
           </div>

@@ -75,7 +75,7 @@ export default function App() {
   const [diagResult, setDiagResult] = useState<any>(null);
 
   // Recharge wallets
-  const [rechargeAmt, setRechargeAmt] = useState("300");
+  const [rechargeAmt, setRechargeAmt] = useState("300000");
   const [rechargeSource, setRechargeSource] = useState("VinkuCrédito Fácil");
 
   // Schedule Fellowship

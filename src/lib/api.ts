@@ -145,10 +145,25 @@ export async function enrollCourse(studentId: string, courseId: string, creditsS
     .single();
 
   if (course) {
-    await supabase.from('passport_stamps').upsert(
-      { student_id: studentId, university_id: course.university_id, enroll_count: 1 },
-      { onConflict: 'student_id,university_id', ignoreDuplicates: false }
-    );
+    const { data: existingStamp } = await supabase
+      .from('passport_stamps')
+      .select('id, enroll_count')
+      .eq('student_id', studentId)
+      .eq('university_id', course.university_id)
+      .single();
+
+    if (existingStamp) {
+      await supabase
+        .from('passport_stamps')
+        .update({ enroll_count: existingStamp.enroll_count + 1 })
+        .eq('id', existingStamp.id);
+    } else {
+      await supabase.from('passport_stamps').insert({
+        student_id: studentId,
+        university_id: course.university_id,
+        enroll_count: 1,
+      });
+    }
   }
 
   return enrollment;

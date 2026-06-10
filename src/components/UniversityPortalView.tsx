@@ -236,6 +236,12 @@ export default function UniversityPortalView({
   };
 
   const handleCertify = async (enrollmentId: string, studentName: string) => {
+    // Pre-validate: ensure enrollment has completed_at set
+    const enrollment = enrollments.find(e => e.id === enrollmentId);
+    if (!enrollment?.completed_at) {
+      triggerToast("Este estudiante aún no ha completado el curso.", "error");
+      return;
+    }
     setCertifyingId(enrollmentId);
     try {
       await api.certifyEnrollment(enrollmentId);
@@ -283,7 +289,7 @@ export default function UniversityPortalView({
       </div>
 
       {/* ---- Tab Navigation ---- */}
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2 flex-wrap pb-2 border-b-2 border-[#1A1A1A]">
         {tabs.map(({ id, label, icon: Icon }) => {
           const active = uniTab === id;
           return (
@@ -385,6 +391,16 @@ export default function UniversityPortalView({
               </div>
             )}
           </div>
+
+          {import.meta.env.DEV && (
+            <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 space-y-1">
+              <p className="text-xs font-mono font-bold text-gray-500 uppercase tracking-wider mb-2">⚗️ Modo desarrollo — Datos de prueba</p>
+              <p className="text-xs font-mono text-gray-500">Para probar el flujo completo registra un estudiante con:</p>
+              <p className="text-xs font-mono text-gray-600">correo: <span className="text-[#6C47FF]">student@demo.vinkupass.com</span> | contraseña: <span className="text-[#6C47FF]">Demo1234!</span></p>
+              <p className="text-xs font-mono text-gray-500 mt-1">Y una cuenta universitaria con:</p>
+              <p className="text-xs font-mono text-gray-600">correo: <span className="text-[#6C47FF]">universidad@demo.vinkupass.com</span> | contraseña: <span className="text-[#6C47FF]">Demo1234!</span></p>
+            </div>
+          )}
         </div>
       )}
 
@@ -438,7 +454,10 @@ export default function UniversityPortalView({
                   <tbody className="divide-y divide-gray-100">
                     {uniCourses.map((c) => (
                       <tr key={c.id} className="hover:bg-[#FAFAFA] transition-colors">
-                        <td className="p-4 font-bold text-[#1A1A1A]">{c.title}</td>
+                        <td className="p-4">
+                          <p className="font-bold text-[#1A1A1A]">{c.title}</p>
+                          <p className="text-[10px] text-gray-400 italic mt-0.5">Así lo ven los estudiantes</p>
+                        </td>
                         <td className="p-4 text-gray-500">{c.level}</td>
                         <td className="p-4">
                           <span className="bg-[#6C47FF]/10 text-[#6C47FF] border border-[#6C47FF]/20 px-2 py-0.5 rounded-full text-[10px] font-bold">

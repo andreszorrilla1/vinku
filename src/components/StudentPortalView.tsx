@@ -476,6 +476,12 @@ function WalletTab({
         <p className="text-xs text-[#1A1A1A]/60 mt-1">Crédito aprobado: {formatCOP(student.creditApproved)}</p>
       </div>
 
+      {student.walletBalance === 0 && (
+        <div className="bg-[#FFD000]/10 border-2 border-[#1A1A1A] rounded-xl p-4">
+          <p className="text-sm font-bold text-[#1A1A1A]">Tu billetera está vacía. Recarga para poder matricularte en cursos.</p>
+        </div>
+      )}
+
       <div className="bg-white border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#6C47FF] rounded-xl p-5">
         <h3 className="font-display font-bold text-sm text-[#1A1A1A] mb-4">Recargar billetera</h3>
         <div className="flex gap-2 flex-wrap mb-4">
@@ -868,7 +874,7 @@ export default function StudentPortalView({
 
   return (
     <div className="space-y-6">
-      <div className="flex gap-1 overflow-x-auto no-scrollbar pb-1">
+      <div className="flex gap-1 overflow-x-auto no-scrollbar pb-2 border-b-2 border-[#1A1A1A]">
         {tabs.map(tab => {
           const Icon = tab.icon;
           const isActive = studentTab === tab.id;
@@ -1028,8 +1034,14 @@ export default function StudentPortalView({
                         )}
                       </div>
                       {!canAfford && !enrolled && (
-                        <p className="text-[10px] text-amber-600 font-bold">
-                          Necesitas {formatCOP(course.cost - student.walletBalance)} más para inscribirte.
+                        <p className="text-[10px] text-amber-600 font-bold flex items-center gap-1.5 flex-wrap">
+                          <span>Necesitas {formatCOP(course.cost - student.walletBalance)} más.</span>
+                          <button
+                            onClick={() => setStudentTab("wallet")}
+                            className="underline text-[#6C47FF] hover:text-[#1A1A1A] transition-colors cursor-pointer"
+                          >
+                            Ir a Billetera
+                          </button>
                         </p>
                       )}
                     </div>

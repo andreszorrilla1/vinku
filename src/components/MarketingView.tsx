@@ -288,7 +288,9 @@ export default function MarketingView({
                     id="hero_start_journey_btn"
                     onClick={() => {
                       setMarketingTab("auth");
+                      setAuthMode("register");
                       setOnboardingRole("student");
+                      setOnboardingStep(1);
                     }}
                     className="bg-[#FAFAFA] hover:bg-zinc-100 text-[#1A1A1A] text-xs md:text-sm font-extrabold py-3.5 px-6 border-3 border-[#1A1A1A] rounded-none flex items-center gap-2 shadow-[5px_5px_0px_#1A1A1A] active:translate-y-[1px] active:translate-x-[1px]"
                   >
@@ -439,8 +441,10 @@ export default function MarketingView({
 
                     <button
                       onClick={() => {
-                        triggerToast(`Por favor regístrate o inicia sesión para matricularte en '${cur.title}'`, "info");
+                        triggerToast("Crea tu cuenta para inscribirte en este curso.", "info");
+                        setStudentTab("market");
                         setMarketingTab("auth");
+                        setAuthMode("register");
                       }}
                       className="bg-[#FFD000] hover:bg-yellow-400 border-2 border-[#1A1A1A] text-black text-xs font-bold py-1.5 px-3 rounded-none transition-all cursor-pointer flex items-center gap-1.5 shadow-[2px_2px_0px_#1A1A1A]"
                     >
@@ -664,7 +668,8 @@ export default function MarketingView({
 
                       <button
                         onClick={() => {
-                          triggerToast(`Por favor regístrate o inicia sesión para matricularte en '${cur.title}'`, "info");
+                          triggerToast("Crea tu cuenta para inscribirte en este curso.", "info");
+                          setStudentTab("market");
                           setMarketingTab("auth");
                           setAuthMode("register");
                         }}

@@ -128,6 +128,8 @@ function CorporatePortalInner({
   // diagnosis
   const [diagObjective, setDiagObjective] = useState("Identificar brechas de habilidades técnicas");
   const [diagDeadline, setDiagDeadline] = useState("");
+  const [showDiagConfirm, setShowDiagConfirm] = useState(false);
+  const [diagSentAt, setDiagSentAt] = useState<string | null>(null);
 
   // ── on mount: resolve company ──────────────────────────────────────────────
   useEffect(() => {
@@ -281,7 +283,18 @@ function CorporatePortalInner({
 
   function handleBulkDiagnosis(e: React.FormEvent) {
     e.preventDefault();
-    triggerToast(`Diagnóstico enviado a ${employees.length} empleados`, "success");
+    if (employees.length === 0) {
+      triggerToast("Primero agrega empleados para enviar el diagnóstico.", "error");
+      return;
+    }
+    setShowDiagConfirm(true);
+  }
+
+  function handleConfirmBulkDiagnosis() {
+    setShowDiagConfirm(false);
+    const now = new Date().toLocaleString("es-CO");
+    setDiagSentAt(now);
+    triggerToast(`Diagnóstico masivo enviado a ${employees.length} empleados. Recibirán el cuestionario por correo.`, "success");
   }
 
   // ── derived ────────────────────────────────────────────────────────────────
@@ -401,7 +414,7 @@ function CorporatePortalInner({
   return (
     <div className="space-y-6 bg-[#FAFAFA]">
       {/* Tab bar */}
-      <div className="flex gap-1 overflow-x-auto no-scrollbar pb-1">
+      <div className="flex gap-1 overflow-x-auto no-scrollbar pb-2 border-b-2 border-[#1A1A1A]">
         {tabs.map(tab => {
           const Icon = tab.icon;
           const isActive = corpTab === tab.id;
@@ -772,7 +785,40 @@ function CorporatePortalInner({
                 Lanzar Diagnóstico Masivo →
               </button>
             </form>
+            {diagSentAt && (
+              <p className="text-[10px] text-zinc-400 font-mono mt-2">Último envío: {diagSentAt}</p>
+            )}
           </div>
+
+          {showDiagConfirm && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowDiagConfirm(false)}>
+              <div className="absolute inset-0 bg-[#1A1A1A]/50 backdrop-blur-sm" />
+              <div
+                className="relative w-full max-w-sm bg-white border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#FFD000] rounded-2xl p-6 animate-fade-in text-center space-y-4"
+                onClick={e => e.stopPropagation()}
+              >
+                <Compass className="w-8 h-8 text-[#6C47FF] mx-auto" />
+                <h3 className="font-display font-extrabold text-[#1A1A1A] text-lg">Confirmar envío masivo</h3>
+                <p className="text-sm text-zinc-600">
+                  Se enviará el cuestionario de diagnóstico a <strong>{employees.length} empleado{employees.length !== 1 ? "s" : ""}</strong>. ¿Confirmas?
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowDiagConfirm(false)}
+                    className="flex-1 py-2.5 border-2 border-zinc-200 rounded-xl text-sm font-bold text-zinc-500 hover:border-[#1A1A1A] transition-all"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={handleConfirmBulkDiagnosis}
+                    className="flex-1 py-2.5 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm"
+                  >
+                    Confirmar →
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-3 gap-3">
             {[

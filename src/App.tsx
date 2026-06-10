@@ -66,7 +66,8 @@ export default function App() {
   // Sub-forms and interactive elements
   const [diagStep, setDiagStep] = useState(1);
   const [diagAnswers, setDiagAnswers] = useState({
-    primaryGoal: "Engineering",
+    primaryGoal: "",
+    secondaryGoal: "",
     technicalExperience: "beginner",
     budgetRange: "medium",
     lengthPreference: "3"
@@ -266,14 +267,19 @@ export default function App() {
     e.preventDefault();
     try {
       const categoryMap: Record<string, string[]> = {
-        Engineering: ['Tecnología', 'Ingeniería & Tech'],
-        Marketing: ['Marketing'],
-        AI: ['Datos', 'Tecnología'],
-        Design: ['Diseño', 'Tecnología'],
-        Sustainability: ['Gestión'],
-        Cybersecurity: ['Tecnología'],
+        Tech:       ['Tecnología'],
+        Data:       ['Datos & IA'],
+        Marketing:  ['Marketing & Ventas'],
+        Design:     ['Diseño & Creatividad'],
+        Finance:    ['Finanzas & Inversión'],
+        Management: ['Gestión & Liderazgo'],
+        Legal:      ['Derecho & Cumplimiento', 'Ciberseguridad'],
+        Health:     ['Salud & Bienestar', 'Sostenibilidad'],
+        Emprendimiento: ['Emprendimiento'],
       };
-      const targetCats = categoryMap[diagAnswers.primaryGoal] ?? [];
+      const primaryCats = categoryMap[diagAnswers.primaryGoal] ?? [];
+      const secondaryCats = categoryMap[(diagAnswers as any).secondaryGoal] ?? [];
+      const targetCats = [...new Set([...primaryCats, ...secondaryCats])];
       const maxCourses = parseInt(diagAnswers.lengthPreference) || 3;
       const filtered = courses
         .filter(c => targetCats.includes(c.category))

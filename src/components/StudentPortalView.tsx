@@ -33,8 +33,8 @@ interface StudentPortalViewProps {
   setNewGoalText: (v: string) => void;
   newGoalProducts: string;
   setNewGoalProducts: (v: string) => void;
-  diagAnswers: { primaryGoal: string; technicalExperience: string; budgetRange: string; lengthPreference: string };
-  setDiagAnswers: (v: { primaryGoal: string; technicalExperience: string; budgetRange: string; lengthPreference: string } | ((prev: { primaryGoal: string; technicalExperience: string; budgetRange: string; lengthPreference: string }) => { primaryGoal: string; technicalExperience: string; budgetRange: string; lengthPreference: string })) => void;
+  diagAnswers: { primaryGoal: string; secondaryGoal: string; technicalExperience: string; budgetRange: string; lengthPreference: string };
+  setDiagAnswers: (v: { primaryGoal: string; secondaryGoal: string; technicalExperience: string; budgetRange: string; lengthPreference: string } | ((prev: { primaryGoal: string; secondaryGoal: string; technicalExperience: string; budgetRange: string; lengthPreference: string }) => { primaryGoal: string; secondaryGoal: string; technicalExperience: string; budgetRange: string; lengthPreference: string })) => void;
   triggerToast: (msg: string, type?: "success" | "error" | "info") => void;
   fetchState: () => void;
 }
@@ -59,40 +59,50 @@ const MENTORS = [
 
 const DIAG_STEPS = [
   {
-    question: "¿Cuál es tu meta profesional?",
+    question: "¿En qué área quieres crecer profesionalmente?",
     key: "primaryGoal",
     options: [
-      { value: "Engineering", emoji: "💻", title: "Tecnología & Software", desc: "Desarrollo, Cloud, DevOps, arquitectura de sistemas" },
-      { value: "Marketing", emoji: "📈", title: "Marketing & Crecimiento", desc: "Growth, SEO, branding, analítica de negocios" },
-      { value: "AI", emoji: "🤖", title: "Datos e Inteligencia Artificial", desc: "ML, ciencia de datos, analytics avanzado" },
-      { value: "Management", emoji: "🏛️", title: "Negocios & Gestión", desc: "Finanzas, liderazgo, estrategia corporativa" },
+      { value: "Tech",       emoji: "💻", title: "Tecnología & Software",         desc: "Desarrollo, Cloud, DevOps, arquitectura de sistemas" },
+      { value: "Data",       emoji: "🤖", title: "Datos e Inteligencia Artificial", desc: "ML, ciencia de datos, analytics, IA generativa" },
+      { value: "Marketing",  emoji: "📈", title: "Marketing & Crecimiento",        desc: "Growth, SEO, branding, analítica de negocios" },
+      { value: "Design",     emoji: "🎨", title: "Diseño & Creatividad",           desc: "UX/UI, product design, identidad visual" },
+    ],
+  },
+  {
+    question: "¿Y en cuál de estas áreas también tienes interés?",
+    key: "secondaryGoal",
+    options: [
+      { value: "Finance",    emoji: "💰", title: "Finanzas & Inversión",           desc: "Modelos financieros, análisis de riesgo, inversión" },
+      { value: "Management", emoji: "🏛️", title: "Gestión & Liderazgo",            desc: "Gestión de proyectos, liderazgo, estrategia" },
+      { value: "Legal",      emoji: "⚖️", title: "Derecho & Ciberseguridad",       desc: "Derecho digital, protección de datos, compliance" },
+      { value: "Health",     emoji: "🏥", title: "Salud & Sostenibilidad",         desc: "Gestión en salud, ESG, impacto social" },
     ],
   },
   {
     question: "¿Cuál es tu nivel de experiencia actual?",
     key: "technicalExperience",
     options: [
-      { value: "beginner", emoji: "🌱", title: "Estoy comenzando", desc: "Junior / Reskilling — busco mi primera oportunidad" },
+      { value: "beginner",     emoji: "🌱", title: "Estoy comenzando",    desc: "Junior / Reskilling — busco mi primera oportunidad" },
       { value: "intermediate", emoji: "🔥", title: "Ya tengo experiencia", desc: "Mid-level — quiero profundizar y especializarme" },
-      { value: "advanced", emoji: "🚀", title: "Soy senior", desc: "Busco roles de arquitectura o liderazgo técnico" },
+      { value: "advanced",     emoji: "🚀", title: "Soy senior",           desc: "Busco roles de arquitectura, liderazgo o C-level" },
     ],
   },
   {
     question: "¿Cuánto tiempo semanal puedes dedicar?",
     key: "budgetRange",
     options: [
-      { value: "low", emoji: "⚡", title: "2 a 5 horas", desc: "Aprendizaje ligero, compatible con trabajo full-time" },
-      { value: "medium", emoji: "📚", title: "6 a 10 horas", desc: "Ritmo constante, ideal para la mayoría" },
-      { value: "high", emoji: "🎯", title: "Más de 10 horas", desc: "Inmersión total, resultados más rápidos" },
+      { value: "low",    emoji: "⚡", title: "2 a 5 horas",      desc: "Aprendizaje ligero, compatible con trabajo full-time" },
+      { value: "medium", emoji: "📚", title: "6 a 10 horas",     desc: "Ritmo constante, ideal para la mayoría" },
+      { value: "high",   emoji: "🎯", title: "Más de 10 horas",  desc: "Inmersión total, resultados más rápidos" },
     ],
   },
   {
     question: "¿Qué extensión de ruta prefieres?",
     key: "lengthPreference",
     options: [
-      { value: "3", emoji: "⚡", title: "Ruta Ágil — 3 cursos", desc: "Resultados rápidos, foco en habilidades clave" },
+      { value: "3", emoji: "⚡", title: "Ruta Ágil — 3 cursos",     desc: "Resultados rápidos, foco en habilidades clave" },
       { value: "5", emoji: "🗺️", title: "Ruta Completa — 5 cursos", desc: "Formación sólida y perfil competitivo" },
-      { value: "7", emoji: "🏆", title: "Ruta Experto — 7 cursos", desc: "Dominio profundo, máxima empleabilidad" },
+      { value: "7", emoji: "🏆", title: "Ruta Experto — 7 cursos",  desc: "Dominio profundo, máxima empleabilidad" },
     ],
   },
 ];
@@ -261,7 +271,7 @@ function DiagnosticTab({
   student: Student;
   onEnrollCourse: (courseId: string) => void;
 }) {
-  const [step, setStep] = useState(student.diagnosed ? 4 : 0);
+  const [step, setStep] = useState(student.diagnosed ? DIAG_STEPS.length : 0);
   const [localAnswers, setLocalAnswers] = useState<Record<string, string>>({});
 
   const currentStep = DIAG_STEPS[step];
@@ -276,7 +286,7 @@ function DiagnosticTab({
   function handleNext() {
     if (isLastStep) {
       const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
-      onDiagnoseSubmit(fakeEvent).then(() => setStep(4)).catch(() => setStep(4));
+      onDiagnoseSubmit(fakeEvent).then(() => setStep(DIAG_STEPS.length)).catch(() => setStep(DIAG_STEPS.length));
     } else {
       setStep(s => s + 1);
     }
@@ -284,19 +294,25 @@ function DiagnosticTab({
 
   const selectedValue = currentStep ? allAnswers[currentStep.key] : null;
 
-  if (step === 4) {
+  if (step === DIAG_STEPS.length) {
+    const categoryMap: Record<string, string[]> = {
+      Tech:       ['Tecnología'],
+      Data:       ['Datos & IA'],
+      Marketing:  ['Marketing & Ventas'],
+      Design:     ['Diseño & Creatividad'],
+      Finance:    ['Finanzas & Inversión'],
+      Management: ['Gestión & Liderazgo'],
+      Legal:      ['Derecho & Cumplimiento', 'Ciberseguridad'],
+      Health:     ['Salud & Bienestar', 'Sostenibilidad'],
+      Emprendimiento: ['Emprendimiento'],
+    };
+    const primaryCats = categoryMap[diagAnswers.primaryGoal] ?? [];
+    const secondaryCats = categoryMap[diagAnswers.secondaryGoal] ?? [];
+    const targetCats = [...new Set([...primaryCats, ...secondaryCats])];
+
     const suggested = student.suggestedRoute.length > 0
       ? courses.filter(c => student.suggestedRoute.includes(c.id)).slice(0, parseInt(diagAnswers.lengthPreference) || 3)
-      : courses.filter(c => {
-          const catMap: Record<string, string[]> = {
-            Engineering: ["Tecnología", "Ingeniería & Tech"],
-            Marketing: ["Marketing"],
-            AI: ["Datos", "Tecnología"],
-            Management: ["Gestión"],
-          };
-          const cats = catMap[diagAnswers.primaryGoal] ?? [];
-          return cats.includes(c.category);
-        }).slice(0, parseInt(diagAnswers.lengthPreference) || 3);
+      : courses.filter(c => targetCats.includes(c.category)).slice(0, parseInt(diagAnswers.lengthPreference) || 3);
 
     return (
       <div className="space-y-6 animate-fade-in">
@@ -348,7 +364,7 @@ function DiagnosticTab({
         </div>
 
         <button
-          onClick={() => setStep(0)}
+          onClick={() => { setStep(0); setLocalAnswers({}); }}
           className="w-full py-3 border-2 border-[#1A1A1A] rounded-xl text-sm font-bold text-zinc-500 hover:bg-zinc-50 transition-colors"
         >
           Volver a hacer el diagnóstico

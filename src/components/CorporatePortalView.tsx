@@ -125,6 +125,12 @@ function CorporatePortalInner({
   const [empDept, setEmpDept] = useState("");
   const [empBudget, setEmpBudget] = useState("0");
 
+  // csv upload
+  const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [csvPreview, setCsvPreview] = useState<Array<{name:string;email:string;role:string;department:string;budget:string}>>([]);
+  const [uploadingCsv, setUploadingCsv] = useState(false);
+  const [showCsvModal, setShowCsvModal] = useState(false);
+
   // diagnosis
   const [diagObjective, setDiagObjective] = useState("Identificar brechas de habilidades técnicas");
   const [diagDeadline, setDiagDeadline] = useState("");
@@ -278,6 +284,72 @@ function CorporatePortalInner({
       setEmpName(""); setEmpEmail(""); setEmpRole(""); setEmpDept(""); setEmpBudget("0");
     } catch {
       triggerToast("Error al agregar empleado", "error");
+    }
+  }
+
+  function parseCSV(text: string): Array<{name:string;email:string;role:string;department:string;budget:string}> {
+    const lines = text.trim().split('\n');
+    if (lines.length < 2) return [];
+    return lines.slice(1).map(line => {
+      const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+      return {
+        name: cols[0] ?? '',
+        email: cols[1] ?? '',
+        role: cols[2] ?? '',
+        department: cols[3] ?? '',
+        budget: cols[4] ?? '0',
+      };
+    }).filter(r => r.name && r.email);
+  }
+
+  function downloadTemplate() {
+    const csv = 'Nombre,Correo,Cargo,Departamento,Presupuesto COP\nJuan García,juan@empresa.com,Desarrollador,Tecnología,500000\nMaría López,maria@empresa.com,Diseñadora,Producto,400000';
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'plantilla_empleados_vinku.csv'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function handleCsvFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCsvFile(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const text = ev.target?.result as string;
+      setCsvPreview(parseCSV(text));
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  async function handleImportCsv() {
+    if (!companyId || csvPreview.length === 0) return;
+    setUploadingCsv(true);
+    try {
+      for (const row of csvPreview) {
+        await api.addEmployee({
+          company_id: companyId,
+          name: row.name,
+          email: row.email,
+          role_title: row.role || null,
+          department: row.department || null,
+          diag_status: "Pendiente",
+          active_path: null,
+          progress_pct: 0,
+          assigned_budget: parseInt(row.budget) || 0,
+          suggested_route_cost: null,
+        });
+      }
+      triggerToast(`${csvPreview.length} empleados importados exitosamente`, "success");
+      fetchState();
+      setShowCsvModal(false);
+      setCsvPreview([]);
+      setCsvFile(null);
+    } catch {
+      triggerToast("Error al importar empleados", "error");
+    } finally {
+      setUploadingCsv(false);
     }
   }
 
@@ -538,6 +610,12 @@ function CorporatePortalInner({
                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 bg-[#FFD000] text-[#1A1A1A] border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] hover:shadow-[3px_3px_0px_0px_#1A1A1A] transition-all"
               >
                 <Plus className="w-3.5 h-3.5" /> Agregar empleado
+              </button>
+              <button
+                onClick={() => setShowCsvModal(true)}
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 bg-white text-[#1A1A1A] border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] hover:shadow-[3px_3px_0px_0px_#1A1A1A] transition-all"
+              >
+                <Plus className="w-3.5 h-3.5" /> Cargar CSV
               </button>
               <button
                 onClick={() => triggerToast(`Diagnóstico masivo enviado a ${employees.length} empleados`, "success")}
@@ -967,6 +1045,74 @@ function CorporatePortalInner({
       )}
 
       {/* ── ADD EMPLOYEE MODAL ── */}
+      {/* ── CSV UPLOAD MODAL ── */}
+      {showCsvModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowCsvModal(false)}>
+          <div className="absolute inset-0 bg-[#1A1A1A]/50 backdrop-blur-sm" />
+          <div
+            className="relative w-full max-w-2xl bg-white border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#6C47FF] rounded-2xl p-6 animate-fade-in overflow-y-auto max-h-[90vh]"
+            onClick={e => e.stopPropagation()}
+          >
+            <button onClick={() => setShowCsvModal(false)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+            <h3 className="font-display font-extrabold text-[#1A1A1A] text-lg mb-2">Importar empleados desde CSV</h3>
+            <p className="text-xs text-zinc-500 mb-4">El archivo CSV debe tener las columnas: Nombre, Correo, Cargo, Departamento, Presupuesto COP</p>
+            <div className="space-y-4">
+              <button
+                onClick={downloadTemplate}
+                className="flex items-center gap-2 px-4 py-2 text-xs font-bold border-2 border-[#1A1A1A] rounded-xl bg-white hover:bg-zinc-50 transition-all shadow-[2px_2px_0px_0px_#1A1A1A]"
+              >
+                Descargar plantilla CSV
+              </button>
+              <div>
+                <label className="text-xs font-bold text-zinc-600 block mb-1">Seleccionar archivo CSV</label>
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={handleCsvFileChange}
+                  className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none"
+                />
+              </div>
+              {csvPreview.length > 0 && (
+                <div className="overflow-x-auto">
+                  <p className="text-xs font-bold text-zinc-600 mb-2">{csvPreview.length} empleado(s) detectados:</p>
+                  <table className="w-full text-xs border-2 border-[#1A1A1A] rounded-xl overflow-hidden">
+                    <thead>
+                      <tr className="bg-zinc-100 border-b-2 border-[#1A1A1A]">
+                        {["Nombre", "Correo", "Cargo", "Departamento", "Presupuesto COP"].map(h => (
+                          <th key={h} className="px-3 py-2 text-left font-bold text-zinc-600 text-[10px] uppercase">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {csvPreview.map((row, i) => (
+                        <tr key={i} className="border-b border-zinc-100 last:border-0">
+                          <td className="px-3 py-2 font-bold text-[#1A1A1A]">{row.name}</td>
+                          <td className="px-3 py-2 text-zinc-500">{row.email}</td>
+                          <td className="px-3 py-2 text-zinc-500">{row.role || "—"}</td>
+                          <td className="px-3 py-2 text-zinc-500">{row.department || "—"}</td>
+                          <td className="px-3 py-2 text-zinc-500">{Number(row.budget).toLocaleString("es-CO")}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              {csvPreview.length > 0 && (
+                <button
+                  onClick={handleImportCsv}
+                  disabled={uploadingCsv}
+                  className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  {uploadingCsv ? "Importando..." : `Importar ${csvPreview.length} empleados →`}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {showAddEmployeeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowAddEmployeeModal(false)}>
           <div className="absolute inset-0 bg-[#1A1A1A]/50 backdrop-blur-sm" />

@@ -1,12 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Users, Wallet, Compass, TrendingUp, Building,
   Mail, CheckCircle, AlertCircle, X, BarChart3,
-  Map, Search
+  Map, Search, Plus, RefreshCw
 } from "lucide-react";
 import { Employee, Course } from "../types";
 import { useAuth } from "../contexts/AuthContext";
+import { supabase } from "../lib/supabase";
 import * as api from "../lib/api";
+import type { Database } from "../lib/database.types";
+
+type CompanyRow = Database["public"]["Tables"]["companies"]["Row"];
+type WalletTransaction = {
+  id: string;
+  amount: number;
+  type: string;
+  description: string | null;
+  created_at: string;
+};
 
 interface CorporatePortalViewProps {
   corporate: { budgetLeft: number; employees: Employee[] };
@@ -29,12 +40,9 @@ function getStatusColor(status: Employee["diagStatus"]) {
 
 const AVATAR_COLORS = ["#FFD000", "#6C47FF", "#10B981", "#F97316", "#EC4899", "#06B6D4"];
 
-const MOCK_TRANSACTIONS = [
-  { date: "2026-06-01", desc: "Recarga PSE", amount: 5000000, type: "credit" },
-  { date: "2026-05-20", desc: "Matrícula Camilo Torres", amount: -350000, type: "debit" },
-  { date: "2026-05-15", desc: "Recarga Transferencia", amount: 3000000, type: "credit" },
-  { date: "2026-05-10", desc: "Matrícula Ana Gómez", amount: -280000, type: "debit" },
-  { date: "2026-04-28", desc: "Recarga Tarjeta", amount: 2000000, type: "credit" },
+const SECTOR_OPTIONS = [
+  "Financiero", "Tecnología", "Salud", "Educación", "Manufactura",
+  "Retail", "Construcción", "Energía", "Logística", "Servicios",
 ];
 
 export default function CorporatePortalView(props: CorporatePortalViewProps) {
@@ -70,8 +78,10 @@ export default function CorporatePortalView(props: CorporatePortalViewProps) {
     );
   }
 
-  return <CorporatePortalInner {...props} userId={user.id} />;
+  return <CorporatePortalInner {...props} userId={user.id} userEmail={user.email ?? ""} />;
 }
+
+// ─── Inner component (only renders when role === corporate_admin) ─────────────
 
 function CorporatePortalInner({
   corporate,
@@ -81,69 +91,213 @@ function CorporatePortalInner({
   triggerToast,
   fetchState,
   userId,
-}: CorporatePortalViewProps & { userId: string }) {
-  const STORAGE_KEY = `vinku_corp_registered_${userId}`;
-  const [isRegistered, setIsRegistered] = useState(() => localStorage.getItem(STORAGE_KEY) === "true");
-  const [regForm, setRegForm] = useState({ company: "", nit: "", city: "", sector: "" });
+  userEmail,
+}: CorporatePortalViewProps & { userId: string; userEmail: string }) {
+  // ── company state ──────────────────────────────────────────────────────────
+  const [companyId, setCompanyId] = useState<string | null>(null);
+  const [companyInfo, setCompanyInfo] = useState<CompanyRow | null>(null);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [regLoading, setRegLoading] = useState(true);
 
+  // registration form
+  const [regForm, setRegForm] = useState({
+    contactName: "", company: "", nit: "", city: "", sector: "", employees: "",
+  });
+
+  // wallet
+  const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
+  const [rechargeAmt, setRechargeAmt] = useState("1000000");
+  const [payMethod, setPayMethod] = useState<"PSE" | "Tarjeta" | "Transferencia">("PSE");
+
+  // talent
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [talentView, setTalentView] = useState<"map" | "table">("map");
   const [search, setSearch] = useState("");
-  const [rechargeAmt, setRechargeAmt] = useState("1000000");
-  const [payMethod, setPayMethod] = useState<"PSE" | "Tarjeta" | "Transferencia">("PSE");
+
+  // budget assignment in drawer
+  const [budgetAssignAmt, setBudgetAssignAmt] = useState("");
+
+  // add employee modal
+  const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
+  const [empName, setEmpName] = useState("");
+  const [empEmail, setEmpEmail] = useState("");
+  const [empRole, setEmpRole] = useState("");
+  const [empDept, setEmpDept] = useState("");
+  const [empBudget, setEmpBudget] = useState("0");
+
+  // diagnosis
   const [diagObjective, setDiagObjective] = useState("Identificar brechas de habilidades técnicas");
   const [diagDeadline, setDiagDeadline] = useState("");
 
-  const { employees, budgetLeft } = corporate;
+  // ── on mount: resolve company ──────────────────────────────────────────────
+  useEffect(() => {
+    let cancelled = false;
+    async function init() {
+      setRegLoading(true);
+      try {
+        const profile = await api.fetchProfile(userId);
+        if (!profile || cancelled) return;
+        if (profile.company_id) {
+          setCompanyId(profile.company_id);
+          const company = await api.fetchCompany(profile.company_id);
+          if (company && !cancelled) {
+            setCompanyInfo(company);
+            setIsRegistered(true);
+          }
+        }
+      } finally {
+        if (!cancelled) setRegLoading(false);
+      }
+    }
+    init();
+    return () => { cancelled = true; };
+  }, [userId]);
 
-  const filteredEmployees = employees.filter(e =>
-    e.name.toLowerCase().includes(search.toLowerCase()) ||
-    e.email.toLowerCase().includes(search.toLowerCase()) ||
-    (e.department || "").toLowerCase().includes(search.toLowerCase())
-  );
+  // ── fetch transactions when companyId is known ────────────────────────────
+  useEffect(() => {
+    if (!companyId) return;
+    loadTransactions(companyId);
+  }, [companyId]);
 
-  const departments = Array.from(new Set(employees.map(e => e.department || "Sin área")));
-  const pending = employees.filter(e => e.diagStatus === "Pendiente").length;
-  const withRoute = employees.filter(e => e.diagStatus === "Ruta Generada").length;
-  const enrolled = employees.filter(e => e.diagStatus === "Matriculado").length;
-  const completados = employees.filter(e => e.diagStatus !== "Pendiente").length;
-  const totalEnrollments = employees.reduce((sum, e) => sum + (e.activePath?.length ?? 0), 0);
+  async function loadTransactions(cid: string) {
+    try {
+      const rows = await api.fetchCorporateTransactions(cid);
+      setTransactions(rows.map(r => ({
+        id: r.id,
+        amount: r.amount,
+        type: r.type,
+        description: r.description ?? null,
+        created_at: r.created_at,
+      })));
+    } catch {
+      // silently ignore
+    }
+  }
 
-  function handleRegister(e: React.FormEvent) {
+  // ── registration ───────────────────────────────────────────────────────────
+  async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
-    if (!regForm.company || !regForm.nit) {
+    if (!regForm.contactName || !regForm.company) {
       triggerToast("Completa los campos obligatorios", "error");
       return;
     }
-    localStorage.setItem(STORAGE_KEY, "true");
-    setIsRegistered(true);
-    triggerToast("¡Empresa registrada exitosamente!", "success");
+    try {
+      const { data: company, error } = await supabase
+        .from("companies")
+        .insert({
+          name: regForm.company,
+          nit: regForm.nit || null,
+          industry: regForm.sector || null,
+          size_employees: parseInt(regForm.employees) || null,
+          contact_name: regForm.contactName,
+          contact_email: userEmail,
+          wallet_balance: 0,
+        })
+        .select("id, name, nit, industry, size_employees, contact_name, contact_email, wallet_balance, created_at, updated_at")
+        .single();
+
+      if (error || !company) {
+        triggerToast("Error al registrar empresa", "error");
+        return;
+      }
+
+      await supabase.from("profiles").update({ company_id: company.id }).eq("id", userId);
+      setCompanyId(company.id);
+      setCompanyInfo(company);
+      setIsRegistered(true);
+      triggerToast("¡Empresa registrada exitosamente!", "success");
+    } catch {
+      triggerToast("Error al registrar empresa", "error");
+    }
   }
 
+  // ── recharge ───────────────────────────────────────────────────────────────
   async function handleRecharge(e: React.FormEvent) {
     e.preventDefault();
+    if (!companyId) return;
     const amount = Number(rechargeAmt);
-    try {
-      const apiAny = api as Record<string, unknown>;
-      if (typeof apiAny.rechargeCorporateWallet === "function") {
-        await (apiAny.rechargeCorporateWallet as (id: string, amt: number) => Promise<void>)(userId, amount);
-        fetchState();
-      }
-    } catch {
-      // fallthrough to toast
+    if (!amount || amount <= 0) {
+      triggerToast("Ingresa un monto válido", "error");
+      return;
     }
-    triggerToast(`Recarga de ${formatCOP(amount)} procesada correctamente`, "success");
+    try {
+      const newBalance = await api.rechargeCorporateWallet(companyId, amount);
+      setCompanyInfo(prev => prev ? { ...prev, wallet_balance: newBalance } : prev);
+      triggerToast(`Recarga de ${formatCOP(amount)} procesada`, "success");
+      await loadTransactions(companyId);
+    } catch {
+      triggerToast("Error al procesar recarga", "error");
+    }
   }
 
-  function handleAssignCredits(emp: Employee) {
-    triggerToast(`Créditos asignados a ${emp.name}`, "success");
-    setSelectedEmployee(null);
+  // ── assign budget ──────────────────────────────────────────────────────────
+  async function handleAssignBudget() {
+    if (!selectedEmployee) return;
+    const amount = parseInt(budgetAssignAmt);
+    if (!amount || amount <= 0) {
+      triggerToast("Ingresa un monto válido", "error");
+      return;
+    }
+    try {
+      await api.assignEmployeeBudget(selectedEmployee.id, amount);
+      triggerToast(`Presupuesto asignado a ${selectedEmployee.name}`, "success");
+      fetchState();
+      setSelectedEmployee(null);
+      setBudgetAssignAmt("");
+    } catch {
+      triggerToast("Error al asignar presupuesto", "error");
+    }
+  }
+
+  // ── add employee ───────────────────────────────────────────────────────────
+  async function handleAddEmployee(e: React.FormEvent) {
+    e.preventDefault();
+    if (!companyId) return;
+    if (!empName || !empEmail) {
+      triggerToast("Nombre y correo son obligatorios", "error");
+      return;
+    }
+    try {
+      await api.addEmployee({
+        company_id: companyId,
+        name: empName,
+        email: empEmail,
+        role_title: empRole || null,
+        department: empDept || null,
+        diag_status: "Pendiente",
+        active_path: null,
+        progress_pct: 0,
+        assigned_budget: parseInt(empBudget) || 0,
+        suggested_route_cost: null,
+      });
+      triggerToast(`${empName} agregado al equipo`, "success");
+      fetchState();
+      setShowAddEmployeeModal(false);
+      setEmpName(""); setEmpEmail(""); setEmpRole(""); setEmpDept(""); setEmpBudget("0");
+    } catch {
+      triggerToast("Error al agregar empleado", "error");
+    }
   }
 
   function handleBulkDiagnosis(e: React.FormEvent) {
     e.preventDefault();
     triggerToast(`Diagnóstico enviado a ${employees.length} empleados`, "success");
   }
+
+  // ── derived ────────────────────────────────────────────────────────────────
+  const { employees, budgetLeft } = corporate;
+  const filteredEmployees = employees.filter(e =>
+    e.name.toLowerCase().includes(search.toLowerCase()) ||
+    e.email.toLowerCase().includes(search.toLowerCase()) ||
+    (e.department || "").toLowerCase().includes(search.toLowerCase())
+  );
+  const departments = Array.from(new Set(employees.map(e => e.department || "Sin área")));
+  const pending = employees.filter(e => e.diagStatus === "Pendiente").length;
+  const withRoute = employees.filter(e => e.diagStatus === "Ruta Generada").length;
+  const enrolled = employees.filter(e => e.diagStatus === "Matriculado").length;
+  const completados = employees.filter(e => e.diagStatus !== "Pendiente").length;
+  const totalEnrollments = employees.reduce((sum, e) => sum + (e.activePath?.length ?? 0), 0);
+  const walletBalance = companyInfo?.wallet_balance ?? budgetLeft;
 
   const tabs = [
     { id: "dashboard", label: "Dashboard", icon: TrendingUp },
@@ -152,6 +306,16 @@ function CorporatePortalInner({
     { id: "diagnosis", label: "Diagnóstico", icon: Compass },
   ] as const;
 
+  // ── loading splash ─────────────────────────────────────────────────────────
+  if (regLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[40vh]">
+        <p className="text-sm text-zinc-500 animate-pulse">Cargando portal empresarial…</p>
+      </div>
+    );
+  }
+
+  // ── registration form ──────────────────────────────────────────────────────
   if (!isRegistered) {
     return (
       <div className="max-w-lg mx-auto animate-fade-in">
@@ -163,22 +327,69 @@ function CorporatePortalInner({
           </p>
         </div>
         <form onSubmit={handleRegister} className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-xl p-6 space-y-4">
-          {[
-            { key: "company", label: "Nombre de la empresa *", placeholder: "Ej: Bancolombia S.A." },
-            { key: "nit", label: "NIT *", placeholder: "Ej: 890.903.938-8" },
-            { key: "city", label: "Ciudad", placeholder: "Ej: Bogotá, Medellín..." },
-            { key: "sector", label: "Sector / Industria", placeholder: "Ej: Tecnología, Financiero..." },
-          ].map(f => (
-            <div key={f.key}>
-              <label className="text-xs font-bold text-zinc-600 block mb-1">{f.label}</label>
-              <input
-                value={regForm[f.key as keyof typeof regForm]}
-                onChange={ev => setRegForm(p => ({ ...p, [f.key]: ev.target.value }))}
-                placeholder={f.placeholder}
-                className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors"
-              />
-            </div>
-          ))}
+          {/* Nombre del contacto */}
+          <div>
+            <label className="text-xs font-bold text-zinc-600 block mb-1">Nombre del contacto *</label>
+            <input
+              value={regForm.contactName}
+              onChange={ev => setRegForm(p => ({ ...p, contactName: ev.target.value }))}
+              placeholder="Tu nombre completo"
+              className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors"
+            />
+          </div>
+          {/* Nombre de la empresa */}
+          <div>
+            <label className="text-xs font-bold text-zinc-600 block mb-1">Nombre de la empresa *</label>
+            <input
+              value={regForm.company}
+              onChange={ev => setRegForm(p => ({ ...p, company: ev.target.value }))}
+              placeholder="Ej: Bancolombia S.A."
+              className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors"
+            />
+          </div>
+          {/* NIT */}
+          <div>
+            <label className="text-xs font-bold text-zinc-600 block mb-1">NIT</label>
+            <input
+              value={regForm.nit}
+              onChange={ev => setRegForm(p => ({ ...p, nit: ev.target.value }))}
+              placeholder="Ej: 890.903.938-8"
+              className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors"
+            />
+          </div>
+          {/* Ciudad */}
+          <div>
+            <label className="text-xs font-bold text-zinc-600 block mb-1">Ciudad</label>
+            <input
+              value={regForm.city}
+              onChange={ev => setRegForm(p => ({ ...p, city: ev.target.value }))}
+              placeholder="Ej: Bogotá, Medellín..."
+              className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors"
+            />
+          </div>
+          {/* Sector */}
+          <div>
+            <label className="text-xs font-bold text-zinc-600 block mb-1">Sector</label>
+            <select
+              value={regForm.sector}
+              onChange={ev => setRegForm(p => ({ ...p, sector: ev.target.value }))}
+              className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none bg-white transition-colors"
+            >
+              <option value="">Selecciona un sector...</option>
+              {SECTOR_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          {/* Número de empleados */}
+          <div>
+            <label className="text-xs font-bold text-zinc-600 block mb-1">Número de empleados</label>
+            <input
+              type="number"
+              value={regForm.employees}
+              onChange={ev => setRegForm(p => ({ ...p, employees: ev.target.value }))}
+              placeholder="Ej: 500"
+              className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors"
+            />
+          </div>
           <button type="submit" className="w-full py-3.5 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:shadow-[6px_6px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm">
             Registrar empresa →
           </button>
@@ -211,12 +422,22 @@ function CorporatePortalInner({
         })}
       </div>
 
+      {/* Company info header */}
+      {companyInfo && (
+        <div className="bg-white border-2 border-zinc-200 rounded-xl px-4 py-2.5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-600">
+          <span><span className="font-bold text-[#1A1A1A]">Empresa:</span> {companyInfo.name}</span>
+          {companyInfo.nit && <span><span className="font-bold text-[#1A1A1A]">NIT:</span> {companyInfo.nit}</span>}
+          {companyInfo.industry && <span><span className="font-bold text-[#1A1A1A]">Sector:</span> {companyInfo.industry}</span>}
+          {companyInfo.size_employees != null && <span><span className="font-bold text-[#1A1A1A]">Empleados:</span> {companyInfo.size_employees}</span>}
+        </div>
+      )}
+
       {/* ── DASHBOARD ── */}
       {corpTab === "dashboard" && (
         <div className="space-y-6 animate-fade-in">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { label: "Presupuesto disponible", value: formatCOP(budgetLeft), icon: Wallet, shadow: "#FFD000" },
+              { label: "Presupuesto disponible", value: formatCOP(walletBalance), icon: Wallet, shadow: "#FFD000" },
               { label: "Empleados activos", value: String(employees.length), icon: Users, shadow: "#6C47FF" },
               { label: "Diagnósticos completados", value: String(completados), icon: CheckCircle, shadow: "#10B981" },
               { label: "Cursos activos", value: String(totalEnrollments), icon: TrendingUp, shadow: "#F97316" },
@@ -227,9 +448,6 @@ function CorporatePortalInner({
                   <Icon className="w-5 h-5 text-zinc-400 mb-2" />
                   <p className="font-display font-extrabold text-xl text-[#1A1A1A]">{kpi.value}</p>
                   <p className="text-[11px] text-zinc-500 mt-0.5 leading-tight">{kpi.label}</p>
-                  {kpi.label === "Empleados activos" && employees.length === 0 && (
-                    <p className="text-[10px] text-zinc-400 mt-1">Sin empleados aún</p>
-                  )}
                 </div>
               );
             })}
@@ -303,6 +521,12 @@ function CorporatePortalInner({
                 <BarChart3 className="w-3.5 h-3.5" /> Tabla
               </button>
               <button
+                onClick={() => setShowAddEmployeeModal(true)}
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 bg-[#FFD000] text-[#1A1A1A] border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] hover:shadow-[3px_3px_0px_0px_#1A1A1A] transition-all"
+              >
+                <Plus className="w-3.5 h-3.5" /> Agregar empleado
+              </button>
+              <button
                 onClick={() => triggerToast(`Diagnóstico masivo enviado a ${employees.length} empleados`, "success")}
                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 bg-[#6C47FF] text-white border-[#6C47FF] hover:opacity-90 transition-all"
               >
@@ -315,13 +539,7 @@ function CorporatePortalInner({
             <div className="bg-white border-4 border-dashed border-zinc-300 rounded-xl p-12 text-center">
               <Users className="w-12 h-12 mx-auto mb-3 text-zinc-300" />
               <p className="font-display font-bold text-zinc-500">Aún no hay empleados registrados.</p>
-              <p className="text-xs text-zinc-400 mt-1">Importa tu nómina para comenzar.</p>
-              <button
-                onClick={() => triggerToast("Función disponible próximamente", "info")}
-                className="mt-4 px-4 py-2 bg-[#FFD000] text-[#1A1A1A] font-bold text-xs rounded-lg border-2 border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A]"
-              >
-                Importar Nómina
-              </button>
+              <p className="text-xs text-zinc-400 mt-1">Agrega tu primer colaborador para comenzar.</p>
             </div>
           ) : talentView === "map" ? (
             <div className="flex gap-4 overflow-x-auto pb-3 no-scrollbar">
@@ -439,7 +657,7 @@ function CorporatePortalInner({
         <div className="space-y-5 animate-fade-in max-w-md">
           <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-2xl p-6">
             <p className="text-xs font-mono font-bold text-[#1A1A1A]/60 uppercase tracking-widest mb-1">Presupuesto disponible</p>
-            <p className="font-display font-extrabold text-[#1A1A1A] text-3xl">{formatCOP(budgetLeft)}</p>
+            <p className="font-display font-extrabold text-[#1A1A1A] text-3xl">{formatCOP(walletBalance)}</p>
           </div>
 
           <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-xl p-5">
@@ -490,18 +708,27 @@ function CorporatePortalInner({
           </div>
 
           <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-xl overflow-hidden">
-            <div className="px-4 py-3 border-b-2 border-[#1A1A1A] bg-zinc-50">
+            <div className="px-4 py-3 border-b-2 border-[#1A1A1A] bg-zinc-50 flex items-center justify-between">
               <p className="text-xs font-bold text-zinc-600 uppercase tracking-wider">Últimas transacciones</p>
+              <button
+                onClick={() => companyId && loadTransactions(companyId)}
+                className="flex items-center gap-1 px-2 py-1 text-[10px] font-bold text-zinc-500 hover:text-[#1A1A1A] border border-zinc-200 rounded-lg transition-colors"
+              >
+                <RefreshCw className="w-3 h-3" /> Actualizar
+              </button>
             </div>
             <div className="divide-y divide-zinc-100">
-              {MOCK_TRANSACTIONS.map((tx, i) => (
-                <div key={i} className="flex items-center justify-between px-4 py-3">
+              {transactions.length === 0 && (
+                <p className="px-4 py-6 text-center text-xs text-zinc-400">Sin transacciones aún</p>
+              )}
+              {transactions.map(tx => (
+                <div key={tx.id} className="flex items-center justify-between px-4 py-3">
                   <div>
-                    <p className="text-xs font-bold text-[#1A1A1A]">{tx.desc}</p>
-                    <p className="text-[10px] text-zinc-400">{tx.date}</p>
+                    <p className="text-xs font-bold text-[#1A1A1A]">{tx.description ?? tx.type}</p>
+                    <p className="text-[10px] text-zinc-400">{new Date(tx.created_at).toLocaleDateString("es-CO")}</p>
                   </div>
-                  <span className={`text-xs font-extrabold ${tx.type === "credit" ? "text-[#10B981]" : "text-red-500"}`}>
-                    {tx.type === "credit" ? "+" : ""}{formatCOP(Math.abs(tx.amount))}
+                  <span className={`text-xs font-extrabold ${tx.amount >= 0 ? "text-[#10B981]" : "text-red-500"}`}>
+                    {tx.amount >= 0 ? "+" : ""}{formatCOP(Math.abs(tx.amount))}
                   </span>
                 </div>
               ))}
@@ -512,7 +739,7 @@ function CorporatePortalInner({
 
       {/* ── DIAGNÓSTICO ── */}
       {corpTab === "diagnosis" && (
-        <div className="space-y-5 animate-fade-in max-w-lg">
+        <div className="space-y-5 animate-fade-in max-w-2xl">
           <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#FFD000] rounded-xl p-5">
             <div className="flex items-center gap-2 mb-4">
               <Compass className="w-5 h-5 text-[#6C47FF]" />
@@ -563,37 +790,46 @@ function CorporatePortalInner({
           {employees.length > 0 && (
             <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#6C47FF] rounded-xl overflow-hidden">
               <div className="px-4 py-3 border-b-2 border-[#1A1A1A] bg-zinc-50">
-                <p className="text-xs font-bold text-zinc-600 uppercase tracking-wider">Resultados y rutas sugeridas</p>
+                <p className="text-xs font-bold text-zinc-600 uppercase tracking-wider">Estado por colaborador</p>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
                   <thead>
                     <tr className="border-b border-zinc-100 bg-zinc-50">
-                      {["Empleado", "Ruta sugerida (3 cursos)", "Costo estimado"].map(h => (
+                      {["Empleado", "Departamento", "Estado diagnóstico", ""].map(h => (
                         <th key={h} className="text-left px-4 py-2 font-bold text-zinc-500 text-[10px] uppercase tracking-wider">{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {employees.slice(0, 5).map((emp, i) => {
-                      const start = courses.length > 2 ? i % (courses.length - 2) : 0;
-                      const suggestedCourses = courses.slice(start, start + 3);
-                      const cost = suggestedCourses.reduce((sum, c) => {
-                        const cAny = c as Course & { price?: number };
-                        return sum + (cAny.price ?? 350000);
-                      }, 0);
-                      return (
-                        <tr key={emp.id} className="border-b border-zinc-100 hover:bg-zinc-50">
-                          <td className="px-4 py-3 font-bold text-[#1A1A1A]">{emp.name}</td>
-                          <td className="px-4 py-3 text-zinc-600">
-                            {suggestedCourses.length > 0
-                              ? suggestedCourses.map(c => c.title).join(" · ")
-                              : "Diagnóstico pendiente"}
-                          </td>
-                          <td className="px-4 py-3 font-bold text-[#6C47FF]">{formatCOP(cost || 1050000)}</td>
-                        </tr>
-                      );
-                    })}
+                    {[...employees]
+                      .sort((a, b) => {
+                        const order: Record<Employee["diagStatus"], number> = { "Pendiente": 0, "Ruta Generada": 1, "Matriculado": 2 };
+                        return order[a.diagStatus] - order[b.diagStatus];
+                      })
+                      .map(emp => {
+                        const colors = getStatusColor(emp.diagStatus);
+                        return (
+                          <tr key={emp.id} className="border-b border-zinc-100 hover:bg-zinc-50">
+                            <td className="px-4 py-3 font-bold text-[#1A1A1A]">
+                              <p>{emp.name}</p>
+                              <p className="text-[10px] font-normal text-zinc-400">{emp.email}</p>
+                            </td>
+                            <td className="px-4 py-3 text-zinc-600">{emp.department || "—"}</td>
+                            <td className="px-4 py-3">
+                              <span className={`px-2 py-1 rounded-full font-bold border text-[10px] ${colors.light} ${colors.text}`}>{emp.diagStatus}</span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <button
+                                onClick={() => setSelectedEmployee(emp)}
+                                className="px-2 py-1 bg-[#6C47FF] text-white font-bold rounded border-2 border-[#6C47FF] hover:opacity-80 transition-all text-[10px]"
+                              >
+                                Ver perfil
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </table>
               </div>
@@ -625,7 +861,7 @@ function CorporatePortalInner({
             <div className="space-y-4">
               <div>
                 <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-1">Cargo</p>
-                <p className="text-sm font-bold text-[#1A1A1A]">{selectedEmployee.role || "Sin especificar"} · {selectedEmployee.department}</p>
+                <p className="text-sm font-bold text-[#1A1A1A]">{selectedEmployee.role || "Sin especificar"} · {selectedEmployee.department || "—"}</p>
               </div>
               <div>
                 <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-1">Estado diagnóstico</p>
@@ -659,14 +895,70 @@ function CorporatePortalInner({
                   </div>
                 </div>
               )}
+
+              {/* Budget assignment — always enabled */}
+              <div className="border-t-2 border-zinc-100 pt-4">
+                <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-2">Asignar presupuesto adicional</p>
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    value={budgetAssignAmt}
+                    onChange={e => setBudgetAssignAmt(e.target.value)}
+                    placeholder="Monto COP"
+                    className="flex-1 border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-3 py-2 text-sm focus:outline-none"
+                  />
+                  <button
+                    onClick={handleAssignBudget}
+                    className="px-4 py-2 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm"
+                  >
+                    Asignar
+                  </button>
+                </div>
+              </div>
             </div>
-            <button
-              onClick={() => handleAssignCredits(selectedEmployee)}
-              disabled={selectedEmployee.diagStatus !== "Ruta Generada"}
-              className="w-full mt-6 py-3 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
-            >
-              Asignar créditos
+          </div>
+        </div>
+      )}
+
+      {/* ── ADD EMPLOYEE MODAL ── */}
+      {showAddEmployeeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowAddEmployeeModal(false)}>
+          <div className="absolute inset-0 bg-[#1A1A1A]/50 backdrop-blur-sm" />
+          <div
+            className="relative w-full max-w-md bg-white border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#FFD000] rounded-2xl p-6 animate-fade-in"
+            onClick={e => e.stopPropagation()}
+          >
+            <button onClick={() => setShowAddEmployeeModal(false)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition-colors">
+              <X className="w-4 h-4" />
             </button>
+            <h3 className="font-display font-extrabold text-[#1A1A1A] text-lg mb-5">Agregar colaborador</h3>
+            <form onSubmit={handleAddEmployee} className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="col-span-2">
+                  <label className="text-xs font-bold text-zinc-600 block mb-1">Nombre completo *</label>
+                  <input value={empName} onChange={e => setEmpName(e.target.value)} placeholder="Ana Gómez" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
+                </div>
+                <div className="col-span-2">
+                  <label className="text-xs font-bold text-zinc-600 block mb-1">Correo electrónico *</label>
+                  <input type="email" value={empEmail} onChange={e => setEmpEmail(e.target.value)} placeholder="ana@empresa.com" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-zinc-600 block mb-1">Cargo</label>
+                  <input value={empRole} onChange={e => setEmpRole(e.target.value)} placeholder="Analista de datos" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-zinc-600 block mb-1">Departamento</label>
+                  <input value={empDept} onChange={e => setEmpDept(e.target.value)} placeholder="Tecnología" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
+                </div>
+                <div className="col-span-2">
+                  <label className="text-xs font-bold text-zinc-600 block mb-1">Presupuesto asignado (COP)</label>
+                  <input type="number" value={empBudget} onChange={e => setEmpBudget(e.target.value)} placeholder="0" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
+                </div>
+              </div>
+              <button type="submit" className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm">
+                Agregar colaborador →
+              </button>
+            </form>
           </div>
         </div>
       )}

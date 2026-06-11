@@ -31,7 +31,8 @@ import {
   Activity,
   AlertCircle,
   Globe,
-  Building
+  Building,
+  Settings
 } from "lucide-react";
 import { Course, Student, Employee, UniversityStats, MentorSession, AuthLog, Achievement } from "./types";
 import MarketingView from "./components/MarketingView";
@@ -556,6 +557,7 @@ export default function App() {
               { id: "talent", label: "Talento", Icon: Users },
               { id: "wallet", label: "Billetera", Icon: Wallet },
               { id: "diagnosis", label: "Diagnóstico", Icon: Compass },
+              { id: "config", label: "Configuración", Icon: Settings },
             ] as Array<{ id: string; label: string; Icon: React.ComponentType<{ className?: string }> }>
           ).map(({ id, label, Icon }) => (
             <button

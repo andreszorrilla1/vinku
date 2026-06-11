@@ -478,7 +478,7 @@ export async function assignEmployeeBudget(employeeId: string, companyId: string
 
   const { data: emp } = await supabase
     .from('employees')
-    .select('assigned_budget')
+    .select('assigned_budget, profile_id')
     .eq('id', employeeId)
     .single();
   if (!emp) throw new Error('Empleado no encontrado');
@@ -491,6 +491,28 @@ export async function assignEmployeeBudget(employeeId: string, companyId: string
   if (empUpdate.error) throw empUpdate.error;
   if (walletUpdate.error) throw walletUpdate.error;
   if (walletUpdate.count === 0) throw new Error('No se pudo descontar el saldo. Verifica tu sesión e intenta de nuevo.');
+
+  // Credit the employee's personal wallet so they can enroll in courses
+  if (emp.profile_id) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('wallet_balance')
+      .eq('id', emp.profile_id)
+      .single();
+    if (profile) {
+      await supabase
+        .from('profiles')
+        .update({ wallet_balance: (profile.wallet_balance ?? 0) + amount })
+        .eq('id', emp.profile_id);
+      // Student wallet transaction record
+      await supabase.from('wallet_transactions').insert({
+        profile_id: emp.profile_id,
+        amount,
+        type: 'allocation',
+        description: `Créditos asignados por empresa`,
+      }).catch(() => {});
+    }
+  }
 
   await supabase.from('wallet_transactions').insert({
     company_id: companyId,

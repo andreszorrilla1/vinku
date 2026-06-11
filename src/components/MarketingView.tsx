@@ -145,14 +145,32 @@ export default function MarketingView({
       corporate: "corporate_admin",
       university: "university_admin",
     };
-    const { error } = await signUp(formEmail, formPassword, formName, roleMap[onboardingRole]);
+    const { error, userId } = await signUp(formEmail, formPassword, formName, roleMap[onboardingRole]);
     setAuthLoading(false);
     if (error) {
       setAuthError(error);
       return;
     }
-    // Fire-and-forget lead capture for corporate and university
-    if (onboardingRole === "corporate") {
+
+    // For corporate: create company immediately and link to profile
+    if (onboardingRole === "corporate" && userId) {
+      try {
+        const { supabase: sb } = await import("../lib/supabase");
+        const { data: company } = await sb.from("companies").insert({
+          name: formCompanyName || formName,
+          nit: formNit || null,
+          industry: formSector || null,
+          size_employees: parseInt(formEmployeeCount) || null,
+          contact_name: formName,
+          contact_email: formEmail,
+          wallet_balance: 0,
+        }).select("id").single();
+        if (company?.id) {
+          await sb.from("profiles").update({ company_id: company.id }).eq("id", userId);
+        }
+      } catch {
+        // non-fatal — user can complete company setup inside the portal
+      }
       import("../lib/api").then(({ submitLead }) => submitLead({
         company_name: formCompanyName || formName,
         contact_name: formName,
@@ -161,7 +179,24 @@ export default function MarketingView({
         message: `Sector: ${formSector}, Ciudad: ${formCity}, NIT: ${formNit}`,
         source: 'registro_portal'
       }).catch(() => {}));
-    } else if (onboardingRole === "university") {
+    } else if (onboardingRole === "university" && userId) {
+      // For university: create university record immediately
+      try {
+        const { supabase: sb } = await import("../lib/supabase");
+        const { data: uni } = await sb.from("universities").insert({
+          name: formUniName || formName,
+          legal_nit: formUniNit || null,
+          contact_email: formEmail,
+          approval_status: "Pendiente",
+          liquid_balance: 0,
+          total_earnings: 0,
+        }).select("id").single();
+        if (uni?.id) {
+          await sb.from("profiles").update({ university_id: uni.id }).eq("id", userId);
+        }
+      } catch {
+        // non-fatal
+      }
       import("../lib/api").then(({ submitLead }) => submitLead({
         company_name: formUniName || formName,
         contact_name: formName,
@@ -171,6 +206,7 @@ export default function MarketingView({
         source: 'registro_universidad'
       }).catch(() => {}));
     }
+
     triggerToast(`¡Bienvenido a Campus Pass! Verifica tu correo para activar la cuenta.`, "success");
     setActiveRole(onboardingRole);
     if (onboardingRole === "student") setStudentTab("diag");

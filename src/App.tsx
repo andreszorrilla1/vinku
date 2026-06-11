@@ -50,7 +50,7 @@ export default function App() {
   const [marketingTab, setMarketingTab] = useState<"home" | "b2c" | "b2b" | "universidad" | "auth">("home");
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [studentTab, setStudentTab] = useState<"pass" | "diag" | "market" | "wallet" | "fellowship" | "portfolio">("pass");
-  const [corpTab, setCorpTab] = useState<"dashboard" | "talent" | "wallet" | "diagnosis">("dashboard");
+  const [corpTab, setCorpTab] = useState<"dashboard" | "talent" | "wallet" | "diagnosis" | "config">("dashboard");
   const [uniTab, setUniTab] = useState<"dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero">("dashboard");
   const [archTab, setArchTab] = useState<"sitemap" | "blueprint" | "crypto">("sitemap");
 

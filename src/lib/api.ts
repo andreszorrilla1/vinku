@@ -433,6 +433,39 @@ export async function addEmployee(employee: Database['public']['Tables']['employ
   throw error;
 }
 
+export async function updateEmployee(id: string, updates: { name?: string; role_title?: string; department?: string }) {
+  const { error } = await supabase.from('employees').update(updates).eq('id', id);
+  if (error) throw error;
+}
+
+export async function removeEmployee(id: string) {
+  const { error } = await supabase.from('employees').delete().eq('id', id);
+  if (error) throw error;
+}
+
+export async function updateCompany(id: string, updates: { name?: string; nit?: string; industry?: string; size_employees?: number | null; contact_name?: string }) {
+  const { error, count } = await supabase.from('companies').update(updates).eq('id', id);
+  if (error) throw error;
+  if (count === 0) throw new Error('No se pudo actualizar la empresa. Verifica tu sesión.');
+}
+
+export async function sendEmployeeDiagnosis(employeeId: string, companyId: string, objective: string, deadline: string | null) {
+  const { error } = await supabase
+    .from('employees')
+    .update({ diag_status: 'Ruta Generada' })
+    .eq('id', employeeId)
+    .eq('company_id', companyId);
+  if (error) throw error;
+
+  const { data: company } = await supabase.from('companies').select('name, contact_email').eq('id', companyId).single();
+  await supabase.from('leads').insert({
+    company_name: company?.name ?? companyId,
+    contact_email: company?.contact_email ?? '',
+    message: `Diagnóstico individual: ${objective}${deadline ? ` | Fecha límite: ${deadline}` : ''}`,
+    source: 'diagnostico_individual',
+  }).catch(() => {});
+}
+
 export async function assignEmployeeBudget(employeeId: string, companyId: string, amount: number) {
   // Deduct from company wallet first
   const { data: company } = await supabase

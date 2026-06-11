@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import {
   Users, Wallet, Compass, TrendingUp, Building,
   Mail, CheckCircle, AlertCircle, X, BarChart3,
-  Map, Search, Plus, RefreshCw
+  Map, Search, Plus, RefreshCw, Edit2, Trash2,
+  Send, Settings, Download, Award
 } from "lucide-react";
 import { Employee, Course } from "../types";
 import { useAuth } from "../contexts/AuthContext";
@@ -121,6 +122,19 @@ function CorporatePortalInner({
   const [empEnrollments, setEmpEnrollments] = useState<Awaited<ReturnType<typeof api.fetchEnrollments>>>([]);
   const [loadingEmpEnrollments, setLoadingEmpEnrollments] = useState(false);
 
+  // drawer edit mode
+  const [editMode, setEditMode] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editRole, setEditRole] = useState("");
+  const [editDept, setEditDept] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
+  const [removingEmp, setRemovingEmp] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  // individual diagnosis in drawer
+  const [sendingIndivDiag, setSendingIndivDiag] = useState(false);
+  const [indivDiagObjective, setIndivDiagObjective] = useState("Identificar brechas de habilidades técnicas");
+
   // add employee modal
   const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
   const [empName, setEmpName] = useState("");
@@ -145,6 +159,10 @@ function CorporatePortalInner({
   const [showDiagConfirm, setShowDiagConfirm] = useState(false);
   const [diagSentAt, setDiagSentAt] = useState<string | null>(null);
 
+  // company config edit
+  const [configForm, setConfigForm] = useState({ name: "", nit: "", sector: "", employees: "", contactName: "" });
+  const [savingConfig, setSavingConfig] = useState(false);
+
   // ── on mount: resolve company ──────────────────────────────────────────────
   useEffect(() => {
     let cancelled = false;
@@ -156,8 +174,6 @@ function CorporatePortalInner({
 
         let cid = profile.company_id;
 
-        // Auto-link: if no company_id on profile, look for a company created
-        // with this user's email (handles race condition on signUp trigger)
         if (!cid) {
           const { data: found } = await supabase
             .from("companies")
@@ -176,6 +192,13 @@ function CorporatePortalInner({
           if (company && !cancelled) {
             setCompanyInfo(company);
             setIsRegistered(true);
+            setConfigForm({
+              name: company.name ?? "",
+              nit: company.nit ?? "",
+              sector: company.industry ?? "",
+              employees: String(company.size_employees ?? ""),
+              contactName: company.contact_name ?? "",
+            });
           }
         }
       } finally {
@@ -238,6 +261,7 @@ function CorporatePortalInner({
       setCompanyId(company.id);
       setCompanyInfo(company);
       setIsRegistered(true);
+      setConfigForm({ name: company.name, nit: company.nit ?? "", sector: company.industry ?? "", employees: String(company.size_employees ?? ""), contactName: company.contact_name ?? "" });
       triggerToast("¡Empresa registrada exitosamente!", "success");
     } catch {
       triggerToast("Error al registrar empresa", "error");
@@ -259,22 +283,35 @@ function CorporatePortalInner({
       setRechargeAmt("1000000");
       triggerToast(`Recarga de ${formatCOP(amount)} procesada y guardada`, "success");
       await loadTransactions(companyId);
-      fetchState(); // sync App-level state so balance persists on re-login
+      fetchState();
     } catch (err: any) {
       triggerToast(err?.message ?? "Error al procesar recarga", "error");
     }
   }
 
-  // ── open employee drawer with enrollment history ──────────────────────────
+  // ── drawer open/close ──────────────────────────────────────────────────────
+  function closeDrawer() {
+    setSelectedEmployee(null);
+    setBudgetAssignAmt("");
+    setEditMode(false);
+    setConfirmDelete(false);
+  }
+
   async function openEmployeeDrawer(emp: Employee) {
     setSelectedEmployee(emp);
     setEmpEnrollments([]);
+    setBudgetAssignAmt("");
+    setEditMode(false);
+    setConfirmDelete(false);
+    setEditName(emp.name);
+    setEditRole(emp.role || "");
+    setEditDept(emp.department || "");
     setLoadingEmpEnrollments(true);
     try {
       const data = await api.fetchEmployeeEnrollments(emp.id);
       setEmpEnrollments(data);
     } catch {
-      // silently ignore — enrollment history is supplementary
+      // enrollment history is supplementary
     } finally {
       setLoadingEmpEnrollments(false);
     }
@@ -288,15 +325,76 @@ function CorporatePortalInner({
       triggerToast("Ingresa un monto válido", "error");
       return;
     }
+    if (amount > walletBalance) {
+      triggerToast(`Saldo insuficiente. Disponible: ${formatCOP(walletBalance)}`, "error");
+      return;
+    }
     try {
       const newBalance = await api.assignEmployeeBudget(selectedEmployee.id, companyId, amount);
       setCompanyInfo(prev => prev ? { ...prev, wallet_balance: newBalance } : prev);
       triggerToast(`${formatCOP(amount)} asignados a ${selectedEmployee.name}`, "success");
       fetchState();
-      setSelectedEmployee(null);
-      setBudgetAssignAmt("");
+      closeDrawer();
     } catch (err: any) {
       triggerToast(err?.message ?? "Error al asignar presupuesto", "error");
+    }
+  }
+
+  // ── edit employee ──────────────────────────────────────────────────────────
+  async function handleEditEmployee() {
+    if (!selectedEmployee) return;
+    setSavingEdit(true);
+    try {
+      await api.updateEmployee(selectedEmployee.id, {
+        name: editName || undefined,
+        role_title: editRole || undefined,
+        department: editDept || undefined,
+      });
+      triggerToast("Colaborador actualizado", "success");
+      fetchState();
+      setEditMode(false);
+      closeDrawer();
+    } catch (err: any) {
+      triggerToast(err?.message ?? "Error al actualizar", "error");
+    } finally {
+      setSavingEdit(false);
+    }
+  }
+
+  // ── remove employee ────────────────────────────────────────────────────────
+  async function handleRemoveEmployee() {
+    if (!selectedEmployee) return;
+    setRemovingEmp(true);
+    try {
+      await api.removeEmployee(selectedEmployee.id);
+      triggerToast(`${selectedEmployee.name} eliminado del equipo`, "success");
+      fetchState();
+      closeDrawer();
+    } catch (err: any) {
+      triggerToast(err?.message ?? "Error al eliminar", "error");
+    } finally {
+      setRemovingEmp(false);
+      setConfirmDelete(false);
+    }
+  }
+
+  // ── individual diagnosis ───────────────────────────────────────────────────
+  async function handleSendIndivDiagnosis() {
+    if (!selectedEmployee || !companyId) return;
+    if (selectedEmployee.diagStatus !== "Pendiente") {
+      triggerToast("Este colaborador ya tiene ruta generada o está matriculado", "info");
+      return;
+    }
+    setSendingIndivDiag(true);
+    try {
+      await api.sendEmployeeDiagnosis(selectedEmployee.id, companyId, indivDiagObjective, null);
+      triggerToast(`Diagnóstico enviado a ${selectedEmployee.name}`, "success");
+      fetchState();
+      closeDrawer();
+    } catch (err: any) {
+      triggerToast(err?.message ?? "Error al enviar diagnóstico", "error");
+    } finally {
+      setSendingIndivDiag(false);
     }
   }
 
@@ -308,9 +406,14 @@ function CorporatePortalInner({
       triggerToast("Nombre y correo son obligatorios", "error");
       return;
     }
+    const budget = parseInt(empBudget) || 0;
+    if (budget > walletBalance) {
+      triggerToast(`Saldo insuficiente. Disponible: ${formatCOP(walletBalance)}`, "error");
+      return;
+    }
     setAddingEmp(true);
     try {
-      await api.addEmployee({
+      const newEmpId = await api.addEmployee({
         company_id: companyId,
         profile_id: null,
         name: empName,
@@ -320,12 +423,21 @@ function CorporatePortalInner({
         diag_status: "Pendiente",
         active_path: null,
         progress_pct: 0,
-        assigned_budget: parseInt(empBudget) || 0,
+        assigned_budget: 0,
         suggested_route_cost: null,
       });
+      // Deduct wallet if budget was assigned
+      if (budget > 0 && newEmpId) {
+        try {
+          const newBalance = await api.assignEmployeeBudget(newEmpId, companyId, budget);
+          setCompanyInfo(prev => prev ? { ...prev, wallet_balance: newBalance } : prev);
+        } catch {
+          // Budget assignment failed — employee still created, warn but don't block
+          triggerToast("Colaborador creado, pero no se pudo asignar el presupuesto automáticamente. Asígnalo manualmente desde el perfil.", "info");
+        }
+      }
       fetchState();
       setShowAddEmployeeModal(false);
-      // Build invitation link with email pre-filled
       const inviteLink = `${window.location.origin}?invite=1&email=${encodeURIComponent(empEmail)}&company=${encodeURIComponent(companyInfo?.name ?? "")}`;
       setInviteData({ name: empName, email: empEmail, link: inviteLink });
       setEmpName(""); setEmpEmail(""); setEmpRole(""); setEmpDept(""); setEmpBudget("0");
@@ -341,18 +453,13 @@ function CorporatePortalInner({
     }
   }
 
+  // ── csv ────────────────────────────────────────────────────────────────────
   function parseCSV(text: string): Array<{name:string;email:string;role:string;department:string;budget:string}> {
     const lines = text.trim().split('\n');
     if (lines.length < 2) return [];
     return lines.slice(1).map(line => {
       const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
-      return {
-        name: cols[0] ?? '',
-        email: cols[1] ?? '',
-        role: cols[2] ?? '',
-        department: cols[3] ?? '',
-        budget: cols[4] ?? '0',
-      };
+      return { name: cols[0] ?? '', email: cols[1] ?? '', role: cols[2] ?? '', department: cols[3] ?? '', budget: cols[4] ?? '0' };
     }).filter(r => r.name && r.email);
   }
 
@@ -379,40 +486,67 @@ function CorporatePortalInner({
 
   async function handleImportCsv() {
     if (!companyId || csvPreview.length === 0) return;
+    const totalBudget = csvPreview.reduce((sum, r) => sum + (parseInt(r.budget) || 0), 0);
+    if (totalBudget > walletBalance) {
+      triggerToast(`Saldo insuficiente para importar. Presupuesto total CSV: ${formatCOP(totalBudget)}. Disponible: ${formatCOP(walletBalance)}`, "error");
+      return;
+    }
     setUploadingCsv(true);
+    let errors = 0;
     try {
       for (const row of csvPreview) {
-        await api.addEmployee({
-          company_id: companyId,
-          name: row.name,
-          email: row.email,
-          role_title: row.role || null,
-          department: row.department || null,
-          diag_status: "Pendiente",
-          active_path: null,
-          progress_pct: 0,
-          assigned_budget: parseInt(row.budget) || 0,
-          suggested_route_cost: null,
-        });
+        try {
+          const newId = await api.addEmployee({
+            company_id: companyId,
+            profile_id: null,
+            name: row.name,
+            email: row.email,
+            role_title: row.role || null,
+            department: row.department || null,
+            diag_status: "Pendiente",
+            active_path: null,
+            progress_pct: 0,
+            assigned_budget: 0,
+            suggested_route_cost: null,
+          });
+          const budget = parseInt(row.budget) || 0;
+          if (budget > 0 && newId) {
+            await api.assignEmployeeBudget(newId, companyId, budget).catch(() => {});
+          }
+        } catch {
+          errors++;
+        }
       }
-      triggerToast(`${csvPreview.length} empleados importados exitosamente`, "success");
+      const imported = csvPreview.length - errors;
+      triggerToast(`${imported} colaborador(es) importados${errors > 0 ? ` (${errors} con error)` : ""}`, errors > 0 ? "info" : "success");
       fetchState();
       setShowCsvModal(false);
       setCsvPreview([]);
       setCsvFile(null);
-    } catch {
-      triggerToast("Error al importar empleados", "error");
     } finally {
       setUploadingCsv(false);
     }
   }
 
+  // ── export employees csv ───────────────────────────────────────────────────
+  function handleExportCsv() {
+    if (employees.length === 0) { triggerToast("No hay colaboradores para exportar", "error"); return; }
+    const header = "Nombre,Correo,Cargo,Departamento,Estado Diagnóstico,Progreso %,Presupuesto COP";
+    const rows = employees.map(e =>
+      `"${e.name}","${e.email}","${e.role || ""}","${e.department || ""}","${e.diagStatus}",${e.progress},${e.assignedBudget}`
+    );
+    const csv = [header, ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `equipo_${companyInfo?.name ?? "empresa"}_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ── diagnosis ──────────────────────────────────────────────────────────────
   function handleBulkDiagnosis(e: React.FormEvent) {
     e.preventDefault();
-    if (employees.length === 0) {
-      triggerToast("Primero agrega empleados para enviar el diagnóstico.", "error");
-      return;
-    }
+    if (employees.length === 0) { triggerToast("Primero agrega empleados para enviar el diagnóstico.", "error"); return; }
     setShowDiagConfirm(true);
   }
 
@@ -430,6 +564,35 @@ function CorporatePortalInner({
     }
   }
 
+  // ── save company config ────────────────────────────────────────────────────
+  async function handleSaveConfig(e: React.FormEvent) {
+    e.preventDefault();
+    if (!companyId) return;
+    setSavingConfig(true);
+    try {
+      await api.updateCompany(companyId, {
+        name: configForm.name || undefined,
+        nit: configForm.nit || undefined,
+        industry: configForm.sector || undefined,
+        size_employees: parseInt(configForm.employees) || null,
+        contact_name: configForm.contactName || undefined,
+      });
+      setCompanyInfo(prev => prev ? {
+        ...prev,
+        name: configForm.name || prev.name,
+        nit: configForm.nit || prev.nit,
+        industry: configForm.sector || prev.industry,
+        size_employees: parseInt(configForm.employees) || prev.size_employees,
+        contact_name: configForm.contactName || prev.contact_name,
+      } : prev);
+      triggerToast("Empresa actualizada exitosamente", "success");
+    } catch (err: any) {
+      triggerToast(err?.message ?? "Error al guardar cambios", "error");
+    } finally {
+      setSavingConfig(false);
+    }
+  }
+
   // ── derived ────────────────────────────────────────────────────────────────
   const { employees, budgetLeft } = corporate;
   const filteredEmployees = employees.filter(e =>
@@ -444,13 +607,20 @@ function CorporatePortalInner({
   const completados = employees.filter(e => e.diagStatus !== "Pendiente").length;
   const totalEnrollments = employees.reduce((sum, e) => sum + (e.activePath?.length ?? 0), 0);
   const walletBalance = companyInfo?.wallet_balance ?? budgetLeft;
+  const totalAssigned = employees.reduce((sum, e) => sum + (e.assignedBudget ?? 0), 0);
+  const utilizationPct = (walletBalance + totalAssigned) > 0
+    ? Math.round((totalAssigned / (walletBalance + totalAssigned)) * 100)
+    : 0;
 
   const tabs = [
     { id: "dashboard", label: "Dashboard", icon: TrendingUp },
     { id: "talent", label: "Talento", icon: Users },
     { id: "wallet", label: "Billetera", icon: Wallet },
     { id: "diagnosis", label: "Diagnóstico", icon: Compass },
+    { id: "config", label: "Configuración", icon: Settings },
   ] as const;
+
+  type TabId = typeof tabs[number]["id"];
 
   // ── loading splash ─────────────────────────────────────────────────────────
   if (regLoading) {
@@ -473,68 +643,28 @@ function CorporatePortalInner({
           </p>
         </div>
         <form onSubmit={handleRegister} className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-xl p-6 space-y-4">
-          {/* Nombre del contacto */}
           <div>
             <label className="text-xs font-bold text-zinc-600 block mb-1">Nombre del contacto *</label>
-            <input
-              value={regForm.contactName}
-              onChange={ev => setRegForm(p => ({ ...p, contactName: ev.target.value }))}
-              placeholder="Tu nombre completo"
-              className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors"
-            />
+            <input value={regForm.contactName} onChange={ev => setRegForm(p => ({ ...p, contactName: ev.target.value }))} placeholder="Tu nombre completo" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors" />
           </div>
-          {/* Nombre de la empresa */}
           <div>
             <label className="text-xs font-bold text-zinc-600 block mb-1">Nombre de la empresa *</label>
-            <input
-              value={regForm.company}
-              onChange={ev => setRegForm(p => ({ ...p, company: ev.target.value }))}
-              placeholder="Ej: Bancolombia S.A."
-              className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors"
-            />
+            <input value={regForm.company} onChange={ev => setRegForm(p => ({ ...p, company: ev.target.value }))} placeholder="Ej: Bancolombia S.A." className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors" />
           </div>
-          {/* NIT */}
           <div>
             <label className="text-xs font-bold text-zinc-600 block mb-1">NIT</label>
-            <input
-              value={regForm.nit}
-              onChange={ev => setRegForm(p => ({ ...p, nit: ev.target.value }))}
-              placeholder="Ej: 890.903.938-8"
-              className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors"
-            />
+            <input value={regForm.nit} onChange={ev => setRegForm(p => ({ ...p, nit: ev.target.value }))} placeholder="Ej: 890.903.938-8" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors" />
           </div>
-          {/* Ciudad */}
-          <div>
-            <label className="text-xs font-bold text-zinc-600 block mb-1">Ciudad</label>
-            <input
-              value={regForm.city}
-              onChange={ev => setRegForm(p => ({ ...p, city: ev.target.value }))}
-              placeholder="Ej: Bogotá, Medellín..."
-              className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors"
-            />
-          </div>
-          {/* Sector */}
           <div>
             <label className="text-xs font-bold text-zinc-600 block mb-1">Sector</label>
-            <select
-              value={regForm.sector}
-              onChange={ev => setRegForm(p => ({ ...p, sector: ev.target.value }))}
-              className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none bg-white transition-colors"
-            >
+            <select value={regForm.sector} onChange={ev => setRegForm(p => ({ ...p, sector: ev.target.value }))} className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none bg-white transition-colors">
               <option value="">Selecciona un sector...</option>
               {SECTOR_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
-          {/* Número de empleados */}
           <div>
             <label className="text-xs font-bold text-zinc-600 block mb-1">Número de empleados</label>
-            <input
-              type="number"
-              value={regForm.employees}
-              onChange={ev => setRegForm(p => ({ ...p, employees: ev.target.value }))}
-              placeholder="Ej: 500"
-              className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors"
-            />
+            <input type="number" value={regForm.employees} onChange={ev => setRegForm(p => ({ ...p, employees: ev.target.value }))} placeholder="Ej: 500" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none transition-colors" />
           </div>
           <button type="submit" className="w-full py-3.5 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:shadow-[6px_6px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm">
             Registrar empresa →
@@ -550,11 +680,11 @@ function CorporatePortalInner({
       <div className="flex gap-1 overflow-x-auto no-scrollbar pb-2 border-b-2 border-[#1A1A1A]">
         {tabs.map(tab => {
           const Icon = tab.icon;
-          const isActive = corpTab === tab.id;
+          const isActive = (corpTab as string) === tab.id;
           return (
             <button
               key={tab.id}
-              onClick={() => setCorpTab(tab.id)}
+              onClick={() => setCorpTab(tab.id as any)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap border-2 transition-all shrink-0 ${
                 isActive
                   ? "bg-[#FFD000] text-[#1A1A1A] border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A]"
@@ -574,17 +704,18 @@ function CorporatePortalInner({
           <span><span className="font-bold text-[#1A1A1A]">Empresa:</span> {companyInfo.name}</span>
           {companyInfo.nit && <span><span className="font-bold text-[#1A1A1A]">NIT:</span> {companyInfo.nit}</span>}
           {companyInfo.industry && <span><span className="font-bold text-[#1A1A1A]">Sector:</span> {companyInfo.industry}</span>}
-          {companyInfo.size_employees != null && <span><span className="font-bold text-[#1A1A1A]">Empleados:</span> {companyInfo.size_employees}</span>}
+          {companyInfo.size_employees != null && <span><span className="font-bold text-[#1A1A1A]">Planta:</span> {companyInfo.size_employees} empleados</span>}
+          <span className="ml-auto font-bold text-[#10B981]">{formatCOP(walletBalance)} disponibles</span>
         </div>
       )}
 
       {/* ── DASHBOARD ── */}
-      {corpTab === "dashboard" && (
+      {(corpTab as string) === "dashboard" && (
         <div className="space-y-6 animate-fade-in">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               { label: "Presupuesto disponible", value: formatCOP(walletBalance), icon: Wallet, shadow: "#FFD000" },
-              { label: "Empleados activos", value: String(employees.length), icon: Users, shadow: "#6C47FF" },
+              { label: "Colaboradores activos", value: String(employees.length), icon: Users, shadow: "#6C47FF" },
               { label: "Diagnósticos completados", value: String(completados), icon: CheckCircle, shadow: "#10B981" },
               { label: "Cursos activos", value: String(totalEnrollments), icon: TrendingUp, shadow: "#F97316" },
             ].map(kpi => {
@@ -597,6 +728,43 @@ function CorporatePortalInner({
                 </div>
               );
             })}
+          </div>
+
+          {/* ROI / Utilización de presupuesto */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#6C47FF] rounded-xl p-4">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Utilización del presupuesto</p>
+                <Award className="w-4 h-4 text-[#6C47FF]" />
+              </div>
+              <p className="font-display font-extrabold text-2xl text-[#1A1A1A] mb-1">{utilizationPct}%</p>
+              <div className="w-full h-3 bg-zinc-100 rounded-full overflow-hidden border border-zinc-200">
+                <div
+                  className="h-full rounded-full transition-all"
+                  style={{ width: `${utilizationPct}%`, background: utilizationPct > 80 ? "#10B981" : utilizationPct > 40 ? "#FFD000" : "#6C47FF" }}
+                />
+              </div>
+              <div className="flex justify-between mt-2 text-[10px] text-zinc-400">
+                <span>Asignado: {formatCOP(totalAssigned)}</span>
+                <span>Disponible: {formatCOP(walletBalance)}</span>
+              </div>
+            </div>
+
+            <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#10B981] rounded-xl p-4">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Inversión por persona</p>
+                <BarChart3 className="w-4 h-4 text-[#10B981]" />
+              </div>
+              <p className="font-display font-extrabold text-2xl text-[#1A1A1A] mb-1">
+                {employees.length > 0 ? formatCOP(Math.round(totalAssigned / employees.length)) : "$0 COP"}
+              </p>
+              <p className="text-[10px] text-zinc-400">Promedio presupuesto asignado por colaborador</p>
+              {enrolled > 0 && (
+                <p className="text-[10px] text-[#10B981] font-bold mt-1">
+                  {enrolled} colaborador{enrolled !== 1 ? "es" : ""} ya matriculado{enrolled !== 1 ? "s" : ""}
+                </p>
+              )}
+            </div>
           </div>
 
           <div>
@@ -641,51 +809,34 @@ function CorporatePortalInner({
       )}
 
       {/* ── TALENTO ── */}
-      {corpTab === "talent" && (
+      {(corpTab as string) === "talent" && (
         <div className="space-y-5 animate-fade-in">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
-              <input
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="Buscar colaborador..."
-                className="w-full pl-9 pr-4 py-2 border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl text-sm focus:outline-none"
-              />
+              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar colaborador..." className="w-full pl-9 pr-4 py-2 border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl text-sm focus:outline-none" />
             </div>
             <div className="flex gap-2 flex-wrap">
-              <button
-                onClick={() => setTalentView("map")}
-                className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 transition-all ${talentView === "map" ? "bg-[#1A1A1A] text-[#FFD000] border-[#1A1A1A]" : "bg-white text-zinc-500 border-zinc-200 hover:border-[#1A1A1A]"}`}
-              >
+              <button onClick={() => setTalentView("map")} className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 transition-all ${talentView === "map" ? "bg-[#1A1A1A] text-[#FFD000] border-[#1A1A1A]" : "bg-white text-zinc-500 border-zinc-200 hover:border-[#1A1A1A]"}`}>
                 <Map className="w-3.5 h-3.5" /> Mapa
               </button>
-              <button
-                onClick={() => setTalentView("table")}
-                className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 transition-all ${talentView === "table" ? "bg-[#1A1A1A] text-[#FFD000] border-[#1A1A1A]" : "bg-white text-zinc-500 border-zinc-200 hover:border-[#1A1A1A]"}`}
-              >
+              <button onClick={() => setTalentView("table")} className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 transition-all ${talentView === "table" ? "bg-[#1A1A1A] text-[#FFD000] border-[#1A1A1A]" : "bg-white text-zinc-500 border-zinc-200 hover:border-[#1A1A1A]"}`}>
                 <BarChart3 className="w-3.5 h-3.5" /> Tabla
               </button>
-              <button
-                onClick={() => setShowAddEmployeeModal(true)}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 bg-[#FFD000] text-[#1A1A1A] border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] hover:shadow-[3px_3px_0px_0px_#1A1A1A] transition-all"
-              >
-                <Plus className="w-3.5 h-3.5" /> Agregar empleado
+              <button onClick={() => setShowAddEmployeeModal(true)} className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 bg-[#FFD000] text-[#1A1A1A] border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] hover:shadow-[3px_3px_0px_0px_#1A1A1A] transition-all">
+                <Plus className="w-3.5 h-3.5" /> Agregar
               </button>
-              <button
-                onClick={() => setShowCsvModal(true)}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 bg-white text-[#1A1A1A] border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] hover:shadow-[3px_3px_0px_0px_#1A1A1A] transition-all"
-              >
+              <button onClick={() => setShowCsvModal(true)} className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 bg-white text-[#1A1A1A] border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] hover:shadow-[3px_3px_0px_0px_#1A1A1A] transition-all">
                 <Plus className="w-3.5 h-3.5" /> Cargar CSV
               </button>
+              <button onClick={handleExportCsv} className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 bg-white text-zinc-600 border-zinc-200 hover:border-[#1A1A1A] transition-all">
+                <Download className="w-3.5 h-3.5" /> Exportar
+              </button>
               <button
-                onClick={() => {
-                  if (employees.length === 0) { triggerToast("Primero agrega empleados.", "error"); return; }
-                  setShowDiagConfirm(true);
-                }}
+                onClick={() => { if (employees.length === 0) { triggerToast("Primero agrega empleados.", "error"); return; } setShowDiagConfirm(true); }}
                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 bg-[#6C47FF] text-white border-[#6C47FF] hover:opacity-90 transition-all"
               >
-                <Mail className="w-3.5 h-3.5" /> Enviar Diagnóstico Masivo
+                <Mail className="w-3.5 h-3.5" /> Diagnóstico masivo
               </button>
             </div>
           </div>
@@ -711,16 +862,9 @@ function CorporatePortalInner({
                         const colors = getStatusColor(emp.diagStatus);
                         const initials = emp.name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
                         return (
-                          <button
-                            key={emp.id}
-                            onClick={() => openEmployeeDrawer(emp)}
-                            className="w-full text-left bg-zinc-50 hover:bg-[#FFD000]/10 border border-zinc-200 hover:border-[#1A1A1A] rounded-lg p-2.5 transition-all"
-                          >
+                          <button key={emp.id} onClick={() => openEmployeeDrawer(emp)} className="w-full text-left bg-zinc-50 hover:bg-[#FFD000]/10 border border-zinc-200 hover:border-[#1A1A1A] rounded-lg p-2.5 transition-all">
                             <div className="flex items-center gap-2 mb-2">
-                              <div
-                                className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-extrabold text-[#1A1A1A] shrink-0"
-                                style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}
-                              >
+                              <div className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-extrabold text-[#1A1A1A] shrink-0" style={{ backgroundColor: AVATAR_COLORS[i % AVATAR_COLORS.length] }}>
                                 {initials}
                               </div>
                               <div className="flex-1 min-w-0">
@@ -753,7 +897,7 @@ function CorporatePortalInner({
                 <table className="w-full text-xs">
                   <thead>
                     <tr className="border-b-2 border-[#1A1A1A] bg-zinc-50">
-                      {["Empleado", "Cargo", "Dpto", "Diagnóstico", "Progreso", "Presupuesto COP", ""].map(h => (
+                      {["Colaborador", "Cargo", "Dpto", "Diagnóstico", "Progreso", "Presupuesto COP", ""].map(h => (
                         <th key={h} className="text-left px-4 py-3 font-bold text-zinc-600 uppercase tracking-wider text-[10px]">{h}</th>
                       ))}
                     </tr>
@@ -784,10 +928,7 @@ function CorporatePortalInner({
                           </td>
                           <td className="px-4 py-3 font-bold text-[#10B981]">{formatCOP(emp.assignedBudget)}</td>
                           <td className="px-4 py-3">
-                            <button
-                              onClick={() => openEmployeeDrawer(emp)}
-                              className="px-2 py-1 bg-[#FFD000] text-[#1A1A1A] font-bold rounded border-2 border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] hover:shadow-[3px_3px_0px_0px_#1A1A1A] transition-all text-[10px]"
-                            >
+                            <button onClick={() => openEmployeeDrawer(emp)} className="px-2 py-1 bg-[#FFD000] text-[#1A1A1A] font-bold rounded border-2 border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] hover:shadow-[3px_3px_0px_0px_#1A1A1A] transition-all text-[10px]">
                               Ver →
                             </button>
                           </td>
@@ -808,24 +949,32 @@ function CorporatePortalInner({
       )}
 
       {/* ── BILLETERA ── */}
-      {corpTab === "wallet" && (
-        <div className="space-y-5 animate-fade-in max-w-md">
-          <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-2xl p-6">
-            <p className="text-xs font-mono font-bold text-[#1A1A1A]/60 uppercase tracking-widest mb-1">Presupuesto disponible</p>
-            <p className="font-display font-extrabold text-[#1A1A1A] text-3xl">{formatCOP(walletBalance)}</p>
+      {(corpTab as string) === "wallet" && (
+        <div className="space-y-5 animate-fade-in">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#1A1A1A] rounded-2xl p-6">
+              <p className="text-xs font-mono font-bold text-[#1A1A1A]/60 uppercase tracking-widest mb-1">Presupuesto disponible</p>
+              <p className="font-display font-extrabold text-[#1A1A1A] text-3xl">{formatCOP(walletBalance)}</p>
+            </div>
+            <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#6C47FF] rounded-2xl p-6">
+              <p className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-widest mb-1">Total asignado</p>
+              <p className="font-display font-extrabold text-[#6C47FF] text-3xl">{formatCOP(totalAssigned)}</p>
+              <p className="text-[10px] text-zinc-400 mt-1">Distribuido en {employees.length} colaboradores</p>
+            </div>
+            <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#10B981] rounded-2xl p-6">
+              <p className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-widest mb-1">Utilización</p>
+              <p className="font-display font-extrabold text-[#10B981] text-3xl">{utilizationPct}%</p>
+              <div className="w-full h-2 bg-zinc-100 rounded-full overflow-hidden mt-2">
+                <div className="h-full bg-[#10B981] rounded-full" style={{ width: `${utilizationPct}%` }} />
+              </div>
+            </div>
           </div>
 
           <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-xl p-5">
             <h3 className="font-display font-bold text-sm text-[#1A1A1A] mb-4">Recargar presupuesto corporativo</h3>
             <div className="flex gap-2 flex-wrap mb-4">
               {[1000000, 3000000, 5000000, 10000000].map(amt => (
-                <button
-                  key={amt}
-                  onClick={() => setRechargeAmt(String(amt))}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-lg border-2 transition-all ${
-                    rechargeAmt === String(amt) ? "bg-[#1A1A1A] text-[#FFD000] border-[#1A1A1A]" : "bg-white text-zinc-600 border-zinc-200 hover:border-[#1A1A1A]"
-                  }`}
-                >
+                <button key={amt} onClick={() => setRechargeAmt(String(amt))} className={`px-3 py-1.5 text-xs font-bold rounded-lg border-2 transition-all ${rechargeAmt === String(amt) ? "bg-[#1A1A1A] text-[#FFD000] border-[#1A1A1A]" : "bg-white text-zinc-600 border-zinc-200 hover:border-[#1A1A1A]"}`}>
                   ${(amt / 1000000).toFixed(0)}M
                 </button>
               ))}
@@ -833,24 +982,13 @@ function CorporatePortalInner({
             <form onSubmit={handleRecharge} className="space-y-3">
               <div>
                 <label className="text-xs font-bold text-zinc-600 block mb-1">Monto (COP)</label>
-                <input
-                  type="number"
-                  value={rechargeAmt}
-                  onChange={e => setRechargeAmt(e.target.value)}
-                  placeholder="Monto en COP"
-                  className="w-full border-2 border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none"
-                />
+                <input type="number" value={rechargeAmt} onChange={e => setRechargeAmt(e.target.value)} placeholder="Monto en COP" className="w-full border-2 border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
               </div>
               <div>
                 <label className="text-xs font-bold text-zinc-600 block mb-1">Método de pago</label>
                 <div className="flex gap-2">
                   {(["PSE", "Tarjeta", "Transferencia"] as const).map(m => (
-                    <button
-                      key={m}
-                      type="button"
-                      onClick={() => setPayMethod(m)}
-                      className={`flex-1 py-2 text-xs font-bold rounded-lg border-2 transition-all ${payMethod === m ? "bg-[#FFD000] text-[#1A1A1A] border-[#1A1A1A]" : "bg-white text-zinc-500 border-zinc-200 hover:border-[#1A1A1A]"}`}
-                    >
+                    <button key={m} type="button" onClick={() => setPayMethod(m)} className={`flex-1 py-2 text-xs font-bold rounded-lg border-2 transition-all ${payMethod === m ? "bg-[#FFD000] text-[#1A1A1A] border-[#1A1A1A]" : "bg-white text-zinc-500 border-zinc-200 hover:border-[#1A1A1A]"}`}>
                       {m}
                     </button>
                   ))}
@@ -865,10 +1003,7 @@ function CorporatePortalInner({
           <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-xl overflow-hidden">
             <div className="px-4 py-3 border-b-2 border-[#1A1A1A] bg-zinc-50 flex items-center justify-between">
               <p className="text-xs font-bold text-zinc-600 uppercase tracking-wider">Últimas transacciones</p>
-              <button
-                onClick={() => companyId && loadTransactions(companyId)}
-                className="flex items-center gap-1 px-2 py-1 text-[10px] font-bold text-zinc-500 hover:text-[#1A1A1A] border border-zinc-200 rounded-lg transition-colors"
-              >
+              <button onClick={() => companyId && loadTransactions(companyId)} className="flex items-center gap-1 px-2 py-1 text-[10px] font-bold text-zinc-500 hover:text-[#1A1A1A] border border-zinc-200 rounded-lg transition-colors">
                 <RefreshCw className="w-3 h-3" /> Actualizar
               </button>
             </div>
@@ -893,7 +1028,7 @@ function CorporatePortalInner({
       )}
 
       {/* ── DIAGNÓSTICO ── */}
-      {corpTab === "diagnosis" && (
+      {(corpTab as string) === "diagnosis" && (
         <div className="space-y-5 animate-fade-in max-w-2xl">
           <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#FFD000] rounded-xl p-5">
             <div className="flex items-center gap-2 mb-4">
@@ -903,11 +1038,7 @@ function CorporatePortalInner({
             <form onSubmit={handleBulkDiagnosis} className="space-y-4">
               <div>
                 <label className="text-xs font-bold text-zinc-600 block mb-1">Objetivo del diagnóstico</label>
-                <select
-                  value={diagObjective}
-                  onChange={e => setDiagObjective(e.target.value)}
-                  className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none bg-white"
-                >
+                <select value={diagObjective} onChange={e => setDiagObjective(e.target.value)} className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none bg-white">
                   <option>Identificar brechas de habilidades técnicas</option>
                   <option>Evaluar competencias de liderazgo</option>
                   <option>Detectar necesidades de upskilling digital</option>
@@ -916,12 +1047,7 @@ function CorporatePortalInner({
               </div>
               <div>
                 <label className="text-xs font-bold text-zinc-600 block mb-1">Fecha límite</label>
-                <input
-                  type="date"
-                  value={diagDeadline}
-                  onChange={e => setDiagDeadline(e.target.value)}
-                  className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none"
-                />
+                <input type="date" value={diagDeadline} onChange={e => setDiagDeadline(e.target.value)} className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
               </div>
               <button type="submit" className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm">
                 Lanzar Diagnóstico Masivo →
@@ -935,28 +1061,15 @@ function CorporatePortalInner({
           {showDiagConfirm && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowDiagConfirm(false)}>
               <div className="absolute inset-0 bg-[#1A1A1A]/50 backdrop-blur-sm" />
-              <div
-                className="relative w-full max-w-sm bg-white border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#FFD000] rounded-2xl p-6 animate-fade-in text-center space-y-4"
-                onClick={e => e.stopPropagation()}
-              >
+              <div className="relative w-full max-w-sm bg-white border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#FFD000] rounded-2xl p-6 animate-fade-in text-center space-y-4" onClick={e => e.stopPropagation()}>
                 <Compass className="w-8 h-8 text-[#6C47FF] mx-auto" />
                 <h3 className="font-display font-extrabold text-[#1A1A1A] text-lg">Confirmar envío masivo</h3>
                 <p className="text-sm text-zinc-600">
-                  Se enviará el cuestionario de diagnóstico a <strong>{employees.length} empleado{employees.length !== 1 ? "s" : ""}</strong>. ¿Confirmas?
+                  Se generará ruta de aprendizaje para <strong>{pending} empleado{pending !== 1 ? "s" : ""} pendientes</strong>. ¿Confirmas?
                 </p>
                 <div className="flex gap-3">
-                  <button
-                    onClick={() => setShowDiagConfirm(false)}
-                    className="flex-1 py-2.5 border-2 border-zinc-200 rounded-xl text-sm font-bold text-zinc-500 hover:border-[#1A1A1A] transition-all"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    onClick={handleConfirmBulkDiagnosis}
-                    className="flex-1 py-2.5 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm"
-                  >
-                    Confirmar →
-                  </button>
+                  <button onClick={() => setShowDiagConfirm(false)} className="flex-1 py-2.5 border-2 border-zinc-200 rounded-xl text-sm font-bold text-zinc-500 hover:border-[#1A1A1A] transition-all">Cancelar</button>
+                  <button onClick={handleConfirmBulkDiagnosis} className="flex-1 py-2.5 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm">Confirmar →</button>
                 </div>
               </div>
             </div>
@@ -990,34 +1103,29 @@ function CorporatePortalInner({
                     </tr>
                   </thead>
                   <tbody>
-                    {[...employees]
-                      .sort((a, b) => {
-                        const order: Record<Employee["diagStatus"], number> = { "Pendiente": 0, "Ruta Generada": 1, "Matriculado": 2 };
-                        return order[a.diagStatus] - order[b.diagStatus];
-                      })
-                      .map(emp => {
-                        const colors = getStatusColor(emp.diagStatus);
-                        return (
-                          <tr key={emp.id} className="border-b border-zinc-100 hover:bg-zinc-50">
-                            <td className="px-4 py-3 font-bold text-[#1A1A1A]">
-                              <p>{emp.name}</p>
-                              <p className="text-[10px] font-normal text-zinc-400">{emp.email}</p>
-                            </td>
-                            <td className="px-4 py-3 text-zinc-600">{emp.department || "—"}</td>
-                            <td className="px-4 py-3">
-                              <span className={`px-2 py-1 rounded-full font-bold border text-[10px] ${colors.light} ${colors.text}`}>{emp.diagStatus}</span>
-                            </td>
-                            <td className="px-4 py-3">
-                              <button
-                                onClick={() => openEmployeeDrawer(emp)}
-                                className="px-2 py-1 bg-[#6C47FF] text-white font-bold rounded border-2 border-[#6C47FF] hover:opacity-80 transition-all text-[10px]"
-                              >
-                                Ver perfil
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
+                    {[...employees].sort((a, b) => {
+                      const order: Record<Employee["diagStatus"], number> = { "Pendiente": 0, "Ruta Generada": 1, "Matriculado": 2 };
+                      return order[a.diagStatus] - order[b.diagStatus];
+                    }).map(emp => {
+                      const colors = getStatusColor(emp.diagStatus);
+                      return (
+                        <tr key={emp.id} className="border-b border-zinc-100 hover:bg-zinc-50">
+                          <td className="px-4 py-3 font-bold text-[#1A1A1A]">
+                            <p>{emp.name}</p>
+                            <p className="text-[10px] font-normal text-zinc-400">{emp.email}</p>
+                          </td>
+                          <td className="px-4 py-3 text-zinc-600">{emp.department || "—"}</td>
+                          <td className="px-4 py-3">
+                            <span className={`px-2 py-1 rounded-full font-bold border text-[10px] ${colors.light} ${colors.text}`}>{emp.diagStatus}</span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <button onClick={() => openEmployeeDrawer(emp)} className="px-2 py-1 bg-[#6C47FF] text-white font-bold rounded border-2 border-[#6C47FF] hover:opacity-80 transition-all text-[10px]">
+                              Ver perfil
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -1026,193 +1134,295 @@ function CorporatePortalInner({
         </div>
       )}
 
+      {/* ── CONFIGURACIÓN ── */}
+      {(corpTab as string) === "config" && (
+        <div className="space-y-6 animate-fade-in max-w-lg">
+          <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-xl p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <Settings className="w-5 h-5 text-[#6C47FF]" />
+              <h3 className="font-display font-bold text-sm text-[#1A1A1A]">Perfil de la empresa</h3>
+            </div>
+            <form onSubmit={handleSaveConfig} className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-zinc-600 block mb-1">Nombre de la empresa</label>
+                <input value={configForm.name} onChange={e => setConfigForm(p => ({ ...p, name: e.target.value }))} className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-zinc-600 block mb-1">Nombre del contacto</label>
+                <input value={configForm.contactName} onChange={e => setConfigForm(p => ({ ...p, contactName: e.target.value }))} className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-zinc-600 block mb-1">NIT</label>
+                <input value={configForm.nit} onChange={e => setConfigForm(p => ({ ...p, nit: e.target.value }))} placeholder="Ej: 890.903.938-8" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-zinc-600 block mb-1">Sector</label>
+                <select value={configForm.sector} onChange={e => setConfigForm(p => ({ ...p, sector: e.target.value }))} className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none bg-white">
+                  <option value="">Selecciona...</option>
+                  {SECTOR_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-zinc-600 block mb-1">Número de empleados</label>
+                <input type="number" value={configForm.employees} onChange={e => setConfigForm(p => ({ ...p, employees: e.target.value }))} placeholder="Ej: 500" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
+              </div>
+              <div className="pt-1">
+                <p className="text-xs text-zinc-400 mb-3">Correo registrado: <span className="font-bold text-zinc-600">{userEmail}</span></p>
+                <button type="submit" disabled={savingConfig} className="w-full py-3 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none">
+                  {savingConfig ? "Guardando..." : "Guardar cambios"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* ── EMPLOYEE DRAWER ── */}
       {selectedEmployee && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-end" onClick={() => setSelectedEmployee(null)}>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-end" onClick={closeDrawer}>
           <div className="absolute inset-0 bg-[#1A1A1A]/40 backdrop-blur-sm" />
           <div
-            className="relative w-full sm:w-96 bg-white border-l-4 border-t-4 sm:border-4 border-[#1A1A1A] shadow-[-8px_0px_0px_0px_#6C47FF] sm:shadow-[-8px_8px_0px_0px_#6C47FF] h-full sm:h-auto sm:rounded-2xl p-6 overflow-y-auto no-scrollbar animate-fade-in"
+            className="relative w-full sm:w-[420px] bg-white border-l-4 border-t-4 sm:border-4 border-[#1A1A1A] shadow-[-8px_0px_0px_0px_#6C47FF] sm:shadow-[-8px_8px_0px_0px_#6C47FF] h-full sm:h-auto sm:max-h-[90vh] sm:rounded-2xl p-6 overflow-y-auto no-scrollbar animate-fade-in"
             onClick={e => e.stopPropagation()}
           >
-            <button onClick={() => setSelectedEmployee(null)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition-colors">
+            <button onClick={closeDrawer} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition-colors">
               <X className="w-4 h-4" />
             </button>
+
             <div className="flex items-center gap-3 mb-5">
               <div className="w-12 h-12 rounded-full bg-[#6C47FF] flex items-center justify-center font-display font-extrabold text-white text-lg">
                 {selectedEmployee.name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase()}
               </div>
-              <div>
+              <div className="flex-1 min-w-0">
                 <p className="font-display font-extrabold text-[#1A1A1A]">{selectedEmployee.name}</p>
                 <p className="text-xs text-zinc-500">{selectedEmployee.email}</p>
               </div>
+              <button
+                onClick={() => setEditMode(!editMode)}
+                className={`p-2 rounded-lg border-2 transition-all ${editMode ? "bg-[#FFD000] border-[#1A1A1A]" : "bg-white border-zinc-200 hover:border-[#1A1A1A]"}`}
+                title="Editar colaborador"
+              >
+                <Edit2 className="w-3.5 h-3.5" />
+              </button>
             </div>
-            <div className="space-y-4">
-              <div>
-                <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-1">Cargo</p>
-                <p className="text-sm font-bold text-[#1A1A1A]">{selectedEmployee.role || "Sin especificar"} · {selectedEmployee.department || "—"}</p>
-              </div>
-              <div>
-                <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-1">Estado diagnóstico</p>
-                <span className={`text-xs font-bold px-2 py-1 rounded-full border ${getStatusColor(selectedEmployee.diagStatus).light} ${getStatusColor(selectedEmployee.diagStatus).text}`}>
-                  {selectedEmployee.diagStatus}
-                </span>
-              </div>
-              <div>
-                <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-2">Progreso académico</p>
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 h-3 bg-zinc-200 rounded-full overflow-hidden border border-zinc-300">
-                    <div className="h-full bg-[#6C47FF] rounded-full" style={{ width: `${selectedEmployee.progress}%` }} />
-                  </div>
-                  <span className="font-display font-extrabold text-[#1A1A1A] text-sm">{selectedEmployee.progress}%</span>
-                </div>
-              </div>
-              <div>
-                <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-1">Presupuesto asignado</p>
-                <p className="font-display font-extrabold text-[#10B981] text-lg">{formatCOP(selectedEmployee.assignedBudget)}</p>
-              </div>
-              {(selectedEmployee.activePath?.length ?? 0) > 0 && (
+
+            {/* Edit mode */}
+            {editMode ? (
+              <div className="space-y-3 mb-5 bg-[#FFD000]/10 border-2 border-[#FFD000] rounded-xl p-4">
+                <p className="text-xs font-bold text-zinc-600 uppercase tracking-wider">Editar información</p>
                 <div>
-                  <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-2">Ruta activa</p>
-                  <div className="space-y-1">
-                    {selectedEmployee.activePath.map((c, i) => (
-                      <div key={i} className="flex items-center gap-2 text-xs text-zinc-600">
-                        <span className="w-4 h-4 rounded-full bg-[#FFD000] border border-[#1A1A1A] flex items-center justify-center text-[9px] font-bold text-[#1A1A1A]">{i + 1}</span>
-                        {c}
-                      </div>
-                    ))}
-                  </div>
+                  <label className="text-[10px] font-bold text-zinc-500 block mb-1">Nombre completo</label>
+                  <input value={editName} onChange={e => setEditName(e.target.value)} className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-3 py-2 text-sm focus:outline-none" />
                 </div>
-              )}
-
-              {/* Enrollment history */}
-              <div className="border-t-2 border-zinc-100 pt-4">
-                <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-2">Cursos matriculados</p>
-                {loadingEmpEnrollments ? (
-                  <p className="text-xs text-zinc-400 italic">Cargando historial...</p>
-                ) : empEnrollments.length === 0 ? (
-                  <p className="text-xs text-zinc-400 italic">Sin matrículas registradas.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {empEnrollments.map((e: any) => (
-                      <div key={e.id} className="bg-zinc-50 border border-zinc-200 rounded-lg p-2.5 text-xs">
-                        <p className="font-bold text-[#1A1A1A] leading-tight">{e.courses?.title ?? "Curso"}</p>
-                        <p className="text-zinc-500">{e.courses?.universities?.name ?? ""}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className={`px-1.5 py-0.5 rounded-full font-bold text-[10px] border ${e.status === "Certificado" ? "bg-[#10B981]/10 border-[#10B981]/30 text-[#10B981]" : "bg-[#6C47FF]/10 border-[#6C47FF]/30 text-[#6C47FF]"}`}>
-                            {e.status}
-                          </span>
-                          {e.courses?.modality && <span className="text-zinc-400">{e.courses.modality}</span>}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Budget assignment — always enabled */}
-              <div className="border-t-2 border-zinc-100 pt-4">
-                <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-2">Asignar presupuesto adicional</p>
+                <div>
+                  <label className="text-[10px] font-bold text-zinc-500 block mb-1">Cargo</label>
+                  <input value={editRole} onChange={e => setEditRole(e.target.value)} className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-3 py-2 text-sm focus:outline-none" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-zinc-500 block mb-1">Departamento</label>
+                  <input value={editDept} onChange={e => setEditDept(e.target.value)} className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-3 py-2 text-sm focus:outline-none" />
+                </div>
                 <div className="flex gap-2">
-                  <input
-                    type="number"
-                    value={budgetAssignAmt}
-                    onChange={e => setBudgetAssignAmt(e.target.value)}
-                    placeholder="Monto COP"
-                    className="flex-1 border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-3 py-2 text-sm focus:outline-none"
-                  />
-                  <button
-                    onClick={handleAssignBudget}
-                    className="px-4 py-2 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm"
-                  >
-                    Asignar
+                  <button onClick={handleEditEmployee} disabled={savingEdit} className="flex-1 py-2 bg-[#1A1A1A] text-[#FFD000] font-bold rounded-xl border-2 border-[#1A1A1A] text-xs disabled:opacity-60">
+                    {savingEdit ? "Guardando..." : "Guardar"}
+                  </button>
+                  <button onClick={() => setEditMode(false)} className="flex-1 py-2 border-2 border-zinc-200 rounded-xl text-xs font-bold text-zinc-500 hover:border-[#1A1A1A]">
+                    Cancelar
                   </button>
                 </div>
               </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-1">Cargo</p>
+                  <p className="text-sm font-bold text-[#1A1A1A]">{selectedEmployee.role || "Sin especificar"} · {selectedEmployee.department || "—"}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-1">Estado diagnóstico</p>
+                  <span className={`text-xs font-bold px-2 py-1 rounded-full border ${getStatusColor(selectedEmployee.diagStatus).light} ${getStatusColor(selectedEmployee.diagStatus).text}`}>
+                    {selectedEmployee.diagStatus}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-2">Progreso académico</p>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-3 bg-zinc-200 rounded-full overflow-hidden border border-zinc-300">
+                      <div className="h-full bg-[#6C47FF] rounded-full" style={{ width: `${selectedEmployee.progress}%` }} />
+                    </div>
+                    <span className="font-display font-extrabold text-[#1A1A1A] text-sm">{selectedEmployee.progress}%</span>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-1">Presupuesto asignado</p>
+                  <p className="font-display font-extrabold text-[#10B981] text-lg">{formatCOP(selectedEmployee.assignedBudget)}</p>
+                </div>
+                {(selectedEmployee.activePath?.length ?? 0) > 0 && (
+                  <div>
+                    <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-2">Ruta activa</p>
+                    <div className="space-y-1">
+                      {selectedEmployee.activePath.map((c, i) => (
+                        <div key={i} className="flex items-center gap-2 text-xs text-zinc-600">
+                          <span className="w-4 h-4 rounded-full bg-[#FFD000] border border-[#1A1A1A] flex items-center justify-center text-[9px] font-bold text-[#1A1A1A]">{i + 1}</span>
+                          {c}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Enrollment history */}
+            <div className="border-t-2 border-zinc-100 pt-4 mt-4">
+              <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-2">Cursos matriculados</p>
+              {loadingEmpEnrollments ? (
+                <p className="text-xs text-zinc-400 italic">Cargando historial...</p>
+              ) : empEnrollments.length === 0 ? (
+                <p className="text-xs text-zinc-400 italic">Sin matrículas registradas.</p>
+              ) : (
+                <div className="space-y-2">
+                  {empEnrollments.map((e: any) => (
+                    <div key={e.id} className="bg-zinc-50 border border-zinc-200 rounded-lg p-2.5 text-xs">
+                      <p className="font-bold text-[#1A1A1A] leading-tight">{e.courses?.title ?? "Curso"}</p>
+                      <p className="text-zinc-500">{e.courses?.universities?.name ?? ""}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className={`px-1.5 py-0.5 rounded-full font-bold text-[10px] border ${e.status === "Certificado" ? "bg-[#10B981]/10 border-[#10B981]/30 text-[#10B981]" : "bg-[#6C47FF]/10 border-[#6C47FF]/30 text-[#6C47FF]"}`}>
+                          {e.status}
+                        </span>
+                        {e.courses?.modality && <span className="text-zinc-400">{e.courses.modality}</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Individual diagnosis */}
+            {selectedEmployee.diagStatus === "Pendiente" && (
+              <div className="border-t-2 border-zinc-100 pt-4 mt-4">
+                <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-2">Enviar diagnóstico individual</p>
+                <select value={indivDiagObjective} onChange={e => setIndivDiagObjective(e.target.value)} className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-3 py-2 text-xs focus:outline-none bg-white mb-2">
+                  <option>Identificar brechas de habilidades técnicas</option>
+                  <option>Evaluar competencias de liderazgo</option>
+                  <option>Detectar necesidades de upskilling digital</option>
+                  <option>Alinear equipos con objetivos estratégicos</option>
+                </select>
+                <button
+                  onClick={handleSendIndivDiagnosis}
+                  disabled={sendingIndivDiag}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#6C47FF] text-white font-bold rounded-xl border-2 border-[#6C47FF] hover:opacity-90 transition-all text-xs disabled:opacity-60"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  {sendingIndivDiag ? "Enviando..." : "Generar ruta de aprendizaje"}
+                </button>
+              </div>
+            )}
+
+            {/* Budget assignment */}
+            <div className="border-t-2 border-zinc-100 pt-4 mt-4">
+              <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-1">Asignar presupuesto adicional</p>
+              <p className="text-[10px] text-zinc-400 mb-2">Disponible en billetera: {formatCOP(walletBalance)}</p>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  value={budgetAssignAmt}
+                  onChange={e => setBudgetAssignAmt(e.target.value)}
+                  placeholder="Monto COP"
+                  className="flex-1 border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-3 py-2 text-sm focus:outline-none"
+                />
+                <button onClick={handleAssignBudget} className="px-4 py-2 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm">
+                  Asignar
+                </button>
+              </div>
+            </div>
+
+            {/* Danger zone */}
+            <div className="border-t-2 border-red-100 pt-4 mt-4">
+              {!confirmDelete ? (
+                <button onClick={() => setConfirmDelete(true)} className="flex items-center gap-2 text-xs text-red-500 font-bold hover:text-red-700 transition-colors">
+                  <Trash2 className="w-3.5 h-3.5" /> Eliminar colaborador
+                </button>
+              ) : (
+                <div className="bg-red-50 border-2 border-red-200 rounded-xl p-3 space-y-2">
+                  <p className="text-xs font-bold text-red-600">¿Eliminar a {selectedEmployee.name}? Esta acción no se puede deshacer.</p>
+                  <div className="flex gap-2">
+                    <button onClick={handleRemoveEmployee} disabled={removingEmp} className="flex-1 py-2 bg-red-500 text-white font-bold rounded-lg border-2 border-red-600 text-xs disabled:opacity-60">
+                      {removingEmp ? "Eliminando..." : "Sí, eliminar"}
+                    </button>
+                    <button onClick={() => setConfirmDelete(false)} className="flex-1 py-2 border-2 border-zinc-200 rounded-lg text-xs font-bold text-zinc-500">
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── CSV UPLOAD MODAL ── */}
+      {showCsvModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowCsvModal(false)}>
+          <div className="absolute inset-0 bg-[#1A1A1A]/50 backdrop-blur-sm" />
+          <div className="relative w-full max-w-2xl bg-white border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#6C47FF] rounded-2xl p-6 animate-fade-in overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setShowCsvModal(false)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+            <h3 className="font-display font-extrabold text-[#1A1A1A] text-lg mb-2">Importar colaboradores desde CSV</h3>
+            <p className="text-xs text-zinc-500 mb-4">El archivo CSV debe tener las columnas: Nombre, Correo, Cargo, Departamento, Presupuesto COP</p>
+            <div className="space-y-4">
+              <button onClick={downloadTemplate} className="flex items-center gap-2 px-4 py-2 text-xs font-bold border-2 border-[#1A1A1A] rounded-xl bg-white hover:bg-zinc-50 transition-all shadow-[2px_2px_0px_0px_#1A1A1A]">
+                <Download className="w-3.5 h-3.5" /> Descargar plantilla CSV
+              </button>
+              <div>
+                <label className="text-xs font-bold text-zinc-600 block mb-1">Seleccionar archivo CSV</label>
+                <input type="file" accept=".csv" onChange={handleCsvFileChange} className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
+              </div>
+              {csvPreview.length > 0 && (
+                <>
+                  <div className="overflow-x-auto">
+                    <p className="text-xs font-bold text-zinc-600 mb-2">{csvPreview.length} colaborador(es) detectados · Presupuesto total: {formatCOP(csvPreview.reduce((s, r) => s + (parseInt(r.budget) || 0), 0))}</p>
+                    <table className="w-full text-xs border-2 border-[#1A1A1A] rounded-xl overflow-hidden">
+                      <thead>
+                        <tr className="bg-zinc-100 border-b-2 border-[#1A1A1A]">
+                          {["Nombre", "Correo", "Cargo", "Departamento", "Presupuesto COP"].map(h => (
+                            <th key={h} className="px-3 py-2 text-left font-bold text-zinc-600 text-[10px] uppercase">{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {csvPreview.map((row, i) => (
+                          <tr key={i} className="border-b border-zinc-100 last:border-0">
+                            <td className="px-3 py-2 font-bold text-[#1A1A1A]">{row.name}</td>
+                            <td className="px-3 py-2 text-zinc-500">{row.email}</td>
+                            <td className="px-3 py-2 text-zinc-500">{row.role || "—"}</td>
+                            <td className="px-3 py-2 text-zinc-500">{row.department || "—"}</td>
+                            <td className="px-3 py-2 text-zinc-500">{Number(row.budget).toLocaleString("es-CO")}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <button onClick={handleImportCsv} disabled={uploadingCsv} className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                    {uploadingCsv ? "Importando..." : `Importar ${csvPreview.length} colaboradores →`}
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
       )}
 
       {/* ── ADD EMPLOYEE MODAL ── */}
-      {/* ── CSV UPLOAD MODAL ── */}
-      {showCsvModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowCsvModal(false)}>
-          <div className="absolute inset-0 bg-[#1A1A1A]/50 backdrop-blur-sm" />
-          <div
-            className="relative w-full max-w-2xl bg-white border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#6C47FF] rounded-2xl p-6 animate-fade-in overflow-y-auto max-h-[90vh]"
-            onClick={e => e.stopPropagation()}
-          >
-            <button onClick={() => setShowCsvModal(false)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition-colors">
-              <X className="w-4 h-4" />
-            </button>
-            <h3 className="font-display font-extrabold text-[#1A1A1A] text-lg mb-2">Importar empleados desde CSV</h3>
-            <p className="text-xs text-zinc-500 mb-4">El archivo CSV debe tener las columnas: Nombre, Correo, Cargo, Departamento, Presupuesto COP</p>
-            <div className="space-y-4">
-              <button
-                onClick={downloadTemplate}
-                className="flex items-center gap-2 px-4 py-2 text-xs font-bold border-2 border-[#1A1A1A] rounded-xl bg-white hover:bg-zinc-50 transition-all shadow-[2px_2px_0px_0px_#1A1A1A]"
-              >
-                Descargar plantilla CSV
-              </button>
-              <div>
-                <label className="text-xs font-bold text-zinc-600 block mb-1">Seleccionar archivo CSV</label>
-                <input
-                  type="file"
-                  accept=".csv"
-                  onChange={handleCsvFileChange}
-                  className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none"
-                />
-              </div>
-              {csvPreview.length > 0 && (
-                <div className="overflow-x-auto">
-                  <p className="text-xs font-bold text-zinc-600 mb-2">{csvPreview.length} empleado(s) detectados:</p>
-                  <table className="w-full text-xs border-2 border-[#1A1A1A] rounded-xl overflow-hidden">
-                    <thead>
-                      <tr className="bg-zinc-100 border-b-2 border-[#1A1A1A]">
-                        {["Nombre", "Correo", "Cargo", "Departamento", "Presupuesto COP"].map(h => (
-                          <th key={h} className="px-3 py-2 text-left font-bold text-zinc-600 text-[10px] uppercase">{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {csvPreview.map((row, i) => (
-                        <tr key={i} className="border-b border-zinc-100 last:border-0">
-                          <td className="px-3 py-2 font-bold text-[#1A1A1A]">{row.name}</td>
-                          <td className="px-3 py-2 text-zinc-500">{row.email}</td>
-                          <td className="px-3 py-2 text-zinc-500">{row.role || "—"}</td>
-                          <td className="px-3 py-2 text-zinc-500">{row.department || "—"}</td>
-                          <td className="px-3 py-2 text-zinc-500">{Number(row.budget).toLocaleString("es-CO")}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-              {csvPreview.length > 0 && (
-                <button
-                  onClick={handleImportCsv}
-                  disabled={uploadingCsv}
-                  className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                >
-                  {uploadingCsv ? "Importando..." : `Importar ${csvPreview.length} empleados →`}
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
       {showAddEmployeeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowAddEmployeeModal(false)}>
           <div className="absolute inset-0 bg-[#1A1A1A]/50 backdrop-blur-sm" />
-          <div
-            className="relative w-full max-w-md bg-white border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#FFD000] rounded-2xl p-6 animate-fade-in"
-            onClick={e => e.stopPropagation()}
-          >
+          <div className="relative w-full max-w-md bg-white border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#FFD000] rounded-2xl p-6 animate-fade-in" onClick={e => e.stopPropagation()}>
             <button onClick={() => setShowAddEmployeeModal(false)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition-colors">
               <X className="w-4 h-4" />
             </button>
-            <h3 className="font-display font-extrabold text-[#1A1A1A] text-lg mb-5">Agregar colaborador</h3>
+            <h3 className="font-display font-extrabold text-[#1A1A1A] text-lg mb-1">Agregar colaborador</h3>
+            <p className="text-xs text-zinc-400 mb-5">Presupuesto disponible: <span className="font-bold text-[#10B981]">{formatCOP(walletBalance)}</span></p>
             <form onSubmit={handleAddEmployee} className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2">
@@ -1232,11 +1442,17 @@ function CorporatePortalInner({
                   <input value={empDept} onChange={e => setEmpDept(e.target.value)} placeholder="Tecnología" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
                 </div>
                 <div className="col-span-2">
-                  <label className="text-xs font-bold text-zinc-600 block mb-1">Presupuesto asignado (COP)</label>
+                  <label className="text-xs font-bold text-zinc-600 block mb-1">Presupuesto inicial (COP)</label>
                   <input type="number" value={empBudget} onChange={e => setEmpBudget(e.target.value)} placeholder="0" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
+                  {parseInt(empBudget) > 0 && parseInt(empBudget) <= walletBalance && (
+                    <p className="text-[10px] text-[#10B981] mt-1">Se descontará de la billetera corporativa</p>
+                  )}
+                  {parseInt(empBudget) > walletBalance && (
+                    <p className="text-[10px] text-red-500 mt-1">Saldo insuficiente en billetera</p>
+                  )}
                 </div>
               </div>
-              <button type="submit" disabled={addingEmp} className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none">
+              <button type="submit" disabled={addingEmp || parseInt(empBudget) > walletBalance} className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none">
                 {addingEmp ? "Agregando..." : "Agregar colaborador →"}
               </button>
             </form>
@@ -1248,10 +1464,7 @@ function CorporatePortalInner({
       {inviteData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setInviteData(null)}>
           <div className="absolute inset-0 bg-[#1A1A1A]/50 backdrop-blur-sm" />
-          <div
-            className="relative w-full max-w-md bg-white border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#10B981] rounded-2xl p-6 animate-fade-in space-y-4"
-            onClick={e => e.stopPropagation()}
-          >
+          <div className="relative w-full max-w-md bg-white border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#10B981] rounded-2xl p-6 animate-fade-in space-y-4" onClick={e => e.stopPropagation()}>
             <button onClick={() => setInviteData(null)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition-colors">
               <X className="w-4 h-4" />
             </button>
@@ -1266,9 +1479,7 @@ function CorporatePortalInner({
             </div>
             <div className="bg-[#FFD000]/10 border-2 border-[#1A1A1A] rounded-xl p-4 space-y-2">
               <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest">Protocolo de bienvenida</p>
-              <p className="text-sm text-zinc-700 leading-relaxed">
-                Envía este mensaje a <strong>{inviteData.email}</strong>:
-              </p>
+              <p className="text-sm text-zinc-700 leading-relaxed">Envía este mensaje a <strong>{inviteData.email}</strong>:</p>
               <div className="bg-white border border-zinc-200 rounded-lg p-3 text-xs text-zinc-600 leading-relaxed">
                 Hola {inviteData.name.split(" ")[0]}, te invitamos a crear tu cuenta en <strong>Campus Pass by VinkU</strong> — la plataforma de desarrollo de talento de {companyInfo?.name ?? "tu empresa"}. Ingresa al siguiente enlace para registrarte como estudiante y acceder a tu ruta de aprendizaje:
               </div>
@@ -1276,11 +1487,7 @@ function CorporatePortalInner({
             <div className="space-y-2">
               <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest">Enlace de registro</p>
               <div className="flex gap-2">
-                <input
-                  readOnly
-                  value={inviteData.link}
-                  className="flex-1 border-2 border-zinc-200 rounded-xl px-3 py-2 text-xs text-zinc-600 focus:outline-none bg-zinc-50 truncate"
-                />
+                <input readOnly value={inviteData.link} className="flex-1 border-2 border-zinc-200 rounded-xl px-3 py-2 text-xs text-zinc-600 focus:outline-none bg-zinc-50 truncate" />
                 <button
                   onClick={() => { navigator.clipboard.writeText(inviteData.link); triggerToast("Enlace copiado", "success"); }}
                   className="px-3 py-2 bg-[#FFD000] text-[#1A1A1A] font-bold rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] hover:shadow-[3px_3px_0px_0px_#1A1A1A] transition-all text-xs whitespace-nowrap"
@@ -1290,10 +1497,7 @@ function CorporatePortalInner({
               </div>
               <p className="text-[10px] text-zinc-400">El colaborador se registra como estudiante. Su cuenta quedará vinculada automáticamente a esta empresa.</p>
             </div>
-            <button
-              onClick={() => setInviteData(null)}
-              className="w-full py-2.5 border-2 border-zinc-200 rounded-xl text-sm font-bold text-zinc-500 hover:border-[#1A1A1A] transition-all"
-            >
+            <button onClick={() => setInviteData(null)} className="w-full py-2.5 border-2 border-zinc-200 rounded-xl text-sm font-bold text-zinc-500 hover:border-[#1A1A1A] transition-all">
               Cerrar
             </button>
           </div>

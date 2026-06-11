@@ -184,13 +184,21 @@ export default function MarketingView({
     }
     setAuthLoading(true);
     setAuthError(null);
-    const { error } = await signIn(formEmail, formPassword);
+    const { error, role: userRole } = await signIn(formEmail, formPassword);
     setAuthLoading(false);
     if (error) {
       setAuthError(error === "Invalid login credentials" ? "Correo o contraseña incorrectos." : error);
       return;
     }
     triggerToast("¡Sesión iniciada exitosamente!", "success");
+    if (userRole === "student") {
+      setActiveRole("student");
+      setStudentTab("pass");
+    } else if (userRole === "corporate_admin") {
+      setActiveRole("corporate");
+    } else if (userRole === "university_admin") {
+      setActiveRole("university");
+    }
   };
 
   return (

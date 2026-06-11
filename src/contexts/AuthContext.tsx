@@ -9,11 +9,27 @@ interface AuthContextValue {
   role: UserRole | null;
   loading: boolean;
   signUp: (email: string, password: string, fullName: string, role: UserRole) => Promise<{ error: string | null }>;
-  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: string | null; role: UserRole | null }>;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
+
+async function fetchRoleFromProfile(userId: string): Promise<UserRole | null> {
+  const { data } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', userId)
+    .single();
+  return (data?.role as UserRole) ?? null;
+}
+
+async function resolveRole(user: User | null): Promise<UserRole | null> {
+  if (!user) return null;
+  const metaRole = user.user_metadata?.role as UserRole | undefined;
+  if (metaRole) return metaRole;
+  return fetchRoleFromProfile(user.id);
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -22,17 +38,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setRole((session?.user?.user_metadata?.role as UserRole) ?? null);
+      setRole(await resolveRole(session?.user ?? null));
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setRole((session?.user?.user_metadata?.role as UserRole) ?? null);
+      setRole(await resolveRole(session?.user ?? null));
     });
 
     return () => subscription.unsubscribe();
@@ -50,8 +66,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function signIn(email: string, password: string) {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error?.message ?? null };
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { error: error.message, role: null };
+    const resolvedRole = await resolveRole(data.user);
+    return { error: null, role: resolvedRole };
   }
 
   async function signOut() {

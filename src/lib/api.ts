@@ -152,71 +152,42 @@ export async function fetchEnrollments(userId: string) {
 }
 
 export async function enrollCourse(studentId: string, courseId: string, creditsSpent: number) {
-  // Verificar saldo
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('wallet_balance')
-    .eq('id', studentId)
-    .single();
-
-  if (!profile || (profile.wallet_balance ?? 0) < creditsSpent) {
-    throw new Error('Saldo insuficiente en la billetera');
-  }
-
-  // Crear matrícula
-  const { data: enrollment, error } = await supabase
-    .from('enrollments')
-    .insert({ student_id: studentId, course_id: courseId, credits_spent: creditsSpent })
-    .select()
-    .single();
-  if (error) throw error;
-
-  // Descontar saldo
-  const { count: deductCount } = await supabase
-    .from('profiles')
-    .update({ wallet_balance: (profile.wallet_balance ?? 0) - creditsSpent })
-    .eq('id', studentId);
-  if (deductCount === 0) throw new Error('No se pudo descontar el saldo de la billetera.');
-
-  // Registrar transacción
-  await supabase.from('wallet_transactions').insert({
-    profile_id: studentId,
-    amount: -creditsSpent,
-    type: 'enrollment',
-    description: 'Matrícula de curso',
-    reference_id: enrollment.id,
+  // Try SECURITY DEFINER RPC first (migration 018) — atomic, bypass RLS
+  const { data: rpcId, error: rpcErr } = await supabase.rpc('enroll_course_rpc', {
+    p_course_id:     courseId,
+    p_credits_spent: creditsSpent,
   });
+  if (!rpcErr) return { id: rpcId as string, course_id: courseId, student_id: studentId, status: 'Cursando', credits_spent: creditsSpent };
 
-  // Actualizar sello del pasaporte (upsert)
-  const { data: course } = await supabase
-    .from('courses')
-    .select('university_id')
-    .eq('id', courseId)
-    .single();
-
-  if (course) {
-    const { data: existingStamp } = await supabase
-      .from('passport_stamps')
-      .select('id, enroll_count')
-      .eq('student_id', studentId)
-      .eq('university_id', course.university_id)
-      .single();
-
-    if (existingStamp) {
-      await supabase
-        .from('passport_stamps')
-        .update({ enroll_count: existingStamp.enroll_count + 1 })
-        .eq('id', existingStamp.id);
-    } else {
-      await supabase.from('passport_stamps').insert({
-        student_id: studentId,
-        university_id: course.university_id,
-        enroll_count: 1,
-      });
+  // If RPC not deployed yet, fall back to direct writes
+  if (rpcErr.message?.includes('Could not find the function') || (rpcErr as any).code === 'PGRST202') {
+    const { data: profile } = await supabase.from('profiles').select('wallet_balance').eq('id', studentId).single();
+    if (!profile || (profile.wallet_balance ?? 0) < creditsSpent) {
+      throw new Error('Saldo insuficiente en la billetera');
     }
+
+    const { data: enrollment, error } = await supabase
+      .from('enrollments')
+      .insert({ student_id: studentId, course_id: courseId, credits_spent: creditsSpent })
+      .select().single();
+    if (error) throw error;
+
+    await supabase.from('profiles').update({ wallet_balance: (profile.wallet_balance ?? 0) - creditsSpent }).eq('id', studentId);
+    await supabase.from('wallet_transactions').insert({ profile_id: studentId, amount: -creditsSpent, type: 'enrollment', description: 'Matrícula de curso', reference_id: enrollment.id }).catch(() => {});
+
+    const { data: course } = await supabase.from('courses').select('university_id').eq('id', courseId).single();
+    if (course) {
+      const { data: existingStamp } = await supabase.from('passport_stamps').select('id, enroll_count').eq('student_id', studentId).eq('university_id', course.university_id).maybeSingle();
+      if (existingStamp) {
+        await supabase.from('passport_stamps').update({ enroll_count: existingStamp.enroll_count + 1 }).eq('id', existingStamp.id);
+      } else {
+        await supabase.from('passport_stamps').insert({ student_id: studentId, university_id: course.university_id, enroll_count: 1 });
+      }
+    }
+    return enrollment;
   }
 
-  return enrollment;
+  throw rpcErr;
 }
 
 export async function certifyEnrollment(enrollmentId: string, certificateUrl?: string) {

@@ -180,12 +180,13 @@ export default function App() {
       if (user) {
         const profile = await api.fetchProfile(user.id);
         if (profile && profile.role === 'student') {
+          // Individual .catch(() => []) so one failing query doesn't blank all student data
           const [enrollments, stamps, badges, achievements, sessions] = await Promise.all([
-            api.fetchEnrollments(user.id),
-            api.fetchPassportStamps(user.id),
-            api.fetchSkillBadges(user.id),
-            api.fetchAchievements(user.id),
-            api.fetchMentorSessions(user.id),
+            api.fetchEnrollments(user.id).catch(() => []),
+            api.fetchPassportStamps(user.id).catch(() => []),
+            api.fetchSkillBadges(user.id).catch(() => []),
+            api.fetchAchievements(user.id).catch(() => []),
+            api.fetchMentorSessions(user.id).catch(() => []),
           ]);
 
           const mappedStudent: Student = {

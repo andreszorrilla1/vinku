@@ -12,6 +12,10 @@ import {
   AlertCircle,
   Settings,
   PlayCircle,
+  TrendingUp,
+  ArrowDownToLine,
+  Clock,
+  Wallet,
 } from "lucide-react";
 import { Course, UniversityStats } from "../types";
 import { useAuth } from "../contexts/AuthContext";
@@ -25,8 +29,8 @@ import * as api from "../lib/api";
 interface UniversityPortalViewProps {
   courses: Course[];
   universities: UniversityStats[];
-  uniTab: "dashboard" | "catalogo" | "matriculados" | "certificaciones";
-  setUniTab: (tab: "dashboard" | "catalogo" | "matriculados" | "certificaciones") => void;
+  uniTab: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero";
+  setUniTab: (tab: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero") => void;
   onCourseAdded: () => void;
   onCertifyApprove: (studentId: string, courseId: string, universityId: string) => void;
   triggerToast: (msg: string, type?: "success" | "error" | "info") => void;
@@ -121,6 +125,16 @@ export default function UniversityPortalView({
   // ---- certifying ----
   const [certifyingId, setCertifyingId] = useState<string | null>(null);
 
+  // ---- withdrawal ----
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [withdrawBank, setWithdrawBank] = useState("");
+  const [withdrawAccount, setWithdrawAccount] = useState("");
+  const [withdrawHolder, setWithdrawHolder] = useState("");
+  const [withdrawType, setWithdrawType] = useState("Ahorros");
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [withdrawRequests, setWithdrawRequests] = useState<{ id: string; amount: number; status: string; created_at: string; bank_name: string }[]>([]);
+  const [loadingWithdrawals, setLoadingWithdrawals] = useState(false);
+
   // ---- load full university record ----
   const loadUniData = useCallback(async (uniId: string) => {
     const { data } = await supabase
@@ -187,6 +201,28 @@ export default function UniversityPortalView({
   useEffect(() => {
     if (universityId) fetchEnrollments();
   }, [universityId, fetchEnrollments]);
+
+  const fetchWithdrawals = useCallback(async () => {
+    if (!universityId) return;
+    setLoadingWithdrawals(true);
+    try {
+      const { data } = await supabase
+        .from("withdrawal_requests")
+        .select("id, amount, status, created_at, bank_name")
+        .eq("university_id", universityId)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      setWithdrawRequests((data ?? []) as any[]);
+    } catch {
+      setWithdrawRequests([]);
+    } finally {
+      setLoadingWithdrawals(false);
+    }
+  }, [universityId]);
+
+  useEffect(() => {
+    if (universityId) fetchWithdrawals();
+  }, [universityId, fetchWithdrawals]);
 
   // ---- guard: not logged in ----
   if (!user) {
@@ -374,6 +410,59 @@ export default function UniversityPortalView({
     }
   };
 
+  const handleWithdrawRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!universityId) return;
+    const amount = parseInt(withdrawAmount);
+    const balance = uniData?.liquid_balance ?? 0;
+    if (!amount || amount < 50000) {
+      triggerToast("El monto mínimo de retiro es $50.000 COP.", "error");
+      return;
+    }
+    if (amount > balance) {
+      triggerToast("El monto supera tu saldo disponible.", "error");
+      return;
+    }
+    if (!withdrawBank || !withdrawAccount || !withdrawHolder) {
+      triggerToast("Completa todos los datos bancarios.", "error");
+      return;
+    }
+    setWithdrawing(true);
+    try {
+      const { error } = await supabase.from("withdrawal_requests").insert({
+        university_id: universityId,
+        amount,
+        bank_name: withdrawBank,
+        account_number: withdrawAccount,
+        account_holder: withdrawHolder,
+        account_type: withdrawType,
+        status: "Pendiente",
+      });
+      if (error) throw error;
+      // Descontar del saldo disponible
+      await supabase
+        .from("universities")
+        .update({ liquid_balance: balance - amount })
+        .eq("id", universityId);
+      await loadUniData(universityId);
+      await fetchWithdrawals();
+      triggerToast(`Solicitud de retiro por $${amount.toLocaleString("es-CO")} COP enviada. Se procesará en 3-5 días hábiles.`, "success");
+      setWithdrawAmount("");
+      setWithdrawBank("");
+      setWithdrawAccount("");
+      setWithdrawHolder("");
+    } catch (err: any) {
+      const msg = String(err?.message ?? "").toLowerCase();
+      if (msg.includes("does not exist") || msg.includes("relation")) {
+        triggerToast("La funcionalidad de retiros requiere la migración 008. Consulta con el administrador.", "error");
+      } else {
+        triggerToast("Error al enviar la solicitud. Inténtalo de nuevo.", "error");
+      }
+    } finally {
+      setWithdrawing(false);
+    }
+  };
+
   const openProfileModal = () => {
     setProfileName(uniData?.name ?? universityName);
     setProfileLogo(uniData?.logo_url ?? "");
@@ -393,7 +482,7 @@ export default function UniversityPortalView({
   // Tab config
   // ============================================================
   const tabs: {
-    id: "dashboard" | "catalogo" | "matriculados" | "certificaciones";
+    id: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero";
     label: string;
     icon: React.ComponentType<{ className?: string }>;
   }[] = [
@@ -401,6 +490,7 @@ export default function UniversityPortalView({
     { id: "catalogo", label: "Catálogo", icon: BookOpen },
     { id: "matriculados", label: "Matriculados", icon: Users },
     { id: "certificaciones", label: "Certificaciones", icon: Award },
+    { id: "financiero", label: "Financiero", icon: DollarSign },
   ];
 
   // ============================================================
@@ -1234,6 +1324,231 @@ export default function UniversityPortalView({
               })()}
             </div>
           )}
+        </div>
+      )}
+
+      {/* ================================================================
+          FINANCIERO TAB
+         ================================================================ */}
+      {uniTab === "financiero" && (
+        <div className="space-y-6 animate-fade-in">
+
+          {/* Balance cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-2xl p-5 space-y-2">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-[#6C47FF]" />
+                <span className="text-[10px] font-mono uppercase tracking-wider text-gray-500 font-bold">Ingresos Brutos</span>
+              </div>
+              <p className="text-2xl font-extrabold text-[#1A1A1A] font-mono">
+                ${(uniData?.total_earnings ?? 0).toLocaleString("es-CO")}
+              </p>
+              <p className="text-[10px] text-gray-400">Total acumulado antes de comisión</p>
+            </div>
+
+            <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-2xl p-5 space-y-2">
+              <div className="flex items-center gap-2">
+                <DollarSign className="w-5 h-5 text-red-400" />
+                <span className="text-[10px] font-mono uppercase tracking-wider text-gray-500 font-bold">Comisión Campus Pass</span>
+              </div>
+              <p className="text-2xl font-extrabold text-red-500 font-mono">
+                -${Math.round((uniData?.total_earnings ?? 0) * 0.2).toLocaleString("es-CO")}
+              </p>
+              <p className="text-[10px] text-gray-400">20% por uso de la plataforma</p>
+            </div>
+
+            <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-2xl p-5 space-y-2">
+              <div className="flex items-center gap-2">
+                <Wallet className="w-5 h-5 text-[#1A1A1A]" />
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#1A1A1A] font-bold">Saldo Disponible</span>
+              </div>
+              <p className="text-2xl font-extrabold text-[#1A1A1A] font-mono">
+                ${(uniData?.liquid_balance ?? 0).toLocaleString("es-CO")}
+              </p>
+              <p className="text-[10px] text-[#1A1A1A]/60">Listo para retirar (COP)</p>
+            </div>
+          </div>
+
+          {/* Solicitar retiro */}
+          <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-2xl p-6 space-y-4">
+            <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
+              <div className="w-10 h-10 bg-[#1A1A1A] rounded-xl flex items-center justify-center shrink-0">
+                <ArrowDownToLine className="w-5 h-5 text-[#FFD000]" />
+              </div>
+              <div>
+                <h3 className="text-base font-extrabold text-[#1A1A1A]">Solicitar Retiro</h3>
+                <p className="text-xs text-gray-500">Los retiros se procesan en 3-5 días hábiles. Mínimo $50.000 COP.</p>
+              </div>
+            </div>
+
+            {(uniData?.liquid_balance ?? 0) < 50000 ? (
+              <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4 flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-bold text-yellow-800">Saldo insuficiente</p>
+                  <p className="text-[11px] text-yellow-700 mt-0.5">
+                    Necesitas al menos $50.000 COP disponibles para solicitar un retiro. Certifica más cursos para acumular ingresos.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleWithdrawRequest} className="space-y-4 text-xs">
+                <div className="bg-[#6C47FF]/5 border-2 border-[#6C47FF]/20 rounded-xl p-3 flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#6C47FF]">Saldo disponible para retirar</span>
+                  <span className="text-sm font-extrabold text-[#6C47FF] font-mono">
+                    ${(uniData?.liquid_balance ?? 0).toLocaleString("es-CO")} COP
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono uppercase text-gray-500 font-bold block">Monto a retirar (COP) *</label>
+                    <input
+                      type="number"
+                      required
+                      min={50000}
+                      max={uniData?.liquid_balance ?? 0}
+                      value={withdrawAmount}
+                      onChange={(e) => setWithdrawAmount(e.target.value)}
+                      placeholder="ej. 500000"
+                      className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
+                    />
+                    {withdrawAmount && (
+                      <p className="text-[10px] text-[#6C47FF] font-bold">
+                        Recibirás: ${parseInt(withdrawAmount || "0").toLocaleString("es-CO")} COP
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono uppercase text-gray-500 font-bold block">Banco *</label>
+                    <select
+                      required
+                      value={withdrawBank}
+                      onChange={(e) => setWithdrawBank(e.target.value)}
+                      className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
+                    >
+                      <option value="">Selecciona banco</option>
+                      <option>Bancolombia</option>
+                      <option>Davivienda</option>
+                      <option>Banco de Bogotá</option>
+                      <option>BBVA Colombia</option>
+                      <option>Banco Popular</option>
+                      <option>Nequi</option>
+                      <option>Daviplata</option>
+                      <option>Banco Agrario</option>
+                      <option>Otro</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono uppercase text-gray-500 font-bold block">Tipo de cuenta *</label>
+                    <select
+                      value={withdrawType}
+                      onChange={(e) => setWithdrawType(e.target.value)}
+                      className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
+                    >
+                      <option value="Ahorros">Cuenta de Ahorros</option>
+                      <option value="Corriente">Cuenta Corriente</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono uppercase text-gray-500 font-bold block">Número de cuenta *</label>
+                    <input
+                      type="text"
+                      required
+                      value={withdrawAccount}
+                      onChange={(e) => setWithdrawAccount(e.target.value)}
+                      placeholder="ej. 123456789012"
+                      className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono uppercase text-gray-500 font-bold block">Titular de la cuenta *</label>
+                  <input
+                    type="text"
+                    required
+                    value={withdrawHolder}
+                    onChange={(e) => setWithdrawHolder(e.target.value)}
+                    placeholder="Nombre completo o razón social"
+                    className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
+                  />
+                </div>
+
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 text-[11px] text-gray-500 space-y-1">
+                  <p className="font-bold text-gray-700">Condiciones del retiro:</p>
+                  <p>• El monto se descuenta inmediatamente de tu saldo disponible.</p>
+                  <p>• El pago se acredita en tu cuenta en 3-5 días hábiles.</p>
+                  <p>• Campus Pass retiene retención en la fuente según aplique.</p>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={withdrawing}
+                  className="w-full bg-[#1A1A1A] hover:bg-zinc-800 text-white font-extrabold py-3 rounded-xl border-2 border-[#1A1A1A] flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-60"
+                >
+                  {withdrawing ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowDownToLine className="w-4 h-4" />}
+                  {withdrawing ? "Procesando solicitud..." : "Solicitar Retiro"}
+                </button>
+              </form>
+            )}
+          </div>
+
+          {/* Historial de retiros */}
+          <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-2xl p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="text-sm font-extrabold text-[#1A1A1A] flex items-center gap-2">
+                <Clock className="w-4 h-4 text-gray-400" />
+                Historial de Retiros
+              </h4>
+              <button
+                onClick={fetchWithdrawals}
+                disabled={loadingWithdrawals}
+                className="text-[10px] font-mono font-bold text-[#6C47FF] hover:underline cursor-pointer disabled:opacity-50"
+              >
+                {loadingWithdrawals ? "Cargando..." : "Actualizar"}
+              </button>
+            </div>
+
+            {loadingWithdrawals ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="w-5 h-5 animate-spin text-[#6C47FF]" />
+              </div>
+            ) : withdrawRequests.length === 0 ? (
+              <div className="text-center py-8">
+                <ArrowDownToLine className="w-10 h-10 text-gray-200 mx-auto mb-2" />
+                <p className="text-xs font-bold text-gray-400">No tienes retiros registrados aún.</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {withdrawRequests.map((r) => (
+                  <div key={r.id} className="flex items-center justify-between p-3 border border-gray-100 rounded-xl bg-[#FAFAFA]">
+                    <div>
+                      <p className="text-xs font-bold text-[#1A1A1A]">
+                        ${r.amount.toLocaleString("es-CO")} COP
+                      </p>
+                      <p className="text-[10px] text-gray-400">
+                        {r.bank_name} · {new Date(r.created_at).toLocaleDateString("es-CO")}
+                      </p>
+                    </div>
+                    <span className={`text-[10px] font-bold px-2 py-1 rounded-full border ${
+                      r.status === "Pagado"
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : r.status === "Rechazado"
+                        ? "bg-red-50 text-red-600 border-red-200"
+                        : "bg-yellow-50 text-yellow-700 border-yellow-200"
+                    }`}>
+                      {r.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
         </div>
       )}
     </div>

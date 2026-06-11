@@ -51,7 +51,7 @@ export default function App() {
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [studentTab, setStudentTab] = useState<"pass" | "diag" | "market" | "wallet" | "fellowship" | "portfolio">("pass");
   const [corpTab, setCorpTab] = useState<"dashboard" | "talent" | "wallet" | "diagnosis">("dashboard");
-  const [uniTab, setUniTab] = useState<"dashboard" | "catalogo" | "matriculados" | "certificaciones">("dashboard");
+  const [uniTab, setUniTab] = useState<"dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero">("dashboard");
   const [archTab, setArchTab] = useState<"sitemap" | "blueprint" | "crypto">("sitemap");
 
   // Live state from Supabase
@@ -571,6 +571,7 @@ export default function App() {
               { id: "catalogo", label: "Catálogo", Icon: BookOpen },
               { id: "matriculados", label: "Matriculados", Icon: Users },
               { id: "certificaciones", label: "Certificaciones", Icon: Award },
+              { id: "financiero", label: "Financiero", Icon: DollarSign },
             ] as Array<{ id: string; label: string; Icon: React.ComponentType<{ className?: string }> }>
           ).map(({ id, label, Icon }) => (
             <button

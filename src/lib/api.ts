@@ -397,13 +397,17 @@ export async function fetchEmployees(companyId: string): Promise<EmployeeRow[]> 
 }
 
 export async function addEmployee(employee: Database['public']['Tables']['employees']['Insert']) {
-  const { data, error } = await supabase
-    .from('employees')
-    .insert(employee)
-    .select()
-    .single();
+  // Use SECURITY DEFINER RPC to bypass RLS edge cases on INSERT
+  const { data, error } = await supabase.rpc('insert_employee', {
+    p_company_id:  employee.company_id,
+    p_name:        employee.name,
+    p_email:       employee.email,
+    p_role_title:  employee.role_title ?? null,
+    p_department:  employee.department ?? null,
+    p_budget:      employee.assigned_budget ?? 0,
+  });
   if (error) throw error;
-  return data;
+  return data as string; // returns employee uuid
 }
 
 export async function assignEmployeeBudget(employeeId: string, companyId: string, amount: number) {

@@ -128,6 +128,10 @@ function CorporatePortalInner({
   const [empRole, setEmpRole] = useState("");
   const [empDept, setEmpDept] = useState("");
   const [empBudget, setEmpBudget] = useState("0");
+  const [addingEmp, setAddingEmp] = useState(false);
+
+  // invitation modal (shown after adding employee)
+  const [inviteData, setInviteData] = useState<{ name: string; email: string; link: string } | null>(null);
 
   // csv upload
   const [csvFile, setCsvFile] = useState<File | null>(null);
@@ -304,10 +308,11 @@ function CorporatePortalInner({
       triggerToast("Nombre y correo son obligatorios", "error");
       return;
     }
+    setAddingEmp(true);
     try {
       await api.addEmployee({
         company_id: companyId,
-        profile_id: null, // auto-linked by DB trigger on_profile_created_link_employee
+        profile_id: null,
         name: empName,
         email: empEmail,
         role_title: empRole || null,
@@ -318,17 +323,21 @@ function CorporatePortalInner({
         assigned_budget: parseInt(empBudget) || 0,
         suggested_route_cost: null,
       });
-      triggerToast(`${empName} agregado al equipo`, "success");
       fetchState();
       setShowAddEmployeeModal(false);
+      // Build invitation link with email pre-filled
+      const inviteLink = `${window.location.origin}?invite=1&email=${encodeURIComponent(empEmail)}&company=${encodeURIComponent(companyInfo?.name ?? "")}`;
+      setInviteData({ name: empName, email: empEmail, link: inviteLink });
       setEmpName(""); setEmpEmail(""); setEmpRole(""); setEmpDept(""); setEmpBudget("0");
     } catch (err: any) {
       const msg: string = err?.message ?? err?.details ?? "";
-      if (msg.includes("unique") || msg.includes("duplicate") || msg.includes("23505")) {
+      if (msg.includes("unique") || msg.includes("duplicate") || msg.includes("23505") || msg.includes("DO NOTHING")) {
         triggerToast("Ya existe un colaborador con ese correo en esta empresa.", "error");
       } else {
         triggerToast(`Error al agregar colaborador${msg ? ": " + msg : ""}`, "error");
       }
+    } finally {
+      setAddingEmp(false);
     }
   }
 
@@ -1227,10 +1236,66 @@ function CorporatePortalInner({
                   <input type="number" value={empBudget} onChange={e => setEmpBudget(e.target.value)} placeholder="0" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
                 </div>
               </div>
-              <button type="submit" className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm">
-                Agregar colaborador →
+              <button type="submit" disabled={addingEmp} className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none">
+                {addingEmp ? "Agregando..." : "Agregar colaborador →"}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── INVITATION MODAL ── */}
+      {inviteData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setInviteData(null)}>
+          <div className="absolute inset-0 bg-[#1A1A1A]/50 backdrop-blur-sm" />
+          <div
+            className="relative w-full max-w-md bg-white border-4 border-[#1A1A1A] shadow-[8px_8px_0px_0px_#10B981] rounded-2xl p-6 animate-fade-in space-y-4"
+            onClick={e => e.stopPropagation()}
+          >
+            <button onClick={() => setInviteData(null)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-[#10B981] flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="font-display font-extrabold text-[#1A1A1A]">¡{inviteData.name} agregado!</p>
+                <p className="text-xs text-zinc-500">Comparte el enlace de registro con el colaborador</p>
+              </div>
+            </div>
+            <div className="bg-[#FFD000]/10 border-2 border-[#1A1A1A] rounded-xl p-4 space-y-2">
+              <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest">Protocolo de bienvenida</p>
+              <p className="text-sm text-zinc-700 leading-relaxed">
+                Envía este mensaje a <strong>{inviteData.email}</strong>:
+              </p>
+              <div className="bg-white border border-zinc-200 rounded-lg p-3 text-xs text-zinc-600 leading-relaxed">
+                Hola {inviteData.name.split(" ")[0]}, te invitamos a crear tu cuenta en <strong>Campus Pass by VinkU</strong> — la plataforma de desarrollo de talento de {companyInfo?.name ?? "tu empresa"}. Ingresa al siguiente enlace para registrarte como estudiante y acceder a tu ruta de aprendizaje:
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest">Enlace de registro</p>
+              <div className="flex gap-2">
+                <input
+                  readOnly
+                  value={inviteData.link}
+                  className="flex-1 border-2 border-zinc-200 rounded-xl px-3 py-2 text-xs text-zinc-600 focus:outline-none bg-zinc-50 truncate"
+                />
+                <button
+                  onClick={() => { navigator.clipboard.writeText(inviteData.link); triggerToast("Enlace copiado", "success"); }}
+                  className="px-3 py-2 bg-[#FFD000] text-[#1A1A1A] font-bold rounded-xl border-2 border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] hover:shadow-[3px_3px_0px_0px_#1A1A1A] transition-all text-xs whitespace-nowrap"
+                >
+                  Copiar
+                </button>
+              </div>
+              <p className="text-[10px] text-zinc-400">El colaborador se registra como estudiante. Su cuenta quedará vinculada automáticamente a esta empresa.</p>
+            </div>
+            <button
+              onClick={() => setInviteData(null)}
+              className="w-full py-2.5 border-2 border-zinc-200 rounded-xl text-sm font-bold text-zinc-500 hover:border-[#1A1A1A] transition-all"
+            >
+              Cerrar
+            </button>
           </div>
         </div>
       )}

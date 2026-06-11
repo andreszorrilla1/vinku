@@ -94,10 +94,20 @@ export default function MarketingView({
     }
   };
 
+  // Read invite params from URL on mount
+  const inviteParams = (() => {
+    try {
+      const p = new URLSearchParams(window.location.search);
+      return p.get("invite") === "1"
+        ? { email: p.get("email") ?? "", company: p.get("company") ?? "" }
+        : null;
+    } catch { return null; }
+  })();
+
   // Authentication hub state
   const [onboardingStep, setOnboardingStep] = useState(1);
   const [onboardingRole, setOnboardingRole] = useState<"student" | "corporate" | "university">("student");
-  const [formEmail, setFormEmail] = useState("");
+  const [formEmail, setFormEmail] = useState(inviteParams?.email ?? "");
   const [formName, setFormName] = useState("");
   const [formCompany, setFormCompany] = useState("");
   const [formPassword, setFormPassword] = useState("");
@@ -1218,6 +1228,13 @@ export default function MarketingView({
           <button onClick={() => setMarketingTab("home")} className="text-xs text-zinc-600 hover:text-[#1A1A1A] font-mono font-bold cursor-pointer flex items-center gap-1">
             <span>← Volver al inicio</span>
           </button>
+
+          {inviteParams && (
+            <div className="bg-[#10B981]/10 border-2 border-[#10B981] rounded-xl p-3 text-sm text-[#1A1A1A]">
+              <p className="font-bold">¡Fuiste invitado{inviteParams.company ? ` por ${inviteParams.company}` : ""}! 🎉</p>
+              <p className="text-xs text-zinc-600 mt-0.5">Crea tu cuenta de estudiante para acceder a tu ruta de aprendizaje.</p>
+            </div>
+          )}
 
           <div className="text-center space-y-1">
             <div className="inline-block bg-[#FFD000] border-2 border-[#1A1A1A] px-3 py-1 mb-2">

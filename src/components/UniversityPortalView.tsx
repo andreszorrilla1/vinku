@@ -161,10 +161,26 @@ export default function UniversityPortalView({
   // ---- load profile to get university_id ----
   useEffect(() => {
     if (!user) return;
-    api.fetchProfile(user.id).then((profile) => {
-      if (profile?.university_id) {
-        setUniversityId(profile.university_id);
-        loadUniData(profile.university_id);
+    api.fetchProfile(user.id).then(async (profile) => {
+      let uid = profile?.university_id ?? null;
+
+      // Auto-link: if no university_id on profile, look for a university
+      // created with this user's email (handles race condition on signUp trigger)
+      if (!uid && user.email) {
+        const { data: found } = await supabase
+          .from("universities")
+          .select("id")
+          .eq("contact_email", user.email)
+          .maybeSingle();
+        if (found?.id) {
+          await supabase.from("profiles").update({ university_id: found.id }).eq("id", user.id);
+          uid = found.id;
+        }
+      }
+
+      if (uid) {
+        setUniversityId(uid);
+        loadUniData(uid);
       }
     });
   }, [user, loadUniData]);

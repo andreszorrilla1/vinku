@@ -200,22 +200,22 @@ export default function MarketingView({
         <div id="mkt_home_section" className="space-y-20 animate-fade-in text-[#1A1A1A]">
 
           {/* A) HERO GENERAL */}
-          <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-none px-6 py-14 md:px-16 md:py-20 grid grid-cols-1 lg:grid-cols-3 gap-10 items-center">
+          <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-none px-6 py-14 md:px-16 md:py-20">
             {/* Texto hero */}
-            <div className="lg:col-span-1 space-y-8 text-center lg:text-left">
+            <div className="space-y-8 text-center max-w-3xl mx-auto">
               <span className="inline-block bg-[#FAFAFA] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] px-4 py-1.5 text-[10px] md:text-xs font-mono font-extrabold uppercase tracking-widest">
                 🎓 La primera plataforma de educación desagregada de Colombia
               </span>
 
-              <h1 className="text-4xl md:text-6xl font-extrabold font-display leading-[1.05] tracking-tight max-w-3xl mx-auto lg:mx-0">
+              <h1 className="text-4xl md:text-6xl font-extrabold font-display leading-[1.05] tracking-tight max-w-3xl mx-auto">
                 La universidad, a tu medida. Un curso a la vez.
               </h1>
 
-              <p className="text-sm md:text-base font-bold text-[#1A1A1A]/80 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-sm md:text-base font-bold text-[#1A1A1A]/80 max-w-2xl mx-auto leading-relaxed">
                 Campus Pass conecta estudiantes, empresas y universidades en un solo ecosistema: toma materias individuales de universidades aliadas, acumúlalas en tu pasaporte digital y conviértelas en empleabilidad real.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
                 <button
                   id="home_hero_start_btn"
                   onClick={() => {
@@ -237,35 +237,10 @@ export default function MarketingView({
                 </a>
               </div>
             </div>
-
-            {/* Composición de tarjetas recortadas pop-art */}
-            <div className="lg:col-span-2 relative h-72 hidden lg:block" aria-hidden="true">
-              {/* Tarjeta 1 — Estudia */}
-              <div className="absolute left-0 top-0 z-10" style={{ transform: 'rotate(-4deg)' }}>
-                <div className="p-6 border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#1A1A1A]" style={{ backgroundImage: 'radial-gradient(#FFD000 2.5px, transparent 2.5px)', backgroundSize: '20px 20px', backgroundColor: '#1A1A1A' }}>
-                  <div className="text-6xl mb-2">🎓</div>
-                  <div className="text-white font-mono font-extrabold text-xl tracking-widest">ESTUDIA</div>
-                </div>
-              </div>
-              {/* Tarjeta 2 — Crece */}
-              <div className="absolute left-36 top-8 z-20" style={{ transform: 'rotate(2deg)' }}>
-                <div className="bg-[#FFD000] p-6 border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#1A1A1A]">
-                  <div className="text-6xl mb-2">💼</div>
-                  <div className="text-[#1A1A1A] font-mono font-extrabold text-xl tracking-widest">CRECE</div>
-                </div>
-              </div>
-              {/* Tarjeta 3 — Certifícate */}
-              <div className="absolute left-72 top-16 z-30" style={{ transform: 'rotate(-1deg)' }}>
-                <div className="bg-[#6C47FF] p-6 border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#1A1A1A]">
-                  <div className="text-6xl mb-2">🏛️</div>
-                  <div className="text-white font-mono font-extrabold text-xl tracking-widest">CERTIFÍCATE</div>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* B) ¿CÓMO FUNCIONA? */}
-          <div id="como-funciona" className="scroll-mt-24 border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] p-8 md:p-12 space-y-10" style={{ backgroundColor: '#FAFAFA', backgroundImage: 'repeating-linear-gradient(45deg, #1A1A1A 0px, #1A1A1A 1px, transparent 1px, transparent 8px)' }}>
+          <div id="como-funciona" className="scroll-mt-24 border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] p-8 md:p-12 space-y-10" style={{ backgroundColor: '#FAFAFA' }}>
             <div className="text-center space-y-2">
               <h2 className="text-2xl md:text-3xl font-extrabold font-display tracking-vinku">¿Cómo funciona?</h2>
               <p className="text-sm text-zinc-700 font-bold">Tres pasos para convertir cursos en empleabilidad</p>
@@ -510,25 +485,22 @@ export default function MarketingView({
           
           {/* SECCIÓN HERO DE CAPTACIÓN EMOCIONAL */}
           <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-none overflow-hidden relative">
-            {/* Patrón Ben-Day esquina inferior derecha */}
-            <div aria-hidden="true" className="absolute bottom-0 right-0 w-64 h-64 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#1A1A1A 2px, transparent 2px)', backgroundSize: '16px 16px' }} />
-
-            <div className="relative z-10 p-8 md:p-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div className="relative z-10 p-8 md:p-12 max-w-2xl mx-auto text-center">
               {/* Texto hero */}
               <div className="space-y-6">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] rounded-none text-[10px] md:text-xs text-[#1A1A1A] font-mono font-extrabold uppercase tracking-widest">
                   <span>🎓 Pasaporte de Empleabilidad Activo</span>
                 </div>
 
-                <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-[#1A1A1A] leading-tight font-display max-w-xl">
+                <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-[#1A1A1A] leading-tight font-display max-w-xl mx-auto">
                   Tu pasaporte al empleo del futuro.
                 </h1>
 
-                <p className="text-sm md:text-base font-bold text-[#1A1A1A]/80 max-w-xl leading-relaxed">
+                <p className="text-sm md:text-base font-bold text-[#1A1A1A]/80 max-w-xl mx-auto leading-relaxed">
                   Arma una ruta de 3, 5 o 7 cursos de las mejores universidades del país, adaptada a tu perfil, tu presupuesto y tus metas. Conecta con estudiantes y docentes de las mejores universidades, y crea tantas rutas como roles quieras desarrollar.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <div className="flex flex-col sm:flex-row justify-center gap-3 pt-2">
                   <button
                     id="hero_start_b2c_diagnostico_btn"
                     onClick={() => {
@@ -550,7 +522,7 @@ export default function MarketingView({
                   </button>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4 pt-2 text-xs font-mono font-bold uppercase text-[#1A1A1A]">
+                <div className="flex flex-wrap items-center justify-center gap-4 pt-2 text-xs font-mono font-bold uppercase text-[#1A1A1A]">
                   {["100% Sincrónico & Modular", "Validado por Universidades", "Créditos Transferibles"].map(label => (
                     <div key={label} className="flex items-center gap-2">
                       <span className="w-5 h-5 bg-[#1A1A1A] text-[#FFD000] flex items-center justify-center text-[10px] font-black shrink-0">✓</span>
@@ -559,36 +531,11 @@ export default function MarketingView({
                   ))}
                 </div>
               </div>
-
-              {/* Composición pop-art — stats en tarjetas rotadas */}
-              <div className="relative h-72 hidden lg:block" aria-hidden="true">
-                {/* Tarjeta 1 */}
-                <div className="absolute left-0 top-4 z-10" style={{ transform: 'rotate(3deg)' }}>
-                  <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#1A1A1A] p-5">
-                    <div className="text-3xl font-black font-mono text-[#1A1A1A] leading-none">+500</div>
-                    <div className="text-xs font-extrabold font-mono text-[#1A1A1A] mt-1 uppercase tracking-wide">cursos disponibles</div>
-                  </div>
-                </div>
-                {/* Tarjeta 2 */}
-                <div className="absolute left-40 top-12 z-20" style={{ transform: 'rotate(-2deg)' }}>
-                  <div className="bg-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] p-5">
-                    <div className="text-3xl font-black font-mono text-[#FFD000] leading-none">5 min</div>
-                    <div className="text-xs font-extrabold font-mono text-white mt-1 uppercase tracking-wide">para tu diagnóstico</div>
-                  </div>
-                </div>
-                {/* Tarjeta 3 */}
-                <div className="absolute left-20 top-44 z-30" style={{ transform: 'rotate(1deg)' }}>
-                  <div className="bg-[#6C47FF] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#1A1A1A] p-5">
-                    <div className="text-xl font-black font-mono text-[#FFD000] leading-tight">Certificado</div>
-                    <div className="text-xs font-extrabold font-mono text-white mt-1 uppercase tracking-wide">por universidades reales</div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
           {/* SECCIÓN INTERACTIVA "EL CONCEPTO CAMPUS PASS" */}
-          <div className="space-y-6 border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] p-8 md:p-10" style={{ backgroundColor: '#FAFAFA', backgroundImage: 'repeating-linear-gradient(45deg, #1A1A1A 0px, #1A1A1A 1px, transparent 1px, transparent 10px)' }}>
+          <div className="space-y-6 border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] p-8 md:p-10" style={{ backgroundColor: '#FAFAFA' }}>
             <div className="text-center space-y-1.5">
               <h3 className="text-xl md:text-2xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">El Concepto Campus Pass</h3>
               <p className="text-xs font-bold text-zinc-700 max-w-md mx-auto leading-relaxed">
@@ -766,10 +713,7 @@ export default function MarketingView({
           
           {/* HERO B2B (Propuesta de Valor de Neoeducación) */}
           <div className="bg-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#FFD000] rounded-none overflow-hidden relative">
-            {/* Patrón de puntos amarillos sobre negro */}
-            <div aria-hidden="true" className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#FFD000 2.5px, transparent 2.5px)', backgroundSize: '20px 20px' }} />
-
-            <div className="relative z-10 p-8 md:p-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div className="relative z-10 p-8 md:p-12 max-w-2xl mx-auto text-center">
               {/* Texto */}
               <div className="space-y-6">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#6C47FF] rounded-none text-[10px] md:text-xs text-[#1A1A1A] font-mono font-extrabold uppercase tracking-widest">
@@ -777,15 +721,15 @@ export default function MarketingView({
                   <span>Neoeducación Corporativa B2B</span>
                 </div>
 
-                <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-display max-w-xl">
+                <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-display max-w-xl mx-auto">
                   El talento de tu equipo, potenciado con formación universitaria real.
                 </h1>
 
-                <p className="text-sm md:text-base font-bold text-zinc-300 max-w-xl leading-relaxed">
+                <p className="text-sm md:text-base font-bold text-zinc-300 max-w-xl mx-auto leading-relaxed">
                   Diagnostica brechas de habilidades, asigna presupuestos en COP y mide el progreso de cada colaborador desde una sola consola. Construye equipos con habilidades reales y conecta a tus colaboradores con redes universitarias de primer nivel.
                 </p>
 
-                <div className="pt-2">
+                <div className="flex justify-center pt-2">
                   <button
                     id="hero_b2b_start_btn"
                     onClick={() => {
@@ -799,31 +743,6 @@ export default function MarketingView({
                     <span>Crear Cuenta Corporativa / Agendar Demo</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
-                </div>
-              </div>
-
-              {/* Métricas pop-art rotadas */}
-              <div className="relative h-72 hidden lg:block" aria-hidden="true">
-                {/* Tarjeta 1 */}
-                <div className="absolute left-0 top-4 z-10" style={{ transform: 'rotate(-3deg)' }}>
-                  <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#FAFAFA] p-5">
-                    <div className="text-3xl font-black font-mono text-[#1A1A1A] leading-none">3x</div>
-                    <div className="text-xs font-extrabold font-mono text-[#1A1A1A] mt-1 uppercase tracking-wide">más retención</div>
-                  </div>
-                </div>
-                {/* Tarjeta 2 */}
-                <div className="absolute left-40 top-10 z-20" style={{ transform: 'rotate(2deg)' }}>
-                  <div className="bg-[#6C47FF] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#FFD000] p-5">
-                    <div className="text-3xl font-black font-mono text-[#FFD000] leading-none">-67%</div>
-                    <div className="text-xs font-extrabold font-mono text-white mt-1 uppercase tracking-wide">vs educación tradicional</div>
-                  </div>
-                </div>
-                {/* Tarjeta 3 */}
-                <div className="absolute left-20 top-44 z-30" style={{ transform: 'rotate(-1deg)' }}>
-                  <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] p-5">
-                    <div className="text-xl font-black font-mono text-[#1A1A1A] leading-tight">ROI medible</div>
-                    <div className="text-xs font-extrabold font-mono text-[#6C47FF] mt-1 uppercase tracking-wide">desde semana 1</div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -1048,21 +967,7 @@ export default function MarketingView({
           
           {/* SECCIÓN HERO INSTITUCIONAL (University) */}
           <div className="bg-[#6C47FF] border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-none overflow-hidden relative">
-            {/* Puntos blancos semi-transparentes */}
-            <div aria-hidden="true" className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#FAFAFA 2px, transparent 2px)', backgroundSize: '18px 18px' }} />
-
-            {/* Relámpagos decorativos SVG */}
-            <svg aria-hidden="true" className="absolute top-4 right-6 opacity-60" width="24" height="36" viewBox="0 0 32 48" fill="none">
-              <polygon points="18,0 6,26 16,26 14,48 26,18 16,18" fill="#FFD000" stroke="#1A1A1A" strokeWidth="2"/>
-            </svg>
-            <svg aria-hidden="true" className="absolute bottom-6 right-20 opacity-40" width="16" height="24" viewBox="0 0 32 48" fill="none">
-              <polygon points="18,0 6,26 16,26 14,48 26,18 16,18" fill="#FFD000" stroke="#1A1A1A" strokeWidth="2"/>
-            </svg>
-            <svg aria-hidden="true" className="absolute top-16 left-4 opacity-30" width="20" height="30" viewBox="0 0 32 48" fill="none">
-              <polygon points="18,0 6,26 16,26 14,48 26,18 16,18" fill="#FFD000" stroke="#1A1A1A" strokeWidth="2"/>
-            </svg>
-
-            <div className="relative z-10 p-8 md:p-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div className="relative z-10 p-8 md:p-12 max-w-2xl mx-auto text-center">
               {/* Texto */}
               <div className="space-y-6">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] rounded-none text-[10px] md:text-xs text-[#1A1A1A] font-mono font-extrabold uppercase tracking-widest">
@@ -1070,15 +975,15 @@ export default function MarketingView({
                   <span>Plataforma para Universidades Socias</span>
                 </div>
 
-                <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-display max-w-xl">
+                <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight font-display max-w-xl mx-auto">
                   Tu catálogo académico, nuevas fuentes de ingreso.
                 </h1>
 
-                <p className="text-sm md:text-base font-bold text-indigo-100 max-w-xl leading-relaxed">
+                <p className="text-sm md:text-base font-bold text-indigo-100 max-w-xl mx-auto leading-relaxed">
                   Desagrega tus programas en cursos individuales, llega a miles de estudiantes y empresas, y recibe ingresos por cada matrícula. Sin cambiar tu estructura académica, multiplica tu alcance y genera ingresos recurrentes por cada matrícula.
                 </p>
 
-                <div className="pt-2">
+                <div className="flex justify-center pt-2">
                   <button
                     id="hero_university_join_btn"
                     onClick={() => {
@@ -1092,31 +997,6 @@ export default function MarketingView({
                     <span>Unir mi Universidad a Campus Pass</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
-                </div>
-              </div>
-
-              {/* Tarjetas de métricas rotadas */}
-              <div className="relative h-72 hidden lg:block" aria-hidden="true">
-                {/* Tarjeta 1 */}
-                <div className="absolute left-0 top-4 z-10" style={{ transform: 'rotate(2deg)' }}>
-                  <div className="bg-[#FFD000] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#1A1A1A] p-5">
-                    <div className="text-3xl font-black font-mono text-[#1A1A1A] leading-none">5</div>
-                    <div className="text-xs font-extrabold font-mono text-[#1A1A1A] mt-1 uppercase tracking-wide">universidades aliadas</div>
-                  </div>
-                </div>
-                {/* Tarjeta 2 */}
-                <div className="absolute left-40 top-10 z-20" style={{ transform: 'rotate(-3deg)' }}>
-                  <div className="bg-[#1A1A1A] border-4 border-[#FFD000] shadow-[6px_6px_0px_#FFD000] p-5">
-                    <div className="text-3xl font-black font-mono text-[#FFD000] leading-none">15+</div>
-                    <div className="text-xs font-extrabold font-mono text-white mt-1 uppercase tracking-wide">cursos activos</div>
-                  </div>
-                </div>
-                {/* Tarjeta 3 */}
-                <div className="absolute left-20 top-44 z-30" style={{ transform: 'rotate(1deg)' }}>
-                  <div className="bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] p-5">
-                    <div className="text-xl font-black font-mono text-[#6C47FF] leading-tight">Pagos</div>
-                    <div className="text-xs font-extrabold font-mono text-[#1A1A1A] mt-1 uppercase tracking-wide">en COP</div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -1171,11 +1051,6 @@ export default function MarketingView({
 
           {/* SECCIÓN "MÁS QUE CURSOS: UNA COMUNIDAD" */}
           <div className="border-4 border-[#1A1A1A] bg-[#FFD000] shadow-[6px_6px_0px_#1A1A1A] p-6 md:p-8 rounded-none text-center space-y-3 max-w-3xl mx-auto">
-            <div aria-hidden="true" className="flex justify-center gap-3 mb-2">
-              <div className="w-8 h-8 bg-[#1A1A1A]" style={{ clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)' }} />
-              <div className="w-8 h-8 bg-[#6C47FF]" style={{ clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)' }} />
-              <div className="w-8 h-8 bg-[#1A1A1A]" style={{ clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)' }} />
-            </div>
             <h4 className="text-xl font-extrabold font-display text-[#1A1A1A]">Más que cursos: una comunidad</h4>
             <p className="text-sm font-bold text-[#1A1A1A]/80 max-w-xl mx-auto leading-relaxed">
               Cada curso conecta a tu institución con profesionales y empresas que buscan exactamente lo que tú enseñas. Networking real, visibilidad nacional.

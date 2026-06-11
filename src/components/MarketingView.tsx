@@ -1097,106 +1097,110 @@ export default function MarketingView({
       {/* ========================================================== */}
       {/* 5. MARKETING STATION E: AUTHENTICATION + MULTIROLE ONBOARDI */}
       {/* ========================================================== */}
-      {marketingTab === "auth" && (
-        <div id="mkt_auth_section" className="max-w-md mx-auto bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] rounded-none p-6 md:p-8 space-y-6 animate-fade-in relative z-10">
+      {marketingTab === "auth" && authMode === "login" && (
+        <div id="mkt_login_section" className="max-w-md mx-auto bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#6C47FF] rounded-none p-6 md:p-8 space-y-6 animate-fade-in relative z-10">
 
           <button onClick={() => setMarketingTab("home")} className="text-xs text-zinc-600 hover:text-[#1A1A1A] font-mono font-bold cursor-pointer flex items-center gap-1">
             <span>← Volver al inicio</span>
           </button>
 
           <div className="text-center space-y-1">
-            {authMode === "login" ? (
+            <div className="inline-block bg-[#6C47FF] border-2 border-[#1A1A1A] px-3 py-1 mb-2">
+              <span className="text-[10px] font-mono font-bold text-white uppercase tracking-widest">Bienvenido de nuevo</span>
+            </div>
+            <h3 className="text-xl md:text-2xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Iniciar Sesión</h3>
+            <p className="text-xs font-bold text-zinc-600">Accede a tu portal con tu correo y contraseña.</p>
+          </div>
+
+          {/* Login Form */}
+          <form onSubmit={handleLogin} className="space-y-4 font-sans text-xs">
+            <div>
+              <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Correo Electrónico</label>
+              <input
+                type="email"
+                required
+                value={formEmail}
+                onChange={(e) => { setFormEmail(e.target.value); setAuthError(null); }}
+                placeholder="ej. diana@empresa.com"
+                className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
+              />
+            </div>
+            <div>
+              <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Contraseña</label>
+              <input
+                type="password"
+                required
+                value={formPassword}
+                onChange={(e) => { setFormPassword(e.target.value); setAuthError(null); }}
+                placeholder="••••••••"
+                className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
+              />
+            </div>
+            {authError && (
+              <div className="flex items-center gap-2 text-red-600 text-xs font-bold bg-red-100 border-2 border-red-600 p-3 rounded-none">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{authError}</span>
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={authLoading}
+              className="w-full bg-[#FFD000] hover:bg-yellow-400 text-black border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] font-extrabold p-3 rounded-none text-xs transition-all cursor-pointer text-center font-sans uppercase tracking-widest flex items-center justify-center gap-2 disabled:opacity-60"
+            >
+              {authLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+              Ingresar al Sistema
+            </button>
+          </form>
+
+          <div className="border-t-2 border-[#1A1A1A] pt-4 text-center space-y-2">
+            <p className="text-xs font-bold text-zinc-600">¿Aún no tienes cuenta?</p>
+            <button
+              onClick={() => { setAuthMode("register"); setOnboardingStep(1); setAuthError(null); }}
+              className="w-full bg-[#1A1A1A] hover:bg-zinc-800 text-white border-2 border-[#1A1A1A] font-extrabold p-3 rounded-none text-xs transition-all cursor-pointer uppercase tracking-wider"
+            >
+              Crear Cuenta Nueva
+            </button>
+          </div>
+
+        </div>
+      )}
+
+      {marketingTab === "auth" && authMode === "register" && (
+        <div id="mkt_register_section" className="max-w-md mx-auto bg-[#FAFAFA] border-4 border-[#1A1A1A] shadow-[6px_6px_0px_#FFD000] rounded-none p-6 md:p-8 space-y-6 animate-fade-in relative z-10">
+
+          <button onClick={() => setMarketingTab("home")} className="text-xs text-zinc-600 hover:text-[#1A1A1A] font-mono font-bold cursor-pointer flex items-center gap-1">
+            <span>← Volver al inicio</span>
+          </button>
+
+          <div className="text-center space-y-1">
+            <div className="inline-block bg-[#FFD000] border-2 border-[#1A1A1A] px-3 py-1 mb-2">
+              <span className="text-[10px] font-mono font-bold text-[#1A1A1A] uppercase tracking-widest">Nuevo en Campus Pass</span>
+            </div>
+            {onboardingStep === 2 && onboardingRole === "student" ? (
               <>
-                <h3 className="text-lg md:text-xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Ingresar a Campus Pass</h3>
-                <p className="text-xs font-bold text-zinc-600">Accede a tu portal con tu correo y contraseña.</p>
-              </>
-            ) : onboardingStep === 2 && onboardingRole === "student" ? (
-              <>
-                <h3 className="text-lg md:text-xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Crea tu cuenta de Estudiante</h3>
+                <h3 className="text-xl md:text-2xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Crea tu cuenta de Estudiante</h3>
                 <p className="text-xs font-bold text-zinc-600">Regístrate gratis y activa tu pasaporte educativo.</p>
               </>
             ) : onboardingStep === 2 && onboardingRole === "corporate" ? (
               <>
-                <h3 className="text-lg md:text-xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Registro de Empresa</h3>
+                <h3 className="text-xl md:text-2xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Registro de Empresa</h3>
                 <p className="text-xs font-bold text-zinc-600">Accede a la consola de formación corporativa.</p>
               </>
             ) : onboardingStep === 2 && onboardingRole === "university" ? (
               <>
-                <h3 className="text-lg md:text-xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Registro de Universidad</h3>
+                <h3 className="text-xl md:text-2xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Registro de Universidad</h3>
                 <p className="text-xs font-bold text-zinc-600">Une tu institución al ecosistema Campus Pass.</p>
               </>
             ) : (
               <>
-                <h3 className="text-lg md:text-xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">¿Cómo quieres ingresar?</h3>
+                <h3 className="text-xl md:text-2xl font-extrabold text-[#1A1A1A] font-display tracking-vinku">Crear Cuenta</h3>
                 <p className="text-xs font-bold text-zinc-600">Selecciona tu perfil para personalizar el registro.</p>
               </>
             )}
           </div>
 
-          {/* Toggle Login vs Register */}
+          {/* Step 1: Role selector */}
           {onboardingStep === 1 && (
-            <div className="flex border-b-2 border-[#1A1A1A] pb-2 text-xs font-bold gap-4 justify-center">
-              <button
-                onClick={() => setAuthMode("register")}
-                className={`pb-2 relative cursor-pointer ${authMode === "register" ? "text-[#1A1A1A] font-extrabold" : "text-zinc-500 hover:text-[#1A1A1A]"}`}
-              >
-                <span>Registro Nuevo</span>
-                {authMode === "register" && <span className="absolute bottom-0 left-0 w-full h-1 bg-[#6C47FF] rounded-none" />}
-              </button>
-              <button
-                onClick={() => setAuthMode("login")}
-                className={`pb-2 relative cursor-pointer ${authMode === "login" ? "text-[#1A1A1A] font-extrabold" : "text-zinc-500 hover:text-[#1A1A1A]"}`}
-              >
-                <span>Iniciar Sesión</span>
-                {authMode === "login" && <span className="absolute bottom-0 left-0 w-full h-1 bg-[#6C47FF] rounded-none" />}
-              </button>
-            </div>
-          )}
-
-          {/* Step 1: Login Form */}
-          {onboardingStep === 1 && authMode === "login" && (
-            <form onSubmit={handleLogin} className="space-y-4 font-sans text-xs">
-              <div>
-                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Correo Electrónico</label>
-                <input
-                  type="email"
-                  required
-                  value={formEmail}
-                  onChange={(e) => { setFormEmail(e.target.value); setAuthError(null); }}
-                  placeholder="ej. diana@empresa.com"
-                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
-                />
-              </div>
-              <div>
-                <label className="text-[10px] font-mono font-bold text-zinc-600 uppercase tracking-wide block mb-1">Contraseña</label>
-                <input
-                  type="password"
-                  required
-                  value={formPassword}
-                  onChange={(e) => { setFormPassword(e.target.value); setAuthError(null); }}
-                  placeholder="••••••••"
-                  className="w-full bg-white border-2 border-[#1A1A1A] rounded-none p-3 text-[#1A1A1A] font-semibold outline-none focus:border-[#6C47FF]"
-                />
-              </div>
-              {authError && (
-                <div className="flex items-center gap-2 text-red-600 text-xs font-bold bg-red-100 border-2 border-red-600 p-3 rounded-none">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{authError}</span>
-                </div>
-              )}
-              <button
-                type="submit"
-                disabled={authLoading}
-                className="w-full bg-[#FFD000] hover:bg-yellow-400 text-black border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] font-extrabold p-3 rounded-none text-xs transition-all cursor-pointer text-center font-sans uppercase tracking-widest flex items-center justify-center gap-2 disabled:opacity-60"
-              >
-                {authLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                Ingresar al Sistema
-              </button>
-            </form>
-          )}
-
-          {/* Step 2: Multi-role Onboarding Wizard Start */}
-          {onboardingStep === 1 && authMode === "register" && (
             <div className="space-y-4 font-sans text-xs">
               <div>
                 <label className="text-xs font-extrabold text-[#1A1A1A] block mb-2">1. Selecciona tu rol organizacional:</label>
@@ -1594,9 +1598,17 @@ export default function MarketingView({
             </form>
           )}
 
-          <div className="border-t-2 border-[#1A1A1A] pt-4 text-center">
+          <div className="border-t-2 border-[#1A1A1A] pt-4 text-center space-y-2">
             <p className="text-[10px] font-mono font-bold text-zinc-600">
               Al registrarte aceptas los términos de uso de Campus Pass by VinkU.
+            </p>
+            <p className="text-xs font-bold text-zinc-600">¿Ya tienes cuenta?{" "}
+              <button
+                onClick={() => { setAuthMode("login"); setOnboardingStep(1); setAuthError(null); }}
+                className="text-[#6C47FF] underline font-extrabold cursor-pointer hover:text-[#1A1A1A]"
+              >
+                Inicia sesión aquí
+              </button>
             </p>
           </div>
 

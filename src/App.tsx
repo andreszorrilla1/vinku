@@ -48,6 +48,7 @@ export default function App() {
   // Navigation states
   const [activeRole, setActiveRole] = useState<"marketing" | "student" | "corporate" | "university" | "architecture">("marketing");
   const [marketingTab, setMarketingTab] = useState<"home" | "b2c" | "b2b" | "universidad" | "auth">("home");
+  const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [studentTab, setStudentTab] = useState<"pass" | "diag" | "market" | "wallet" | "fellowship" | "portfolio">("pass");
   const [corpTab, setCorpTab] = useState<"dashboard" | "talent" | "wallet" | "diagnosis">("dashboard");
   const [uniTab, setUniTab] = useState<"dashboard" | "catalogo" | "matriculados" | "certificaciones">("dashboard");
@@ -634,7 +635,7 @@ export default function App() {
               </div>
               )}
               <button
-                onClick={() => { setActiveRole("marketing"); setMarketingTab("auth"); }}
+                onClick={() => { setActiveRole("marketing"); setMarketingTab("auth"); setAuthMode("login"); }}
                 className="px-4 py-2 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold text-xs rounded-lg border-2 border-[#FFD000] shadow-[3px_3px_0px_rgba(255,208,0,0.4)] hover:shadow-[5px_5px_0px_rgba(255,208,0,0.4)] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all whitespace-nowrap cursor-pointer"
               >
                 Iniciar sesión →
@@ -662,13 +663,15 @@ export default function App() {
               {/*                    0. MARKETING & ONBOARDING VIEW          */}
               {/* ========================================================== */}
               {activeRole === "marketing" && (
-                <MarketingView 
+                <MarketingView
                   courses={courses}
                   setActiveRole={setActiveRole}
                   setStudentTab={setStudentTab}
                   setCorpTab={setCorpTab}
                   setMarketingTab={setMarketingTab}
                   marketingTab={marketingTab}
+                  authMode={authMode}
+                  setAuthMode={setAuthMode}
                   handleEnrollCourse={handleEnrollCourse}
                   triggerToast={triggerToast}
                 />
@@ -686,7 +689,7 @@ export default function App() {
                     <h2 className="font-display font-extrabold text-[#1A1A1A] text-xl mb-2">Portal Estudiantil</h2>
                     <p className="text-sm text-[#1A1A1A]/70 mb-5">Inicia sesión o regístrate para acceder al portal estudiantil.</p>
                     <button
-                      onClick={() => { setActiveRole("marketing"); setMarketingTab("auth"); }}
+                      onClick={() => { setActiveRole("marketing"); setMarketingTab("auth"); setAuthMode("login"); }}
                       className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#6C47FF] hover:shadow-[6px_6px_0px_0px_#6C47FF] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm"
                     >
                       Acceder / Registrarse →
@@ -703,7 +706,7 @@ export default function App() {
                     <h2 className="font-display font-extrabold text-[#1A1A1A] text-xl mb-2">Inicia sesión para continuar</h2>
                     <p className="text-sm text-[#1A1A1A]/70 mb-5">Accede con tu cuenta de Campus Pass para ver tu pasaporte, cursos y diagnóstico personalizado.</p>
                     <button
-                      onClick={() => { setActiveRole("marketing"); setMarketingTab("auth"); }}
+                      onClick={() => { setActiveRole("marketing"); setMarketingTab("auth"); setAuthMode("login"); }}
                       className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#6C47FF] hover:shadow-[6px_6px_0px_0px_#6C47FF] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm"
                     >
                       Iniciar sesión →

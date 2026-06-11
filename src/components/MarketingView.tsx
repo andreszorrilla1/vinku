@@ -39,6 +39,8 @@ interface MarketingViewProps {
   setCorpTab: (tab: any) => void;
   setMarketingTab: (tab: any) => void;
   marketingTab: "home" | "b2c" | "b2b" | "universidad" | "auth";
+  authMode: "login" | "register";
+  setAuthMode: (mode: "login" | "register") => void;
   handleEnrollCourse: (courseId: string) => void;
   triggerToast: (msg: string, type?: "success" | "error" | "info") => void;
 }
@@ -50,6 +52,8 @@ export default function MarketingView({
   setCorpTab,
   marketingTab,
   setMarketingTab,
+  authMode,
+  setAuthMode,
   handleEnrollCourse,
   triggerToast
 }: MarketingViewProps) {
@@ -91,7 +95,6 @@ export default function MarketingView({
   };
 
   // Authentication hub state
-  const [authMode, setAuthMode] = useState<"login" | "register">("register");
   const [onboardingStep, setOnboardingStep] = useState(1);
   const [onboardingRole, setOnboardingRole] = useState<"student" | "corporate" | "university">("student");
   const [formEmail, setFormEmail] = useState("");

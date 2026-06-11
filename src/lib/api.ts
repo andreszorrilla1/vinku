@@ -135,12 +135,20 @@ export async function fetchEmployeeEnrollments(employeeId: string) {
 }
 
 export async function fetchEnrollments(userId: string) {
+  // Try full select including delivery columns (migration 009)
   const { data, error } = await supabase
     .from('enrollments')
     .select(`*, courses(title, university_id, modality, start_date, access_link, classroom, universities(name))`)
     .eq('student_id', userId);
-  if (error) throw error;
-  return data ?? [];
+  if (!error) return data ?? [];
+
+  // Fallback without delivery columns if migration 009 not yet applied
+  const { data: d2, error: e2 } = await supabase
+    .from('enrollments')
+    .select(`*, courses(title, university_id, universities(name))`)
+    .eq('student_id', userId);
+  if (e2) throw e2;
+  return d2 ?? [];
 }
 
 export async function enrollCourse(studentId: string, courseId: string, creditsSpent: number) {
@@ -394,6 +402,22 @@ export async function fetchEmployees(companyId: string): Promise<EmployeeRow[]> 
     .order('name');
   if (error) throw error;
   return data ?? [];
+}
+
+// Link profile to company using SECURITY DEFINER RPC (bypasses RLS on profiles UPDATE)
+export async function linkProfileCompany(companyId: string): Promise<void> {
+  const { error } = await supabase.rpc('link_profile_company', { p_company_id: companyId });
+  if (error && !(error.message?.includes('Could not find the function') || (error as any).code === 'PGRST202')) {
+    // Fallback to direct update (works if UPDATE policy exists)
+    await supabase.from('profiles').update({ company_id: companyId }).eq('id', (await supabase.auth.getUser()).data.user?.id ?? '');
+  }
+}
+
+export async function linkProfileUniversity(universityId: string): Promise<void> {
+  const { error } = await supabase.rpc('link_profile_university', { p_university_id: universityId });
+  if (error && !(error.message?.includes('Could not find the function') || (error as any).code === 'PGRST202')) {
+    await supabase.from('profiles').update({ university_id: universityId }).eq('id', (await supabase.auth.getUser()).data.user?.id ?? '');
+  }
 }
 
 export async function addEmployee(employee: Database['public']['Tables']['employees']['Insert']) {

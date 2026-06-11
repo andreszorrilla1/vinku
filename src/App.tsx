@@ -239,27 +239,43 @@ export default function App() {
           setFellowships(mappedSessions);
         }
 
-        if (profile && profile.role === 'corporate_admin' && profile.company_id) {
-          const [company, employees] = await Promise.all([
-            api.fetchCompany(profile.company_id),
-            api.fetchEmployees(profile.company_id),
-          ]);
-          const mappedEmployees: Employee[] = employees.map((e: any) => ({
-            id: e.id,
-            name: e.name,
-            email: e.email,
-            role: e.role_title ?? '',
-            department: e.department ?? '',
-            diagStatus: e.diag_status as any,
-            activePath: e.active_path ?? [],
-            progress: e.progress_pct,
-            assignedBudget: e.assigned_budget,
-            suggestedRouteCost: e.suggested_route_cost ?? undefined,
-          }));
-          setCorporate({
-            budgetLeft: company?.wallet_balance ?? 0,
-            employees: mappedEmployees,
-          });
+        if (profile && profile.role === 'corporate_admin') {
+          // company_id may be null if profile link silently failed — try to resolve by email
+          let companyId = profile.company_id;
+          if (!companyId && user?.email) {
+            const { data: found } = await supabase
+              .from('companies')
+              .select('id')
+              .eq('contact_email', user.email)
+              .maybeSingle();
+            if (found?.id) {
+              companyId = found.id;
+              // persist the link via SECURITY DEFINER RPC
+              await api.linkProfileCompany(found.id).catch(() => {});
+            }
+          }
+          if (companyId) {
+            const [company, employees] = await Promise.all([
+              api.fetchCompany(companyId),
+              api.fetchEmployees(companyId),
+            ]);
+            const mappedEmployees: Employee[] = employees.map((e: any) => ({
+              id: e.id,
+              name: e.name,
+              email: e.email,
+              role: e.role_title ?? '',
+              department: e.department ?? '',
+              diagStatus: e.diag_status as any,
+              activePath: e.active_path ?? [],
+              progress: e.progress_pct,
+              assignedBudget: e.assigned_budget,
+              suggestedRouteCost: e.suggested_route_cost ?? undefined,
+            }));
+            setCorporate({
+              budgetLeft: company?.wallet_balance ?? 0,
+              employees: mappedEmployees,
+            });
+          }
         }
       }
     } catch (e) {

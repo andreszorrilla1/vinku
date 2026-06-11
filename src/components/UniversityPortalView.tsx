@@ -173,7 +173,7 @@ export default function UniversityPortalView({
           .eq("contact_email", user.email)
           .maybeSingle();
         if (found?.id) {
-          await supabase.from("profiles").update({ university_id: found.id }).eq("id", user.id);
+          await api.linkProfileUniversity(found.id).catch(() => {});
           uid = found.id;
         }
       }

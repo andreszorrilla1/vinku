@@ -181,7 +181,8 @@ function CorporatePortalInner({
             .eq("contact_email", userEmail)
             .maybeSingle();
           if (found?.id) {
-            await supabase.from("profiles").update({ company_id: found.id }).eq("id", userId);
+            // Use SECURITY DEFINER RPC so the UPDATE never fails silently
+            await api.linkProfileCompany(found.id).catch(() => {});
             cid = found.id;
           }
         }

@@ -853,6 +853,7 @@ export default function StudentPortalView({
   const [levelFilter, setLevelFilter] = useState("Todos");
   const [sortBy, setSortBy] = useState<"default" | "precio_asc" | "precio_desc" | "reciente">("default");
   const [expandedCourse, setExpandedCourse] = useState<string | null>(null);
+  const [docConfirmCourse, setDocConfirmCourse] = useState<Course | null>(null);
 
   if (!student) {
     return (
@@ -878,6 +879,15 @@ export default function StudentPortalView({
       if (sortBy === "precio_desc") return b.cost - a.cost;
       return 0;
     });
+
+  // Títulos de cursos certificados por el estudiante (para validar prerrequisitos)
+  const certifiedTitles = student.passport.sellos
+    .filter(s => s.status === "Certificado")
+    .map(s => s.courseTitle);
+
+  // Resuelve los títulos de los cursos prerrequisito a partir de sus IDs
+  const resolvePrereqTitles = (ids: string[]) =>
+    ids.map(id => courses.find(c => c.id === id)?.title).filter(Boolean) as string[];
 
   const tabs = [
     { id: "pass", label: "Mi Pasaporte", icon: Award },
@@ -1000,6 +1010,11 @@ export default function StudentPortalView({
                 const canAfford = student.walletBalance >= course.cost;
                 const enrolled = student.passport.sellos.some(s => s.courseId === course.id);
                 const isExpanded = expandedCourse === course.id;
+                const prereqIds = course.prerequisites ?? [];
+                const prereqTitles = resolvePrereqTitles(prereqIds);
+                const missingPrereqs = prereqTitles.filter(t => !certifiedTitles.includes(t));
+                const blockedByPrereq = missingPrereqs.length > 0;
+                const reqDocs = course.requiredDocs ?? [];
                 return (
                   <div key={course.id} className="bg-white border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-xl overflow-hidden flex flex-col">
                     <div className="bg-[#FFD000] px-4 py-2 border-b-2 border-[#1A1A1A]">
@@ -1016,6 +1031,24 @@ export default function StudentPortalView({
                           <span key={skill} className="text-[9px] font-bold bg-[#6C47FF]/10 text-[#6C47FF] px-2 py-0.5 rounded-full border border-[#6C47FF]/20">{skill}</span>
                         ))}
                       </div>
+                      {prereqTitles.length > 0 && (
+                        <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border w-fit ${blockedByPrereq ? "bg-amber-50 text-amber-700 border-amber-200" : "bg-emerald-50 text-emerald-700 border-emerald-200"}`}>
+                          Requiere: {prereqTitles.join(", ")}
+                        </span>
+                      )}
+                      {course.maxSeats != null && (
+                        <span className="text-[9px] font-bold bg-zinc-100 text-zinc-600 border border-zinc-200 px-2 py-0.5 rounded-full w-fit">
+                          Cupos: {course.maxSeats}
+                        </span>
+                      )}
+                      {isExpanded && reqDocs.length > 0 && (
+                        <div className="flex flex-wrap gap-1 border-t border-zinc-100 pt-2">
+                          <span className="text-[9px] font-bold text-zinc-400 self-center uppercase w-full">Deberás presentar:</span>
+                          {reqDocs.map(doc => (
+                            <span key={doc} className="text-[9px] font-bold bg-[#FFD000]/20 text-[#1A1A1A] border border-[#FFD000] px-2 py-0.5 rounded-full">{doc}</span>
+                          ))}
+                        </div>
+                      )}
                       {course.description && (
                         <div>
                           <button
@@ -1036,16 +1069,19 @@ export default function StudentPortalView({
                           <span className="text-xs font-bold text-[#10B981] flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> Inscrito</span>
                         ) : (
                           <button
-                            onClick={() => onEnrollCourse(course.id)}
-                            disabled={!canAfford}
-                            title={!canAfford ? "Saldo insuficiente para este curso" : undefined}
+                            onClick={() => {
+                              if (reqDocs.length > 0) setDocConfirmCourse(course);
+                              else onEnrollCourse(course.id);
+                            }}
+                            disabled={!canAfford || blockedByPrereq}
+                            title={blockedByPrereq ? `Completa primero: ${missingPrereqs.join(", ")}` : !canAfford ? "Saldo insuficiente para este curso" : undefined}
                             className={`px-3 py-1.5 text-xs font-bold rounded-lg border-2 transition-all ${
-                              canAfford
+                              canAfford && !blockedByPrereq
                                 ? "bg-[#1A1A1A] text-[#FFD000] border-[#1A1A1A] hover:shadow-[2px_2px_0px_0px_#FFD000]"
                                 : "bg-zinc-100 text-zinc-400 border-zinc-200 cursor-not-allowed"
                             }`}
                           >
-                            {canAfford ? "Inscribir" : "Saldo insuficiente"}
+                            {blockedByPrereq ? `Completa primero: ${missingPrereqs[0]}` : canAfford ? "Inscribir" : "Saldo insuficiente"}
                           </button>
                         )}
                       </div>
@@ -1070,6 +1106,38 @@ export default function StudentPortalView({
                   <p className="font-bold text-sm">No hay cursos para esta búsqueda</p>
                 </div>
               )}
+            </div>
+          )}
+
+          {docConfirmCourse && (
+            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+              <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-2xl p-6 max-w-md w-full space-y-4 animate-fade-in">
+                <h3 className="text-base font-extrabold text-[#1A1A1A]">Documentos requeridos</h3>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Para <span className="font-bold">{docConfirmCourse.title}</span> deberás presentar los siguientes documentos. La universidad te contactará a tu correo para validarlos antes de iniciar.
+                </p>
+                <ul className="space-y-1.5">
+                  {(docConfirmCourse.requiredDocs ?? []).map(doc => (
+                    <li key={doc} className="text-xs font-bold text-[#1A1A1A] flex items-center gap-2">
+                      <CheckCircle className="w-3.5 h-3.5 text-[#6C47FF]" /> {doc}
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex gap-3 pt-2 border-t border-zinc-100">
+                  <button
+                    onClick={() => setDocConfirmCourse(null)}
+                    className="flex-1 border-2 border-zinc-200 text-zinc-500 font-bold py-3 rounded-xl hover:border-zinc-300 cursor-pointer transition-all"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() => { const id = docConfirmCourse.id; setDocConfirmCourse(null); onEnrollCourse(id); }}
+                    className="flex-1 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] text-[#1A1A1A] font-extrabold py-3 rounded-xl cursor-pointer hover:bg-yellow-400 transition-all"
+                  >
+                    Confirmar inscripción
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>

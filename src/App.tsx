@@ -150,6 +150,10 @@ export default function App() {
         skills: c.skills ?? [],
         description: c.description ?? '',
         category: c.category,
+        universityId: c.university_id,
+        prerequisites: c.prerequisites ?? [],
+        requiredDocs: c.required_docs ?? [],
+        maxSeats: c.max_seats ?? null,
       }));
       setCourses(mappedCourses);
 

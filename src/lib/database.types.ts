@@ -42,6 +42,9 @@ export interface Database {
           skills: string[];
           category: string;
           is_active: boolean;
+          prerequisites?: string[] | null;
+          required_docs?: string[] | null;
+          max_seats?: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -110,6 +113,7 @@ export interface Database {
           course_id: string;
           status: EnrollmentStatus;
           enrolled_at: string;
+          started_at?: string | null;
           completed_at: string | null;
           certificate_url: string | null;
           credits_spent: number;

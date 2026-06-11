@@ -10,6 +10,10 @@ export interface Course {
   skills: string[];
   description: string;
   category: string;
+  universityId?: string;
+  prerequisites?: string[];
+  requiredDocs?: string[];
+  maxSeats?: number | null;
 }
 
 export interface Achievement {

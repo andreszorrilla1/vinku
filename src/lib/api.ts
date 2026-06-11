@@ -33,6 +33,35 @@ export async function addCourse(course: Database['public']['Tables']['courses'][
   return data;
 }
 
+// Inserta un curso intentando incluir campos extra (prerequisites, required_docs,
+// max_seats). Si la BD aún no tiene esas columnas, reintenta sin ellos.
+export async function addCourseResilient(
+  base: Database['public']['Tables']['courses']['Insert'],
+  extras: Record<string, unknown>
+) {
+  try {
+    const { data, error } = await supabase
+      .from('courses')
+      .insert({ ...base, ...extras })
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  } catch (err: any) {
+    const msg = String(err?.message ?? '').toLowerCase();
+    if (msg.includes('column') || msg.includes('does not exist')) {
+      const { data, error } = await supabase
+        .from('courses')
+        .insert(base)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    }
+    throw err;
+  }
+}
+
 export async function toggleCourseActive(courseId: string, isActive: boolean) {
   const { error } = await supabase
     .from('courses')
@@ -462,6 +491,47 @@ export async function markEnrollmentCompleted(enrollmentId: string) {
     .update({ completed_at: new Date().toISOString() })
     .eq('id', enrollmentId);
   if (error) throw error;
+}
+
+export async function updateUniversity(
+  universityId: string,
+  updates: { name?: string; logo_url?: string | null; contact_email?: string }
+) {
+  const { error } = await supabase
+    .from('universities')
+    .update(updates)
+    .eq('id', universityId);
+  if (error) throw error;
+}
+
+export async function markEnrollmentStarted(enrollmentId: string) {
+  const { error } = await supabase
+    .from('enrollments')
+    .update({ started_at: new Date().toISOString() })
+    .eq('id', enrollmentId);
+  if (error) throw error;
+}
+
+// Acredita ingresos a la universidad tras una certificación.
+// Bruto al total_earnings; 80% (neto) al liquid_balance. Silencioso si RLS lo bloquea.
+export async function addUniversityEarnings(universityId: string, grossAmount: number) {
+  try {
+    const { data: uni } = await supabase
+      .from('universities')
+      .select('total_earnings, liquid_balance')
+      .eq('id', universityId)
+      .single();
+    if (!uni) return;
+    await supabase
+      .from('universities')
+      .update({
+        total_earnings: (uni.total_earnings ?? 0) + grossAmount,
+        liquid_balance: (uni.liquid_balance ?? 0) + Math.round(grossAmount * 0.8),
+      })
+      .eq('id', universityId);
+  } catch (err) {
+    console.warn('addUniversityEarnings falló (probablemente RLS):', err);
+  }
 }
 
 export async function deleteCourse(courseId: string) {

@@ -293,6 +293,7 @@ function DiagnosticTab({
   courses,
   student,
   onEnrollCourse,
+  setEnrollConfirmCourse,
 }: {
   diagAnswers: StudentPortalViewProps["diagAnswers"];
   setDiagAnswers: StudentPortalViewProps["setDiagAnswers"];
@@ -300,6 +301,7 @@ function DiagnosticTab({
   courses: Course[];
   student: Student;
   onEnrollCourse: (courseId: string) => void;
+  setEnrollConfirmCourse: (c: Course | null) => void;
 }) {
   const [step, setStep] = useState(student.diagnosed ? DIAG_STEPS.length : 0);
   const [localAnswers, setLocalAnswers] = useState<Record<string, string>>({});
@@ -375,7 +377,7 @@ function DiagnosticTab({
                     <span className="text-xs font-bold text-[#10B981] flex items-center gap-1 shrink-0"><CheckCircle className="w-3.5 h-3.5" /> Inscrito</span>
                   ) : (
                     <button
-                      onClick={() => onEnrollCourse(c.id)}
+                      onClick={() => setEnrollConfirmCourse(c)}
                       disabled={!canAfford}
                       title={!canAfford ? "Saldo insuficiente" : undefined}
                       className={`px-3 py-1.5 text-xs font-bold rounded-lg border-2 transition-all shrink-0 ${
@@ -884,6 +886,7 @@ export default function StudentPortalView({
   const [sortBy, setSortBy] = useState<"default" | "precio_asc" | "precio_desc" | "reciente">("default");
   const [expandedCourse, setExpandedCourse] = useState<string | null>(null);
   const [docConfirmCourse, setDocConfirmCourse] = useState<Course | null>(null);
+  const [enrollConfirmCourse, setEnrollConfirmCourse] = useState<Course | null>(null);
 
   if (!student) {
     return (
@@ -961,6 +964,7 @@ export default function StudentPortalView({
           courses={courses}
           student={student}
           onEnrollCourse={onEnrollCourse}
+          setEnrollConfirmCourse={setEnrollConfirmCourse}
         />
       )}
 
@@ -1101,7 +1105,7 @@ export default function StudentPortalView({
                           <button
                             onClick={() => {
                               if (reqDocs.length > 0) setDocConfirmCourse(course);
-                              else onEnrollCourse(course.id);
+                              else setEnrollConfirmCourse(course);
                             }}
                             disabled={!canAfford || blockedByPrereq}
                             title={blockedByPrereq ? `Completa primero: ${missingPrereqs.join(", ")}` : !canAfford ? "Saldo insuficiente para este curso" : undefined}
@@ -1139,6 +1143,115 @@ export default function StudentPortalView({
             </div>
           )}
 
+          {enrollConfirmCourse && (
+            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+              <div className="bg-white border-4 border-[#1A1A1A] shadow-[8px_8px_0px_#1A1A1A] rounded-2xl max-w-md w-full space-y-0 animate-fade-in overflow-hidden">
+                <div className="bg-[#FFD000] px-6 py-4 border-b-4 border-[#1A1A1A]">
+                  <p className="text-[10px] font-mono font-bold text-[#1A1A1A]/60 uppercase tracking-widest">Confirmar inscripción</p>
+                  <h3 className="text-base font-extrabold text-[#1A1A1A] leading-tight mt-0.5">{enrollConfirmCourse.title}</h3>
+                  <p className="text-xs font-bold text-[#1A1A1A]/70 mt-0.5">{enrollConfirmCourse.university}</p>
+                </div>
+                <div className="px-6 py-4 space-y-4">
+                  {/* Datos de entrega del curso */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {enrollConfirmCourse.modality && (
+                      <div className="bg-zinc-50 border-2 border-zinc-200 rounded-xl p-3">
+                        <p className="text-[9px] font-mono font-bold text-zinc-400 uppercase mb-1">Modalidad</p>
+                        <p className="text-xs font-extrabold text-[#1A1A1A]">📍 {enrollConfirmCourse.modality}</p>
+                      </div>
+                    )}
+                    {enrollConfirmCourse.startDate && (
+                      <div className="bg-zinc-50 border-2 border-zinc-200 rounded-xl p-3">
+                        <p className="text-[9px] font-mono font-bold text-zinc-400 uppercase mb-1">Fecha de inicio</p>
+                        <p className="text-xs font-extrabold text-[#1A1A1A]">📅 {formatDate(enrollConfirmCourse.startDate)}</p>
+                      </div>
+                    )}
+                    <div className="bg-zinc-50 border-2 border-zinc-200 rounded-xl p-3">
+                      <p className="text-[9px] font-mono font-bold text-zinc-400 uppercase mb-1">Duración</p>
+                      <p className="text-xs font-extrabold text-[#1A1A1A]">⏱ {enrollConfirmCourse.duration}</p>
+                    </div>
+                    <div className="bg-zinc-50 border-2 border-zinc-200 rounded-xl p-3">
+                      <p className="text-[9px] font-mono font-bold text-zinc-400 uppercase mb-1">Nivel</p>
+                      <p className="text-xs font-extrabold text-[#1A1A1A]">🎓 {enrollConfirmCourse.level}</p>
+                    </div>
+                  </div>
+
+                  {enrollConfirmCourse.classroom && (
+                    <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-3">
+                      <p className="text-[9px] font-mono font-bold text-blue-400 uppercase mb-1">Salón / Sede</p>
+                      <p className="text-xs font-extrabold text-[#1A1A1A]">🏫 {enrollConfirmCourse.classroom}</p>
+                    </div>
+                  )}
+
+                  {enrollConfirmCourse.accessLink && (
+                    <div className="bg-[#6C47FF]/10 border-2 border-[#6C47FF]/30 rounded-xl p-3">
+                      <p className="text-[9px] font-mono font-bold text-[#6C47FF]/70 uppercase mb-1">Acceso al curso</p>
+                      <a
+                        href={enrollConfirmCourse.accessLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-extrabold text-[#6C47FF] hover:underline flex items-center gap-1"
+                      >
+                        🔗 Ver plataforma →
+                      </a>
+                    </div>
+                  )}
+
+                  {(enrollConfirmCourse.requiredDocs ?? []).length > 0 && (
+                    <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-3">
+                      <p className="text-[9px] font-mono font-bold text-amber-500 uppercase mb-2">Documentos requeridos</p>
+                      <ul className="space-y-1">
+                        {(enrollConfirmCourse.requiredDocs ?? []).map(doc => (
+                          <li key={doc} className="text-[10px] font-bold text-[#1A1A1A] flex items-center gap-1.5">
+                            <CheckCircle className="w-3 h-3 text-amber-500 shrink-0" /> {doc}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="text-[9px] text-amber-600 mt-2">La universidad te contactará para validar estos documentos.</p>
+                    </div>
+                  )}
+
+                  {enrollConfirmCourse.skills.length > 0 && (
+                    <div>
+                      <p className="text-[9px] font-mono font-bold text-zinc-400 uppercase mb-2">Habilidades que ganarás</p>
+                      <div className="flex flex-wrap gap-1">
+                        {enrollConfirmCourse.skills.map(skill => (
+                          <span key={skill} className="text-[9px] font-bold bg-[#6C47FF]/10 text-[#6C47FF] px-2 py-0.5 rounded-full border border-[#6C47FF]/20">⭐ {skill}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="bg-[#FFD000]/20 border-2 border-[#1A1A1A] rounded-xl p-3 flex items-center justify-between">
+                    <div>
+                      <p className="text-[9px] font-mono font-bold text-zinc-500 uppercase">Costo total</p>
+                      <p className="text-xl font-extrabold text-[#1A1A1A]">{formatCOP(enrollConfirmCourse.cost)}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[9px] font-mono font-bold text-zinc-500 uppercase">Tu saldo</p>
+                      <p className="text-sm font-bold text-[#10B981]">{formatCOP(student.walletBalance)}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="px-6 pb-6 flex gap-3">
+                  <button
+                    onClick={() => setEnrollConfirmCourse(null)}
+                    className="flex-1 border-2 border-zinc-200 text-zinc-500 font-bold py-3 rounded-xl hover:border-zinc-300 transition-all text-sm"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() => { const id = enrollConfirmCourse.id; setEnrollConfirmCourse(null); onEnrollCourse(id); }}
+                    className="flex-1 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-[#1A1A1A] font-extrabold py-3 rounded-xl hover:shadow-[6px_6px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm"
+                  >
+                    Confirmar inscripción →
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {docConfirmCourse && (
             <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
               <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-2xl p-6 max-w-md w-full space-y-4 animate-fade-in">
@@ -1161,10 +1274,10 @@ export default function StudentPortalView({
                     Cancelar
                   </button>
                   <button
-                    onClick={() => { const id = docConfirmCourse.id; setDocConfirmCourse(null); onEnrollCourse(id); }}
+                    onClick={() => { const course = docConfirmCourse; setDocConfirmCourse(null); setEnrollConfirmCourse(course); }}
                     className="flex-1 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] text-[#1A1A1A] font-extrabold py-3 rounded-xl cursor-pointer hover:bg-yellow-400 transition-all"
                   >
-                    Confirmar inscripción
+                    Continuar
                   </button>
                 </div>
               </div>

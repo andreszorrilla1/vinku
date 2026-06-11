@@ -149,9 +149,26 @@ function CorporatePortalInner({
       try {
         const profile = await api.fetchProfile(userId);
         if (!profile || cancelled) return;
-        if (profile.company_id) {
-          setCompanyId(profile.company_id);
-          const company = await api.fetchCompany(profile.company_id);
+
+        let cid = profile.company_id;
+
+        // Auto-link: if no company_id on profile, look for a company created
+        // with this user's email (handles race condition on signUp trigger)
+        if (!cid) {
+          const { data: found } = await supabase
+            .from("companies")
+            .select("id")
+            .eq("contact_email", userEmail)
+            .maybeSingle();
+          if (found?.id) {
+            await supabase.from("profiles").update({ company_id: found.id }).eq("id", userId);
+            cid = found.id;
+          }
+        }
+
+        if (cid) {
+          setCompanyId(cid);
+          const company = await api.fetchCompany(cid);
           if (company && !cancelled) {
             setCompanyInfo(company);
             setIsRegistered(true);
@@ -249,7 +266,7 @@ function CorporatePortalInner({
     setEmpEnrollments([]);
     setLoadingEmpEnrollments(true);
     try {
-      const data = await api.fetchEnrollments(emp.id);
+      const data = await api.fetchEmployeeEnrollments(emp.id);
       setEmpEnrollments(data);
     } catch {
       // silently ignore — enrollment history is supplementary
@@ -260,20 +277,21 @@ function CorporatePortalInner({
 
   // ── assign budget ──────────────────────────────────────────────────────────
   async function handleAssignBudget() {
-    if (!selectedEmployee) return;
+    if (!selectedEmployee || !companyId) return;
     const amount = parseInt(budgetAssignAmt);
     if (!amount || amount <= 0) {
       triggerToast("Ingresa un monto válido", "error");
       return;
     }
     try {
-      await api.assignEmployeeBudget(selectedEmployee.id, amount);
-      triggerToast(`Presupuesto asignado a ${selectedEmployee.name}`, "success");
+      const newBalance = await api.assignEmployeeBudget(selectedEmployee.id, companyId, amount);
+      setCompanyInfo(prev => prev ? { ...prev, wallet_balance: newBalance } : prev);
+      triggerToast(`${formatCOP(amount)} asignados a ${selectedEmployee.name}`, "success");
       fetchState();
       setSelectedEmployee(null);
       setBudgetAssignAmt("");
-    } catch {
-      triggerToast("Error al asignar presupuesto", "error");
+    } catch (err: any) {
+      triggerToast(err?.message ?? "Error al asignar presupuesto", "error");
     }
   }
 
@@ -286,8 +304,16 @@ function CorporatePortalInner({
       return;
     }
     try {
+      // Try to link to existing profile by email for enrollment tracking
+      const { data: existingProfile } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("email", empEmail)
+        .maybeSingle();
+
       await api.addEmployee({
         company_id: companyId,
+        profile_id: existingProfile?.id ?? null,
         name: empName,
         email: empEmail,
         role_title: empRole || null,

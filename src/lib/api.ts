@@ -122,6 +122,17 @@ export async function rechargeStudentWallet(userId: string, amount: number) {
 // ENROLLMENTS
 // ============================================================
 
+// Fetch enrollments for an employee via their linked profile_id
+export async function fetchEmployeeEnrollments(employeeId: string) {
+  const { data: emp } = await supabase
+    .from('employees')
+    .select('profile_id')
+    .eq('id', employeeId)
+    .single();
+  if (!emp?.profile_id) return [];
+  return fetchEnrollments(emp.profile_id);
+}
+
 export async function fetchEnrollments(userId: string) {
   const { data, error } = await supabase
     .from('enrollments')
@@ -393,7 +404,16 @@ export async function addEmployee(employee: Database['public']['Tables']['employ
   return data;
 }
 
-export async function assignEmployeeBudget(employeeId: string, amount: number) {
+export async function assignEmployeeBudget(employeeId: string, companyId: string, amount: number) {
+  // Deduct from company wallet first
+  const { data: company } = await supabase
+    .from('companies')
+    .select('wallet_balance')
+    .eq('id', companyId)
+    .single();
+  if (!company) throw new Error('Empresa no encontrada');
+  if (company.wallet_balance < amount) throw new Error('Saldo insuficiente en billetera corporativa');
+
   const { data: emp } = await supabase
     .from('employees')
     .select('assigned_budget')
@@ -401,28 +421,40 @@ export async function assignEmployeeBudget(employeeId: string, amount: number) {
     .single();
   if (!emp) throw new Error('Empleado no encontrado');
 
-  const { error } = await supabase
-    .from('employees')
-    .update({ assigned_budget: emp.assigned_budget + amount })
-    .eq('id', employeeId);
-  if (error) throw error;
+  const newCompanyBalance = company.wallet_balance - amount;
+  const [empUpdate, walletUpdate] = await Promise.all([
+    supabase.from('employees').update({ assigned_budget: emp.assigned_budget + amount }).eq('id', employeeId),
+    supabase.from('companies').update({ wallet_balance: newCompanyBalance }).eq('id', companyId),
+  ]);
+  if (empUpdate.error) throw empUpdate.error;
+  if (walletUpdate.error) throw walletUpdate.error;
+
+  await supabase.from('wallet_transactions').insert({
+    company_id: companyId,
+    amount: -amount,
+    type: 'allocation',
+    description: `Asignación de créditos a colaborador`,
+  }).catch(() => {});
+
+  return newCompanyBalance;
 }
 
 export async function sendBulkDiagnosis(companyId: string, objective: string, deadline: string | null) {
-  // Marca todos los empleados "Pendiente" de la empresa como "Ruta Generada"
+  const { data: company } = await supabase.from('companies').select('name, contact_email').eq('id', companyId).single();
+
   const { error } = await supabase
     .from('employees')
     .update({ diag_status: 'Ruta Generada' })
     .eq('company_id', companyId)
     .eq('diag_status', 'Pendiente');
   if (error) throw error;
-  // Registra el envío como lead interno para trazabilidad
+
   await supabase.from('leads').insert({
-    company_name: companyId,
-    contact_email: '',
+    company_name: company?.name ?? companyId,
+    contact_email: company?.contact_email ?? '',
     message: `Diagnóstico masivo: ${objective}${deadline ? ` | Fecha límite: ${deadline}` : ''}`,
     source: 'diagnostico_masivo',
-  }).throwOnError().catch(() => {});
+  }).catch(() => {});
 }
 
 export async function rechargeCorporateWallet(companyId: string, amount: number) {

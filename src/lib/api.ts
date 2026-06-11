@@ -397,7 +397,7 @@ export async function fetchEmployees(companyId: string): Promise<EmployeeRow[]> 
 }
 
 export async function addEmployee(employee: Database['public']['Tables']['employees']['Insert']) {
-  // Use SECURITY DEFINER RPC to bypass RLS edge cases on INSERT
+  // Try SECURITY DEFINER RPC first (migration 015)
   const { data, error } = await supabase.rpc('insert_employee', {
     p_company_id:  employee.company_id,
     p_name:        employee.name,
@@ -406,8 +406,31 @@ export async function addEmployee(employee: Database['public']['Tables']['employ
     p_department:  employee.department ?? null,
     p_budget:      employee.assigned_budget ?? 0,
   });
-  if (error) throw error;
-  return data as string; // returns employee uuid
+  if (!error) return data as string;
+
+  // Fallback to direct insert if RPC not yet deployed in this environment
+  if (error.message?.includes('Could not find the function') || (error as any).code === 'PGRST202') {
+    const { data: d2, error: e2 } = await supabase
+      .from('employees')
+      .insert({
+        company_id:       employee.company_id,
+        name:             employee.name,
+        email:            employee.email,
+        role_title:       employee.role_title ?? null,
+        department:       employee.department ?? null,
+        assigned_budget:  employee.assigned_budget ?? 0,
+        diag_status:      'Pendiente',
+        active_path:      null,
+        progress_pct:     0,
+        suggested_route_cost: null,
+      })
+      .select('id')
+      .single();
+    if (e2) throw e2;
+    return d2?.id as string;
+  }
+
+  throw error;
 }
 
 export async function assignEmployeeBudget(employeeId: string, companyId: string, amount: number) {

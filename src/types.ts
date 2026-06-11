@@ -14,6 +14,10 @@ export interface Course {
   prerequisites?: string[];
   requiredDocs?: string[];
   maxSeats?: number | null;
+  modality?: "Virtual" | "Presencial" | "Híbrido" | null;
+  startDate?: string | null;
+  accessLink?: string | null;
+  classroom?: string | null;
 }
 
 export interface Achievement {
@@ -25,7 +29,7 @@ export interface Achievement {
 
 export interface VinkuPassport {
   destinations: { university: string; stampLogo: string; enrollCount: number }[];
-  sellos: { courseId: string; courseTitle: string; university: string; dateApproved?: string; status: "Cursando" | "Certificado" }[];
+  sellos: { courseId: string; courseTitle: string; university: string; dateApproved?: string; status: "Cursando" | "Certificado"; modality?: string | null; startDate?: string | null; accessLink?: string | null; classroom?: string | null }[];
   insignias: { skillName: string; iconName: string; dateEarned: string }[];
   perfiles: { title: string; enabledPercent: number; laborDemand: string; salaryMedian: string }[];
   logros: Achievement[];

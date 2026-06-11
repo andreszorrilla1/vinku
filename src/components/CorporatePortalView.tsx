@@ -117,6 +117,10 @@ function CorporatePortalInner({
   // budget assignment in drawer
   const [budgetAssignAmt, setBudgetAssignAmt] = useState("");
 
+  // employee enrollment history in drawer
+  const [empEnrollments, setEmpEnrollments] = useState<Awaited<ReturnType<typeof api.fetchEnrollments>>>([]);
+  const [loadingEmpEnrollments, setLoadingEmpEnrollments] = useState(false);
+
   // add employee modal
   const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
   const [empName, setEmpName] = useState("");
@@ -236,6 +240,21 @@ function CorporatePortalInner({
       await loadTransactions(companyId);
     } catch {
       triggerToast("Error al procesar recarga", "error");
+    }
+  }
+
+  // ── open employee drawer with enrollment history ──────────────────────────
+  async function openEmployeeDrawer(emp: Employee) {
+    setSelectedEmployee(emp);
+    setEmpEnrollments([]);
+    setLoadingEmpEnrollments(true);
+    try {
+      const data = await api.fetchEnrollments(emp.id);
+      setEmpEnrollments(data);
+    } catch {
+      // silently ignore — enrollment history is supplementary
+    } finally {
+      setLoadingEmpEnrollments(false);
     }
   }
 
@@ -660,7 +679,7 @@ function CorporatePortalInner({
                         return (
                           <button
                             key={emp.id}
-                            onClick={() => setSelectedEmployee(emp)}
+                            onClick={() => openEmployeeDrawer(emp)}
                             className="w-full text-left bg-zinc-50 hover:bg-[#FFD000]/10 border border-zinc-200 hover:border-[#1A1A1A] rounded-lg p-2.5 transition-all"
                           >
                             <div className="flex items-center gap-2 mb-2">
@@ -732,7 +751,7 @@ function CorporatePortalInner({
                           <td className="px-4 py-3 font-bold text-[#10B981]">{formatCOP(emp.assignedBudget)}</td>
                           <td className="px-4 py-3">
                             <button
-                              onClick={() => setSelectedEmployee(emp)}
+                              onClick={() => openEmployeeDrawer(emp)}
                               className="px-2 py-1 bg-[#FFD000] text-[#1A1A1A] font-bold rounded border-2 border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A] hover:shadow-[3px_3px_0px_0px_#1A1A1A] transition-all text-[10px]"
                             >
                               Ver →
@@ -956,7 +975,7 @@ function CorporatePortalInner({
                             </td>
                             <td className="px-4 py-3">
                               <button
-                                onClick={() => setSelectedEmployee(emp)}
+                                onClick={() => openEmployeeDrawer(emp)}
                                 className="px-2 py-1 bg-[#6C47FF] text-white font-bold rounded border-2 border-[#6C47FF] hover:opacity-80 transition-all text-[10px]"
                               >
                                 Ver perfil
@@ -1030,6 +1049,31 @@ function CorporatePortalInner({
                   </div>
                 </div>
               )}
+
+              {/* Enrollment history */}
+              <div className="border-t-2 border-zinc-100 pt-4">
+                <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-2">Cursos matriculados</p>
+                {loadingEmpEnrollments ? (
+                  <p className="text-xs text-zinc-400 italic">Cargando historial...</p>
+                ) : empEnrollments.length === 0 ? (
+                  <p className="text-xs text-zinc-400 italic">Sin matrículas registradas.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {empEnrollments.map((e: any) => (
+                      <div key={e.id} className="bg-zinc-50 border border-zinc-200 rounded-lg p-2.5 text-xs">
+                        <p className="font-bold text-[#1A1A1A] leading-tight">{e.courses?.title ?? "Curso"}</p>
+                        <p className="text-zinc-500">{e.courses?.universities?.name ?? ""}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className={`px-1.5 py-0.5 rounded-full font-bold text-[10px] border ${e.status === "Certificado" ? "bg-[#10B981]/10 border-[#10B981]/30 text-[#10B981]" : "bg-[#6C47FF]/10 border-[#6C47FF]/30 text-[#6C47FF]"}`}>
+                            {e.status}
+                          </span>
+                          {e.courses?.modality && <span className="text-zinc-400">{e.courses.modality}</span>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               {/* Budget assignment — always enabled */}
               <div className="border-t-2 border-zinc-100 pt-4">

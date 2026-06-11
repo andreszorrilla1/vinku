@@ -113,6 +113,10 @@ export default function UniversityPortalView({
   const [courseFormDocs, setCourseFormDocs] = useState<string[]>([]);
   const [courseFormSeats, setCourseFormSeats] = useState("");
   const [courseFormOtherDoc, setCourseFormOtherDoc] = useState("");
+  const [courseFormModality, setCourseFormModality] = useState<"Virtual" | "Presencial" | "Híbrido">("Virtual");
+  const [courseFormStartDate, setCourseFormStartDate] = useState("");
+  const [courseFormAccessLink, setCourseFormAccessLink] = useState("");
+  const [courseFormClassroom, setCourseFormClassroom] = useState("");
   const [savingCourse, setSavingCourse] = useState(false);
 
   const FIXED_DOCS = [
@@ -314,6 +318,10 @@ export default function UniversityPortalView({
       if (courseFormPrereqs.length) extras.prerequisites = courseFormPrereqs;
       if (courseFormDocs.length) extras.required_docs = courseFormDocs;
       extras.max_seats = courseFormSeats ? parseInt(courseFormSeats) : null;
+      extras.modality = courseFormModality;
+      if (courseFormStartDate) extras.start_date = courseFormStartDate;
+      if (courseFormAccessLink) extras.access_link = courseFormAccessLink;
+      if (courseFormClassroom) extras.classroom = courseFormClassroom;
       await api.addCourseResilient(base, extras);
       triggerToast(`Curso "${courseFormTitle}" publicado en el catálogo.`, "success");
       setShowCatalogModal(false);
@@ -326,6 +334,10 @@ export default function UniversityPortalView({
       setCourseFormDocs([]);
       setCourseFormSeats("");
       setCourseFormOtherDoc("");
+      setCourseFormModality("Virtual");
+      setCourseFormStartDate("");
+      setCourseFormAccessLink("");
+      setCourseFormClassroom("");
       onCourseAdded();
       fetchState();
     } catch (err) {
@@ -1047,6 +1059,58 @@ export default function UniversityPortalView({
                       placeholder="ej. 30"
                       className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
                     />
+                  </div>
+
+                  {/* Datos de entrega */}
+                  <div className="border-t-2 border-gray-100 pt-3">
+                    <p className="text-[10px] font-mono uppercase text-gray-500 font-bold mb-3">Información de entrega del curso</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-mono uppercase text-gray-500 font-bold block">Modalidad</label>
+                        <select
+                          value={courseFormModality}
+                          onChange={(e) => setCourseFormModality(e.target.value as any)}
+                          className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
+                        >
+                          <option value="Virtual">Virtual</option>
+                          <option value="Presencial">Presencial</option>
+                          <option value="Híbrido">Híbrido</option>
+                        </select>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-mono uppercase text-gray-500 font-bold block">Fecha de inicio</label>
+                        <input
+                          type="date"
+                          value={courseFormStartDate}
+                          onChange={(e) => setCourseFormStartDate(e.target.value)}
+                          className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1 mt-3">
+                      <label className="text-[10px] font-mono uppercase text-gray-500 font-bold block">
+                        {courseFormModality === "Presencial" ? "Salón / Dirección" : "Link de acceso (Zoom, Teams, Classroom...)"}
+                      </label>
+                      <input
+                        type={courseFormModality === "Presencial" ? "text" : "url"}
+                        value={courseFormModality === "Presencial" ? courseFormClassroom : courseFormAccessLink}
+                        onChange={(e) => courseFormModality === "Presencial" ? setCourseFormClassroom(e.target.value) : setCourseFormAccessLink(e.target.value)}
+                        placeholder={courseFormModality === "Presencial" ? "ej. Aula 301, Bloque A" : "https://meet.google.com/..."}
+                        className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
+                      />
+                    </div>
+                    {courseFormModality === "Híbrido" && (
+                      <div className="space-y-1 mt-3">
+                        <label className="text-[10px] font-mono uppercase text-gray-500 font-bold block">Salón (para sesiones presenciales)</label>
+                        <input
+                          type="text"
+                          value={courseFormClassroom}
+                          onChange={(e) => setCourseFormClassroom(e.target.value)}
+                          placeholder="ej. Aula 301, Bloque A"
+                          className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex gap-3 pt-2 border-t border-gray-100">

@@ -155,6 +155,10 @@ export default function App() {
         prerequisites: c.prerequisites ?? [],
         requiredDocs: c.required_docs ?? [],
         maxSeats: c.max_seats ?? null,
+        modality: c.modality ?? null,
+        startDate: c.start_date ?? null,
+        accessLink: c.access_link ?? null,
+        classroom: c.classroom ?? null,
       }));
       setCourses(mappedCourses);
 
@@ -203,6 +207,10 @@ export default function App() {
                 university: e.courses?.universities?.name ?? '',
                 dateApproved: e.completed_at ?? undefined,
                 status: e.status as 'Cursando' | 'Certificado',
+                modality: e.courses?.modality ?? null,
+                startDate: e.courses?.start_date ?? null,
+                accessLink: e.courses?.access_link ?? null,
+                classroom: e.courses?.classroom ?? null,
               })),
               insignias: badges.map((b: any) => ({
                 skillName: b.skill_name,

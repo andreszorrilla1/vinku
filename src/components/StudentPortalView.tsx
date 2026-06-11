@@ -200,15 +200,45 @@ function PassportTab({ student }: { student: Student }) {
       {inProgress.length > 0 && (
         <div className="bg-white border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] rounded-xl p-5">
           <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest mb-3">Cursos en progreso</p>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {inProgress.map((s, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 bg-amber-50 border-2 border-amber-200 rounded-xl">
-                <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-sm text-[#1A1A1A] leading-tight truncate">{s.courseTitle}</p>
-                  <p className="text-xs text-zinc-500">{s.university}</p>
+              <div key={i} className="p-4 bg-amber-50 border-2 border-amber-200 rounded-xl space-y-2">
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0 mt-1.5" />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm text-[#1A1A1A] leading-tight">{s.courseTitle}</p>
+                    <p className="text-xs text-zinc-500">{s.university}</p>
+                  </div>
+                  <span className="text-[9px] font-bold text-amber-600 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full shrink-0">Cursando</span>
                 </div>
-                <span className="text-[9px] font-bold text-amber-600 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full shrink-0">Cursando</span>
+                {/* Datos de entrega */}
+                <div className="flex flex-wrap gap-2 pl-5">
+                  {s.modality && (
+                    <span className="text-[10px] font-bold bg-white border border-amber-300 text-amber-700 px-2 py-0.5 rounded-full">
+                      📍 {s.modality}
+                    </span>
+                  )}
+                  {s.startDate && (
+                    <span className="text-[10px] font-bold bg-white border border-amber-300 text-amber-700 px-2 py-0.5 rounded-full">
+                      📅 Inicio: {new Date(s.startDate).toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" })}
+                    </span>
+                  )}
+                  {s.classroom && (
+                    <span className="text-[10px] font-bold bg-white border border-amber-300 text-amber-700 px-2 py-0.5 rounded-full">
+                      🏫 {s.classroom}
+                    </span>
+                  )}
+                  {s.accessLink && (
+                    <a
+                      href={s.accessLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] font-bold bg-[#6C47FF] text-white border border-[#6C47FF] px-3 py-0.5 rounded-full hover:opacity-80 transition-opacity"
+                    >
+                      🔗 Acceder al curso →
+                    </a>
+                  )}
+                </div>
               </div>
             ))}
           </div>

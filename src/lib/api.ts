@@ -125,7 +125,7 @@ export async function rechargeStudentWallet(userId: string, amount: number) {
 export async function fetchEnrollments(userId: string) {
   const { data, error } = await supabase
     .from('enrollments')
-    .select(`*, courses(title, university_id, universities(name))`)
+    .select(`*, courses(title, university_id, modality, start_date, access_link, classroom, universities(name))`)
     .eq('student_id', userId);
   if (error) throw error;
   return data ?? [];
@@ -199,15 +199,36 @@ export async function enrollCourse(studentId: string, courseId: string, creditsS
 }
 
 export async function certifyEnrollment(enrollmentId: string, certificateUrl?: string) {
-  const { error } = await supabase
+  // 1. Actualizar estado de la matrícula
+  const { data: enrollment, error } = await supabase
     .from('enrollments')
     .update({
       status: 'Certificado',
       completed_at: new Date().toISOString(),
       certificate_url: certificateUrl ?? null,
     })
-    .eq('id', enrollmentId);
+    .eq('id', enrollmentId)
+    .select('student_id, course_id')
+    .single();
   if (error) throw error;
+
+  // 2. Crear skill_badges por cada habilidad del curso certificado
+  if (enrollment) {
+    const { data: course } = await supabase
+      .from('courses')
+      .select('skills')
+      .eq('id', enrollment.course_id)
+      .single();
+    if (course?.skills?.length) {
+      const badges = course.skills.map((skill: string) => ({
+        student_id: enrollment.student_id,
+        skill_name: skill,
+        icon_name: 'award',
+      }));
+      // upsert silencioso — ignora duplicados
+      await supabase.from('skill_badges').upsert(badges, { onConflict: 'student_id,skill_name', ignoreDuplicates: true }).catch(() => {});
+    }
+  }
 }
 
 // ============================================================

@@ -45,6 +45,10 @@ export interface Database {
           prerequisites?: string[] | null;
           required_docs?: string[] | null;
           max_seats?: number | null;
+          modality?: string | null;
+          start_date?: string | null;
+          access_link?: string | null;
+          classroom?: string | null;
           created_at: string;
           updated_at: string;
         };

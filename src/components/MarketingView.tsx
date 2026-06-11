@@ -74,7 +74,13 @@ export default function MarketingView({
     e.preventDefault();
     try {
       const { submitLead } = await import("../lib/api");
-      await submitLead({ company_name: b2bCompanyName, work_email: b2bEmail, employee_count: parseInt(b2bEmployees) });
+      await submitLead({
+        company_name: b2bCompanyName,
+        contact_name: b2bCompanyName,
+        contact_email: b2bEmail,
+        employee_count: parseInt(b2bEmployees) || null,
+        source: 'landing_b2b',
+      });
       setB2bSuccess(true);
       setB2bSubmittedLead({ companyName: b2bCompanyName });
       triggerToast("¡Convenio registrado! Nos pondremos en contacto pronto.", "success");

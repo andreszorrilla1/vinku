@@ -104,7 +104,7 @@ export default function UniversityPortalView({
   const [courseFormDuration, setCourseFormDuration] = useState("");
   const [courseFormCost, setCourseFormCost] = useState("");
   const [courseFormSkills, setCourseFormSkills] = useState("");
-  const [courseFormCategory, setCourseFormCategory] = useState("Ingeniería & Tech");
+  const [courseFormCategory, setCourseFormCategory] = useState("Tecnología");
   const [courseFormPrereqs, setCourseFormPrereqs] = useState<string[]>([]);
   const [courseFormDocs, setCourseFormDocs] = useState<string[]>([]);
   const [courseFormSeats, setCourseFormSeats] = useState("");
@@ -156,11 +156,20 @@ export default function UniversityPortalView({
     if (!universityId) return;
     setLoadingEnrollments(true);
     try {
-      const { data, error } = await supabase
+      const courseSel =
+        "courses(id, title, cost_credits, university_id, universities(id, name)), profiles(id, full_name, email)";
+      // Intenta incluir started_at; si la migración 007 aún no corrió, reintenta sin él
+      let { data, error } = await supabase
         .from("enrollments")
-        .select(
-          "id, status, enrolled_at, started_at, completed_at, courses(id, title, cost_credits, university_id, universities(id, name)), profiles(id, full_name, email)"
-        );
+        .select(`id, status, enrolled_at, started_at, completed_at, ${courseSel}`);
+      if (error) {
+        const msg = String(error.message ?? "").toLowerCase();
+        if (msg.includes("started_at") || msg.includes("column") || msg.includes("does not exist")) {
+          ({ data, error } = await supabase
+            .from("enrollments")
+            .select(`id, status, enrolled_at, completed_at, ${courseSel}`));
+        }
+      }
       if (error) throw error;
       const filtered = ((data ?? []) as EnrollmentRow[]).filter(
         (e) =>
@@ -212,7 +221,9 @@ export default function UniversityPortalView({
   // ============================================================
   // Derived KPIs
   // ============================================================
-  const uniCourses = courses.filter((c) => c.university === universityName);
+  const uniCourses = courses.filter((c) =>
+    universityId ? c.universityId === universityId : c.university === universityName
+  );
   const enrolledCount = enrollments.length;
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
@@ -775,13 +786,18 @@ export default function UniversityPortalView({
                         onChange={(e) => setCourseFormCategory(e.target.value)}
                         className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
                       >
-                        <option value="Ingeniería & Tech">Ingeniería &amp; Tech</option>
-                        <option value="Negocios">Negocios</option>
-                        <option value="Diseño">Diseño</option>
-                        <option value="Ciencias de Datos">Ciencias de Datos</option>
-                        <option value="Salud">Salud</option>
-                        <option value="Derecho">Derecho</option>
-                        <option value="Arte & Humanidades">Arte &amp; Humanidades</option>
+                        <option value="Tecnología">Tecnología</option>
+                        <option value="Datos & IA">Datos &amp; IA</option>
+                        <option value="Marketing & Ventas">Marketing &amp; Ventas</option>
+                        <option value="Diseño & Creatividad">Diseño &amp; Creatividad</option>
+                        <option value="Finanzas & Inversión">Finanzas &amp; Inversión</option>
+                        <option value="Gestión & Liderazgo">Gestión &amp; Liderazgo</option>
+                        <option value="Emprendimiento">Emprendimiento</option>
+                        <option value="Derecho & Cumplimiento">Derecho &amp; Cumplimiento</option>
+                        <option value="Ciberseguridad">Ciberseguridad</option>
+                        <option value="Salud & Bienestar">Salud &amp; Bienestar</option>
+                        <option value="Sostenibilidad">Sostenibilidad</option>
+                        <option value="Habilidades Blandas">Habilidades Blandas</option>
                       </select>
                     </div>
                   </div>

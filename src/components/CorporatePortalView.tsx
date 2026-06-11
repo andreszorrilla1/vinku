@@ -253,10 +253,11 @@ function CorporatePortalInner({
       const newBalance = await api.rechargeCorporateWallet(companyId, amount);
       setCompanyInfo(prev => prev ? { ...prev, wallet_balance: newBalance } : prev);
       setRechargeAmt("1000000");
-      triggerToast(`Recarga de ${formatCOP(amount)} procesada`, "success");
+      triggerToast(`Recarga de ${formatCOP(amount)} procesada y guardada`, "success");
       await loadTransactions(companyId);
-    } catch {
-      triggerToast("Error al procesar recarga", "error");
+      fetchState(); // sync App-level state so balance persists on re-login
+    } catch (err: any) {
+      triggerToast(err?.message ?? "Error al procesar recarga", "error");
     }
   }
 

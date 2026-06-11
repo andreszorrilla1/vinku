@@ -102,11 +102,12 @@ export async function rechargeStudentWallet(userId: string, amount: number) {
 
   const newBalance = (profile.wallet_balance ?? 0) + amount;
 
-  const { error } = await supabase
+  const { error, count } = await supabase
     .from('profiles')
     .update({ wallet_balance: newBalance })
     .eq('id', userId);
   if (error) throw error;
+  if (count === 0) throw new Error('No se pudo actualizar el saldo. Verifica tu sesión.');
 
   await supabase.from('wallet_transactions').insert({
     profile_id: userId,
@@ -163,10 +164,11 @@ export async function enrollCourse(studentId: string, courseId: string, creditsS
   if (error) throw error;
 
   // Descontar saldo
-  await supabase
+  const { count: deductCount } = await supabase
     .from('profiles')
     .update({ wallet_balance: (profile.wallet_balance ?? 0) - creditsSpent })
     .eq('id', studentId);
+  if (deductCount === 0) throw new Error('No se pudo descontar el saldo de la billetera.');
 
   // Registrar transacción
   await supabase.from('wallet_transactions').insert({
@@ -428,6 +430,7 @@ export async function assignEmployeeBudget(employeeId: string, companyId: string
   ]);
   if (empUpdate.error) throw empUpdate.error;
   if (walletUpdate.error) throw walletUpdate.error;
+  if (walletUpdate.count === 0) throw new Error('No se pudo descontar el saldo. Verifica tu sesión e intenta de nuevo.');
 
   await supabase.from('wallet_transactions').insert({
     company_id: companyId,
@@ -466,11 +469,12 @@ export async function rechargeCorporateWallet(companyId: string, amount: number)
   if (!company) throw new Error('Empresa no encontrada');
 
   const newBalance = company.wallet_balance + amount;
-  const { error } = await supabase
+  const { error, count } = await supabase
     .from('companies')
     .update({ wallet_balance: newBalance })
     .eq('id', companyId);
   if (error) throw error;
+  if (count === 0) throw new Error('No se pudo actualizar el saldo. Verifica tu sesión e intenta de nuevo.');
 
   await supabase.from('wallet_transactions').insert({
     company_id: companyId,

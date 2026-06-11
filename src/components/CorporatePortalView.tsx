@@ -304,16 +304,9 @@ function CorporatePortalInner({
       return;
     }
     try {
-      // Try to link to existing profile by email for enrollment tracking
-      const { data: existingProfile } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("email", empEmail)
-        .maybeSingle();
-
       await api.addEmployee({
         company_id: companyId,
-        profile_id: existingProfile?.id ?? null,
+        profile_id: null, // auto-linked by DB trigger on_profile_created_link_employee
         name: empName,
         email: empEmail,
         role_title: empRole || null,

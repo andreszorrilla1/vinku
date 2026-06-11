@@ -321,8 +321,13 @@ function CorporatePortalInner({
       fetchState();
       setShowAddEmployeeModal(false);
       setEmpName(""); setEmpEmail(""); setEmpRole(""); setEmpDept(""); setEmpBudget("0");
-    } catch {
-      triggerToast("Error al agregar empleado", "error");
+    } catch (err: any) {
+      const msg: string = err?.message ?? err?.details ?? "";
+      if (msg.includes("unique") || msg.includes("duplicate") || msg.includes("23505")) {
+        triggerToast("Ya existe un colaborador con ese correo en esta empresa.", "error");
+      } else {
+        triggerToast(`Error al agregar colaborador${msg ? ": " + msg : ""}`, "error");
+      }
     }
   }
 

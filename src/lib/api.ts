@@ -467,60 +467,43 @@ export async function sendEmployeeDiagnosis(employeeId: string, companyId: strin
 }
 
 export async function assignEmployeeBudget(employeeId: string, companyId: string, amount: number) {
-  // Deduct from company wallet first
-  const { data: company } = await supabase
-    .from('companies')
-    .select('wallet_balance')
-    .eq('id', companyId)
-    .single();
+  // Try SECURITY DEFINER RPC first (migration 016)
+  const { data, error } = await supabase.rpc('assign_employee_budget', {
+    p_employee_id: employeeId,
+    p_company_id:  companyId,
+    p_amount:      amount,
+  });
+  if (!error) return data as number;
+
+  // Fallback if RPC not deployed yet
+  if (!error.message?.includes('Could not find the function') && (error as any).code !== 'PGRST202') {
+    throw error;
+  }
+
+  // Direct fallback
+  const { data: company } = await supabase.from('companies').select('wallet_balance').eq('id', companyId).single();
   if (!company) throw new Error('Empresa no encontrada');
   if (company.wallet_balance < amount) throw new Error('Saldo insuficiente en billetera corporativa');
 
-  const { data: emp } = await supabase
-    .from('employees')
-    .select('assigned_budget, profile_id')
-    .eq('id', employeeId)
-    .single();
+  const { data: emp } = await supabase.from('employees').select('assigned_budget, profile_id').eq('id', employeeId).single();
   if (!emp) throw new Error('Empleado no encontrado');
 
   const newCompanyBalance = company.wallet_balance - amount;
-  const [empUpdate, walletUpdate] = await Promise.all([
-    supabase.from('employees').update({ assigned_budget: emp.assigned_budget + amount }).eq('id', employeeId),
-    supabase.from('companies').update({ wallet_balance: newCompanyBalance }).eq('id', companyId),
-  ]);
-  if (empUpdate.error) throw empUpdate.error;
-  if (walletUpdate.error) throw walletUpdate.error;
-  if (walletUpdate.count === 0) throw new Error('No se pudo descontar el saldo. Verifica tu sesión e intenta de nuevo.');
 
-  // Credit the employee's personal wallet so they can enroll in courses
+  const { error: e1 } = await supabase.from('employees').update({ assigned_budget: emp.assigned_budget + amount }).eq('id', employeeId);
+  if (e1) throw e1;
+  const { error: e2 } = await supabase.from('companies').update({ wallet_balance: newCompanyBalance }).eq('id', companyId);
+  if (e2) throw e2;
+
   if (emp.profile_id) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('wallet_balance')
-      .eq('id', emp.profile_id)
-      .single();
-    if (profile) {
-      await supabase
-        .from('profiles')
-        .update({ wallet_balance: (profile.wallet_balance ?? 0) + amount })
-        .eq('id', emp.profile_id);
-      // Student wallet transaction record
-      await supabase.from('wallet_transactions').insert({
-        profile_id: emp.profile_id,
-        amount,
-        type: 'allocation',
-        description: `Créditos asignados por empresa`,
-      }).catch(() => {});
+    const { data: prof } = await supabase.from('profiles').select('wallet_balance').eq('id', emp.profile_id).single();
+    if (prof) {
+      await supabase.from('profiles').update({ wallet_balance: (prof.wallet_balance ?? 0) + amount }).eq('id', emp.profile_id);
+      await supabase.from('wallet_transactions').insert({ profile_id: emp.profile_id, amount, type: 'allocation', description: 'Créditos asignados por empresa' }).catch(() => {});
     }
   }
 
-  await supabase.from('wallet_transactions').insert({
-    company_id: companyId,
-    amount: -amount,
-    type: 'allocation',
-    description: `Asignación de créditos a colaborador`,
-  }).catch(() => {});
-
+  await supabase.from('wallet_transactions').insert({ company_id: companyId, amount: -amount, type: 'allocation', description: 'Asignación de créditos a colaborador' }).catch(() => {});
   return newCompanyBalance;
 }
 
@@ -543,27 +526,32 @@ export async function sendBulkDiagnosis(companyId: string, objective: string, de
 }
 
 export async function rechargeCorporateWallet(companyId: string, amount: number) {
-  const { data: company } = await supabase
-    .from('companies')
-    .select('wallet_balance')
-    .eq('id', companyId)
-    .single();
+  // Try SECURITY DEFINER RPC first (migration 016)
+  const { data, error } = await supabase.rpc('recharge_corporate_wallet', {
+    p_company_id: companyId,
+    p_amount:     amount,
+  });
+  if (!error) return data as number;
+
+  // Fallback if RPC not deployed yet
+  if (!error.message?.includes('Could not find the function') && (error as any).code !== 'PGRST202') {
+    throw error;
+  }
+
+  // Direct fallback
+  const { data: company } = await supabase.from('companies').select('wallet_balance').eq('id', companyId).single();
   if (!company) throw new Error('Empresa no encontrada');
 
   const newBalance = company.wallet_balance + amount;
-  const { error, count } = await supabase
-    .from('companies')
-    .update({ wallet_balance: newBalance })
-    .eq('id', companyId);
-  if (error) throw error;
-  if (count === 0) throw new Error('No se pudo actualizar el saldo. Verifica tu sesión e intenta de nuevo.');
+  const { error: e2 } = await supabase.from('companies').update({ wallet_balance: newBalance }).eq('id', companyId);
+  if (e2) throw e2;
 
   await supabase.from('wallet_transactions').insert({
     company_id: companyId,
     amount,
     type: 'recharge',
     description: `Recarga corporativa por $${amount.toLocaleString('es-CO')} COP`,
-  });
+  }).catch(() => {});
 
   return newBalance;
 }

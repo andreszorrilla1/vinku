@@ -387,6 +387,23 @@ export async function assignEmployeeBudget(employeeId: string, amount: number) {
   if (error) throw error;
 }
 
+export async function sendBulkDiagnosis(companyId: string, objective: string, deadline: string | null) {
+  // Marca todos los empleados "Pendiente" de la empresa como "Ruta Generada"
+  const { error } = await supabase
+    .from('employees')
+    .update({ diag_status: 'Ruta Generada' })
+    .eq('company_id', companyId)
+    .eq('diag_status', 'Pendiente');
+  if (error) throw error;
+  // Registra el envío como lead interno para trazabilidad
+  await supabase.from('leads').insert({
+    company_name: companyId,
+    contact_email: '',
+    message: `Diagnóstico masivo: ${objective}${deadline ? ` | Fecha límite: ${deadline}` : ''}`,
+    source: 'diagnostico_masivo',
+  }).throwOnError().catch(() => {});
+}
+
 export async function rechargeCorporateWallet(companyId: string, amount: number) {
   const { data: company } = await supabase
     .from('companies')

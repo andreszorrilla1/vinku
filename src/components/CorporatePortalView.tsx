@@ -231,6 +231,7 @@ function CorporatePortalInner({
     try {
       const newBalance = await api.rechargeCorporateWallet(companyId, amount);
       setCompanyInfo(prev => prev ? { ...prev, wallet_balance: newBalance } : prev);
+      setRechargeAmt("1000000");
       triggerToast(`Recarga de ${formatCOP(amount)} procesada`, "success");
       await loadTransactions(companyId);
     } catch {
@@ -362,11 +363,18 @@ function CorporatePortalInner({
     setShowDiagConfirm(true);
   }
 
-  function handleConfirmBulkDiagnosis() {
+  async function handleConfirmBulkDiagnosis() {
     setShowDiagConfirm(false);
-    const now = new Date().toLocaleString("es-CO");
-    setDiagSentAt(now);
-    triggerToast(`Diagnóstico masivo enviado a ${employees.length} empleados. Recibirán el cuestionario por correo.`, "success");
+    if (!companyId) return;
+    try {
+      await api.sendBulkDiagnosis(companyId, diagObjective, diagDeadline || null);
+      const now = new Date().toLocaleString("es-CO");
+      setDiagSentAt(now);
+      triggerToast(`Diagnóstico masivo enviado a ${employees.filter(e => e.diagStatus === "Pendiente").length} empleados pendientes.`, "success");
+      fetchState();
+    } catch {
+      triggerToast("Error al enviar el diagnóstico. Intenta de nuevo.", "error");
+    }
   }
 
   // ── derived ────────────────────────────────────────────────────────────────
@@ -618,7 +626,10 @@ function CorporatePortalInner({
                 <Plus className="w-3.5 h-3.5" /> Cargar CSV
               </button>
               <button
-                onClick={() => triggerToast(`Diagnóstico masivo enviado a ${employees.length} empleados`, "success")}
+                onClick={() => {
+                  if (employees.length === 0) { triggerToast("Primero agrega empleados.", "error"); return; }
+                  setShowDiagConfirm(true);
+                }}
                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg border-2 bg-[#6C47FF] text-white border-[#6C47FF] hover:opacity-90 transition-all"
               >
                 <Mail className="w-3.5 h-3.5" /> Enviar Diagnóstico Masivo
@@ -1006,7 +1017,7 @@ function CorporatePortalInner({
                 <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-1">Presupuesto asignado</p>
                 <p className="font-display font-extrabold text-[#10B981] text-lg">{formatCOP(selectedEmployee.assignedBudget)}</p>
               </div>
-              {selectedEmployee.activePath.length > 0 && (
+              {(selectedEmployee.activePath?.length ?? 0) > 0 && (
                 <div>
                   <p className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-2">Ruta activa</p>
                   <div className="space-y-1">

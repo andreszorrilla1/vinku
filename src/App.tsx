@@ -114,7 +114,9 @@ export default function App() {
 
   // Cargar datos iniciales desde Supabase
   useEffect(() => {
-    fetchState();
+    const ctrl = new AbortController();
+    fetchState(ctrl.signal);
+    return () => ctrl.abort();
   }, [user]);
 
   // Redirigir al portal correcto según el rol autenticado
@@ -135,7 +137,7 @@ export default function App() {
     setTimeout(() => setToastMsg(null), 4000);
   };
 
-  const fetchState = async () => {
+  const fetchState = async (signal?: AbortSignal) => {
     setIsLoading(true);
     const timeout = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error('timeout')), 8000)
@@ -281,10 +283,11 @@ export default function App() {
         }
       }
     } catch (e) {
+      if (signal?.aborted) return;
       console.error(e);
       triggerToast("Error cargando datos", "error");
     } finally {
-      setIsLoading(false);
+      if (!signal?.aborted) setIsLoading(false);
     }
   };
 

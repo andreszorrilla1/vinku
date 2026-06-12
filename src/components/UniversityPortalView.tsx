@@ -68,6 +68,56 @@ interface UniData {
   total_earnings: number;
 }
 
+function RevenueShareCard({ enrolledCount }: { enrolledCount: number }) {
+  const tiers = [
+    { label: "Inicial", min: 0,  max: 9,   pct: 60, color: "#6C47FF" },
+    { label: "Plata",   min: 10, max: 24,  pct: 70, color: "#10B981" },
+    { label: "Oro",     min: 25, max: 49,  pct: 80, color: "#FFD000" },
+    { label: "Platino", min: 50, max: Infinity, pct: 85, color: "#F97316" },
+  ];
+  const current = tiers.find(t => enrolledCount >= t.min && enrolledCount <= t.max) ?? tiers[0];
+  const next = tiers[tiers.indexOf(current) + 1];
+
+  return (
+    <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-2xl p-5 space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500 font-bold">Reparto de ingresos</p>
+        <span
+          className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border-2 border-[#1A1A1A]"
+          style={{ backgroundColor: `${current.color}22`, color: current.color }}
+        >
+          Nivel {current.label}
+        </span>
+      </div>
+      <div className="flex items-end gap-3">
+        <p className="text-4xl font-extrabold text-[#1A1A1A]">{current.pct}%</p>
+        <p className="text-xs text-gray-500 mb-1 leading-tight">de cada matrícula<br />va a la universidad</p>
+      </div>
+      <div className="flex gap-2">
+        {tiers.map(t => (
+          <div
+            key={t.label}
+            className={`flex-1 rounded-lg py-2 px-1 text-center border-2 transition-all ${
+              t.label === current.label ? "border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A]" : "border-transparent opacity-40"
+            }`}
+            style={{ backgroundColor: `${t.color}22` }}
+          >
+            <p className="text-[10px] font-mono font-bold" style={{ color: t.color }}>{t.pct}%</p>
+            <p className="text-[9px] text-zinc-500 font-bold mt-0.5">{t.label}</p>
+            <p className="text-[8px] text-zinc-400">{t.max === Infinity ? `≥${t.min}` : `${t.min}–${t.max}`}</p>
+          </div>
+        ))}
+      </div>
+      {next && (
+        <p className="text-[10px] text-gray-500">
+          Sube al nivel <span className="font-bold" style={{ color: next.color }}>{next.label} ({next.pct}%)</span>{" "}
+          con {next.min - enrolledCount} matrícula{next.min - enrolledCount !== 1 ? "s" : ""} más.
+        </p>
+      )}
+    </div>
+  );
+}
+
 // ============================================================
 // Component
 // ============================================================
@@ -751,6 +801,8 @@ export default function UniversityPortalView({
               </div>
             )}
           </div>
+
+          <RevenueShareCard enrolledCount={enrolledCount} />
 
           {import.meta.env.DEV && (
             <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 space-y-1">

@@ -282,6 +282,99 @@ function PassportTab({ student }: { student: Student }) {
           <p className="text-zinc-400 text-xs">Completa cursos para ganar insignias de habilidades.</p>
         </div>
       )}
+
+      <MilestonesSection student={student} />
+    </div>
+  );
+}
+
+function MilestonesSection({ student }: { student: Student }) {
+  const sellos = student.passport.sellos;
+  const certified = sellos.filter(s => s.status === "Certificado");
+  const skills = student.passport.insignias;
+  const destinations = student.passport.destinations;
+
+  const milestones = [
+    {
+      id: "first_enroll",
+      icon: "🎓",
+      title: "Primera matrícula",
+      desc: "Te inscribiste en tu primer curso",
+      earned: sellos.length >= 1,
+      color: "#6C47FF",
+    },
+    {
+      id: "first_cert",
+      icon: "🏅",
+      title: "Primera certificación",
+      desc: "Completaste y certificaste un curso",
+      earned: certified.length >= 1,
+      color: "#10B981",
+    },
+    {
+      id: "diagnosed",
+      icon: "🧭",
+      title: "Ruta trazada",
+      desc: "Completaste tu diagnóstico vocacional",
+      earned: student.diagnosed,
+      color: "#FFD000",
+    },
+    {
+      id: "multi_uni",
+      icon: "🌍",
+      title: "Explorador",
+      desc: "Cursaste en 2 o más universidades",
+      earned: destinations.length >= 2,
+      color: "#F97316",
+    },
+    {
+      id: "skill_3",
+      icon: "⚡",
+      title: "Multi-talento",
+      desc: "Ganaste 3 o más habilidades",
+      earned: skills.length >= 3,
+      color: "#EC4899",
+    },
+    {
+      id: "cert_3",
+      icon: "🚀",
+      title: "Acelerador",
+      desc: "Certificaste 3 o más cursos",
+      earned: certified.length >= 3,
+      color: "#6C47FF",
+    },
+  ];
+
+  const earned = milestones.filter(m => m.earned).length;
+
+  return (
+    <div className="bg-white border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] rounded-xl p-5">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest">Logros desbloqueados</p>
+        <span className="text-[10px] font-mono font-bold bg-[#FFD000] text-[#1A1A1A] px-2 py-0.5 rounded-full border border-[#1A1A1A]">
+          {earned}/{milestones.length}
+        </span>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {milestones.map(m => (
+          <div
+            key={m.id}
+            className={`rounded-xl p-3 border-2 transition-all ${
+              m.earned
+                ? "border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A]"
+                : "border-zinc-200 opacity-40 grayscale"
+            }`}
+            style={m.earned ? { backgroundColor: `${m.color}15` } : { backgroundColor: "#F9F9F9" }}
+          >
+            <span className="text-2xl block mb-1">{m.icon}</span>
+            <p className="text-xs font-bold text-[#1A1A1A] leading-tight">{m.title}</p>
+            <p className="text-[10px] text-zinc-500 mt-0.5 leading-snug">{m.desc}</p>
+            {m.earned && (
+              <span className="text-[9px] font-mono font-bold text-[#10B981] mt-1 block">✓ Desbloqueado</span>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

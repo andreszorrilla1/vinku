@@ -768,6 +768,39 @@ function CorporatePortalInner({
             </div>
           </div>
 
+          {departments.length > 0 && (
+            <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#6C47FF] rounded-xl overflow-hidden">
+              <div className="px-4 py-3 border-b-2 border-[#1A1A1A] bg-zinc-50 flex items-center justify-between">
+                <p className="text-xs font-bold text-zinc-600 uppercase tracking-wider">Presupuesto por área</p>
+                <span className="text-[10px] font-mono text-zinc-400">{departments.length} área{departments.length !== 1 ? "s" : ""}</span>
+              </div>
+              <div className="divide-y divide-zinc-100">
+                {departments.map(dept => {
+                  const deptEmps = employees.filter(e => (e.department || "Sin área") === dept);
+                  const deptBudget = deptEmps.reduce((s, e) => s + (e.assignedBudget ?? 0), 0);
+                  const deptPct = totalAssigned > 0 ? Math.round((deptBudget / totalAssigned) * 100) : 0;
+                  return (
+                    <div key={dept} className="px-4 py-3">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div>
+                          <p className="text-xs font-bold text-[#1A1A1A]">{dept}</p>
+                          <p className="text-[10px] text-zinc-400">{deptEmps.length} colaborador{deptEmps.length !== 1 ? "es" : ""}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs font-bold text-[#6C47FF]">{formatCOP(deptBudget)}</p>
+                          <p className="text-[10px] text-zinc-400">{deptPct}% del total</p>
+                        </div>
+                      </div>
+                      <div className="w-full h-1.5 bg-zinc-100 rounded-full overflow-hidden">
+                        <div className="h-full rounded-full bg-[#6C47FF] transition-all" style={{ width: `${deptPct}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div>
             <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3">Acciones rápidas</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

@@ -92,31 +92,55 @@ export async function updateProfile(userId: string, updates: Partial<ProfileRow>
   if (error) throw error;
 }
 
-export async function rechargeStudentWallet(userId: string, amount: number) {
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('wallet_balance')
-    .eq('id', userId)
-    .single();
-  if (!profile) throw new Error('Perfil no encontrado');
+export async function rechargeStudentWallet(_userId: string, amount: number) {
+  // Validación de entrada: solo montos positivos enteros, con tope de seguridad
+  if (!Number.isFinite(amount) || amount <= 0) {
+    throw new Error('El monto a recargar debe ser un número positivo.');
+  }
+  const amt = Math.round(amount);
+  if (amt > 50_000_000) {
+    throw new Error('El monto máximo de recarga es 50.000.000 COP.');
+  }
 
-  const newBalance = (profile.wallet_balance ?? 0) + amount;
-
-  const { error, count } = await supabase
-    .from('profiles')
-    .update({ wallet_balance: newBalance })
-    .eq('id', userId);
-  if (error) throw error;
-  if (count === 0) throw new Error('No se pudo actualizar el saldo. Verifica tu sesión.');
-
-  await supabase.from('wallet_transactions').insert({
-    profile_id: userId,
-    amount,
-    type: 'recharge',
-    description: `Recarga de billetera por $${amount.toLocaleString('es-CO')} COP`,
+  // RPC SECURITY DEFINER atómico (migración 020): valida sesión, acredita y
+  // registra la transacción en una sola operación. Reemplaza el read-modify-write
+  // en cliente que sufría el bug de count===null de supabase-js v2.
+  const { data: newBalance, error } = await supabase.rpc('recharge_student_wallet', {
+    p_amount: amt,
   });
+  if (!error) return newBalance as number;
 
-  return newBalance;
+  // Fallback si la migración 020 aún no está aplicada en este entorno
+  if (error.message?.includes('Could not find the function') || (error as any).code === 'PGRST202') {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Sesión no válida.');
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('wallet_balance')
+      .eq('id', user.id)
+      .single();
+    if (!profile) throw new Error('Perfil no encontrado');
+
+    const computed = (profile.wallet_balance ?? 0) + amt;
+    const { data: updated, error: upErr } = await supabase
+      .from('profiles')
+      .update({ wallet_balance: computed })
+      .eq('id', user.id)
+      .select('wallet_balance')
+      .single();
+    if (upErr) throw upErr;
+    if (!updated) throw new Error('No se pudo actualizar el saldo. Verifica tu sesión.');
+
+    await supabase.from('wallet_transactions').insert({
+      profile_id: user.id,
+      amount: amt,
+      type: 'recharge',
+      description: `Recarga de billetera por $${amt.toLocaleString('es-CO')} COP`,
+    });
+    return updated.wallet_balance as number;
+  }
+
+  throw error;
 }
 
 // ============================================================
@@ -152,39 +176,24 @@ export async function fetchEnrollments(userId: string) {
 }
 
 export async function enrollCourse(studentId: string, courseId: string, creditsSpent: number) {
-  // Try SECURITY DEFINER RPC first (migration 018) — atomic, bypass RLS
+  // Validación de entrada
+  if (!Number.isFinite(creditsSpent) || creditsSpent < 0) {
+    throw new Error('El costo del curso no es válido.');
+  }
+
+  // Matrícula exclusivamente vía RPC SECURITY DEFINER (migración 018): atómica
+  // (inserta enrollment, descuenta wallet, registra transacción y sella el
+  // pasaporte en una sola transacción). NO usamos un fallback en cliente porque
+  // sería una secuencia no-atómica que podría matricular gratis o hacer
+  // double-spend si falla a mitad de camino.
   const { data: rpcId, error: rpcErr } = await supabase.rpc('enroll_course_rpc', {
     p_course_id:     courseId,
-    p_credits_spent: creditsSpent,
+    p_credits_spent: Math.round(creditsSpent),
   });
   if (!rpcErr) return { id: rpcId as string, course_id: courseId, student_id: studentId, status: 'Cursando', credits_spent: creditsSpent };
 
-  // If RPC not deployed yet, fall back to direct writes
   if (rpcErr.message?.includes('Could not find the function') || (rpcErr as any).code === 'PGRST202') {
-    const { data: profile } = await supabase.from('profiles').select('wallet_balance').eq('id', studentId).single();
-    if (!profile || (profile.wallet_balance ?? 0) < creditsSpent) {
-      throw new Error('Saldo insuficiente en la billetera');
-    }
-
-    const { data: enrollment, error } = await supabase
-      .from('enrollments')
-      .insert({ student_id: studentId, course_id: courseId, credits_spent: creditsSpent })
-      .select().single();
-    if (error) throw error;
-
-    await supabase.from('profiles').update({ wallet_balance: (profile.wallet_balance ?? 0) - creditsSpent }).eq('id', studentId);
-    await supabase.from('wallet_transactions').insert({ profile_id: studentId, amount: -creditsSpent, type: 'enrollment', description: 'Matrícula de curso', reference_id: enrollment.id }).catch(() => {});
-
-    const { data: course } = await supabase.from('courses').select('university_id').eq('id', courseId).single();
-    if (course) {
-      const { data: existingStamp } = await supabase.from('passport_stamps').select('id, enroll_count').eq('student_id', studentId).eq('university_id', course.university_id).maybeSingle();
-      if (existingStamp) {
-        await supabase.from('passport_stamps').update({ enroll_count: existingStamp.enroll_count + 1 }).eq('id', existingStamp.id);
-      } else {
-        await supabase.from('passport_stamps').insert({ student_id: studentId, university_id: course.university_id, enroll_count: 1 });
-      }
-    }
-    return enrollment;
+    throw new Error('La matrícula no está disponible: falta aplicar la migración 018 en la base de datos. Contacta al administrador.');
   }
 
   throw rpcErr;
@@ -439,9 +448,11 @@ export async function removeEmployee(id: string) {
 }
 
 export async function updateCompany(id: string, updates: { name?: string; nit?: string; industry?: string; size_employees?: number | null; contact_name?: string }) {
-  const { error, count } = await supabase.from('companies').update(updates).eq('id', id);
+  // Verificamos con .select() en vez de `count`: supabase-js v2 devuelve count:null
+  // por defecto en UPDATE, por lo que `count === 0` nunca detecta un bloqueo de RLS.
+  const { data, error } = await supabase.from('companies').update(updates).eq('id', id).select('id');
   if (error) throw error;
-  if (count === 0) throw new Error('No se pudo actualizar la empresa. Verifica tu sesión.');
+  if (!data || data.length === 0) throw new Error('No se pudo actualizar la empresa. Verifica tu sesión.');
 }
 
 export async function sendEmployeeDiagnosis(employeeId: string, companyId: string, objective: string, deadline: string | null) {

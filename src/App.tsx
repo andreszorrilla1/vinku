@@ -42,6 +42,7 @@ import StudentPortalView from "./components/StudentPortalView";
 import CorporatePortalView from "./components/CorporatePortalView";
 import { useAuth } from "./contexts/AuthContext";
 import * as api from "./lib/api";
+import { supabase } from "./lib/supabase";
 
 export default function App() {
   const { user, role, signOut } = useAuth();
@@ -381,7 +382,6 @@ export default function App() {
   const handleApproveSello = async (_studentId: string, courseId: string, _universityId: string) => {
     try {
       // Buscar el enrollment por course_id
-      const { supabase } = await import(/* @vite-ignore */ './lib/supabase');
       const { data: enrollments } = await supabase
         .from('enrollments')
         .select('id')

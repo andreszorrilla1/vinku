@@ -168,6 +168,9 @@ export default function UniversityPortalView({
   const [courseFormAccessLink, setCourseFormAccessLink] = useState("");
   const [courseFormClassroom, setCourseFormClassroom] = useState("");
   const [savingCourse, setSavingCourse] = useState(false);
+  const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
+  const [deletingCourseId, setDeletingCourseId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const FIXED_DOCS = [
     "Documento de identidad",
@@ -353,58 +356,76 @@ export default function UniversityPortalView({
   // ============================================================
   // Handlers
   // ============================================================
+  const resetCourseForm = () => {
+    setCourseFormTitle(""); setCourseFormDesc(""); setCourseFormDuration("");
+    setCourseFormCost(""); setCourseFormSkills(""); setCourseFormPrereqs([]);
+    setCourseFormDocs([]); setCourseFormSeats(""); setCourseFormOtherDoc("");
+    setCourseFormModality("Virtual"); setCourseFormStartDate("");
+    setCourseFormAccessLink(""); setCourseFormClassroom("");
+    setEditingCourseId(null);
+  };
+
   const handleSaveCourse = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!universityId) {
-      triggerToast("No se encontró el ID de universidad en tu perfil.", "error");
-      return;
-    }
     if (!courseFormTitle || !courseFormCost || !courseFormDuration) {
       triggerToast("Completa todos los campos obligatorios.", "error");
       return;
     }
+    const cost = parseFloat(courseFormCost);
+    if (isNaN(cost) || cost <= 0) {
+      triggerToast("El costo del curso debe ser mayor a $0.", "error");
+      return;
+    }
     setSavingCourse(true);
     try {
-      const base = {
-        university_id: universityId,
-        title: courseFormTitle,
-        description: courseFormDesc || null,
-        level: courseFormLevel,
-        duration: courseFormDuration,
-        cost_credits: parseFloat(courseFormCost),
-        skills: courseFormSkills
-          ? courseFormSkills
-              .split(",")
-              .map((s) => s.trim())
-              .filter(Boolean)
-          : [],
-        category: courseFormCategory,
-        is_active: true,
-      };
-      const extras: Record<string, unknown> = {};
-      if (courseFormPrereqs.length) extras.prerequisites = courseFormPrereqs;
-      if (courseFormDocs.length) extras.required_docs = courseFormDocs;
-      extras.max_seats = courseFormSeats ? parseInt(courseFormSeats) : null;
-      extras.modality = courseFormModality;
-      if (courseFormStartDate) extras.start_date = courseFormStartDate;
-      if (courseFormAccessLink) extras.access_link = courseFormAccessLink;
-      if (courseFormClassroom) extras.classroom = courseFormClassroom;
-      await api.addCourseResilient(base, extras);
-      triggerToast(`Curso "${courseFormTitle}" publicado en el catálogo.`, "success");
+      const skills = courseFormSkills
+        ? courseFormSkills.split(",").map((s) => s.trim()).filter(Boolean)
+        : [];
+      if (editingCourseId) {
+        await api.updateCourse(editingCourseId, {
+          title: courseFormTitle,
+          description: courseFormDesc || null,
+          level: courseFormLevel,
+          duration: courseFormDuration,
+          cost_credits: cost,
+          skills,
+          category: courseFormCategory,
+          modality: courseFormModality,
+          start_date: courseFormStartDate || null,
+          access_link: courseFormAccessLink || null,
+          classroom: courseFormClassroom || null,
+          max_seats: courseFormSeats ? parseInt(courseFormSeats) : null,
+        });
+        triggerToast(`Curso "${courseFormTitle}" actualizado.`, "success");
+      } else {
+        if (!universityId) {
+          triggerToast("No se encontró el ID de universidad en tu perfil.", "error");
+          return;
+        }
+        const base = {
+          university_id: universityId,
+          title: courseFormTitle,
+          description: courseFormDesc || null,
+          level: courseFormLevel,
+          duration: courseFormDuration,
+          cost_credits: cost,
+          skills,
+          category: courseFormCategory,
+          is_active: true,
+        };
+        const extras: Record<string, unknown> = {};
+        if (courseFormPrereqs.length) extras.prerequisites = courseFormPrereqs;
+        if (courseFormDocs.length) extras.required_docs = courseFormDocs;
+        extras.max_seats = courseFormSeats ? parseInt(courseFormSeats) : null;
+        extras.modality = courseFormModality;
+        if (courseFormStartDate) extras.start_date = courseFormStartDate;
+        if (courseFormAccessLink) extras.access_link = courseFormAccessLink;
+        if (courseFormClassroom) extras.classroom = courseFormClassroom;
+        await api.addCourseResilient(base, extras);
+        triggerToast(`Curso "${courseFormTitle}" publicado en el catálogo.`, "success");
+      }
       setShowCatalogModal(false);
-      setCourseFormTitle("");
-      setCourseFormDesc("");
-      setCourseFormDuration("");
-      setCourseFormCost("");
-      setCourseFormSkills("");
-      setCourseFormPrereqs([]);
-      setCourseFormDocs([]);
-      setCourseFormSeats("");
-      setCourseFormOtherDoc("");
-      setCourseFormModality("Virtual");
-      setCourseFormStartDate("");
-      setCourseFormAccessLink("");
-      setCourseFormClassroom("");
+      resetCourseForm();
       onCourseAdded();
       fetchState();
     } catch (err) {
@@ -473,6 +494,7 @@ export default function UniversityPortalView({
     setMarkingId(enrollmentId);
     try {
       await api.markEnrollmentStarted(enrollmentId);
+      triggerToast("Matrícula marcada como iniciada.", "success");
       await fetchEnrollments();
     } catch (err) {
       console.error(err);
@@ -486,12 +508,46 @@ export default function UniversityPortalView({
     setMarkingId(enrollmentId);
     try {
       await api.markEnrollmentCompleted(enrollmentId);
+      triggerToast("Matrícula marcada como completada. Lista para certificar.", "success");
       await fetchEnrollments();
     } catch (err) {
       console.error(err);
       triggerToast("Error al marcar como completado.", "error");
     } finally {
       setMarkingId(null);
+    }
+  };
+
+  const handleEditCourse = (c: typeof uniCourses[0]) => {
+    setEditingCourseId(c.id);
+    setCourseFormTitle(c.title);
+    setCourseFormDesc(c.description ?? "");
+    setCourseFormLevel(c.level as "Pregrado" | "Posgrado" | "Educación Continua");
+    setCourseFormDuration(c.duration);
+    setCourseFormCost(String(c.cost));
+    setCourseFormSkills(c.skills?.join(", ") ?? "");
+    setCourseFormCategory(c.category);
+    setCourseFormModality((c.modality ?? "Virtual") as "Virtual" | "Presencial" | "Híbrido");
+    setCourseFormStartDate(c.startDate ?? "");
+    setCourseFormAccessLink(c.accessLink ?? "");
+    setCourseFormClassroom(c.classroom ?? "");
+    setCourseFormPrereqs(c.prerequisites ?? []);
+    setCourseFormSeats(c.maxSeats != null ? String(c.maxSeats) : "");
+    setShowCatalogModal(true);
+  };
+
+  const handleDeleteCourse = async (courseId: string) => {
+    setDeletingCourseId(courseId);
+    try {
+      await api.deleteCourse(courseId);
+      triggerToast("Curso eliminado del catálogo.", "success");
+      setConfirmDeleteId(null);
+      onCourseAdded();
+      fetchState();
+    } catch (err: any) {
+      triggerToast(err?.message ?? "Error al eliminar el curso.", "error");
+    } finally {
+      setDeletingCourseId(null);
     }
   };
 
@@ -827,18 +883,7 @@ export default function UniversityPortalView({
               <p className="text-xs text-gray-500">Gestiona la oferta académica de tu universidad.</p>
             </div>
             <button
-              onClick={() => {
-                setCourseFormTitle("");
-                setCourseFormDesc("");
-                setCourseFormDuration("");
-                setCourseFormCost("");
-                setCourseFormSkills("");
-                setCourseFormPrereqs([]);
-                setCourseFormDocs([]);
-                setCourseFormSeats("");
-                setCourseFormOtherDoc("");
-                setShowCatalogModal(true);
-              }}
+              onClick={() => { resetCourseForm(); setShowCatalogModal(true); }}
               className="flex items-center gap-2 bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] font-extrabold text-xs px-5 py-3 rounded-xl border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
@@ -865,6 +910,7 @@ export default function UniversityPortalView({
                       <th className="p-4 text-left font-bold">Categoría</th>
                       <th className="p-4 text-left font-bold">Duración</th>
                       <th className="p-4 text-left font-bold">Costo (COP)</th>
+                      <th className="p-4 text-left font-bold">Acciones</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -884,10 +930,51 @@ export default function UniversityPortalView({
                         <td className="p-4 font-extrabold text-[#6C47FF] font-mono">
                           ${c.cost.toLocaleString("es-CO")}
                         </td>
+                        <td className="p-4">
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleEditCourse(c)}
+                              className="text-[10px] font-bold px-2 py-1 rounded-lg border-2 border-[#6C47FF] text-[#6C47FF] hover:bg-[#6C47FF]/10 transition-colors"
+                            >
+                              Editar
+                            </button>
+                            <button
+                              onClick={() => setConfirmDeleteId(c.id)}
+                              className="text-[10px] font-bold px-2 py-1 rounded-lg border-2 border-red-400 text-red-500 hover:bg-red-50 transition-colors"
+                            >
+                              Eliminar
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          )}
+
+          {/* Confirm delete modal */}
+          {confirmDeleteId && (
+            <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+              <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-2xl p-6 max-w-sm w-full space-y-4">
+                <h3 className="font-extrabold text-[#1A1A1A]">¿Eliminar este curso?</h3>
+                <p className="text-sm text-zinc-500">Esta acción no se puede deshacer. Los estudiantes inscritos perderán acceso.</p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setConfirmDeleteId(null)}
+                    className="flex-1 py-2 border-2 border-zinc-300 rounded-xl text-sm font-bold text-zinc-600 hover:border-[#1A1A1A] transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() => handleDeleteCourse(confirmDeleteId)}
+                    disabled={deletingCourseId === confirmDeleteId}
+                    className="flex-1 py-2 bg-red-500 border-2 border-red-600 rounded-xl text-sm font-bold text-white hover:bg-red-600 transition-colors disabled:opacity-60"
+                  >
+                    {deletingCourseId === confirmDeleteId ? "Eliminando..." : "Sí, eliminar"}
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -897,9 +984,11 @@ export default function UniversityPortalView({
             <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
               <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-2xl p-6 max-w-lg w-full space-y-4 animate-fade-in relative">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                  <h3 className="text-base font-extrabold text-[#1A1A1A]">Agregar Nuevo Curso</h3>
+                  <h3 className="text-base font-extrabold text-[#1A1A1A]">
+                    {editingCourseId ? "Editar Curso" : "Agregar Nuevo Curso"}
+                  </h3>
                   <button
-                    onClick={() => setShowCatalogModal(false)}
+                    onClick={() => { setShowCatalogModal(false); resetCourseForm(); }}
                     className="p-1 hover:bg-gray-100 rounded-lg cursor-pointer"
                   >
                     <X className="w-5 h-5" />
@@ -1001,7 +1090,7 @@ export default function UniversityPortalView({
                       <input
                         type="number"
                         required
-                        min={0}
+                        min={1}
                         value={courseFormCost}
                         onChange={(e) => setCourseFormCost(e.target.value)}
                         placeholder="ej. 450000"

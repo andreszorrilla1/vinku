@@ -691,3 +691,24 @@ export async function deleteCourse(courseId: string) {
     .eq('id', courseId);
   if (error) throw error;
 }
+
+export async function updateCourse(courseId: string, updates: {
+  title?: string;
+  description?: string | null;
+  level?: string;
+  duration?: string;
+  cost_credits?: number;
+  skills?: string[];
+  category?: string;
+  modality?: string | null;
+  start_date?: string | null;
+  access_link?: string | null;
+  classroom?: string | null;
+  max_seats?: number | null;
+}) {
+  const { error } = await supabase
+    .from('courses')
+    .update(updates)
+    .eq('id', courseId);
+  if (error) throw error;
+}

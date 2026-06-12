@@ -1485,7 +1485,7 @@ function CorporatePortalInner({
                 </div>
                 <div className="col-span-2">
                   <label className="text-xs font-bold text-zinc-600 block mb-1">Presupuesto inicial (COP)</label>
-                  <input type="number" value={empBudget} onChange={e => setEmpBudget(e.target.value)} placeholder="0" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
+                  <input type="number" min={0} value={empBudget} onChange={e => setEmpBudget(e.target.value)} placeholder="0" className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none" />
                   {parseInt(empBudget) > 0 && parseInt(empBudget) <= walletBalance && (
                     <p className="text-[10px] text-[#10B981] mt-1">Se descontará de la billetera corporativa</p>
                   )}

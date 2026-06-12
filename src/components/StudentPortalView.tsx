@@ -847,6 +847,14 @@ function FellowshipTab({
         </button>
       </form>
 
+      {sessions.length === 0 && (
+        <div className="bg-white border-2 border-zinc-200 rounded-xl p-6 max-w-md text-center">
+          <Calendar className="w-8 h-8 text-zinc-300 mx-auto mb-2" />
+          <p className="text-sm font-bold text-zinc-400">Aún no tienes mentorías agendadas</p>
+          <p className="text-xs text-zinc-400 mt-1">Completa el formulario arriba para reservar tu primera sesión.</p>
+        </div>
+      )}
+
       {sessions.length > 0 && (
         <div className="bg-white border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-xl p-5 max-w-md">
           <div className="flex items-center justify-between mb-4">

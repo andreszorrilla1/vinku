@@ -294,6 +294,7 @@ function DiagnosticTab({
   student,
   onEnrollCourse,
   setEnrollConfirmCourse,
+  setStudentTab,
 }: {
   diagAnswers: StudentPortalViewProps["diagAnswers"];
   setDiagAnswers: StudentPortalViewProps["setDiagAnswers"];
@@ -302,6 +303,7 @@ function DiagnosticTab({
   student: Student;
   onEnrollCourse: (courseId: string) => void;
   setEnrollConfirmCourse: (c: Course | null) => void;
+  setStudentTab: StudentPortalViewProps["setStudentTab"];
 }) {
   const [step, setStep] = useState(student.diagnosed ? DIAG_STEPS.length : 0);
   const [localAnswers, setLocalAnswers] = useState<Record<string, string>>({});
@@ -356,8 +358,14 @@ function DiagnosticTab({
 
         <div className="space-y-3">
           {suggested.length === 0 ? (
-            <div className="bg-white border-2 border-[#1A1A1A] rounded-xl p-6 text-center text-zinc-500 text-sm">
-              No hay cursos disponibles para tu perfil aún. ¡Pronto habrá más opciones!
+            <div className="bg-white border-2 border-[#1A1A1A] rounded-xl p-6 text-center space-y-3">
+              <p className="text-zinc-500 text-sm">No hay cursos disponibles para tu perfil aún. ¡Pronto habrá más opciones!</p>
+              <button
+                onClick={() => setStudentTab("market")}
+                className="px-4 py-2 bg-[#1A1A1A] text-[#FFD000] font-bold rounded-xl border-2 border-[#1A1A1A] text-xs hover:shadow-[3px_3px_0px_0px_#FFD000] transition-all"
+              >
+                Ver catálogo completo →
+              </button>
             </div>
           ) : (
             suggested.map((c, i) => {
@@ -493,6 +501,7 @@ function WalletTab({
 }) {
   const [transactions, setTransactions] = useState<WalletTx[]>([]);
   const [loadingTx, setLoadingTx] = useState(false);
+  const [rechargingWallet, setRechargingWallet] = useState(false);
 
   async function loadTransactions() {
     setLoadingTx(true);
@@ -511,9 +520,14 @@ function WalletTab({
   }, []);
 
   async function handleRecharge(e: React.FormEvent) {
-    await onWalletRecharge(e);
-    await loadTransactions();
-    fetchState();
+    setRechargingWallet(true);
+    try {
+      await onWalletRecharge(e);
+      await loadTransactions();
+      fetchState();
+    } finally {
+      setRechargingWallet(false);
+    }
   }
 
   return (
@@ -548,14 +562,27 @@ function WalletTab({
           ))}
         </div>
         <form onSubmit={handleRecharge} className="space-y-3">
-          <input
-            type="number"
-            value={rechargeAmt}
-            onChange={e => setRechargeAmt(e.target.value)}
-            placeholder="Monto en COP"
-            min={1000}
-            className="w-full border-2 border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:shadow-[2px_2px_0px_0px_#FFD000]"
-          />
+          <div>
+            <input
+              type="number"
+              value={rechargeAmt}
+              onChange={e => setRechargeAmt(e.target.value)}
+              placeholder="Monto en COP"
+              min={1000}
+              max={50000000}
+              className={`w-full border-2 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:shadow-[2px_2px_0px_0px_#FFD000] ${
+                rechargeAmt && (Number(rechargeAmt) < 1000 || Number(rechargeAmt) > 50000000)
+                  ? "border-red-400"
+                  : "border-[#1A1A1A]"
+              }`}
+            />
+            {rechargeAmt && Number(rechargeAmt) < 1000 && (
+              <p className="text-[10px] text-red-500 font-bold mt-1">Mínimo de recarga: $1.000 COP</p>
+            )}
+            {rechargeAmt && Number(rechargeAmt) > 50000000 && (
+              <p className="text-[10px] text-red-500 font-bold mt-1">Máximo de recarga: $50.000.000 COP</p>
+            )}
+          </div>
           <select
             value={rechargeSource}
             onChange={e => setRechargeSource(e.target.value)}
@@ -567,8 +594,12 @@ function WalletTab({
             <option value="Daviplata">Daviplata</option>
             <option value="Tarjeta">Tarjeta de crédito/débito</option>
           </select>
-          <button type="submit" className="w-full py-3 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] hover:shadow-[6px_6px_0px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm">
-            Recargar billetera
+          <button
+            type="submit"
+            disabled={rechargingWallet || !rechargeAmt || Number(rechargeAmt) < 1000 || Number(rechargeAmt) > 50000000}
+            className="w-full py-3 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] hover:shadow-[6px_6px_0px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+          >
+            {rechargingWallet ? "Recargando..." : "Recargar billetera"}
           </button>
         </form>
       </div>
@@ -632,6 +663,8 @@ function FellowshipTab({
 }) {
   const [sessions, setSessions] = useState<SessionRow[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
+  const [bookingSession, setBookingSession] = useState(false);
+  const minDateTime = new Date(Date.now() + 60 * 60 * 1000).toISOString().slice(0, 16);
 
   async function loadSessions() {
     setLoadingSessions(true);
@@ -650,9 +683,14 @@ function FellowshipTab({
   }, []);
 
   async function handleBook(e: React.FormEvent) {
-    await onBookFellowship(e);
-    await loadSessions();
-    fetchState();
+    setBookingSession(true);
+    try {
+      await onBookFellowship(e);
+      await loadSessions();
+      fetchState();
+    } finally {
+      setBookingSession(false);
+    }
   }
 
   return (
@@ -697,18 +735,22 @@ function FellowshipTab({
           placeholder="¿Sobre qué tema quieres la mentoría?"
           className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none"
         />
-        <input
-          type="datetime-local"
-          value={fellowshipForm.dateTime}
-          onChange={e => setFellowshipForm(p => ({ ...p, dateTime: e.target.value }))}
-          className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none"
-        />
+        <div>
+          <input
+            type="datetime-local"
+            value={fellowshipForm.dateTime}
+            min={minDateTime}
+            onChange={e => setFellowshipForm(p => ({ ...p, dateTime: e.target.value }))}
+            className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none"
+          />
+          <p className="text-[10px] text-zinc-400 mt-1">Debe ser al menos 1 hora en el futuro</p>
+        </div>
         <button
           type="submit"
-          disabled={!fellowshipForm.mentorName || !fellowshipForm.topic || !fellowshipForm.dateTime}
+          disabled={bookingSession || !fellowshipForm.mentorName || !fellowshipForm.topic || !fellowshipForm.dateTime || fellowshipForm.dateTime < minDateTime}
           className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
         >
-          Confirmar sesión
+          {bookingSession ? "Agendando..." : "Confirmar sesión"}
         </button>
       </form>
 
@@ -887,6 +929,7 @@ export default function StudentPortalView({
   const [expandedCourse, setExpandedCourse] = useState<string | null>(null);
   const [docConfirmCourse, setDocConfirmCourse] = useState<Course | null>(null);
   const [enrollConfirmCourse, setEnrollConfirmCourse] = useState<Course | null>(null);
+  const [enrolling, setEnrolling] = useState(false);
 
   if (!student) {
     return (
@@ -965,6 +1008,7 @@ export default function StudentPortalView({
           student={student}
           onEnrollCourse={onEnrollCourse}
           setEnrollConfirmCourse={setEnrollConfirmCourse}
+          setStudentTab={setStudentTab}
         />
       )}
 
@@ -1242,10 +1286,20 @@ export default function StudentPortalView({
                     Cancelar
                   </button>
                   <button
-                    onClick={() => { const id = enrollConfirmCourse.id; setEnrollConfirmCourse(null); onEnrollCourse(id); }}
-                    className="flex-1 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-[#1A1A1A] font-extrabold py-3 rounded-xl hover:shadow-[6px_6px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm"
+                    disabled={enrolling}
+                    onClick={async () => {
+                      const id = enrollConfirmCourse.id;
+                      setEnrolling(true);
+                      try {
+                        await onEnrollCourse(id);
+                      } finally {
+                        setEnrolling(false);
+                        setEnrollConfirmCourse(null);
+                      }
+                    }}
+                    className="flex-1 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-[#1A1A1A] font-extrabold py-3 rounded-xl hover:shadow-[6px_6px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
                   >
-                    Confirmar inscripción →
+                    {enrolling ? "Inscribiendo..." : "Confirmar inscripción →"}
                   </button>
                 </div>
               </div>

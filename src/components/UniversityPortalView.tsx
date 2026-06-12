@@ -128,6 +128,7 @@ export default function UniversityPortalView({
 
   // ---- certifying ----
   const [certifyingId, setCertifyingId] = useState<string | null>(null);
+  const [markingId, setMarkingId] = useState<string | null>(null);
 
   // ---- withdrawal ----
   const [withdrawAmount, setWithdrawAmount] = useState("");
@@ -419,22 +420,28 @@ export default function UniversityPortalView({
   };
 
   const handleMarkStarted = async (enrollmentId: string) => {
+    setMarkingId(enrollmentId);
     try {
       await api.markEnrollmentStarted(enrollmentId);
       await fetchEnrollments();
     } catch (err) {
       console.error(err);
       triggerToast("Error al marcar como iniciado.", "error");
+    } finally {
+      setMarkingId(null);
     }
   };
 
   const handleMarkCompleted = async (enrollmentId: string) => {
+    setMarkingId(enrollmentId);
     try {
       await api.markEnrollmentCompleted(enrollmentId);
       await fetchEnrollments();
     } catch (err) {
       console.error(err);
       triggerToast("Error al marcar como completado.", "error");
+    } finally {
+      setMarkingId(null);
     }
   };
 
@@ -1098,6 +1105,7 @@ export default function UniversityPortalView({
                         <input
                           type="date"
                           value={courseFormStartDate}
+                          min={new Date().toISOString().slice(0, 10)}
                           onChange={(e) => setCourseFormStartDate(e.target.value)}
                           className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
                         />
@@ -1231,17 +1239,21 @@ export default function UniversityPortalView({
                           {!e.started_at && e.status !== "Certificado" && (
                             <button
                               onClick={() => handleMarkStarted(e.id)}
-                              className="bg-yellow-50 border-2 border-yellow-300 text-yellow-700 font-bold text-[10px] px-3 py-1.5 rounded-xl flex items-center gap-1.5 mx-auto hover:bg-yellow-100 cursor-pointer transition-all"
+                              disabled={markingId === e.id}
+                              className="bg-yellow-50 border-2 border-yellow-300 text-yellow-700 font-bold text-[10px] px-3 py-1.5 rounded-xl flex items-center gap-1.5 mx-auto hover:bg-yellow-100 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                              <PlayCircle className="w-3 h-3" /> Marcar Iniciado
+                              <PlayCircle className={`w-3 h-3 ${markingId === e.id ? "animate-spin" : ""}`} />
+                              {markingId === e.id ? "Guardando..." : "Marcar Iniciado"}
                             </button>
                           )}
                           {e.started_at && !e.completed_at && (
                             <button
                               onClick={() => handleMarkCompleted(e.id)}
-                              className="bg-[#6C47FF]/10 border-2 border-[#6C47FF]/30 text-[#6C47FF] font-bold text-[10px] px-3 py-1.5 rounded-xl flex items-center gap-1.5 mx-auto hover:bg-[#6C47FF]/20 cursor-pointer transition-all"
+                              disabled={markingId === e.id}
+                              className="bg-[#6C47FF]/10 border-2 border-[#6C47FF]/30 text-[#6C47FF] font-bold text-[10px] px-3 py-1.5 rounded-xl flex items-center gap-1.5 mx-auto hover:bg-[#6C47FF]/20 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                              <CheckCircle className="w-3 h-3" /> Marcar Completado
+                              <CheckCircle className={`w-3 h-3 ${markingId === e.id ? "animate-spin" : ""}`} />
+                              {markingId === e.id ? "Guardando..." : "Marcar Completado"}
                             </button>
                           )}
                           {e.completed_at && e.status !== "Certificado" && (
@@ -1538,8 +1550,10 @@ export default function UniversityPortalView({
                     <input
                       type="text"
                       required
+                      inputMode="numeric"
+                      pattern="[0-9]+"
                       value={withdrawAccount}
-                      onChange={(e) => setWithdrawAccount(e.target.value)}
+                      onChange={(e) => setWithdrawAccount(e.target.value.replace(/\D/g, ""))}
                       placeholder="ej. 123456789012"
                       className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
                     />

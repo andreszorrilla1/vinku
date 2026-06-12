@@ -1227,7 +1227,15 @@ function CorporatePortalInner({
                   <button onClick={handleEditEmployee} disabled={savingEdit} className="flex-1 py-2 bg-[#1A1A1A] text-[#FFD000] font-bold rounded-xl border-2 border-[#1A1A1A] text-xs disabled:opacity-60">
                     {savingEdit ? "Guardando..." : "Guardar"}
                   </button>
-                  <button onClick={() => setEditMode(false)} className="flex-1 py-2 border-2 border-zinc-200 rounded-xl text-xs font-bold text-zinc-500 hover:border-[#1A1A1A]">
+                  <button
+                    onClick={() => {
+                      setEditName(selectedEmployee.name);
+                      setEditRole(selectedEmployee.role || "");
+                      setEditDept(selectedEmployee.department || "");
+                      setEditMode(false);
+                    }}
+                    className="flex-1 py-2 border-2 border-zinc-200 rounded-xl text-xs font-bold text-zinc-500 hover:border-[#1A1A1A]"
+                  >
                     Cancelar
                   </button>
                 </div>

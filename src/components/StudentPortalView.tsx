@@ -5,6 +5,7 @@ import {
   ChevronDown, ChevronUp, ArrowRight, RefreshCw,
 } from "lucide-react";
 import { Student, Course, UniversityStats } from "../types";
+import FlujoEtapa1 from "./etapa1/FlujoEtapa1";
 import { useAuth } from "../contexts/AuthContext";
 import {
   fetchWalletTransactions,
@@ -1101,16 +1102,7 @@ export default function StudentPortalView({
       {studentTab === "pass" && <PassportTab student={student} />}
 
       {studentTab === "diag" && (
-        <DiagnosticTab
-          diagAnswers={diagAnswers}
-          setDiagAnswers={setDiagAnswers}
-          onDiagnoseSubmit={onDiagnoseSubmit}
-          courses={courses}
-          student={student}
-          onEnrollCourse={onEnrollCourse}
-          setEnrollConfirmCourse={setEnrollConfirmCourse}
-          setStudentTab={setStudentTab}
-        />
+        <FlujoEtapa1 usuarioId={student.id} clienteNombre={student.name} />
       )}
 
       {studentTab === "market" && (

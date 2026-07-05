@@ -712,3 +712,165 @@ export async function updateCourse(courseId: string, updates: {
     .eq('id', courseId);
   if (error) throw error;
 }
+
+// ============================================================
+// CAMPUS PASS — Catálogo (Etapa 1)
+// Campos cp_* viven en la tabla `courses` (migración 022).
+// ============================================================
+
+import type { Curso } from '../types/etapa1';
+
+// Fila de `courses` con las columnas Campus Pass (aún no reflejadas en
+// database.types.ts generado). Se castea desde el select('*').
+interface CampusPassRow {
+  id: string;
+  title: string;
+  category: string;
+  skills: string[] | null;
+  is_active: boolean;
+  cp_enabled: boolean | null;
+  cp_institucion: string | null;
+  cp_tipo_institucion: string | null;
+  cp_nivel: string | null;
+  cp_modalidad: string | null;
+  cp_duracion_horas: number | null;
+  cp_duracion_semanas: number | null;
+  cp_precio_publico: number | null;
+  cp_precio_vinku: number | null;
+  cp_descuento_disponible: boolean | null;
+  cp_ciudad: string | null;
+  cp_roles: string[] | null;
+  cp_palabras_clave: string[] | null;
+  cp_cupos: number | null;
+  cp_proxima_fecha: string | null;
+  prerequisites?: string[] | null;
+}
+
+export interface CampusPassInput {
+  university_id: string;
+  nombre_curso: string;
+  institucion: string;
+  tipo_institucion: string;
+  nivel: string;
+  modalidad: string;
+  duracion_horas: number;
+  duracion_semanas: number;
+  precio_publico_cop: number;
+  precio_vinku_cop: number;
+  descuento_disponible: boolean;
+  ciudad: string;
+  habilidades_que_desarrolla: string[];
+  roles_que_habilita: string[];
+  cupos_disponibles: number;
+  proxima_fecha_inicio: string | null;
+  categoria: string;
+  palabras_clave: string[];
+}
+
+function rowToCurso(r: CampusPassRow): Curso {
+  return {
+    id_curso: r.id,
+    institucion: r.cp_institucion ?? '',
+    tipo_institucion: (r.cp_tipo_institucion ?? 'universidad') as Curso['tipo_institucion'],
+    nombre_curso: r.title,
+    nivel: (r.cp_nivel ?? 'educacion_continua') as Curso['nivel'],
+    modalidad: (r.cp_modalidad ?? 'virtual') as Curso['modalidad'],
+    duracion_horas: r.cp_duracion_horas ?? 0,
+    duracion_semanas: r.cp_duracion_semanas ?? 0,
+    precio_publico_cop: Number(r.cp_precio_publico ?? 0),
+    precio_vinku_cop: Number(r.cp_precio_vinku ?? 0),
+    descuento_disponible: r.cp_descuento_disponible ?? false,
+    ciudad: r.cp_ciudad ?? '',
+    habilidades_que_desarrolla: r.skills ?? [],
+    roles_que_habilita: r.cp_roles ?? [],
+    prerequisitos: r.prerequisites ?? [],
+    cupos_disponibles: r.cp_cupos ?? 0,
+    proxima_fecha_inicio: r.cp_proxima_fecha ?? '',
+    categoria: r.category,
+    palabras_clave: r.cp_palabras_clave ?? [],
+    activo: (r.is_active ?? false) && (r.cp_enabled ?? false),
+  };
+}
+
+// Lee el catálogo Campus Pass desde Supabase. Devuelve [] si no hay
+// cursos cargados (el caller decide si cae al mock).
+export async function fetchCampusPassCatalogo(): Promise<Curso[]> {
+  const { data, error } = await supabase.from('courses').select('*');
+  if (error) throw error;
+  const rows = (data ?? []) as unknown as CampusPassRow[];
+  return rows
+    .filter((r) => r.cp_enabled === true)
+    .map(rowToCurso);
+}
+
+// Todos los cursos Campus Pass de una universidad (para el panel admin),
+// incluidos los inactivos.
+export async function fetchCampusPassCatalogoAdmin(universityId: string): Promise<Curso[]> {
+  const { data, error } = await supabase
+    .from('courses')
+    .select('*')
+    .eq('university_id', universityId);
+  if (error) throw error;
+  const rows = (data ?? []) as unknown as CampusPassRow[];
+  return rows.filter((r) => r.cp_enabled === true).map(rowToCurso);
+}
+
+function inputToRow(input: CampusPassInput): Record<string, unknown> {
+  return {
+    university_id: input.university_id,
+    title: input.nombre_curso,
+    description: null,
+    level: 'Educación Continua',
+    duration: `${input.duracion_semanas} semanas`,
+    cost_credits: input.precio_publico_cop,
+    skills: input.habilidades_que_desarrolla,
+    category: input.categoria,
+    is_active: true,
+    cp_enabled: true,
+    cp_institucion: input.institucion,
+    cp_tipo_institucion: input.tipo_institucion,
+    cp_nivel: input.nivel,
+    cp_modalidad: input.modalidad,
+    cp_duracion_horas: input.duracion_horas,
+    cp_duracion_semanas: input.duracion_semanas,
+    cp_precio_publico: input.precio_publico_cop,
+    cp_precio_vinku: input.precio_vinku_cop,
+    cp_descuento_disponible: input.descuento_disponible,
+    cp_ciudad: input.ciudad,
+    cp_roles: input.roles_que_habilita,
+    cp_palabras_clave: input.palabras_clave,
+    cp_cupos: input.cupos_disponibles,
+    cp_proxima_fecha: input.proxima_fecha_inicio,
+  };
+}
+
+export async function createCampusPassCourse(input: CampusPassInput): Promise<void> {
+  const row = inputToRow(input);
+  const { error } = await supabase
+    .from('courses')
+    .insert(row as unknown as Database['public']['Tables']['courses']['Insert']);
+  if (error) throw error;
+}
+
+export async function updateCampusPassCourse(
+  id: string,
+  input: CampusPassInput
+): Promise<void> {
+  const row = inputToRow(input);
+  // university_id no se reasigna en una edición.
+  delete (row as Record<string, unknown>).university_id;
+  const { error } = await supabase
+    .from('courses')
+    .update(row as unknown as Database['public']['Tables']['courses']['Update'])
+    .eq('id', id);
+  if (error) throw error;
+}
+
+// Baja lógica: desactiva sin borrar.
+export async function deactivateCampusPassCourse(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('courses')
+    .update({ is_active: false })
+    .eq('id', id);
+  if (error) throw error;
+}

@@ -18,6 +18,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { Course, UniversityStats } from "../types";
+import CatalogoAdmin from "./etapa1/CatalogoAdmin";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 import * as api from "../lib/api";
@@ -29,8 +30,8 @@ import * as api from "../lib/api";
 interface UniversityPortalViewProps {
   courses: Course[];
   universities: UniversityStats[];
-  uniTab: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero";
-  setUniTab: (tab: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero") => void;
+  uniTab: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero" | "campuspass";
+  setUniTab: (tab: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero" | "campuspass") => void;
   onCourseAdded: () => void;
   onCertifyApprove: (studentId: string, courseId: string, universityId: string) => void;
   triggerToast: (msg: string, type?: "success" | "error" | "info") => void;
@@ -623,12 +624,13 @@ export default function UniversityPortalView({
   // Tab config
   // ============================================================
   const tabs: {
-    id: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero";
+    id: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero" | "campuspass";
     label: string;
     icon: React.ComponentType<{ className?: string }>;
   }[] = [
     { id: "dashboard", label: "Dashboard", icon: Sliders },
     { id: "catalogo", label: "Catálogo", icon: BookOpen },
+    { id: "campuspass", label: "Campus Pass", icon: TrendingUp },
     { id: "matriculados", label: "Matriculados", icon: Users },
     { id: "certificaciones", label: "Certificaciones", icon: Award },
     { id: "financiero", label: "Financiero", icon: DollarSign },
@@ -1304,6 +1306,23 @@ export default function UniversityPortalView({
             </div>
           )}
         </div>
+      )}
+
+      {/* ================================================================
+          CAMPUS PASS TAB — catálogo del motor de curaduría
+         ================================================================ */}
+      {uniTab === "campuspass" && (
+        universityId ? (
+          <CatalogoAdmin
+            universityId={universityId}
+            institucionNombre={universityName}
+            triggerToast={triggerToast}
+          />
+        ) : (
+          <p className="text-center text-sm text-gray-400 py-8">
+            Tu cuenta aún no está vinculada a una universidad.
+          </p>
+        )
       )}
 
       {/* ================================================================

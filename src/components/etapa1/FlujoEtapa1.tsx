@@ -4,7 +4,7 @@
 // Persiste el avance en localStorage para reanudar el flujo.
 // ============================================================
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type {
   EstadoEtapa1,
   DiagnosticoRespuestas,
@@ -18,6 +18,7 @@ import type {
 } from "../../types/etapa1";
 import { WHATSAPP_ASESOR } from "../../types/etapa1";
 import { CATALOGO_MOCK } from "../../lib/catalogoMock";
+import { fetchCampusPassCatalogo } from "../../lib/api";
 import { curarRutas } from "../../lib/curaduria";
 import { cotizarRuta, formatCOP } from "../../lib/cotizacion";
 import DiagnosticoDBR from "./DiagnosticoDBR";
@@ -52,10 +53,22 @@ function cargarSnapshot(): Snapshot | null {
   }
 }
 
-// Catálogo Campus Pass. Por ahora usa el mock; cuando la tabla `courses`
-// tenga cursos Campus Pass cargados, este loader los mapeará desde Supabase.
+// Catálogo Campus Pass: intenta leer de Supabase (cursos cp_enabled);
+// si no hay ninguno cargado o falla, cae al catálogo mock de 15 cursos.
 function useCatalogo(): Curso[] {
-  return useMemo(() => CATALOGO_MOCK, []);
+  const [catalogo, setCatalogo] = useState<Curso[]>(CATALOGO_MOCK);
+  useEffect(() => {
+    let vivo = true;
+    fetchCampusPassCatalogo()
+      .then((cursos) => {
+        if (vivo && cursos.length > 0) setCatalogo(cursos);
+      })
+      .catch(() => {
+        // sin catálogo en Supabase (o columnas cp_* no migradas): se usa el mock
+      });
+    return () => { vivo = false; };
+  }, []);
+  return catalogo;
 }
 
 export default function FlujoEtapa1({ usuarioId = "anon", clienteNombre = "Interesado Campus Pass", onSalir }: Props) {

@@ -43,6 +43,7 @@ interface MarketingViewProps {
   setAuthMode: (mode: "login" | "register") => void;
   handleEnrollCourse: (courseId: string) => void;
   triggerToast: (msg: string, type?: "success" | "error" | "info") => void;
+  onIniciarDiagnostico?: () => void;
 }
 
 export default function MarketingView({
@@ -55,7 +56,8 @@ export default function MarketingView({
   authMode,
   setAuthMode,
   handleEnrollCourse,
-  triggerToast
+  triggerToast,
+  onIniciarDiagnostico
 }: MarketingViewProps) {
   const { signIn, signUp } = useAuth();
 
@@ -286,6 +288,16 @@ export default function MarketingView({
                   <span>Comenzar gratis</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
+                {onIniciarDiagnostico && (
+                  <button
+                    id="home_hero_diagnostico_btn"
+                    onClick={onIniciarDiagnostico}
+                    className="bg-[#6C47FF] text-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-sm font-extrabold py-3.5 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]"
+                  >
+                    <span>Iniciar mi diagnóstico</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                )}
                 <a
                   href="#como-funciona"
                   className="bg-[#FAFAFA] text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-sm font-extrabold py-3.5 px-8 rounded-none flex items-center gap-2 transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1A1A]"

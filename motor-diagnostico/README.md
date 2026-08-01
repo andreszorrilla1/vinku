@@ -70,10 +70,22 @@ supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
 - **Consistencia de propósito**: validada en aplicación (`src/lib/proposito.ts`),
   no solo en el check de SQL.
 
+## Ingesta DANE (CUOC 2025)
+
+Pipeline para cargar las 676 ocupaciones oficiales como `pathways` tipo `rol_cuoc`
+y **proponer** el catálogo de habilidades desde sus conocimientos/destrezas, con
+**revisión humana obligatoria** antes de insertar (regla 7.1). Ver
+[`scripts/ingesta-dane/README.md`](scripts/ingesta-dane/README.md).
+
+```bash
+npm run dane:inspeccionar   # diagnóstico de columnas del Excel
+npm run dane:parsear        # Excel → data/ocupaciones.json
+npm run dane:proponer       # → data/propuesta-skills.csv  (revisar a mano)
+npm run dane:generar-sql    # propuesta revisada → migrations/010,011_dane_*.sql
+```
+
 ## Pendiente (fuera del alcance de esta fase)
 
-- **Ingesta DANE**: script para cargar las 676 ocupaciones de la CUOC 2025 desde el
-  Excel oficial como `pathways` tipo `rol_cuoc`. El esquema ya lo soporta.
 - **Panel operativo** (equipo VinkU): cola de revisión, `unmatched_mentions`, gestión
   de catálogo y grafo. El modelo de datos ya está listo.
 - Parseo real de PDF/Word en la Edge Function (hoy: texto plano o pegado).

@@ -1,97 +1,92 @@
 // ============================================================================
-// Paso 3 — Generar el SQL de inserción a partir de la propuesta YA REVISADA.
+// Paso 3 — Generar el SQL desde la propuesta YA REVISADA + los JSON del paso 1.
 //
 //   npm run dane:generar-sql
-//     lee  data/propuesta-skills.revisada.csv  (aprobada por VinkU)
-//     lee  data/ocupaciones.json
-//     escribe supabase/migrations/010_dane_skills.sql
-//             supabase/migrations/011_dane_pathways.sql
+//     → supabase/migrations/010_dane_skills.sql
+//     → supabase/migrations/011_dane_pathways.sql
+//     → supabase/migrations/012_dane_cualificaciones.sql
 //
-// Este es el ÚNICO artefacto que inserta en `skills`, y solo con revisión
-// humana de por medio (migración aplicada con service_role, no el flujo de IA).
-// Requiere la columna is_priority_display (migración 004).
+// Único artefacto que inserta en `skills`, y solo con revisión humana de por
+// medio (migración con service_role, no el flujo de IA). Requiere la columna
+// is_priority_display (migración 004).
 //
-// requirement_type: el Excel DANE no distingue core/deseable, así que todos los
-// conocimientos/destrezas del perfil se cargan como 'core' por defecto. VinkU
-// puede degradar algunos a 'deseable' luego desde el panel operativo.
+// requirement_type: el Excel no distingue core/deseable → todo 'core' por
+// defecto. employability_rank y mnc_level quedan NULL (no están en el archivo;
+// no se inventan). has_sectoral_qualification=false hasta ingresar el catálogo
+// sectorial (regla 7.4: honestidad regulatoria).
 // ============================================================================
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { desdeCSV, clave } from './lib/normalizar.ts';
+import { desdeCSV } from './lib/normalizar.ts';
 import { RUTAS } from './config.ts';
-import type { OcupacionNormalizada, TipoSkillPropuesto } from './tipos.ts';
+import type { Catalogo, OcupacionNormalizada, TipoSkillPropuesto } from './tipos.ts';
 
 const APROBADO = /^(si|sí|s|yes|y|true|x|1)$/i;
 const REQ_TYPE_DEFECTO = 'core';
+const esc = (s: string) => (s ?? '').replace(/'/g, "''");
 
-const esc = (s: string) => s.replace(/'/g, "''");
-
-interface SkillAprobada {
-  canonico: string;
-  tipo: TipoSkillPropuesto;
-  claveDestino: string; // clave del nombre final tras fusión
-}
+interface Aprobada { nombre: string; tipo: TipoSkillPropuesto; origen: string; dane_id: string }
 
 function main() {
-  if (!existsSync(RUTAS.propuestaRevisada)) {
-    console.error(
-      `✗ Falta la propuesta revisada: ${RUTAS.propuestaRevisada}\n` +
-        '  Revisa data/propuesta-skills.csv, guárdalo con ese nombre y vuelve a intentar.',
-    );
-    process.exit(1);
-  }
-  if (!existsSync(RUTAS.ocupaciones)) {
-    console.error(`✗ Falta ${RUTAS.ocupaciones}. Corre: npm run dane:parsear`);
-    process.exit(1);
+  for (const [ruta, hint] of [
+    [RUTAS.propuestaRevisada, 'Revisa data/propuesta-skills.csv y guárdalo con ese nombre.'],
+    [RUTAS.ocupaciones, 'Corre: npm run dane:parsear'],
+    [RUTAS.catalogo, 'Corre: npm run dane:parsear'],
+  ] as const) {
+    if (!existsSync(ruta)) {
+      console.error(`✗ Falta ${ruta}. ${hint}`);
+      process.exit(1);
+    }
   }
 
   const filas = desdeCSV(readFileSync(RUTAS.propuestaRevisada, 'utf8'));
   const ocupaciones: OcupacionNormalizada[] = JSON.parse(readFileSync(RUTAS.ocupaciones, 'utf8'));
+  const catalogo: Catalogo = JSON.parse(readFileSync(RUTAS.catalogo, 'utf8'));
 
-  // --- 1. Resolver el catálogo aprobado (con fusiones) ---
+  // --- 1. Catálogo aprobado por ID de DANE (con fusiones) ---
   const tiposValidos = new Set<TipoSkillPropuesto>(['hard', 'soft', 'power']);
-  const aprobadasPorClave = new Map<string, SkillAprobada>();
-  const nombreOriginalAClaveFinal = new Map<string, string>();
+  const aprobadaPorId = new Map<string, Aprobada>();
+  const fusionDe = new Map<string, string>(); // id → id destino
 
-  // primera pasada: registrar aprobadas (sin resolver fusiones aún)
   for (const f of filas) {
-    if (!APROBADO.test((f.APROBAR ?? '').trim())) continue;
-    const canonico = (f.nombre_canonico ?? '').trim();
-    if (!canonico) continue;
-    const tipo = (f.skill_type_final ?? f.tipo_sugerido ?? 'soft').trim() as TipoSkillPropuesto;
-    if (!tiposValidos.has(tipo)) {
-      console.warn(`⚠ Tipo inválido "${tipo}" en "${canonico}" → se usa 'soft'.`);
-    }
-    const k = clave(canonico);
+    const id = (f.dane_id ?? '').trim();
+    if (!id || !APROBADO.test((f.APROBAR ?? '').trim())) continue;
+    const nombre = (f.nombre_canonico ?? '').trim();
+    if (!nombre) continue;
+    let tipo = (f.skill_type_final ?? f.tipo_sugerido ?? 'soft').trim() as TipoSkillPropuesto;
+    if (!tiposValidos.has(tipo)) { console.warn(`⚠ Tipo inválido "${tipo}" en #${id} → 'soft'`); tipo = 'soft'; }
     const fusion = (f.fusionar_con ?? '').trim();
-    nombreOriginalAClaveFinal.set(k, fusion ? clave(fusion) : k);
-    if (!fusion) {
-      aprobadasPorClave.set(k, { canonico, tipo: tiposValidos.has(tipo) ? tipo : 'soft', claveDestino: k });
-    }
+    if (fusion) fusionDe.set(id, fusion);
+    else aprobadaPorId.set(id, { nombre, tipo, origen: (f.origen ?? '').trim(), dane_id: id });
   }
 
-  // resolver fusiones (una sola indirección; suficiente para el caso común)
-  function claveFinal(k: string): string {
-    const destino = nombreOriginalAClaveFinal.get(k) ?? k;
-    return aprobadasPorClave.has(destino) ? destino : (aprobadasPorClave.has(k) ? k : destino);
-  }
-
-  // nombre final mostrable a partir de una clave
-  const nombreFinal = (k: string): string | null => aprobadasPorClave.get(k)?.canonico ?? null;
+  const resolver = (id: string): string | null => {
+    const destino = fusionDe.get(id) ?? id;
+    if (aprobadaPorId.has(destino)) return destino;
+    if (aprobadaPorId.has(id)) return id;
+    return null;
+  };
+  const nombreDe = (id: string): string | null => {
+    const r = resolver(id);
+    return r ? aprobadaPorId.get(r)!.nombre : null;
+  };
 
   // --- 2. SQL de skills ---
-  const skillsOrden = [...aprobadasPorClave.values()].sort((a, b) => a.canonico.localeCompare(b.canonico));
-  const valoresSkills = skillsOrden
-    .map((s) => `  ('${esc(s.canonico)}', '${s.tipo}', 'CUOC 2025 - Perfiles Ocupacionales DANE')`)
+  const skills = [...aprobadaPorId.values()].sort((a, b) => a.nombre.localeCompare(b.nombre));
+  const valoresSkills = skills
+    .map((s) => {
+      const etiqueta = s.origen === 'conocimientos' ? 'conocimiento' : 'destreza';
+      const ref = `CUOC 2025 · DANE ${etiqueta} #${s.dane_id}`;
+      return `  ('${esc(s.nombre)}', '${s.tipo}', '${esc(ref)}')`;
+    })
     .join(',\n');
-
-  const sqlSkills =
-    `-- Generado por scripts/ingesta-dane/3-generar-sql.ts a partir de la propuesta REVISADA.\n` +
-    `-- ${skillsOrden.length} habilidades aprobadas por el equipo VinkU.\n` +
-    `-- ON CONFLICT (name) DO NOTHING: convive con el catálogo existente sin duplicar.\n\n` +
-    `insert into skills (name, skill_type, source_reference) values\n${valoresSkills}\non conflict (name) do nothing;\n`;
-
-  writeFileSync(RUTAS.sqlSkills, sqlSkills, 'utf8');
+  writeFileSync(
+    RUTAS.sqlSkills,
+    `-- Generado por scripts/ingesta-dane/3-generar-sql.ts (propuesta REVISADA).\n` +
+      `-- ${skills.length} habilidades aprobadas. ON CONFLICT (name) DO NOTHING.\n\n` +
+      `insert into skills (name, skill_type, source_reference) values\n${valoresSkills}\non conflict (name) do nothing;\n`,
+    'utf8',
+  );
 
   // --- 3. SQL de pathways + requirements ---
   const valoresPathways = ocupaciones
@@ -103,42 +98,62 @@ function main() {
     })
     .join(',\n');
 
-  // requirements: (cuoc_code, skill_name, req_type)
   const reqValores: string[] = [];
   const vistos = new Set<string>();
   for (const o of ocupaciones) {
     if (!o.codigo) continue;
-    const items = [...o.conocimientos, ...o.destrezas];
-    for (const item of items) {
-      const kFinal = claveFinal(clave(item));
-      const nombre = nombreFinal(kFinal);
-      if (!nombre) continue; // no aprobada / descartada
-      const dedupKey = `${o.codigo}::${kFinal}`;
-      if (vistos.has(dedupKey)) continue;
-      vistos.add(dedupKey);
+    for (const ref of [...o.conocimientos, ...o.destrezas]) {
+      const rid = resolver(ref.id);
+      const nombre = rid ? nombreDe(ref.id) : null;
+      if (!rid || !nombre) continue;
+      const k = `${o.codigo}::${rid}`;
+      if (vistos.has(k)) continue;
+      vistos.add(k);
       reqValores.push(`  ('${esc(o.codigo)}', '${esc(nombre)}', '${REQ_TYPE_DEFECTO}')`);
     }
   }
 
-  const sqlPathways =
+  writeFileSync(
+    RUTAS.sqlPathways,
     `-- Generado por scripts/ingesta-dane/3-generar-sql.ts.\n` +
-    `-- ${ocupaciones.length} ocupaciones CUOC como pathways rol_cuoc.\n` +
-    `-- Requiere la migración 004 (columna is_priority_display).\n` +
-    `-- employability_rank queda NULL: no está en el Excel; lo completa VinkU (6.5).\n\n` +
-    `insert into pathways (pathway_type, name, cuoc_code, sector, competence_level, is_priority_display) values\n` +
-    `${valoresPathways}\non conflict (cuoc_code) do nothing;\n\n` +
-    `-- Requisitos de habilidad (todos 'core' por defecto; el Excel no distingue core/deseable).\n` +
-    `insert into pathway_skill_requirements (pathway_id, skill_id, requirement_type)\n` +
-    `select p.id, s.id, v.req_type\n` +
-    `from (values\n${reqValores.join(',\n')}\n) as v(cuoc_code, skill_name, req_type)\n` +
-    `join pathways p on p.cuoc_code = v.cuoc_code\n` +
-    `join skills s on s.name = v.skill_name\n` +
-    `on conflict (pathway_id, skill_id) do nothing;\n`;
+      `-- ${ocupaciones.length} ocupaciones CUOC como pathways rol_cuoc. Requiere migración 004.\n` +
+      `-- employability_rank NULL (no está en el Excel; lo completa VinkU, 6.5).\n\n` +
+      `insert into pathways (pathway_type, name, cuoc_code, sector, competence_level, is_priority_display) values\n` +
+      `${valoresPathways}\non conflict (cuoc_code) do nothing;\n\n` +
+      `-- Requisitos (todos 'core'; el Excel no distingue core/deseable).\n` +
+      `insert into pathway_skill_requirements (pathway_id, skill_id, requirement_type)\n` +
+      `select p.id, s.id, v.req_type\n` +
+      `from (values\n${reqValores.join(',\n')}\n) as v(cuoc_code, skill_name, req_type)\n` +
+      `join pathways p on p.cuoc_code = v.cuoc_code\n` +
+      `join skills s on s.name = v.skill_name\n` +
+      `on conflict (pathway_id, skill_id) do nothing;\n`,
+    'utf8',
+  );
 
-  writeFileSync(RUTAS.sqlPathways, sqlPathways, 'utf8');
+  // --- 4. SQL de áreas de cualificación (puente al marco de cualificaciones) ---
+  const valoresQual = catalogo.areas
+    .map((a) => `  ('${esc(a.nombre)}', '${esc(a.nombre)}')`)
+    .join(',\n');
+  writeFileSync(
+    RUTAS.sqlCualificaciones,
+    `-- Generado por scripts/ingesta-dane/3-generar-sql.ts.\n` +
+      `-- ${catalogo.areas.length} Áreas de Cualificación de la CUOC (puente al marco de cualificaciones).\n` +
+      `-- mnc_level y sectoral_catalog_name quedan NULL: NO están en este archivo. Se completan\n` +
+      `-- al ingresar el Marco Nacional de Cualificaciones y el catálogo sectorial (regla 7.4).\n\n` +
+      `-- Idempotente (qualifications.name no es único): inserta solo lo que falta.\n` +
+      `insert into qualifications (name, sector)\n` +
+      `select v.name, v.sector from (values\n${valoresQual}\n) as v(name, sector)\n` +
+      `where not exists (select 1 from qualifications q where q.name = v.name);\n\n` +
+      `-- Vincula cada ocupación con su Área de Cualificación (por nombre de sector).\n` +
+      `update pathways p set qualification_id = q.id\n` +
+      `from qualifications q\n` +
+      `where p.pathway_type = 'rol_cuoc' and p.sector = q.name and p.qualification_id is null;\n`,
+    'utf8',
+  );
 
-  console.log(`✓ ${RUTAS.sqlSkills}      (${skillsOrden.length} skills)`);
-  console.log(`✓ ${RUTAS.sqlPathways}   (${ocupaciones.length} pathways, ${reqValores.length} requisitos)`);
+  console.log(`✓ ${RUTAS.sqlSkills}          (${skills.length} skills)`);
+  console.log(`✓ ${RUTAS.sqlPathways}       (${ocupaciones.length} pathways, ${reqValores.length} requisitos)`);
+  console.log(`✓ ${RUTAS.sqlCualificaciones}  (${catalogo.areas.length} áreas de cualificación)`);
   console.log('\n  Aplicar con: supabase db reset  (o psql -f cada migración)');
 }
 

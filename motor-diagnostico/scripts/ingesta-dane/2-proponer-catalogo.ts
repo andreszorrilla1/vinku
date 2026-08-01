@@ -1,33 +1,23 @@
 // ============================================================================
-// Paso 2 — Proponer el catálogo de habilidades a partir de las ocupaciones.
+// Paso 2 — Proponer el catálogo de habilidades → data/propuesta-skills.csv
 //
-//   npm run dane:proponer   →  data/propuesta-skills.csv
-//
-// REGLA 7.1 / sección 6.2: NO inserta en `skills`. Produce una PROPUESTA
-// deduplicada para revisión humana del equipo VinkU. Clasifica:
+// REGLA 7.1 / sección 6.2: NO inserta en `skills`. El catálogo ya viene
+// deduplicado por ID de DANE (paso 1); aquí solo se clasifica y se deja para
+// REVISIÓN HUMANA:
 //   - conocimientos → hard
-//   - destrezas     → soft  (con pista de reclasificación a 'power' cuando aplica)
-// El revisor edita el CSV, lo guarda como propuesta-skills.revisada.csv y
-// recién ahí el paso 3 genera el SQL de inserción.
+//   - destrezas     → soft (con pista de 'power' cuando aplica)
 // ============================================================================
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { Deduplicador, aCSV, clave } from './lib/normalizar.ts';
+import { aCSV, clave } from './lib/normalizar.ts';
 import { RUTAS } from './config.ts';
-import type { OcupacionNormalizada, TipoSkillPropuesto } from './tipos.ts';
+import type { Catalogo, TipoSkillPropuesto } from './tipos.ts';
 
-// Destrezas que suelen encajar mejor como POWER que como soft genérica
-// (sección 6.2). Solo es una PISTA para el revisor; él decide.
+// Destrezas que suelen encajar mejor como POWER (sección 6.2). Solo es PISTA.
 const PISTAS_POWER = [
-  'pensamiento critico',
-  'liderazgo',
-  'toma de decisiones',
-  'criterio',
-  'resolucion de problemas',
-  'pensamiento analitico',
-  'pensamiento estrategico',
-  'creatividad',
-  'innovacion',
+  'pensamiento critico', 'liderazgo', 'toma de decisiones', 'criterio',
+  'resolucion de problemas', 'pensamiento analitico', 'pensamiento estrategico',
+  'creatividad', 'innovacion', 'negociacion',
 ];
 
 function tipoDestreza(nombre: string): TipoSkillPropuesto {
@@ -36,67 +26,50 @@ function tipoDestreza(nombre: string): TipoSkillPropuesto {
 }
 
 function main() {
-  if (!existsSync(RUTAS.ocupaciones)) {
-    console.error(`✗ Falta ${RUTAS.ocupaciones}. Corre primero: npm run dane:parsear`);
+  if (!existsSync(RUTAS.catalogo)) {
+    console.error(`✗ Falta ${RUTAS.catalogo}. Corre primero: npm run dane:parsear`);
     process.exit(1);
   }
-  const ocupaciones: OcupacionNormalizada[] = JSON.parse(readFileSync(RUTAS.ocupaciones, 'utf8'));
-
-  const dedupHard = new Deduplicador();
-  const dedupTrans = new Deduplicador();
-  for (const o of ocupaciones) {
-    o.conocimientos.forEach((c) => dedupHard.agregar(c));
-    o.destrezas.forEach((d) => dedupTrans.agregar(d));
-  }
+  const catalogo: Catalogo = JSON.parse(readFileSync(RUTAS.catalogo, 'utf8'));
 
   const filas: Array<Record<string, string | number>> = [];
 
-  for (const e of dedupHard.entradas()) {
+  for (const c of catalogo.conocimientos) {
     filas.push({
-      nombre_canonico: e.canonico,
+      dane_id: c.dane_id,
+      nombre_canonico: c.nombre_canonico,
       origen: 'conocimientos',
       tipo_sugerido: 'hard',
-      frecuencia: e.frecuencia,
-      ejemplos_variantes: e.variantes.slice(0, 3).join(' | '),
-      // columnas para el revisor:
+      frecuencia: c.frecuencia,
       APROBAR: 'si',
       skill_type_final: 'hard',
       fusionar_con: '',
     });
   }
-  for (const e of dedupTrans.entradas()) {
-    const tipo = tipoDestreza(e.canonico);
+  for (const d of catalogo.destrezas) {
+    const tipo = tipoDestreza(d.nombre_canonico);
     filas.push({
-      nombre_canonico: e.canonico,
+      dane_id: d.dane_id,
+      nombre_canonico: d.nombre_canonico,
       origen: 'destrezas',
       tipo_sugerido: tipo,
-      frecuencia: e.frecuencia,
-      ejemplos_variantes: e.variantes.slice(0, 3).join(' | '),
+      frecuencia: d.frecuencia,
       APROBAR: 'si',
       skill_type_final: tipo,
       fusionar_con: '',
     });
   }
 
-  const columnas = [
-    'nombre_canonico',
-    'origen',
-    'tipo_sugerido',
-    'frecuencia',
-    'ejemplos_variantes',
-    'APROBAR',
-    'skill_type_final',
-    'fusionar_con',
-  ];
+  const columnas = ['dane_id', 'nombre_canonico', 'origen', 'tipo_sugerido', 'frecuencia', 'APROBAR', 'skill_type_final', 'fusionar_con'];
   writeFileSync(RUTAS.propuesta, aCSV(filas, columnas), 'utf8');
 
   console.log(`✓ Propuesta escrita: ${RUTAS.propuesta}`);
-  console.log(`  Habilidades duras (conocimientos):        ${dedupHard.entradas().length}`);
-  console.log(`  Habilidades transversales (destrezas):    ${dedupTrans.entradas().length}`);
+  console.log(`  Conocimientos (hard):     ${catalogo.conocimientos.length}`);
+  console.log(`  Destrezas (soft/power):   ${catalogo.destrezas.length}`);
   console.log('\n  REVISIÓN HUMANA (obligatoria antes de insertar):');
   console.log('   1. Abre el CSV y revisa cada fila.');
-  console.log("   2. Pon APROBAR=no para descartar; ajusta skill_type_final (hard/soft/power);");
-  console.log('      usa fusionar_con=<nombre_canonico> para unir duplicados semánticos.');
+  console.log('   2. APROBAR=no para descartar; ajusta skill_type_final (hard/soft/power);');
+  console.log('      fusionar_con=<dane_id> para unir dos entradas en una sola habilidad.');
   console.log(`   3. Guarda como: ${RUTAS.propuestaRevisada}`);
   console.log('   4. Luego: npm run dane:generar-sql');
 }

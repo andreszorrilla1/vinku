@@ -72,17 +72,21 @@ supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
 
 ## Ingesta DANE (CUOC 2025)
 
-Pipeline para cargar las 676 ocupaciones oficiales como `pathways` tipo `rol_cuoc`
-y **proponer** el catálogo de habilidades desde sus conocimientos/destrezas, con
-**revisión humana obligatoria** antes de insertar (regla 7.1). Ver
-[`scripts/ingesta-dane/README.md`](scripts/ingesta-dane/README.md).
+Pipeline para cargar las **680 ocupaciones** oficiales como `pathways` tipo
+`rol_cuoc`, **proponer** el catálogo de habilidades (104 conocimientos + 40
+destrezas, deduplicados por ID de DANE) con **revisión humana obligatoria** antes
+de insertar (regla 7.1), y crear las **26 Áreas de Cualificación** como puente al
+marco de cualificaciones. Ver [`scripts/ingesta-dane/README.md`](scripts/ingesta-dane/README.md).
 
 ```bash
-npm run dane:inspeccionar   # diagnóstico de columnas del Excel
-npm run dane:parsear        # Excel → data/ocupaciones.json
+npm run dane:inspeccionar   # diagnóstico: hojas, columnas, áreas
+npm run dane:parsear        # Excel relacional → data/ocupaciones.json + catalogo.json
 npm run dane:proponer       # → data/propuesta-skills.csv  (revisar a mano)
-npm run dane:generar-sql    # propuesta revisada → migrations/010,011_dane_*.sql
+npm run dane:generar-sql    # propuesta revisada → migrations/010,011,012_dane_*.sql
 ```
+
+El **MNC (niveles) y el catálogo sectorial no vienen en este archivo**: la ingesta
+deja `mnc_level`/`sectoral_catalog_name` en NULL y no los inventa (regla 7.4).
 
 ## Pendiente (fuera del alcance de esta fase)
 

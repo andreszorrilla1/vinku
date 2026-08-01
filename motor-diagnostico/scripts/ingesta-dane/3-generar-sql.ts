@@ -89,12 +89,31 @@ function main() {
   );
 
   // --- 3. SQL de pathways + requirements ---
+  // Perfil COMPLETO del CUOC como JSONB (los 11 componentes; nada se excluye).
+  const perfilJson = (o: OcupacionNormalizada) =>
+    JSON.stringify({
+      codigo: o.codigo,
+      nombre: o.nombre,
+      descripcion: o.descripcion,
+      nivel_competencia: o.nivel_competencia,
+      jerarquia: o.jerarquia,
+      funciones: o.funciones,
+      denominaciones: o.denominaciones,
+      conocimientos: o.conocimientos,
+      destrezas: o.destrezas,
+      ocupaciones_afines: o.ocupaciones_afines,
+      area_principal: o.area_principal,
+      areas_complementarias: o.areas_complementarias,
+      equivalencias: o.equivalencias,
+    });
+
   const valoresPathways = ocupaciones
     .filter((o) => o.codigo && o.nombre)
     .map((o) => {
       const nivel = o.nivel_competencia == null ? 'null' : String(o.nivel_competencia);
       const sector = o.area_cualificacion ? `'${esc(o.area_cualificacion)}'` : 'null';
-      return `  ('rol_cuoc', '${esc(o.nombre)}', '${esc(o.codigo)}', ${sector}, ${nivel}, ${o.es_prioritaria})`;
+      const perfil = `'${esc(perfilJson(o))}'::jsonb`;
+      return `  ('rol_cuoc', '${esc(o.nombre)}', '${esc(o.codigo)}', ${sector}, ${nivel}, ${o.es_prioritaria}, ${perfil})`;
     })
     .join(',\n');
 
@@ -116,9 +135,11 @@ function main() {
   writeFileSync(
     RUTAS.sqlPathways,
     `-- Generado por scripts/ingesta-dane/3-generar-sql.ts.\n` +
-      `-- ${ocupaciones.length} ocupaciones CUOC como pathways rol_cuoc. Requiere migración 004.\n` +
+      `-- ${ocupaciones.length} ocupaciones CUOC como pathways rol_cuoc. Requiere migraciones 004 y 005.\n` +
+      `-- cuoc_profile (jsonb) trae el perfil COMPLETO: jerarquía, funciones, denominaciones,\n` +
+      `-- conocimientos, destrezas, ocupaciones afines, áreas y equivalencias CIUO-08/CNO.\n` +
       `-- employability_rank NULL (no está en el Excel; lo completa VinkU, 6.5).\n\n` +
-      `insert into pathways (pathway_type, name, cuoc_code, sector, competence_level, is_priority_display) values\n` +
+      `insert into pathways (pathway_type, name, cuoc_code, sector, competence_level, is_priority_display, cuoc_profile) values\n` +
       `${valoresPathways}\non conflict (cuoc_code) do nothing;\n\n` +
       `-- Requisitos (todos 'core'; el Excel no distingue core/deseable).\n` +
       `insert into pathway_skill_requirements (pathway_id, skill_id, requirement_type)\n` +

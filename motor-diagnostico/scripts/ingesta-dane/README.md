@@ -9,19 +9,37 @@ Cualificación** como puente al marco de cualificaciones.
 
 El archivo oficial es un **libro relacional**: cada uno de los once campos clave
 es su propia hoja, en formato largo, unida por *Código de la Ocupación*
-(encabezado en la fila 2). Las hojas que usa la ingesta:
+(encabezado en la fila 2). **Se capturan las 11 hojas — no se excluye ningún
+componente del CUOC.**
 
 | Hoja | Uso |
 |---|---|
-| `Ocupación` | Maestro: 680 ocupaciones (código de 5 dígitos, nombre, gran grupo). |
-| `Nivel Competencia` | Nivel 1–4 por ocupación → `competence_level`. |
-| `Área Cual. Principal` | Área de cualificación (SIGLA + nombre) → `sector` + `qualifications`. |
+| `Ocupación` | Maestro: 680 ocupaciones + jerarquía (gran grupo → subgrupo ppal → subgrupo → grupo primario). |
+| `Descripción` | Descripción de la ocupación. |
+| `Funciones` | Funciones numeradas de la ocupación. |
+| `Denominaciones` | Denominaciones ocupacionales (nombres alternos). |
+| `Nivel Competencia` | Nivel 1–4 → `competence_level`. |
 | `Conocimientos` | Habilidades **duras**. Cada fila trae un **ID de DANE**. |
 | `Destrezas` | Habilidades **transversales**. Cada fila trae un **ID de DANE**. |
-| `Descripción` | Descripción de la ocupación. |
+| `Ocupaciones Afines` | Ocupaciones relacionadas (código + nombre). |
+| `Área Cual. Principal` | Área de cualificación (SIGLA + nombre) → `sector` + `qualifications`. |
+| `Área Cual. Complementaria` | Área(s) de cualificación secundaria(s). |
+| `Equivalencias` | Equivalencias con CIUO-08 y CNO (código + observaciones). |
 
-**Clave de deduplicación = el ID de DANE**, no el nombre (los nombres traen
-variantes de grafía). El nombre canónico es la variante más frecuente por ID.
+El **perfil completo** de cada ocupación se guarda como JSONB en
+`pathways.cuoc_profile` (migración 005). Los campos que alimentan el motor de
+grafo (nivel, sector, habilidades) además se normalizan en columnas/tablas.
+
+**Clave de deduplicación de habilidades = el ID de DANE**, no el nombre (los
+nombres traen variantes de grafía). El nombre canónico es la variante más
+frecuente por ID.
+
+Para ver un perfil ensamblado y legible:
+
+```bash
+npm run dane:perfil -- 25120           # por código
+npm run dane:perfil -- "desarrollador"  # por texto en el nombre
+```
 
 ## Principio no negociable (regla 7.1 / sección 6.2)
 
@@ -69,6 +87,9 @@ generadas: son el artefacto aprobado por VinkU.
 - **`requirement_type` = `core`** por defecto (el Excel no distingue core/deseable).
 - **`is_priority_display`** (migración 004) marca la exhibición inicial; se cargan
   las 680, esto solo cambia el orden.
+- **`cuoc_profile`** (migración 005, JSONB) guarda el perfil completo del CUOC
+  (los 11 componentes) como dato de referencia de la ocupación. Las migraciones
+  010/011/012 requieren que 004 y 005 estén aplicadas.
 - **Marco Nacional de Cualificaciones (MNC) y catálogo sectorial**: este archivo
   **no** los contiene. La ingesta crea las Áreas de Cualificación de la CUOC
   (`qualifications.name`/`sector`) como puente, pero deja `mnc_level` y

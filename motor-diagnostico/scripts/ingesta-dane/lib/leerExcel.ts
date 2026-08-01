@@ -1,4 +1,4 @@
-// Lectura del LIBRO RELACIONAL DANE (CUOC 2025).
+// Lectura del LIBRO RELACIONAL DANE (CUOC 2025) — las 11 hojas.
 // Cada campo es su propia hoja; se unen por "Código de la Ocupación".
 import ExcelJS from 'exceljs';
 import { HOJAS, type HojaConfig } from '../config.ts';
@@ -9,16 +9,34 @@ export interface OcupacionBase {
   nombre: string;
   gran_grupo_codigo: string;
   gran_grupo_nombre: string;
+  subgrupo_principal_codigo: string;
+  subgrupo_principal_nombre: string;
+  subgrupo_codigo: string;
+  subgrupo_nombre: string;
+  grupo_primario_codigo: string;
+  grupo_primario_nombre: string;
 }
 export interface FilaSkill { codigo: string; id: string; nombre: string }
+export interface FilaFuncion { codigo: string; consecutivo: string; texto: string }
+export interface FilaDenom { codigo: string; denom_codigo: string; denom_nombre: string }
+export interface FilaAfin { codigo: string; afin_codigo: string; afin_nombre: string }
+export interface FilaArea { codigo: string; sigla: string; area: string }
+export interface FilaEquiv {
+  codigo: string; ciuo_codigo: string; ciuo_obs: string; cno_codigo: string; cno_obs: string;
+}
 
 export interface LibroCuoc {
   ocupaciones: OcupacionBase[];
   niveles: Map<string, string>;
   descripciones: Map<string, string>;
-  areas: Map<string, { sigla: string; nombre: string }>;
   conocimientos: FilaSkill[];
   destrezas: FilaSkill[];
+  funciones: FilaFuncion[];
+  denominaciones: FilaDenom[];
+  afines: FilaAfin[];
+  areaPrincipal: FilaArea[];
+  areaComplementaria: FilaArea[];
+  equivalencias: FilaEquiv[];
 }
 
 function textoCelda(v: ExcelJS.CellValue): string {
@@ -54,18 +72,16 @@ function leerHoja(ws: ExcelJS.Worksheet, cfg: HojaConfig): Array<Record<string, 
   const campos = Object.keys(cfg.columnas);
   const requerido = clave('codigo de la ocupacion');
 
-  // fila de encabezado: la que contenga "codigo de la ocupacion" (primeras 6)
   let filaEnc = -1;
   const limite = Math.min(6, ws.rowCount);
   for (let r = 1; r <= limite; r++) {
-    const row = ws.getRow(r);
     let tiene = false;
-    row.eachCell({ includeEmpty: true }, (c) => {
+    ws.getRow(r).eachCell({ includeEmpty: true }, (c) => {
       if (clave(textoCelda(c.value)) === requerido) tiene = true;
     });
     if (tiene) { filaEnc = r; break; }
   }
-  if (filaEnc < 0) filaEnc = 2; // por defecto, el DANE usa fila 2
+  if (filaEnc < 0) filaEnc = 2;
 
   const encabezados: string[] = [];
   ws.getRow(filaEnc).eachCell({ includeEmpty: true }, (c) => encabezados.push(clave(textoCelda(c.value))));
@@ -104,31 +120,40 @@ export async function leerLibroCuoc(ruta: string): Promise<LibroCuoc> {
   const wb = new ExcelJS.Workbook();
   await wb.xlsx.readFile(ruta);
 
-  const hOcup = ubicarHoja(wb, HOJAS.ocupacion.clave_hoja);
-  const hNivel = ubicarHoja(wb, HOJAS.nivel.clave_hoja);
-  const hDesc = ubicarHoja(wb, HOJAS.descripcion.clave_hoja);
-  const hArea = ubicarHoja(wb, HOJAS.area_principal.clave_hoja);
-  const hCon = ubicarHoja(wb, HOJAS.conocimientos.clave_hoja);
-  const hDes = ubicarHoja(wb, HOJAS.destrezas.clave_hoja);
+  const hoja = (k: keyof typeof HOJAS) => ubicarHoja(wb, HOJAS[k].clave_hoja);
 
-  const ocupaciones = leerHoja(hOcup, HOJAS.ocupacion).map((o) => ({
+  const ocupaciones = leerHoja(hoja('ocupacion'), HOJAS.ocupacion).map((o) => ({
     codigo: o.codigo,
     nombre: o.nombre,
     gran_grupo_codigo: o.gran_grupo_codigo,
     gran_grupo_nombre: o.gran_grupo_nombre,
+    subgrupo_principal_codigo: o.subgrupo_principal_codigo,
+    subgrupo_principal_nombre: o.subgrupo_principal_nombre,
+    subgrupo_codigo: o.subgrupo_codigo,
+    subgrupo_nombre: o.subgrupo_nombre,
+    grupo_primario_codigo: o.grupo_primario_codigo,
+    grupo_primario_nombre: o.grupo_primario_nombre,
   }));
 
   const niveles = new Map<string, string>();
-  for (const f of leerHoja(hNivel, HOJAS.nivel)) niveles.set(f.codigo, f.nivel);
+  for (const f of leerHoja(hoja('nivel'), HOJAS.nivel)) niveles.set(f.codigo, f.nivel);
 
   const descripciones = new Map<string, string>();
-  for (const f of leerHoja(hDesc, HOJAS.descripcion)) descripciones.set(f.codigo, f.descripcion);
+  for (const f of leerHoja(hoja('descripcion'), HOJAS.descripcion)) descripciones.set(f.codigo, f.descripcion);
 
-  const areas = new Map<string, { sigla: string; nombre: string }>();
-  for (const f of leerHoja(hArea, HOJAS.area_principal)) areas.set(f.codigo, { sigla: f.sigla, nombre: f.area });
+  const conocimientos = leerHoja(hoja('conocimientos'), HOJAS.conocimientos).map((f) => ({ codigo: f.codigo, id: f.id, nombre: f.nombre }));
+  const destrezas = leerHoja(hoja('destrezas'), HOJAS.destrezas).map((f) => ({ codigo: f.codigo, id: f.id, nombre: f.nombre }));
+  const funciones = leerHoja(hoja('funciones'), HOJAS.funciones).map((f) => ({ codigo: f.codigo, consecutivo: f.consecutivo, texto: f.texto }));
+  const denominaciones = leerHoja(hoja('denominaciones'), HOJAS.denominaciones).map((f) => ({ codigo: f.codigo, denom_codigo: f.denom_codigo, denom_nombre: f.denom_nombre }));
+  const afines = leerHoja(hoja('afines'), HOJAS.afines).map((f) => ({ codigo: f.codigo, afin_codigo: f.afin_codigo, afin_nombre: f.afin_nombre }));
+  const areaPrincipal = leerHoja(hoja('area_principal'), HOJAS.area_principal).map((f) => ({ codigo: f.codigo, sigla: f.sigla, area: f.area }));
+  const areaComplementaria = leerHoja(hoja('area_complementaria'), HOJAS.area_complementaria).map((f) => ({ codigo: f.codigo, sigla: f.sigla, area: f.area }));
+  const equivalencias = leerHoja(hoja('equivalencias'), HOJAS.equivalencias).map((f) => ({
+    codigo: f.codigo, ciuo_codigo: f.ciuo_codigo, ciuo_obs: f.ciuo_obs, cno_codigo: f.cno_codigo, cno_obs: f.cno_obs,
+  }));
 
-  const conocimientos = leerHoja(hCon, HOJAS.conocimientos).map((f) => ({ codigo: f.codigo, id: f.id, nombre: f.nombre }));
-  const destrezas = leerHoja(hDes, HOJAS.destrezas).map((f) => ({ codigo: f.codigo, id: f.id, nombre: f.nombre }));
-
-  return { ocupaciones, niveles, descripciones, areas, conocimientos, destrezas };
+  return {
+    ocupaciones, niveles, descripciones, conocimientos, destrezas,
+    funciones, denominaciones, afines, areaPrincipal, areaComplementaria, equivalencias,
+  };
 }

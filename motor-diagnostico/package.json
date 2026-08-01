@@ -12,7 +12,8 @@
     "dane:inspeccionar": "tsx scripts/ingesta-dane/1-parsear.ts --inspeccionar",
     "dane:parsear": "tsx scripts/ingesta-dane/1-parsear.ts",
     "dane:proponer": "tsx scripts/ingesta-dane/2-proponer-catalogo.ts",
-    "dane:generar-sql": "tsx scripts/ingesta-dane/3-generar-sql.ts"
+    "dane:generar-sql": "tsx scripts/ingesta-dane/3-generar-sql.ts",
+    "dane:perfil": "tsx scripts/ingesta-dane/4-perfil.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.0",

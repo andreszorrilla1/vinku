@@ -43,33 +43,36 @@ function main() {
   const ocupaciones: OcupacionNormalizada[] = JSON.parse(readFileSync(RUTAS.ocupaciones, 'utf8'));
   const catalogo: Catalogo = JSON.parse(readFileSync(RUTAS.catalogo, 'utf8'));
 
-  // --- 1. Catálogo aprobado por ID de DANE (con fusiones) ---
+  // --- 1. Catálogo aprobado (con fusiones) ---
+  // IMPORTANTE: los IDs de Conocimientos y Destrezas se SOLAPAN (ambos parten de
+  // 1). La llave debe incluir el origen para no perder habilidades por colisión.
+  const llave = (origen: string, id: string) => `${origen}:${id}`;
   const tiposValidos = new Set<TipoSkillPropuesto>(['hard', 'soft', 'power']);
   const aprobadaPorId = new Map<string, Aprobada>();
-  const fusionDe = new Map<string, string>(); // id → id destino
+  const fusionDe = new Map<string, string>(); // llave → llave destino (mismo origen)
 
   for (const f of filas) {
     const id = (f.dane_id ?? '').trim();
-    if (!id || !APROBADO.test((f.APROBAR ?? '').trim())) continue;
+    const origen = (f.origen ?? '').trim();
+    if (!id || !origen || !APROBADO.test((f.APROBAR ?? '').trim())) continue;
     const nombre = (f.nombre_canonico ?? '').trim();
     if (!nombre) continue;
     let tipo = (f.skill_type_final ?? f.tipo_sugerido ?? 'soft').trim() as TipoSkillPropuesto;
     if (!tiposValidos.has(tipo)) { console.warn(`⚠ Tipo inválido "${tipo}" en #${id} → 'soft'`); tipo = 'soft'; }
+    const k = llave(origen, id);
     const fusion = (f.fusionar_con ?? '').trim();
-    if (fusion) fusionDe.set(id, fusion);
-    else aprobadaPorId.set(id, { nombre, tipo, origen: (f.origen ?? '').trim(), dane_id: id });
+    if (fusion) fusionDe.set(k, llave(origen, fusion)); // se fusiona dentro del mismo origen
+    else aprobadaPorId.set(k, { nombre, tipo, origen, dane_id: id });
   }
 
-  const resolver = (id: string): string | null => {
-    const destino = fusionDe.get(id) ?? id;
+  const resolver = (origen: string, id: string): string | null => {
+    const k = llave(origen, id);
+    const destino = fusionDe.get(k) ?? k;
     if (aprobadaPorId.has(destino)) return destino;
-    if (aprobadaPorId.has(id)) return id;
+    if (aprobadaPorId.has(k)) return k;
     return null;
   };
-  const nombreDe = (id: string): string | null => {
-    const r = resolver(id);
-    return r ? aprobadaPorId.get(r)!.nombre : null;
-  };
+  const nombrePorLlave = (k: string | null): string | null => (k ? aprobadaPorId.get(k)?.nombre ?? null : null);
 
   // --- 2. SQL de skills ---
   const skills = [...aprobadaPorId.values()].sort((a, b) => a.nombre.localeCompare(b.nombre));
@@ -119,13 +122,17 @@ function main() {
 
   const reqValores: string[] = [];
   const vistos = new Set<string>();
+  const refsConOrigen = (o: OcupacionNormalizada) => [
+    ...o.conocimientos.map((r) => ['conocimientos', r] as const),
+    ...o.destrezas.map((r) => ['destrezas', r] as const),
+  ];
   for (const o of ocupaciones) {
     if (!o.codigo) continue;
-    for (const ref of [...o.conocimientos, ...o.destrezas]) {
-      const rid = resolver(ref.id);
-      const nombre = rid ? nombreDe(ref.id) : null;
-      if (!rid || !nombre) continue;
-      const k = `${o.codigo}::${rid}`;
+    for (const [origen, ref] of refsConOrigen(o)) {
+      const rk = resolver(origen, ref.id);
+      const nombre = nombrePorLlave(rk);
+      if (!rk || !nombre) continue;
+      const k = `${o.codigo}::${rk}`;
       if (vistos.has(k)) continue;
       vistos.add(k);
       reqValores.push(`  ('${esc(o.codigo)}', '${esc(nombre)}', '${REQ_TYPE_DEFECTO}')`);

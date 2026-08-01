@@ -9,21 +9,15 @@
 // ============================================================================
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { aCSV, clave } from './lib/normalizar.ts';
+import { aCSV } from './lib/normalizar.ts';
 import { RUTAS } from './config.ts';
-import type { Catalogo, TipoSkillPropuesto } from './tipos.ts';
+import type { Catalogo } from './tipos.ts';
 
-// Destrezas que suelen encajar mejor como POWER (sección 6.2). Solo es PISTA.
-const PISTAS_POWER = [
-  'pensamiento critico', 'liderazgo', 'toma de decisiones', 'criterio',
-  'resolucion de problemas', 'pensamiento analitico', 'pensamiento estrategico',
-  'creatividad', 'innovacion', 'negociacion',
-];
-
-function tipoDestreza(nombre: string): TipoSkillPropuesto {
-  const k = clave(nombre);
-  return PISTAS_POWER.some((p) => k.includes(p)) ? 'power' : 'soft';
-}
+// Regla de VinkU: en el CUOC, las DESTREZAS son las habilidades BLANDAS (soft).
+// Las 40, sin excepción. El tipo 'power' NO se deriva del CUOC: queda reservado
+// para las 15 competencias EntreComp (la capa transversal de emprendimiento).
+// El revisor siempre puede subir alguna a 'power' en el CSV si lo decide.
+const TIPO_DESTREZA = 'soft' as const;
 
 function main() {
   if (!existsSync(RUTAS.catalogo)) {
@@ -47,15 +41,14 @@ function main() {
     });
   }
   for (const d of catalogo.destrezas) {
-    const tipo = tipoDestreza(d.nombre_canonico);
     filas.push({
       dane_id: d.dane_id,
       nombre_canonico: d.nombre_canonico,
       origen: 'destrezas',
-      tipo_sugerido: tipo,
+      tipo_sugerido: TIPO_DESTREZA,
       frecuencia: d.frecuencia,
       APROBAR: 'si',
-      skill_type_final: tipo,
+      skill_type_final: TIPO_DESTREZA,
       fusionar_con: '',
     });
   }
@@ -64,11 +57,11 @@ function main() {
   writeFileSync(RUTAS.propuesta, aCSV(filas, columnas), 'utf8');
 
   console.log(`✓ Propuesta escrita: ${RUTAS.propuesta}`);
-  console.log(`  Conocimientos (hard):     ${catalogo.conocimientos.length}`);
-  console.log(`  Destrezas (soft/power):   ${catalogo.destrezas.length}`);
+  console.log(`  Conocimientos → hard:     ${catalogo.conocimientos.length}`);
+  console.log(`  Destrezas → soft:         ${catalogo.destrezas.length}  (todas blandas; power = EntreComp)`);
   console.log('\n  REVISIÓN HUMANA (obligatoria antes de insertar):');
   console.log('   1. Abre el CSV y revisa cada fila.');
-  console.log('   2. APROBAR=no para descartar; ajusta skill_type_final (hard/soft/power);');
+  console.log('   2. APROBAR=no para descartar; ajusta skill_type_final si hiciera falta;');
   console.log('      fusionar_con=<dane_id> para unir dos entradas en una sola habilidad.');
   console.log(`   3. Guarda como: ${RUTAS.propuestaRevisada}`);
   console.log('   4. Luego: npm run dane:generar-sql');

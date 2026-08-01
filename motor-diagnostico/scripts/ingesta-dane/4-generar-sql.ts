@@ -21,6 +21,9 @@ import type { Catalogo, OcupacionNormalizada, TipoSkillPropuesto } from './tipos
 const APROBADO = /^(si|sí|s|yes|y|true|x|1)$/i;
 const REQ_TYPE_DEFECTO = 'core';
 const esc = (s: string) => (s ?? '').replace(/'/g, "''");
+// --sin-perfil: omite cuoc_profile (jsonb pesado) para que el SQL sea liviano
+// y se pueda pegar en el editor web de Supabase. El perfil se carga aparte.
+const SIN_PERFIL = process.argv.includes('--sin-perfil');
 
 interface Aprobada { nombre: string; tipo: TipoSkillPropuesto }
 interface Derivacion { por_ocupacion: Record<string, Array<{ skills: string[]; descartada: boolean; es_blanda: boolean }>> }
@@ -113,10 +116,12 @@ function main() {
     conocimientos: o.conocimientos, destrezas: o.destrezas, ocupaciones_afines: o.ocupaciones_afines,
     area_principal: o.area_principal, areas_complementarias: o.areas_complementarias, equivalencias: o.equivalencias,
   });
+  const colProfile = SIN_PERFIL ? '' : ', cuoc_profile';
   const valoresPathways = ocupaciones.filter((o) => o.codigo && o.nombre).map((o) => {
     const nivel = o.nivel_competencia == null ? 'null' : String(o.nivel_competencia);
     const sector = o.area_cualificacion ? `'${esc(o.area_cualificacion)}'` : 'null';
-    return `  ('rol_cuoc', '${esc(o.nombre)}', '${esc(o.codigo)}', ${sector}, ${nivel}, ${o.es_prioritaria}, '${esc(perfilJson(o))}'::jsonb)`;
+    const perfil = SIN_PERFIL ? '' : `, '${esc(perfilJson(o))}'::jsonb`;
+    return `  ('rol_cuoc', '${esc(o.nombre)}', '${esc(o.codigo)}', ${sector}, ${nivel}, ${o.es_prioritaria}${perfil})`;
   }).join(',\n');
 
   const reqValores: string[] = [];
@@ -143,7 +148,7 @@ function main() {
     `-- Generado por 4-generar-sql.ts. ${ocupaciones.length} pathways rol_cuoc.\n` +
     `-- Requiere migraciones 004, 005 y 006. cuoc_profile (jsonb) = perfil CUOC completo.\n` +
     `-- Requisitos: DURAS derivadas de funciones + BLANDAS (destrezas). employability_rank NULL.\n\n` +
-    `insert into pathways (pathway_type, name, cuoc_code, sector, competence_level, is_priority_display, cuoc_profile) values\n` +
+    `insert into pathways (pathway_type, name, cuoc_code, sector, competence_level, is_priority_display${colProfile}) values\n` +
     `${valoresPathways}\non conflict (cuoc_code) do nothing;\n\n` +
     `insert into pathway_skill_requirements (pathway_id, skill_id, requirement_type)\n` +
     `select p.id, s.id, v.req_type from (values\n${reqValores.join(',\n')}\n) as v(cuoc_code, skill_name, req_type)\n` +

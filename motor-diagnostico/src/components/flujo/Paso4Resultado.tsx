@@ -6,10 +6,10 @@
 //  - Salida DUAL: la ruta queda "esperando revisión humana", nunca definitiva (7.3).
 import { useMemo } from 'react';
 import { ArrowRight, CheckCircle2, Sparkles, Target, UserCheck } from 'lucide-react';
-import type { PathwayGapAnalysis, Person, PersonSkillStatus } from '@/lib/types';
+import type { PathwayGapAnalysis, Person, PersonSkillStatus, Skill } from '@/lib/types';
 import { calcularDiagnostico } from '@/services/motorGrafo';
 import { avalNormativo } from '@/lib/copyNormativo';
-import { SKILLS, PATHWAYS, REQUIREMENTS, SKILL_BY_ID } from '@/data/mockCatalog';
+import type { Catalogo } from '@/data/catalogoRepo';
 import { MARCA } from '@/lib/marca';
 import { Card, Pill } from '@/components/ui/kit';
 import { SkillBadge } from '@/components/ui/SkillBadge';
@@ -17,13 +17,23 @@ import { SkillBadge } from '@/components/ui/SkillBadge';
 export function Paso4Resultado({
   persona,
   estados,
+  catalogo,
 }: {
   persona: Person;
   estados: PersonSkillStatus[];
+  catalogo: Catalogo;
 }) {
+  const SKILL_BY_ID = catalogo.skillById;
   const analisis = useMemo(
-    () => calcularDiagnostico({ persona, estados, skills: SKILLS, pathways: PATHWAYS, requisitos: REQUIREMENTS }),
-    [persona, estados],
+    () =>
+      calcularDiagnostico({
+        persona,
+        estados,
+        skills: catalogo.skills,
+        pathways: catalogo.pathways,
+        requisitos: catalogo.requirements,
+      }),
+    [persona, estados, catalogo],
   );
 
   const [top, ...resto] = analisis;
@@ -58,13 +68,13 @@ export function Paso4Resultado({
       </Card>
 
       {/* Ruta principal — el momento central */}
-      {top && <TarjetaRuta a={top} destacada />}
+      {top && <TarjetaRuta a={top} destacada skillById={SKILL_BY_ID} />}
 
       {/* Otras rutas */}
       {resto.length > 0 && (
         <section className="space-y-3">
           <h2 className="font-display text-lg font-bold">Otras rutas que te calzan</h2>
-          {resto.slice(0, 4).map((a) => <TarjetaRuta key={a.pathway.id} a={a} />)}
+          {resto.slice(0, 4).map((a) => <TarjetaRuta key={a.pathway.id} a={a} skillById={SKILL_BY_ID} />)}
         </section>
       )}
 
@@ -89,11 +99,11 @@ export function Paso4Resultado({
   );
 }
 
-function TarjetaRuta({ a, destacada = false }: { a: PathwayGapAnalysis; destacada?: boolean }) {
+function TarjetaRuta({ a, destacada = false, skillById }: { a: PathwayGapAnalysis; destacada?: boolean; skillById: Map<string, Skill> }) {
   const aval = avalNormativo(a.pathway);
   const esEmprendimiento = a.pathway.pathway_type === 'objetivo_no_ocupacional';
-  const faltan = a.missing_skill_ids.map((id) => SKILL_BY_ID.get(id)).filter(Boolean);
-  const fortalezas = a.domain_strength_skill_ids.map((id) => SKILL_BY_ID.get(id)).filter(Boolean);
+  const faltan = a.missing_skill_ids.map((id) => skillById.get(id)).filter(Boolean);
+  const fortalezas = a.domain_strength_skill_ids.map((id) => skillById.get(id)).filter(Boolean);
 
   const tonoAval =
     aval.tono === 'oficial' ? MARCA.violeta : aval.tono === 'alineado' ? MARCA.gris : '#8A6D00';

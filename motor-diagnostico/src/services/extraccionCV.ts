@@ -49,9 +49,8 @@ const REGLAS: ReglaMatch[] = [
   { skillName: 'Organización del tiempo', literal: [/organizaci[oó]n del tiempo|gesti[oó]n del tiempo/i], inferido: [/(cumpl[ií] plazos|prioric[eé]|agenda)/i] },
 ];
 
-const byName = new Map(SKILLS.map((sk) => [sk.name, sk] as const));
-
-function matchLocal(texto: string): CvExtractionResult {
+function matchLocal(texto: string, skills: Skill[]): CvExtractionResult {
+  const byName = new Map(skills.map((sk) => [sk.name, sk] as const));
   const matches: CvSkillMatch[] = [];
   const usados = new Set<string>();
 
@@ -121,8 +120,14 @@ function detectarNoResueltas(texto: string, _usados: Set<string>): UnmatchedMent
   return [...encontradas.values()].map((raw_text) => ({ id: nid('u'), raw_text }));
 }
 
-/** Punto de entrada. Usa la Edge Function si está desplegada; si no, el matcher local. */
-export async function extraerHabilidadesDeCV(texto: string): Promise<CvExtractionResult> {
+/**
+ * Punto de entrada. Usa la Edge Function si está desplegada; si no, el matcher
+ * local contra `skills` (el catálogo activo: Supabase o mock).
+ */
+export async function extraerHabilidadesDeCV(
+  texto: string,
+  skills: Skill[] = SKILLS,
+): Promise<CvExtractionResult> {
   if (EDGE_URL) {
     try {
       const resp = await fetch(EDGE_URL, {
@@ -138,5 +143,5 @@ export async function extraerHabilidadesDeCV(texto: string): Promise<CvExtractio
       // cae al matcher local
     }
   }
-  return matchLocal(texto);
+  return matchLocal(texto, skills);
 }

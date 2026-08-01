@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ArrowRight, FileText, Loader2, Upload } from 'lucide-react';
 import { extraerHabilidadesDeCV } from '@/services/extraccionCV';
 import type { CvExtractionResult } from '@/lib/types';
+import type { Catalogo } from '@/data/catalogoRepo';
 import { MARCA } from '@/lib/marca';
 import { Boton, Card } from '@/components/ui/kit';
 
@@ -12,7 +13,7 @@ const CV_EJEMPLO_CONTABLE = `Auxiliar contable con 3 años de experiencia. Manej
 
 const CV_EJEMPLO_VENTAS = `Vendedor en tienda de retail. Atendí clientes y manejé reclamos y postventa en un call center. Superé la cuota de ventas trimestral. Manejo de CRM Salesforce y redes sociales para prospección. Trabajo bajo alta demanda.`;
 
-export function Paso2SubirCV({ onExtraido }: { onExtraido: (r: CvExtractionResult) => void }) {
+export function Paso2SubirCV({ catalogo, onExtraido }: { catalogo: Catalogo; onExtraido: (r: CvExtractionResult) => void }) {
   const [texto, setTexto] = useState('');
   const [cargando, setCargando] = useState(false);
 
@@ -20,7 +21,7 @@ export function Paso2SubirCV({ onExtraido }: { onExtraido: (r: CvExtractionResul
     if (!texto.trim()) return;
     setCargando(true);
     try {
-      const r = await extraerHabilidadesDeCV(texto.trim());
+      const r = await extraerHabilidadesDeCV(texto.trim(), catalogo.skills);
       onExtraido(r);
     } finally {
       setCargando(false);

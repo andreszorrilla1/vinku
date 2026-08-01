@@ -12,7 +12,7 @@ import type {
   SelfReportedLevel,
   Skill,
 } from '@/lib/types';
-import { SKILLS, SKILL_BY_ID } from '@/data/mockCatalog';
+import type { Catalogo } from '@/data/catalogoRepo';
 import { extraerHabilidadesDeCV } from '@/services/extraccionCV';
 import { MARCA } from '@/lib/marca';
 import { Boton, Card, Pill } from '@/components/ui/kit';
@@ -30,12 +30,16 @@ interface Fila {
 }
 
 export function Paso3ConfirmarHabilidades({
+  catalogo,
   extraccion,
   onListo,
 }: {
+  catalogo: Catalogo;
   extraccion: CvExtractionResult;
   onListo: (estados: PersonSkillStatus[]) => void;
 }) {
+  const SKILLS = catalogo.skills;
+  const SKILL_BY_ID = catalogo.skillById;
   const iniciales: Fila[] = useMemo(
     () =>
       extraccion.matches.map((m) => ({
@@ -76,7 +80,7 @@ export function Paso3ConfirmarHabilidades({
 
   async function correrSondeo() {
     if (!sondeo.trim()) return;
-    const r = await extraerHabilidadesDeCV(sondeo.trim());
+    const r = await extraerHabilidadesDeCV(sondeo.trim(), SKILLS);
     const nuevas = r.matches
       .map((m) => SKILL_BY_ID.get(m.skill_id))
       .filter((s): s is Skill => Boolean(s) && (s!.skill_type === 'soft' || s!.skill_type === 'power'))

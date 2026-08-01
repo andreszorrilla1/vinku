@@ -1,9 +1,10 @@
 // Orquestador del flujo de la persona. Mantiene el estado entre pasos y el
 // progreso siempre visible (sección 9.2).
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { CvExtractionResult, Person, PersonSkillStatus } from '@/lib/types';
 import { ProgressStepper } from '@/components/ui/ProgressStepper';
 import { Logo } from '@/components/ui/Logo';
+import { cargarCatalogo, type Catalogo } from '@/data/catalogoRepo';
 import { Paso1Proposito, type DatosProposito } from './Paso1Proposito';
 import { Paso2SubirCV } from './Paso2SubirCV';
 import { Paso3ConfirmarHabilidades } from './Paso3ConfirmarHabilidades';
@@ -17,6 +18,11 @@ export function FlujoDiagnostico() {
   const [persona, setPersona] = useState<Person | null>(null);
   const [extraccion, setExtraccion] = useState<CvExtractionResult | null>(null);
   const [estados, setEstados] = useState<PersonSkillStatus[]>([]);
+  const [catalogo, setCatalogo] = useState<Catalogo | null>(null);
+
+  useEffect(() => {
+    cargarCatalogo().then(setCatalogo);
+  }, []);
 
   function onProposito(d: DatosProposito) {
     setPersona({
@@ -43,25 +49,33 @@ export function FlujoDiagnostico() {
           <ProgressStepper actual={paso} />
         </div>
 
-        {paso === 0 && <Paso1Proposito onListo={onProposito} />}
-        {paso === 1 && (
-          <Paso2SubirCV
-            onExtraido={(r) => {
-              setExtraccion(r);
-              setPaso(2);
-            }}
-          />
+        {!catalogo ? (
+          <p className="py-16 text-center text-marca-gris">Cargando tu catálogo de habilidades…</p>
+        ) : (
+          <>
+            {paso === 0 && <Paso1Proposito onListo={onProposito} />}
+            {paso === 1 && (
+              <Paso2SubirCV
+                catalogo={catalogo}
+                onExtraido={(r) => {
+                  setExtraccion(r);
+                  setPaso(2);
+                }}
+              />
+            )}
+            {paso === 2 && extraccion && (
+              <Paso3ConfirmarHabilidades
+                catalogo={catalogo}
+                extraccion={extraccion}
+                onListo={(e) => {
+                  setEstados(e);
+                  setPaso(3);
+                }}
+              />
+            )}
+            {paso === 3 && persona && <Paso4Resultado persona={persona} estados={estados} catalogo={catalogo} />}
+          </>
         )}
-        {paso === 2 && extraccion && (
-          <Paso3ConfirmarHabilidades
-            extraccion={extraccion}
-            onListo={(e) => {
-              setEstados(e);
-              setPaso(3);
-            }}
-          />
-        )}
-        {paso === 3 && persona && <Paso4Resultado persona={persona} estados={estados} />}
       </div>
     </div>
   );

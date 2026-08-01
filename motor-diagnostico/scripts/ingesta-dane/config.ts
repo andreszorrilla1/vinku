@@ -137,9 +137,11 @@ export const RUTAS = {
   excel: 'scripts/ingesta-dane/data/dane-cuoc-2025.xlsx',
   ocupaciones: 'scripts/ingesta-dane/data/ocupaciones.json',
   catalogo: 'scripts/ingesta-dane/data/catalogo.json',
+  derivacion: 'scripts/ingesta-dane/data/derivacion.json',
   propuesta: 'scripts/ingesta-dane/data/propuesta-skills.csv',
   propuestaRevisada: 'scripts/ingesta-dane/data/propuesta-skills.revisada.csv',
   sqlSkills: 'supabase/migrations/010_dane_skills.sql',
   sqlPathways: 'supabase/migrations/011_dane_pathways.sql',
   sqlCualificaciones: 'supabase/migrations/012_dane_cualificaciones.sql',
+  sqlKnowledge: 'supabase/migrations/013_dane_knowledge_areas.sql',
 } as const;

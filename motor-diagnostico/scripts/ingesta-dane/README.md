@@ -1,102 +1,81 @@
 # Ingesta DANE — CUOC 2025 (680 ocupaciones)
 
 Carga las ocupaciones de la **Clasificación Única de Ocupaciones para Colombia
-(CUOC 2025)** como `pathways` tipo `rol_cuoc`, **propone** el catálogo de
-habilidades desde sus conocimientos y destrezas, y crea las **Áreas de
-Cualificación** como puente al marco de cualificaciones.
+(CUOC 2025)** y arma, para cada una, el modelo de VinkU.
 
-## Estructura real del Excel
+## Modelo (importante — leer antes de correr)
 
-El archivo oficial es un **libro relacional**: cada uno de los once campos clave
-es su propia hoja, en formato largo, unida por *Código de la Ocupación*
-(encabezado en la fila 2). **Se capturan las 11 hojas — no se excluye ningún
-componente del CUOC.**
+El CUOC distingue tres cosas que NO son lo mismo:
 
-| Hoja | Uso |
-|---|---|
-| `Ocupación` | Maestro: 680 ocupaciones + jerarquía (gran grupo → subgrupo ppal → subgrupo → grupo primario). |
-| `Descripción` | Descripción de la ocupación. |
-| `Funciones` | Funciones numeradas de la ocupación. |
-| `Denominaciones` | Denominaciones ocupacionales (nombres alternos). |
-| `Nivel Competencia` | Nivel 1–4 → `competence_level`. |
-| `Conocimientos` | Habilidades **duras**. Cada fila trae un **ID de DANE**. |
-| `Destrezas` | Habilidades **transversales**. Cada fila trae un **ID de DANE**. |
-| `Ocupaciones Afines` | Ocupaciones relacionadas (código + nombre). |
-| `Área Cual. Principal` | Área de cualificación (SIGLA + nombre) → `sector` + `qualifications`. |
-| `Área Cual. Complementaria` | Área(s) de cualificación secundaria(s). |
-| `Equivalencias` | Equivalencias con CIUO-08 y CNO (código + observaciones). |
+| Componente CUOC | Qué es para VinkU | Dónde queda |
+|---|---|---|
+| **Conocimientos** (104) | **Dominios / categorías macro** — no son habilidades. Son pocas y se repiten en cientos de ocupaciones. | `knowledge_areas` (migración 006) + enlace por ocupación |
+| **Funciones** (7.319) | La fuente de las **habilidades DURAS**. Cada función se **deriva** en 1–3 skills atómicas y compartibles. | `skills` (hard) + `pathway_skill_requirements` |
+| **Destrezas** (40) | Las **habilidades BLANDAS** (soft). Vocabulario controlado de DANE. | `skills` (soft) + `pathway_skill_requirements` |
 
-El **perfil completo** de cada ocupación se guarda como JSONB en
-`pathways.cuoc_profile` (migración 005). Los campos que alimentan el motor de
-grafo (nivel, sector, habilidades) además se normalizan en columnas/tablas.
+Las 5 reglas de derivación **función → skills duras**:
+1. Una función → 1 a 3 skills atómicas cortas (verbo + objeto).
+2. Se quitan los calificativos ("de acuerdo con…", "según…").
+3. Se descarta el ruido (ej. "Desempeñar funciones afines" — aparece en las 680).
+4. Lo que en realidad es blando (coordinar/liderar personal) NO se vuelve dura.
+5. Nombres canónicos y reutilizables entre ocupaciones (piezas Lego).
 
-**Clave de deduplicación de habilidades = el ID de DANE**, no el nombre (los
-nombres traen variantes de grafía). El nombre canónico es la variante más
-frecuente por ID.
+## Dos motores de derivación
 
-Para ver un perfil ensamblado y legible:
+- **IA (Claude API)** — calidad. Requiere `ANTHROPIC_API_KEY` (lado servidor).
+  Produce skills atómicas y compartidas. Es el camino recomendado.
+- **Heurístico** — sin key; borrador crudo (≈1 skill/función, poco compartida).
+  Sirve para arrancar y probar la estructura; VinkU/IA lo pulen después.
+
+## Flujo (5 pasos)
 
 ```bash
-npm run dane:perfil -- 25120           # por código
-npm run dane:perfil -- "desarrollador"  # por texto en el nombre
-```
+npm install            # exceljs + tsx
+# Excel oficial en: scripts/ingesta-dane/data/dane-cuoc-2025.xlsx
 
-## Principio no negociable (regla 7.1 / sección 6.2)
+npm run dane:inspeccionar   # diagnóstico: hojas, columnas, áreas
+npm run dane:parsear        # Excel relacional → ocupaciones.json + catalogo.json
 
-**El script nunca inserta en `skills` directo.** Propone un catálogo, el equipo
-VinkU lo **revisa y aprueba**, y solo entonces se genera el SQL de inserción.
+# Derivar habilidades duras desde las funciones:
+export ANTHROPIC_API_KEY=sk-ant-...   # para calidad IA (opcional)
+npm run dane:derivar                  # IA si hay key; si no, heurístico
+#   variantes: -- --heuristico  (forzar sin IA) | -- --limit 20 (prueba)
 
-## Flujo
-
-```bash
-npm install            # exceljs + tsx (dev deps)
-# Coloca el Excel oficial en: scripts/ingesta-dane/data/dane-cuoc-2025.xlsx
-
-npm run dane:inspeccionar   # diagnóstico: hojas, columnas, áreas, 1 ocupación
-npm run dane:parsear        # → data/ocupaciones.json + data/catalogo.json
 npm run dane:proponer       # → data/propuesta-skills.csv   ← REVISIÓN HUMANA
 
-# ── REVISIÓN HUMANA (obligatoria) ──────────────────────────────────────────
-#   Edita data/propuesta-skills.csv:
-#     - APROBAR=no            → descartar una habilidad
-#     - skill_type_final      → hard / soft / power (ej. liderazgo → power)
-#     - fusionar_con=<dane_id> → unir dos entradas en una sola habilidad
-#   Guárdalo como: data/propuesta-skills.revisada.csv
+# ── REVISIÓN HUMANA (obligatoria, regla 7.1) ───────────────────────────────
+#   Revisa sobre todo las DURAS (son generadas): fusiona duplicados, descarta
+#   ruido, ajusta skill_type_final. Guarda como propuesta-skills.revisada.csv
 # ───────────────────────────────────────────────────────────────────────────
 
 npm run dane:generar-sql    # solo desde la propuesta revisada:
-#   → supabase/migrations/010_dane_skills.sql
-#   → supabase/migrations/011_dane_pathways.sql
-#   → supabase/migrations/012_dane_cualificaciones.sql
+#   → 010_dane_skills.sql            (duras derivadas + blandas/destrezas)
+#   → 011_dane_pathways.sql          (680 pathways + perfil completo + requisitos)
+#   → 012_dane_cualificaciones.sql   (26 áreas de cualificación)
+#   → 013_dane_knowledge_areas.sql   (104 dominios de conocimiento + enlaces)
+
+npm run dane:perfil -- 25120   # ver un perfil ensamblado (verificación)
 ```
 
-Aplica con `supabase db reset` (o `psql -f`) y **commitea** las migraciones
-generadas: son el artefacto aprobado por VinkU.
+Aplica con `supabase db reset` y **commitea** las 4 migraciones generadas: son el
+artefacto aprobado por VinkU. Requieren las migraciones **004, 005 y 006**.
 
-## Cifras del archivo actual (CUOC 2025)
+## Se capturan las 11 hojas (nada se excluye)
 
-- **680** ocupaciones · niveles de competencia 1–4
-- **104** conocimientos (hard) · **40** destrezas (soft/power) — vocabulario
-  controlado por DANE, ya deduplicado por ID
-- **26** áreas de cualificación · **~30** ocupaciones marcadas para exhibición
-  inicial (admin, TI, ventas, transporte)
+El Excel es un libro relacional (encabezado en la fila 2). El perfil completo de
+cada ocupación se guarda como JSONB en `pathways.cuoc_profile` (migración 005):
+jerarquía (gran grupo → subgrupo ppal → subgrupo → grupo primario), descripción,
+funciones, denominaciones, conocimientos, destrezas, ocupaciones afines, áreas de
+cualificación principal y complementaria, y equivalencias CIUO-08 / CNO.
 
-## Reglas y límites honestos
+## Límites honestos
 
 - **`employability_rank` = NULL**: no viene en el Excel; lo completa VinkU (6.5).
-- **`requirement_type` = `core`** por defecto (el Excel no distingue core/deseable).
-- **`is_priority_display`** (migración 004) marca la exhibición inicial; se cargan
-  las 680, esto solo cambia el orden.
-- **`cuoc_profile`** (migración 005, JSONB) guarda el perfil completo del CUOC
-  (los 11 componentes) como dato de referencia de la ocupación. Las migraciones
-  010/011/012 requieren que 004 y 005 estén aplicadas.
-- **Marco Nacional de Cualificaciones (MNC) y catálogo sectorial**: este archivo
-  **no** los contiene. La ingesta crea las Áreas de Cualificación de la CUOC
-  (`qualifications.name`/`sector`) como puente, pero deja `mnc_level` y
-  `sectoral_catalog_name` en NULL y `has_sectoral_qualification=false`. Rellenarlos
-  requiere ingresar esas fuentes por separado — no se inventan (regla 7.4).
-- **Idempotencia**: `ON CONFLICT DO NOTHING` / `WHERE NOT EXISTS`; convive con el
-  seed demo (`003_seed.sql`) y se puede re-aplicar sin duplicar.
+- **`requirement_type` = `core`** (el Excel no distingue core/deseable).
+- **MNC y catálogo sectorial**: NO están en este archivo. Se crean las Áreas de
+  Cualificación de la CUOC como puente, pero `mnc_level` /
+  `sectoral_catalog_name` quedan NULL y `has_sectoral_qualification=false` hasta
+  ingresar esas fuentes por separado (regla 7.4).
 - **`data/` está en `.gitignore`**: el Excel y los intermedios no son código
   fuente; las migraciones generadas sí se commitean.
 

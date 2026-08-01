@@ -11,9 +11,10 @@
     "lint": "tsc --noEmit",
     "dane:inspeccionar": "tsx scripts/ingesta-dane/1-parsear.ts --inspeccionar",
     "dane:parsear": "tsx scripts/ingesta-dane/1-parsear.ts",
-    "dane:proponer": "tsx scripts/ingesta-dane/2-proponer-catalogo.ts",
-    "dane:generar-sql": "tsx scripts/ingesta-dane/3-generar-sql.ts",
-    "dane:perfil": "tsx scripts/ingesta-dane/4-perfil.ts"
+    "dane:derivar": "tsx scripts/ingesta-dane/2-derivar-skills.ts",
+    "dane:proponer": "tsx scripts/ingesta-dane/3-proponer-catalogo.ts",
+    "dane:generar-sql": "tsx scripts/ingesta-dane/4-generar-sql.ts",
+    "dane:perfil": "tsx scripts/ingesta-dane/5-perfil.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.0",

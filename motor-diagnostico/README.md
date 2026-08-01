@@ -73,16 +73,24 @@ supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
 ## Ingesta DANE (CUOC 2025)
 
 Pipeline para cargar las **680 ocupaciones** oficiales como `pathways` tipo
-`rol_cuoc`, **proponer** el catálogo de habilidades (104 conocimientos + 40
-destrezas, deduplicados por ID de DANE) con **revisión humana obligatoria** antes
-de insertar (regla 7.1), y crear las **26 Áreas de Cualificación** como puente al
-marco de cualificaciones. Ver [`scripts/ingesta-dane/README.md`](scripts/ingesta-dane/README.md).
+`rol_cuoc`. Modelo (según el CUOC real):
+
+- **Conocimientos** (104) → **dominios de conocimiento** (`knowledge_areas`), NO
+  son habilidades: son categorías macro que agrupan las funciones.
+- **Funciones** (7.319) → se **derivan** en habilidades **duras** atómicas y
+  compartibles (motor IA con `ANTHROPIC_API_KEY`, o heurístico de respaldo).
+- **Destrezas** (40) → habilidades **blandas**.
+
+Todo el catálogo de skills pasa por **revisión humana** antes de insertar (regla
+7.1). Ver [`scripts/ingesta-dane/README.md`](scripts/ingesta-dane/README.md).
 
 ```bash
 npm run dane:inspeccionar   # diagnóstico: hojas, columnas, áreas
-npm run dane:parsear        # Excel relacional → data/ocupaciones.json + catalogo.json
+npm run dane:parsear        # Excel relacional → ocupaciones.json + catalogo.json
+npm run dane:derivar        # funciones → skills duras (IA si hay key; si no, heurístico)
 npm run dane:proponer       # → data/propuesta-skills.csv  (revisar a mano)
-npm run dane:generar-sql    # propuesta revisada → migrations/010,011,012_dane_*.sql
+npm run dane:generar-sql    # propuesta revisada → migrations/010–013_dane_*.sql
+npm run dane:perfil -- 25120  # ver un perfil ensamblado
 ```
 
 El **MNC (niveles) y el catálogo sectorial no vienen en este archivo**: la ingesta

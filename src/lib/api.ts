@@ -92,31 +92,55 @@ export async function updateProfile(userId: string, updates: Partial<ProfileRow>
   if (error) throw error;
 }
 
-export async function rechargeStudentWallet(userId: string, amount: number) {
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('wallet_balance')
-    .eq('id', userId)
-    .single();
-  if (!profile) throw new Error('Perfil no encontrado');
+export async function rechargeStudentWallet(_userId: string, amount: number) {
+  // Validación de entrada: solo montos positivos enteros, con tope de seguridad
+  if (!Number.isFinite(amount) || amount <= 0) {
+    throw new Error('El monto a recargar debe ser un número positivo.');
+  }
+  const amt = Math.round(amount);
+  if (amt > 50_000_000) {
+    throw new Error('El monto máximo de recarga es 50.000.000 COP.');
+  }
 
-  const newBalance = (profile.wallet_balance ?? 0) + amount;
-
-  const { error, count } = await supabase
-    .from('profiles')
-    .update({ wallet_balance: newBalance })
-    .eq('id', userId);
-  if (error) throw error;
-  if (count === 0) throw new Error('No se pudo actualizar el saldo. Verifica tu sesión.');
-
-  await supabase.from('wallet_transactions').insert({
-    profile_id: userId,
-    amount,
-    type: 'recharge',
-    description: `Recarga de billetera por $${amount.toLocaleString('es-CO')} COP`,
+  // RPC SECURITY DEFINER atómico (migración 020): valida sesión, acredita y
+  // registra la transacción en una sola operación. Reemplaza el read-modify-write
+  // en cliente que sufría el bug de count===null de supabase-js v2.
+  const { data: newBalance, error } = await supabase.rpc('recharge_student_wallet', {
+    p_amount: amt,
   });
+  if (!error) return newBalance as number;
 
-  return newBalance;
+  // Fallback si la migración 020 aún no está aplicada en este entorno
+  if (error.message?.includes('Could not find the function') || (error as any).code === 'PGRST202') {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Sesión no válida.');
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('wallet_balance')
+      .eq('id', user.id)
+      .single();
+    if (!profile) throw new Error('Perfil no encontrado');
+
+    const computed = (profile.wallet_balance ?? 0) + amt;
+    const { data: updated, error: upErr } = await supabase
+      .from('profiles')
+      .update({ wallet_balance: computed })
+      .eq('id', user.id)
+      .select('wallet_balance')
+      .single();
+    if (upErr) throw upErr;
+    if (!updated) throw new Error('No se pudo actualizar el saldo. Verifica tu sesión.');
+
+    await supabase.from('wallet_transactions').insert({
+      profile_id: user.id,
+      amount: amt,
+      type: 'recharge',
+      description: `Recarga de billetera por $${amt.toLocaleString('es-CO')} COP`,
+    });
+    return updated.wallet_balance as number;
+  }
+
+  throw error;
 }
 
 // ============================================================
@@ -152,39 +176,24 @@ export async function fetchEnrollments(userId: string) {
 }
 
 export async function enrollCourse(studentId: string, courseId: string, creditsSpent: number) {
-  // Try SECURITY DEFINER RPC first (migration 018) — atomic, bypass RLS
+  // Validación de entrada
+  if (!Number.isFinite(creditsSpent) || creditsSpent < 0) {
+    throw new Error('El costo del curso no es válido.');
+  }
+
+  // Matrícula exclusivamente vía RPC SECURITY DEFINER (migración 018): atómica
+  // (inserta enrollment, descuenta wallet, registra transacción y sella el
+  // pasaporte en una sola transacción). NO usamos un fallback en cliente porque
+  // sería una secuencia no-atómica que podría matricular gratis o hacer
+  // double-spend si falla a mitad de camino.
   const { data: rpcId, error: rpcErr } = await supabase.rpc('enroll_course_rpc', {
     p_course_id:     courseId,
-    p_credits_spent: creditsSpent,
+    p_credits_spent: Math.round(creditsSpent),
   });
   if (!rpcErr) return { id: rpcId as string, course_id: courseId, student_id: studentId, status: 'Cursando', credits_spent: creditsSpent };
 
-  // If RPC not deployed yet, fall back to direct writes
   if (rpcErr.message?.includes('Could not find the function') || (rpcErr as any).code === 'PGRST202') {
-    const { data: profile } = await supabase.from('profiles').select('wallet_balance').eq('id', studentId).single();
-    if (!profile || (profile.wallet_balance ?? 0) < creditsSpent) {
-      throw new Error('Saldo insuficiente en la billetera');
-    }
-
-    const { data: enrollment, error } = await supabase
-      .from('enrollments')
-      .insert({ student_id: studentId, course_id: courseId, credits_spent: creditsSpent })
-      .select().single();
-    if (error) throw error;
-
-    await supabase.from('profiles').update({ wallet_balance: (profile.wallet_balance ?? 0) - creditsSpent }).eq('id', studentId);
-    await supabase.from('wallet_transactions').insert({ profile_id: studentId, amount: -creditsSpent, type: 'enrollment', description: 'Matrícula de curso', reference_id: enrollment.id }).catch(() => {});
-
-    const { data: course } = await supabase.from('courses').select('university_id').eq('id', courseId).single();
-    if (course) {
-      const { data: existingStamp } = await supabase.from('passport_stamps').select('id, enroll_count').eq('student_id', studentId).eq('university_id', course.university_id).maybeSingle();
-      if (existingStamp) {
-        await supabase.from('passport_stamps').update({ enroll_count: existingStamp.enroll_count + 1 }).eq('id', existingStamp.id);
-      } else {
-        await supabase.from('passport_stamps').insert({ student_id: studentId, university_id: course.university_id, enroll_count: 1 });
-      }
-    }
-    return enrollment;
+    throw new Error('La matrícula no está disponible: falta aplicar la migración 018 en la base de datos. Contacta al administrador.');
   }
 
   throw rpcErr;
@@ -439,9 +448,11 @@ export async function removeEmployee(id: string) {
 }
 
 export async function updateCompany(id: string, updates: { name?: string; nit?: string; industry?: string; size_employees?: number | null; contact_name?: string }) {
-  const { error, count } = await supabase.from('companies').update(updates).eq('id', id);
+  // Verificamos con .select() en vez de `count`: supabase-js v2 devuelve count:null
+  // por defecto en UPDATE, por lo que `count === 0` nunca detecta un bloqueo de RLS.
+  const { data, error } = await supabase.from('companies').update(updates).eq('id', id).select('id');
   if (error) throw error;
-  if (count === 0) throw new Error('No se pudo actualizar la empresa. Verifica tu sesión.');
+  if (!data || data.length === 0) throw new Error('No se pudo actualizar la empresa. Verifica tu sesión.');
 }
 
 export async function sendEmployeeDiagnosis(employeeId: string, companyId: string, objective: string, deadline: string | null) {
@@ -678,5 +689,188 @@ export async function deleteCourse(courseId: string) {
     .from('courses')
     .delete()
     .eq('id', courseId);
+  if (error) throw error;
+}
+
+export async function updateCourse(courseId: string, updates: {
+  title?: string;
+  description?: string | null;
+  level?: string;
+  duration?: string;
+  cost_credits?: number;
+  skills?: string[];
+  category?: string;
+  modality?: string | null;
+  start_date?: string | null;
+  access_link?: string | null;
+  classroom?: string | null;
+  max_seats?: number | null;
+}) {
+  const { error } = await supabase
+    .from('courses')
+    .update(updates)
+    .eq('id', courseId);
+  if (error) throw error;
+}
+
+// ============================================================
+// CAMPUS PASS — Catálogo (Etapa 1)
+// Campos cp_* viven en la tabla `courses` (migración 022).
+// ============================================================
+
+import type { Curso } from '../types/etapa1';
+
+// Fila de `courses` con las columnas Campus Pass (aún no reflejadas en
+// database.types.ts generado). Se castea desde el select('*').
+interface CampusPassRow {
+  id: string;
+  title: string;
+  category: string;
+  skills: string[] | null;
+  is_active: boolean;
+  cp_enabled: boolean | null;
+  cp_institucion: string | null;
+  cp_tipo_institucion: string | null;
+  cp_nivel: string | null;
+  cp_modalidad: string | null;
+  cp_duracion_horas: number | null;
+  cp_duracion_semanas: number | null;
+  cp_precio_publico: number | null;
+  cp_precio_vinku: number | null;
+  cp_descuento_disponible: boolean | null;
+  cp_ciudad: string | null;
+  cp_roles: string[] | null;
+  cp_palabras_clave: string[] | null;
+  cp_cupos: number | null;
+  cp_proxima_fecha: string | null;
+  prerequisites?: string[] | null;
+}
+
+export interface CampusPassInput {
+  university_id: string;
+  nombre_curso: string;
+  institucion: string;
+  tipo_institucion: string;
+  nivel: string;
+  modalidad: string;
+  duracion_horas: number;
+  duracion_semanas: number;
+  precio_publico_cop: number;
+  precio_vinku_cop: number;
+  descuento_disponible: boolean;
+  ciudad: string;
+  habilidades_que_desarrolla: string[];
+  roles_que_habilita: string[];
+  cupos_disponibles: number;
+  proxima_fecha_inicio: string | null;
+  categoria: string;
+  palabras_clave: string[];
+}
+
+function rowToCurso(r: CampusPassRow): Curso {
+  return {
+    id_curso: r.id,
+    institucion: r.cp_institucion ?? '',
+    tipo_institucion: (r.cp_tipo_institucion ?? 'universidad') as Curso['tipo_institucion'],
+    nombre_curso: r.title,
+    nivel: (r.cp_nivel ?? 'educacion_continua') as Curso['nivel'],
+    modalidad: (r.cp_modalidad ?? 'virtual') as Curso['modalidad'],
+    duracion_horas: r.cp_duracion_horas ?? 0,
+    duracion_semanas: r.cp_duracion_semanas ?? 0,
+    precio_publico_cop: Number(r.cp_precio_publico ?? 0),
+    precio_vinku_cop: Number(r.cp_precio_vinku ?? 0),
+    descuento_disponible: r.cp_descuento_disponible ?? false,
+    ciudad: r.cp_ciudad ?? '',
+    habilidades_que_desarrolla: r.skills ?? [],
+    roles_que_habilita: r.cp_roles ?? [],
+    prerequisitos: r.prerequisites ?? [],
+    cupos_disponibles: r.cp_cupos ?? 0,
+    proxima_fecha_inicio: r.cp_proxima_fecha ?? '',
+    categoria: r.category,
+    palabras_clave: r.cp_palabras_clave ?? [],
+    activo: (r.is_active ?? false) && (r.cp_enabled ?? false),
+  };
+}
+
+// Lee el catálogo Campus Pass desde Supabase. Devuelve [] si no hay
+// cursos cargados (el caller decide si cae al mock).
+export async function fetchCampusPassCatalogo(): Promise<Curso[]> {
+  const { data, error } = await supabase.from('courses').select('*');
+  if (error) throw error;
+  const rows = (data ?? []) as unknown as CampusPassRow[];
+  return rows
+    .filter((r) => r.cp_enabled === true)
+    .map(rowToCurso);
+}
+
+// Todos los cursos Campus Pass de una universidad (para el panel admin),
+// incluidos los inactivos.
+export async function fetchCampusPassCatalogoAdmin(universityId: string): Promise<Curso[]> {
+  const { data, error } = await supabase
+    .from('courses')
+    .select('*')
+    .eq('university_id', universityId);
+  if (error) throw error;
+  const rows = (data ?? []) as unknown as CampusPassRow[];
+  return rows.filter((r) => r.cp_enabled === true).map(rowToCurso);
+}
+
+function inputToRow(input: CampusPassInput): Record<string, unknown> {
+  return {
+    university_id: input.university_id,
+    title: input.nombre_curso,
+    description: null,
+    level: 'Educación Continua',
+    duration: `${input.duracion_semanas} semanas`,
+    cost_credits: input.precio_publico_cop,
+    skills: input.habilidades_que_desarrolla,
+    category: input.categoria,
+    is_active: true,
+    cp_enabled: true,
+    cp_institucion: input.institucion,
+    cp_tipo_institucion: input.tipo_institucion,
+    cp_nivel: input.nivel,
+    cp_modalidad: input.modalidad,
+    cp_duracion_horas: input.duracion_horas,
+    cp_duracion_semanas: input.duracion_semanas,
+    cp_precio_publico: input.precio_publico_cop,
+    cp_precio_vinku: input.precio_vinku_cop,
+    cp_descuento_disponible: input.descuento_disponible,
+    cp_ciudad: input.ciudad,
+    cp_roles: input.roles_que_habilita,
+    cp_palabras_clave: input.palabras_clave,
+    cp_cupos: input.cupos_disponibles,
+    cp_proxima_fecha: input.proxima_fecha_inicio,
+  };
+}
+
+export async function createCampusPassCourse(input: CampusPassInput): Promise<void> {
+  const row = inputToRow(input);
+  const { error } = await supabase
+    .from('courses')
+    .insert(row as unknown as Database['public']['Tables']['courses']['Insert']);
+  if (error) throw error;
+}
+
+export async function updateCampusPassCourse(
+  id: string,
+  input: CampusPassInput
+): Promise<void> {
+  const row = inputToRow(input);
+  // university_id no se reasigna en una edición.
+  delete (row as Record<string, unknown>).university_id;
+  const { error } = await supabase
+    .from('courses')
+    .update(row as unknown as Database['public']['Tables']['courses']['Update'])
+    .eq('id', id);
+  if (error) throw error;
+}
+
+// Baja lógica: desactiva sin borrar.
+export async function deactivateCampusPassCourse(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('courses')
+    .update({ is_active: false })
+    .eq('id', id);
   if (error) throw error;
 }

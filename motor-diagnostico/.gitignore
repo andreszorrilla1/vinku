@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+
+# Ingesta DANE: el Excel oficial y los intermedios no son código fuente.
+# Las migraciones generadas (010_dane_*.sql, 011_dane_*.sql) sí se commitean
+# tras la revisión humana del equipo VinkU.
+scripts/ingesta-dane/data/*
+!scripts/ingesta-dane/data/.gitkeep

@@ -5,6 +5,7 @@ import {
   ChevronDown, ChevronUp, ArrowRight, RefreshCw,
 } from "lucide-react";
 import { Student, Course, UniversityStats } from "../types";
+import FlujoEtapa1 from "./etapa1/FlujoEtapa1";
 import { useAuth } from "../contexts/AuthContext";
 import {
   fetchWalletTransactions,
@@ -282,6 +283,99 @@ function PassportTab({ student }: { student: Student }) {
           <p className="text-zinc-400 text-xs">Completa cursos para ganar insignias de habilidades.</p>
         </div>
       )}
+
+      <MilestonesSection student={student} />
+    </div>
+  );
+}
+
+function MilestonesSection({ student }: { student: Student }) {
+  const sellos = student.passport.sellos;
+  const certified = sellos.filter(s => s.status === "Certificado");
+  const skills = student.passport.insignias;
+  const destinations = student.passport.destinations;
+
+  const milestones = [
+    {
+      id: "first_enroll",
+      icon: "🎓",
+      title: "Primera matrícula",
+      desc: "Te inscribiste en tu primer curso",
+      earned: sellos.length >= 1,
+      color: "#6C47FF",
+    },
+    {
+      id: "first_cert",
+      icon: "🏅",
+      title: "Primera certificación",
+      desc: "Completaste y certificaste un curso",
+      earned: certified.length >= 1,
+      color: "#10B981",
+    },
+    {
+      id: "diagnosed",
+      icon: "🧭",
+      title: "Ruta trazada",
+      desc: "Completaste tu diagnóstico vocacional",
+      earned: student.diagnosed,
+      color: "#FFD000",
+    },
+    {
+      id: "multi_uni",
+      icon: "🌍",
+      title: "Explorador",
+      desc: "Cursaste en 2 o más universidades",
+      earned: destinations.length >= 2,
+      color: "#F97316",
+    },
+    {
+      id: "skill_3",
+      icon: "⚡",
+      title: "Multi-talento",
+      desc: "Ganaste 3 o más habilidades",
+      earned: skills.length >= 3,
+      color: "#EC4899",
+    },
+    {
+      id: "cert_3",
+      icon: "🚀",
+      title: "Acelerador",
+      desc: "Certificaste 3 o más cursos",
+      earned: certified.length >= 3,
+      color: "#6C47FF",
+    },
+  ];
+
+  const earned = milestones.filter(m => m.earned).length;
+
+  return (
+    <div className="bg-white border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] rounded-xl p-5">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest">Logros desbloqueados</p>
+        <span className="text-[10px] font-mono font-bold bg-[#FFD000] text-[#1A1A1A] px-2 py-0.5 rounded-full border border-[#1A1A1A]">
+          {earned}/{milestones.length}
+        </span>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {milestones.map(m => (
+          <div
+            key={m.id}
+            className={`rounded-xl p-3 border-2 transition-all ${
+              m.earned
+                ? "border-[#1A1A1A] shadow-[3px_3px_0px_0px_#1A1A1A]"
+                : "border-zinc-200 opacity-40 grayscale"
+            }`}
+            style={m.earned ? { backgroundColor: `${m.color}15` } : { backgroundColor: "#F9F9F9" }}
+          >
+            <span className="text-2xl block mb-1">{m.icon}</span>
+            <p className="text-xs font-bold text-[#1A1A1A] leading-tight">{m.title}</p>
+            <p className="text-[10px] text-zinc-500 mt-0.5 leading-snug">{m.desc}</p>
+            {m.earned && (
+              <span className="text-[9px] font-mono font-bold text-[#10B981] mt-1 block">✓ Desbloqueado</span>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -294,6 +388,7 @@ function DiagnosticTab({
   student,
   onEnrollCourse,
   setEnrollConfirmCourse,
+  setStudentTab,
 }: {
   diagAnswers: StudentPortalViewProps["diagAnswers"];
   setDiagAnswers: StudentPortalViewProps["setDiagAnswers"];
@@ -302,6 +397,7 @@ function DiagnosticTab({
   student: Student;
   onEnrollCourse: (courseId: string) => void;
   setEnrollConfirmCourse: (c: Course | null) => void;
+  setStudentTab: StudentPortalViewProps["setStudentTab"];
 }) {
   const [step, setStep] = useState(student.diagnosed ? DIAG_STEPS.length : 0);
   const [localAnswers, setLocalAnswers] = useState<Record<string, string>>({});
@@ -356,8 +452,14 @@ function DiagnosticTab({
 
         <div className="space-y-3">
           {suggested.length === 0 ? (
-            <div className="bg-white border-2 border-[#1A1A1A] rounded-xl p-6 text-center text-zinc-500 text-sm">
-              No hay cursos disponibles para tu perfil aún. ¡Pronto habrá más opciones!
+            <div className="bg-white border-2 border-[#1A1A1A] rounded-xl p-6 text-center space-y-3">
+              <p className="text-zinc-500 text-sm">No hay cursos disponibles para tu perfil aún. ¡Pronto habrá más opciones!</p>
+              <button
+                onClick={() => setStudentTab("market")}
+                className="px-4 py-2 bg-[#1A1A1A] text-[#FFD000] font-bold rounded-xl border-2 border-[#1A1A1A] text-xs hover:shadow-[3px_3px_0px_0px_#FFD000] transition-all"
+              >
+                Ver catálogo completo →
+              </button>
             </div>
           ) : (
             suggested.map((c, i) => {
@@ -493,6 +595,7 @@ function WalletTab({
 }) {
   const [transactions, setTransactions] = useState<WalletTx[]>([]);
   const [loadingTx, setLoadingTx] = useState(false);
+  const [rechargingWallet, setRechargingWallet] = useState(false);
 
   async function loadTransactions() {
     setLoadingTx(true);
@@ -511,9 +614,14 @@ function WalletTab({
   }, []);
 
   async function handleRecharge(e: React.FormEvent) {
-    await onWalletRecharge(e);
-    await loadTransactions();
-    fetchState();
+    setRechargingWallet(true);
+    try {
+      await onWalletRecharge(e);
+      await loadTransactions();
+      fetchState();
+    } finally {
+      setRechargingWallet(false);
+    }
   }
 
   return (
@@ -548,14 +656,27 @@ function WalletTab({
           ))}
         </div>
         <form onSubmit={handleRecharge} className="space-y-3">
-          <input
-            type="number"
-            value={rechargeAmt}
-            onChange={e => setRechargeAmt(e.target.value)}
-            placeholder="Monto en COP"
-            min={1000}
-            className="w-full border-2 border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:shadow-[2px_2px_0px_0px_#FFD000]"
-          />
+          <div>
+            <input
+              type="number"
+              value={rechargeAmt}
+              onChange={e => setRechargeAmt(e.target.value)}
+              placeholder="Monto en COP"
+              min={1000}
+              max={50000000}
+              className={`w-full border-2 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:shadow-[2px_2px_0px_0px_#FFD000] ${
+                rechargeAmt && (Number(rechargeAmt) < 1000 || Number(rechargeAmt) > 50000000)
+                  ? "border-red-400"
+                  : "border-[#1A1A1A]"
+              }`}
+            />
+            {rechargeAmt && Number(rechargeAmt) < 1000 && (
+              <p className="text-[10px] text-red-500 font-bold mt-1">Mínimo de recarga: $1.000 COP</p>
+            )}
+            {rechargeAmt && Number(rechargeAmt) > 50000000 && (
+              <p className="text-[10px] text-red-500 font-bold mt-1">Máximo de recarga: $50.000.000 COP</p>
+            )}
+          </div>
           <select
             value={rechargeSource}
             onChange={e => setRechargeSource(e.target.value)}
@@ -567,8 +688,12 @@ function WalletTab({
             <option value="Daviplata">Daviplata</option>
             <option value="Tarjeta">Tarjeta de crédito/débito</option>
           </select>
-          <button type="submit" className="w-full py-3 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] hover:shadow-[6px_6px_0px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm">
-            Recargar billetera
+          <button
+            type="submit"
+            disabled={rechargingWallet || !rechargeAmt || Number(rechargeAmt) < 1000 || Number(rechargeAmt) > 50000000}
+            className="w-full py-3 bg-[#FFD000] text-[#1A1A1A] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] hover:shadow-[6px_6px_0px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+          >
+            {rechargingWallet ? "Recargando..." : "Recargar billetera"}
           </button>
         </form>
       </div>
@@ -632,6 +757,8 @@ function FellowshipTab({
 }) {
   const [sessions, setSessions] = useState<SessionRow[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(false);
+  const [bookingSession, setBookingSession] = useState(false);
+  const minDateTime = new Date(Date.now() + 60 * 60 * 1000).toISOString().slice(0, 16);
 
   async function loadSessions() {
     setLoadingSessions(true);
@@ -650,9 +777,14 @@ function FellowshipTab({
   }, []);
 
   async function handleBook(e: React.FormEvent) {
-    await onBookFellowship(e);
-    await loadSessions();
-    fetchState();
+    setBookingSession(true);
+    try {
+      await onBookFellowship(e);
+      await loadSessions();
+      fetchState();
+    } finally {
+      setBookingSession(false);
+    }
   }
 
   return (
@@ -697,20 +829,32 @@ function FellowshipTab({
           placeholder="¿Sobre qué tema quieres la mentoría?"
           className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none"
         />
-        <input
-          type="datetime-local"
-          value={fellowshipForm.dateTime}
-          onChange={e => setFellowshipForm(p => ({ ...p, dateTime: e.target.value }))}
-          className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none"
-        />
+        <div>
+          <input
+            type="datetime-local"
+            value={fellowshipForm.dateTime}
+            min={minDateTime}
+            onChange={e => setFellowshipForm(p => ({ ...p, dateTime: e.target.value }))}
+            className="w-full border-2 border-zinc-200 focus:border-[#1A1A1A] rounded-xl px-4 py-2.5 text-sm focus:outline-none"
+          />
+          <p className="text-[10px] text-zinc-400 mt-1">Debe ser al menos 1 hora en el futuro</p>
+        </div>
         <button
           type="submit"
-          disabled={!fellowshipForm.mentorName || !fellowshipForm.topic || !fellowshipForm.dateTime}
+          disabled={bookingSession || !fellowshipForm.mentorName || !fellowshipForm.topic || !fellowshipForm.dateTime || fellowshipForm.dateTime < minDateTime}
           className="w-full py-3 bg-[#1A1A1A] text-[#FFD000] font-display font-extrabold rounded-xl border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#FFD000] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
         >
-          Confirmar sesión
+          {bookingSession ? "Agendando..." : "Confirmar sesión"}
         </button>
       </form>
+
+      {sessions.length === 0 && (
+        <div className="bg-white border-2 border-zinc-200 rounded-xl p-6 max-w-md text-center">
+          <Calendar className="w-8 h-8 text-zinc-300 mx-auto mb-2" />
+          <p className="text-sm font-bold text-zinc-400">Aún no tienes mentorías agendadas</p>
+          <p className="text-xs text-zinc-400 mt-1">Completa el formulario arriba para reservar tu primera sesión.</p>
+        </div>
+      )}
 
       {sessions.length > 0 && (
         <div className="bg-white border-2 border-[#1A1A1A] shadow-[4px_4px_0px_0px_#1A1A1A] rounded-xl p-5 max-w-md">
@@ -887,6 +1031,7 @@ export default function StudentPortalView({
   const [expandedCourse, setExpandedCourse] = useState<string | null>(null);
   const [docConfirmCourse, setDocConfirmCourse] = useState<Course | null>(null);
   const [enrollConfirmCourse, setEnrollConfirmCourse] = useState<Course | null>(null);
+  const [enrolling, setEnrolling] = useState(false);
 
   if (!student) {
     return (
@@ -957,15 +1102,7 @@ export default function StudentPortalView({
       {studentTab === "pass" && <PassportTab student={student} />}
 
       {studentTab === "diag" && (
-        <DiagnosticTab
-          diagAnswers={diagAnswers}
-          setDiagAnswers={setDiagAnswers}
-          onDiagnoseSubmit={onDiagnoseSubmit}
-          courses={courses}
-          student={student}
-          onEnrollCourse={onEnrollCourse}
-          setEnrollConfirmCourse={setEnrollConfirmCourse}
-        />
+        <FlujoEtapa1 usuarioId={student.id} clienteNombre={student.name} />
       )}
 
       {studentTab === "market" && (
@@ -1242,10 +1379,20 @@ export default function StudentPortalView({
                     Cancelar
                   </button>
                   <button
-                    onClick={() => { const id = enrollConfirmCourse.id; setEnrollConfirmCourse(null); onEnrollCourse(id); }}
-                    className="flex-1 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-[#1A1A1A] font-extrabold py-3 rounded-xl hover:shadow-[6px_6px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm"
+                    disabled={enrolling}
+                    onClick={async () => {
+                      const id = enrollConfirmCourse.id;
+                      setEnrolling(true);
+                      try {
+                        await onEnrollCourse(id);
+                      } finally {
+                        setEnrolling(false);
+                        setEnrollConfirmCourse(null);
+                      }
+                    }}
+                    className="flex-1 bg-[#FFD000] border-2 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] text-[#1A1A1A] font-extrabold py-3 rounded-xl hover:shadow-[6px_6px_0px_#1A1A1A] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all text-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
                   >
-                    Confirmar inscripción →
+                    {enrolling ? "Inscribiendo..." : "Confirmar inscripción →"}
                   </button>
                 </div>
               </div>

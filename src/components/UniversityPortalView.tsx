@@ -18,6 +18,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { Course, UniversityStats } from "../types";
+import CatalogoAdmin from "./etapa1/CatalogoAdmin";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 import * as api from "../lib/api";
@@ -29,8 +30,8 @@ import * as api from "../lib/api";
 interface UniversityPortalViewProps {
   courses: Course[];
   universities: UniversityStats[];
-  uniTab: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero";
-  setUniTab: (tab: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero") => void;
+  uniTab: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero" | "campuspass";
+  setUniTab: (tab: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero" | "campuspass") => void;
   onCourseAdded: () => void;
   onCertifyApprove: (studentId: string, courseId: string, universityId: string) => void;
   triggerToast: (msg: string, type?: "success" | "error" | "info") => void;
@@ -66,6 +67,56 @@ interface UniData {
   contact_email: string;
   liquid_balance: number;
   total_earnings: number;
+}
+
+function RevenueShareCard({ enrolledCount }: { enrolledCount: number }) {
+  const tiers = [
+    { label: "Inicial", min: 0,  max: 9,   pct: 60, color: "#6C47FF" },
+    { label: "Plata",   min: 10, max: 24,  pct: 70, color: "#10B981" },
+    { label: "Oro",     min: 25, max: 49,  pct: 80, color: "#FFD000" },
+    { label: "Platino", min: 50, max: Infinity, pct: 85, color: "#F97316" },
+  ];
+  const current = tiers.find(t => enrolledCount >= t.min && enrolledCount <= t.max) ?? tiers[0];
+  const next = tiers[tiers.indexOf(current) + 1];
+
+  return (
+    <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-2xl p-5 space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-[10px] font-mono uppercase tracking-wider text-gray-500 font-bold">Reparto de ingresos</p>
+        <span
+          className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border-2 border-[#1A1A1A]"
+          style={{ backgroundColor: `${current.color}22`, color: current.color }}
+        >
+          Nivel {current.label}
+        </span>
+      </div>
+      <div className="flex items-end gap-3">
+        <p className="text-4xl font-extrabold text-[#1A1A1A]">{current.pct}%</p>
+        <p className="text-xs text-gray-500 mb-1 leading-tight">de cada matrícula<br />va a la universidad</p>
+      </div>
+      <div className="flex gap-2">
+        {tiers.map(t => (
+          <div
+            key={t.label}
+            className={`flex-1 rounded-lg py-2 px-1 text-center border-2 transition-all ${
+              t.label === current.label ? "border-[#1A1A1A] shadow-[2px_2px_0px_0px_#1A1A1A]" : "border-transparent opacity-40"
+            }`}
+            style={{ backgroundColor: `${t.color}22` }}
+          >
+            <p className="text-[10px] font-mono font-bold" style={{ color: t.color }}>{t.pct}%</p>
+            <p className="text-[9px] text-zinc-500 font-bold mt-0.5">{t.label}</p>
+            <p className="text-[8px] text-zinc-400">{t.max === Infinity ? `≥${t.min}` : `${t.min}–${t.max}`}</p>
+          </div>
+        ))}
+      </div>
+      {next && (
+        <p className="text-[10px] text-gray-500">
+          Sube al nivel <span className="font-bold" style={{ color: next.color }}>{next.label} ({next.pct}%)</span>{" "}
+          con {next.min - enrolledCount} matrícula{next.min - enrolledCount !== 1 ? "s" : ""} más.
+        </p>
+      )}
+    </div>
+  );
 }
 
 // ============================================================
@@ -118,6 +169,9 @@ export default function UniversityPortalView({
   const [courseFormAccessLink, setCourseFormAccessLink] = useState("");
   const [courseFormClassroom, setCourseFormClassroom] = useState("");
   const [savingCourse, setSavingCourse] = useState(false);
+  const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
+  const [deletingCourseId, setDeletingCourseId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const FIXED_DOCS = [
     "Documento de identidad",
@@ -128,6 +182,7 @@ export default function UniversityPortalView({
 
   // ---- certifying ----
   const [certifyingId, setCertifyingId] = useState<string | null>(null);
+  const [markingId, setMarkingId] = useState<string | null>(null);
 
   // ---- withdrawal ----
   const [withdrawAmount, setWithdrawAmount] = useState("");
@@ -302,58 +357,76 @@ export default function UniversityPortalView({
   // ============================================================
   // Handlers
   // ============================================================
+  const resetCourseForm = () => {
+    setCourseFormTitle(""); setCourseFormDesc(""); setCourseFormDuration("");
+    setCourseFormCost(""); setCourseFormSkills(""); setCourseFormPrereqs([]);
+    setCourseFormDocs([]); setCourseFormSeats(""); setCourseFormOtherDoc("");
+    setCourseFormModality("Virtual"); setCourseFormStartDate("");
+    setCourseFormAccessLink(""); setCourseFormClassroom("");
+    setEditingCourseId(null);
+  };
+
   const handleSaveCourse = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!universityId) {
-      triggerToast("No se encontró el ID de universidad en tu perfil.", "error");
-      return;
-    }
     if (!courseFormTitle || !courseFormCost || !courseFormDuration) {
       triggerToast("Completa todos los campos obligatorios.", "error");
       return;
     }
+    const cost = parseFloat(courseFormCost);
+    if (isNaN(cost) || cost <= 0) {
+      triggerToast("El costo del curso debe ser mayor a $0.", "error");
+      return;
+    }
     setSavingCourse(true);
     try {
-      const base = {
-        university_id: universityId,
-        title: courseFormTitle,
-        description: courseFormDesc || null,
-        level: courseFormLevel,
-        duration: courseFormDuration,
-        cost_credits: parseFloat(courseFormCost),
-        skills: courseFormSkills
-          ? courseFormSkills
-              .split(",")
-              .map((s) => s.trim())
-              .filter(Boolean)
-          : [],
-        category: courseFormCategory,
-        is_active: true,
-      };
-      const extras: Record<string, unknown> = {};
-      if (courseFormPrereqs.length) extras.prerequisites = courseFormPrereqs;
-      if (courseFormDocs.length) extras.required_docs = courseFormDocs;
-      extras.max_seats = courseFormSeats ? parseInt(courseFormSeats) : null;
-      extras.modality = courseFormModality;
-      if (courseFormStartDate) extras.start_date = courseFormStartDate;
-      if (courseFormAccessLink) extras.access_link = courseFormAccessLink;
-      if (courseFormClassroom) extras.classroom = courseFormClassroom;
-      await api.addCourseResilient(base, extras);
-      triggerToast(`Curso "${courseFormTitle}" publicado en el catálogo.`, "success");
+      const skills = courseFormSkills
+        ? courseFormSkills.split(",").map((s) => s.trim()).filter(Boolean)
+        : [];
+      if (editingCourseId) {
+        await api.updateCourse(editingCourseId, {
+          title: courseFormTitle,
+          description: courseFormDesc || null,
+          level: courseFormLevel,
+          duration: courseFormDuration,
+          cost_credits: cost,
+          skills,
+          category: courseFormCategory,
+          modality: courseFormModality,
+          start_date: courseFormStartDate || null,
+          access_link: courseFormAccessLink || null,
+          classroom: courseFormClassroom || null,
+          max_seats: courseFormSeats ? parseInt(courseFormSeats) : null,
+        });
+        triggerToast(`Curso "${courseFormTitle}" actualizado.`, "success");
+      } else {
+        if (!universityId) {
+          triggerToast("No se encontró el ID de universidad en tu perfil.", "error");
+          return;
+        }
+        const base = {
+          university_id: universityId,
+          title: courseFormTitle,
+          description: courseFormDesc || null,
+          level: courseFormLevel,
+          duration: courseFormDuration,
+          cost_credits: cost,
+          skills,
+          category: courseFormCategory,
+          is_active: true,
+        };
+        const extras: Record<string, unknown> = {};
+        if (courseFormPrereqs.length) extras.prerequisites = courseFormPrereqs;
+        if (courseFormDocs.length) extras.required_docs = courseFormDocs;
+        extras.max_seats = courseFormSeats ? parseInt(courseFormSeats) : null;
+        extras.modality = courseFormModality;
+        if (courseFormStartDate) extras.start_date = courseFormStartDate;
+        if (courseFormAccessLink) extras.access_link = courseFormAccessLink;
+        if (courseFormClassroom) extras.classroom = courseFormClassroom;
+        await api.addCourseResilient(base, extras);
+        triggerToast(`Curso "${courseFormTitle}" publicado en el catálogo.`, "success");
+      }
       setShowCatalogModal(false);
-      setCourseFormTitle("");
-      setCourseFormDesc("");
-      setCourseFormDuration("");
-      setCourseFormCost("");
-      setCourseFormSkills("");
-      setCourseFormPrereqs([]);
-      setCourseFormDocs([]);
-      setCourseFormSeats("");
-      setCourseFormOtherDoc("");
-      setCourseFormModality("Virtual");
-      setCourseFormStartDate("");
-      setCourseFormAccessLink("");
-      setCourseFormClassroom("");
+      resetCourseForm();
       onCourseAdded();
       fetchState();
     } catch (err) {
@@ -419,22 +492,63 @@ export default function UniversityPortalView({
   };
 
   const handleMarkStarted = async (enrollmentId: string) => {
+    setMarkingId(enrollmentId);
     try {
       await api.markEnrollmentStarted(enrollmentId);
+      triggerToast("Matrícula marcada como iniciada.", "success");
       await fetchEnrollments();
     } catch (err) {
       console.error(err);
       triggerToast("Error al marcar como iniciado.", "error");
+    } finally {
+      setMarkingId(null);
     }
   };
 
   const handleMarkCompleted = async (enrollmentId: string) => {
+    setMarkingId(enrollmentId);
     try {
       await api.markEnrollmentCompleted(enrollmentId);
+      triggerToast("Matrícula marcada como completada. Lista para certificar.", "success");
       await fetchEnrollments();
     } catch (err) {
       console.error(err);
       triggerToast("Error al marcar como completado.", "error");
+    } finally {
+      setMarkingId(null);
+    }
+  };
+
+  const handleEditCourse = (c: typeof uniCourses[0]) => {
+    setEditingCourseId(c.id);
+    setCourseFormTitle(c.title);
+    setCourseFormDesc(c.description ?? "");
+    setCourseFormLevel(c.level as "Pregrado" | "Posgrado" | "Educación Continua");
+    setCourseFormDuration(c.duration);
+    setCourseFormCost(String(c.cost));
+    setCourseFormSkills(c.skills?.join(", ") ?? "");
+    setCourseFormCategory(c.category);
+    setCourseFormModality((c.modality ?? "Virtual") as "Virtual" | "Presencial" | "Híbrido");
+    setCourseFormStartDate(c.startDate ?? "");
+    setCourseFormAccessLink(c.accessLink ?? "");
+    setCourseFormClassroom(c.classroom ?? "");
+    setCourseFormPrereqs(c.prerequisites ?? []);
+    setCourseFormSeats(c.maxSeats != null ? String(c.maxSeats) : "");
+    setShowCatalogModal(true);
+  };
+
+  const handleDeleteCourse = async (courseId: string) => {
+    setDeletingCourseId(courseId);
+    try {
+      await api.deleteCourse(courseId);
+      triggerToast("Curso eliminado del catálogo.", "success");
+      setConfirmDeleteId(null);
+      onCourseAdded();
+      fetchState();
+    } catch (err: any) {
+      triggerToast(err?.message ?? "Error al eliminar el curso.", "error");
+    } finally {
+      setDeletingCourseId(null);
     }
   };
 
@@ -510,12 +624,13 @@ export default function UniversityPortalView({
   // Tab config
   // ============================================================
   const tabs: {
-    id: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero";
+    id: "dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero" | "campuspass";
     label: string;
     icon: React.ComponentType<{ className?: string }>;
   }[] = [
     { id: "dashboard", label: "Dashboard", icon: Sliders },
     { id: "catalogo", label: "Catálogo", icon: BookOpen },
+    { id: "campuspass", label: "Campus Pass", icon: TrendingUp },
     { id: "matriculados", label: "Matriculados", icon: Users },
     { id: "certificaciones", label: "Certificaciones", icon: Award },
     { id: "financiero", label: "Financiero", icon: DollarSign },
@@ -745,6 +860,8 @@ export default function UniversityPortalView({
             )}
           </div>
 
+          <RevenueShareCard enrolledCount={enrolledCount} />
+
           {import.meta.env.DEV && (
             <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 space-y-1">
               <p className="text-xs font-mono font-bold text-gray-500 uppercase tracking-wider mb-2">⚗️ Modo desarrollo — Datos de prueba</p>
@@ -768,18 +885,7 @@ export default function UniversityPortalView({
               <p className="text-xs text-gray-500">Gestiona la oferta académica de tu universidad.</p>
             </div>
             <button
-              onClick={() => {
-                setCourseFormTitle("");
-                setCourseFormDesc("");
-                setCourseFormDuration("");
-                setCourseFormCost("");
-                setCourseFormSkills("");
-                setCourseFormPrereqs([]);
-                setCourseFormDocs([]);
-                setCourseFormSeats("");
-                setCourseFormOtherDoc("");
-                setShowCatalogModal(true);
-              }}
+              onClick={() => { resetCourseForm(); setShowCatalogModal(true); }}
               className="flex items-center gap-2 bg-[#FFD000] hover:bg-yellow-400 text-[#1A1A1A] font-extrabold text-xs px-5 py-3 rounded-xl border-2 border-[#1A1A1A] shadow-[3px_3px_0px_#1A1A1A] transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
@@ -806,6 +912,7 @@ export default function UniversityPortalView({
                       <th className="p-4 text-left font-bold">Categoría</th>
                       <th className="p-4 text-left font-bold">Duración</th>
                       <th className="p-4 text-left font-bold">Costo (COP)</th>
+                      <th className="p-4 text-left font-bold">Acciones</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -825,10 +932,51 @@ export default function UniversityPortalView({
                         <td className="p-4 font-extrabold text-[#6C47FF] font-mono">
                           ${c.cost.toLocaleString("es-CO")}
                         </td>
+                        <td className="p-4">
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleEditCourse(c)}
+                              className="text-[10px] font-bold px-2 py-1 rounded-lg border-2 border-[#6C47FF] text-[#6C47FF] hover:bg-[#6C47FF]/10 transition-colors"
+                            >
+                              Editar
+                            </button>
+                            <button
+                              onClick={() => setConfirmDeleteId(c.id)}
+                              className="text-[10px] font-bold px-2 py-1 rounded-lg border-2 border-red-400 text-red-500 hover:bg-red-50 transition-colors"
+                            >
+                              Eliminar
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          )}
+
+          {/* Confirm delete modal */}
+          {confirmDeleteId && (
+            <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+              <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-2xl p-6 max-w-sm w-full space-y-4">
+                <h3 className="font-extrabold text-[#1A1A1A]">¿Eliminar este curso?</h3>
+                <p className="text-sm text-zinc-500">Esta acción no se puede deshacer. Los estudiantes inscritos perderán acceso.</p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setConfirmDeleteId(null)}
+                    className="flex-1 py-2 border-2 border-zinc-300 rounded-xl text-sm font-bold text-zinc-600 hover:border-[#1A1A1A] transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() => handleDeleteCourse(confirmDeleteId)}
+                    disabled={deletingCourseId === confirmDeleteId}
+                    className="flex-1 py-2 bg-red-500 border-2 border-red-600 rounded-xl text-sm font-bold text-white hover:bg-red-600 transition-colors disabled:opacity-60"
+                  >
+                    {deletingCourseId === confirmDeleteId ? "Eliminando..." : "Sí, eliminar"}
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -838,9 +986,11 @@ export default function UniversityPortalView({
             <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
               <div className="bg-white border-4 border-[#1A1A1A] shadow-[4px_4px_0px_#1A1A1A] rounded-2xl p-6 max-w-lg w-full space-y-4 animate-fade-in relative">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                  <h3 className="text-base font-extrabold text-[#1A1A1A]">Agregar Nuevo Curso</h3>
+                  <h3 className="text-base font-extrabold text-[#1A1A1A]">
+                    {editingCourseId ? "Editar Curso" : "Agregar Nuevo Curso"}
+                  </h3>
                   <button
-                    onClick={() => setShowCatalogModal(false)}
+                    onClick={() => { setShowCatalogModal(false); resetCourseForm(); }}
                     className="p-1 hover:bg-gray-100 rounded-lg cursor-pointer"
                   >
                     <X className="w-5 h-5" />
@@ -942,7 +1092,7 @@ export default function UniversityPortalView({
                       <input
                         type="number"
                         required
-                        min={0}
+                        min={1}
                         value={courseFormCost}
                         onChange={(e) => setCourseFormCost(e.target.value)}
                         placeholder="ej. 450000"
@@ -1098,6 +1248,7 @@ export default function UniversityPortalView({
                         <input
                           type="date"
                           value={courseFormStartDate}
+                          min={new Date().toISOString().slice(0, 10)}
                           onChange={(e) => setCourseFormStartDate(e.target.value)}
                           className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
                         />
@@ -1155,6 +1306,23 @@ export default function UniversityPortalView({
             </div>
           )}
         </div>
+      )}
+
+      {/* ================================================================
+          CAMPUS PASS TAB — catálogo del motor de curaduría
+         ================================================================ */}
+      {uniTab === "campuspass" && (
+        universityId ? (
+          <CatalogoAdmin
+            universityId={universityId}
+            institucionNombre={universityName}
+            triggerToast={triggerToast}
+          />
+        ) : (
+          <p className="text-center text-sm text-gray-400 py-8">
+            Tu cuenta aún no está vinculada a una universidad.
+          </p>
+        )
       )}
 
       {/* ================================================================
@@ -1231,17 +1399,21 @@ export default function UniversityPortalView({
                           {!e.started_at && e.status !== "Certificado" && (
                             <button
                               onClick={() => handleMarkStarted(e.id)}
-                              className="bg-yellow-50 border-2 border-yellow-300 text-yellow-700 font-bold text-[10px] px-3 py-1.5 rounded-xl flex items-center gap-1.5 mx-auto hover:bg-yellow-100 cursor-pointer transition-all"
+                              disabled={markingId === e.id}
+                              className="bg-yellow-50 border-2 border-yellow-300 text-yellow-700 font-bold text-[10px] px-3 py-1.5 rounded-xl flex items-center gap-1.5 mx-auto hover:bg-yellow-100 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                              <PlayCircle className="w-3 h-3" /> Marcar Iniciado
+                              <PlayCircle className={`w-3 h-3 ${markingId === e.id ? "animate-spin" : ""}`} />
+                              {markingId === e.id ? "Guardando..." : "Marcar Iniciado"}
                             </button>
                           )}
                           {e.started_at && !e.completed_at && (
                             <button
                               onClick={() => handleMarkCompleted(e.id)}
-                              className="bg-[#6C47FF]/10 border-2 border-[#6C47FF]/30 text-[#6C47FF] font-bold text-[10px] px-3 py-1.5 rounded-xl flex items-center gap-1.5 mx-auto hover:bg-[#6C47FF]/20 cursor-pointer transition-all"
+                              disabled={markingId === e.id}
+                              className="bg-[#6C47FF]/10 border-2 border-[#6C47FF]/30 text-[#6C47FF] font-bold text-[10px] px-3 py-1.5 rounded-xl flex items-center gap-1.5 mx-auto hover:bg-[#6C47FF]/20 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                              <CheckCircle className="w-3 h-3" /> Marcar Completado
+                              <CheckCircle className={`w-3 h-3 ${markingId === e.id ? "animate-spin" : ""}`} />
+                              {markingId === e.id ? "Guardando..." : "Marcar Completado"}
                             </button>
                           )}
                           {e.completed_at && e.status !== "Certificado" && (
@@ -1538,8 +1710,10 @@ export default function UniversityPortalView({
                     <input
                       type="text"
                       required
+                      inputMode="numeric"
+                      pattern="[0-9]+"
                       value={withdrawAccount}
-                      onChange={(e) => setWithdrawAccount(e.target.value)}
+                      onChange={(e) => setWithdrawAccount(e.target.value.replace(/\D/g, ""))}
                       placeholder="ej. 123456789012"
                       className="w-full border-2 border-gray-200 focus:border-[#6C47FF] rounded-xl p-3 outline-none text-[#1A1A1A]"
                     />

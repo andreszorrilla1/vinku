@@ -40,8 +40,10 @@ import SitemapView from "./components/SitemapView";
 import UniversityPortalView from "./components/UniversityPortalView";
 import StudentPortalView from "./components/StudentPortalView";
 import CorporatePortalView from "./components/CorporatePortalView";
+import FlujoEtapa1 from "./components/etapa1/FlujoEtapa1";
 import { useAuth } from "./contexts/AuthContext";
 import * as api from "./lib/api";
+import { supabase } from "./lib/supabase";
 
 export default function App() {
   const { user, role, signOut } = useAuth();
@@ -52,7 +54,8 @@ export default function App() {
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [studentTab, setStudentTab] = useState<"pass" | "diag" | "market" | "wallet" | "fellowship" | "portfolio">("pass");
   const [corpTab, setCorpTab] = useState<"dashboard" | "talent" | "wallet" | "diagnosis" | "config">("dashboard");
-  const [uniTab, setUniTab] = useState<"dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero">("dashboard");
+  const [uniTab, setUniTab] = useState<"dashboard" | "catalogo" | "matriculados" | "certificaciones" | "financiero" | "campuspass">("dashboard");
+  const [diagnosticoAbierto, setDiagnosticoAbierto] = useState(false);
   const [archTab, setArchTab] = useState<"sitemap" | "blueprint" | "crypto">("sitemap");
 
   // Live state from Supabase
@@ -113,7 +116,9 @@ export default function App() {
 
   // Cargar datos iniciales desde Supabase
   useEffect(() => {
-    fetchState();
+    const ctrl = new AbortController();
+    fetchState(ctrl.signal);
+    return () => ctrl.abort();
   }, [user]);
 
   // Redirigir al portal correcto según el rol autenticado
@@ -134,7 +139,7 @@ export default function App() {
     setTimeout(() => setToastMsg(null), 4000);
   };
 
-  const fetchState = async () => {
+  const fetchState = async (signal?: AbortSignal) => {
     setIsLoading(true);
     const timeout = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error('timeout')), 8000)
@@ -280,10 +285,11 @@ export default function App() {
         }
       }
     } catch (e) {
+      if (signal?.aborted) return;
       console.error(e);
       triggerToast("Error cargando datos", "error");
     } finally {
-      setIsLoading(false);
+      if (!signal?.aborted) setIsLoading(false);
     }
   };
 
@@ -381,7 +387,6 @@ export default function App() {
   const handleApproveSello = async (_studentId: string, courseId: string, _universityId: string) => {
     try {
       // Buscar el enrollment por course_id
-      const { supabase } = await import(/* @vite-ignore */ './lib/supabase');
       const { data: enrollments } = await supabase
         .from('enrollments')
         .select('id')
@@ -690,7 +695,14 @@ export default function App() {
               {/* ========================================================== */}
               {/*                    0. MARKETING & ONBOARDING VIEW          */}
               {/* ========================================================== */}
-              {activeRole === "marketing" && (
+              {activeRole === "marketing" && diagnosticoAbierto && (
+                <FlujoEtapa1
+                  usuarioId={user?.id ?? "anon"}
+                  clienteNombre={student?.name ?? user?.email ?? "Interesado Campus Pass"}
+                  onSalir={() => setDiagnosticoAbierto(false)}
+                />
+              )}
+              {activeRole === "marketing" && !diagnosticoAbierto && (
                 <MarketingView
                   courses={courses}
                   setActiveRole={setActiveRole}
@@ -702,6 +714,7 @@ export default function App() {
                   setAuthMode={setAuthMode}
                   handleEnrollCourse={handleEnrollCourse}
                   triggerToast={triggerToast}
+                  onIniciarDiagnostico={() => setDiagnosticoAbierto(true)}
                 />
               )}
 

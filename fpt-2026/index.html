@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="src/styles/tokens.css">
   <link rel="stylesheet" href="src/styles/base.css">
   <link rel="stylesheet" href="src/styles/landing.css">
+  <link rel="stylesheet" href="src/styles/hoja-ruta.css">
 </head>
 <body>
   <!-- ===================== NAV ===================== -->
@@ -56,9 +57,8 @@
           <h2>Hojas de ruta</h2>
           <p>Un camino con pines por eje temático: de cada panel, el problema, la voz que lo dijo, las acciones concretas y quiénes las hacen posibles.</p>
         </div>
-        <div class="en-construccion" data-modulo="hoja-de-ruta">
-          <p><b>Camino con pines</b> — se construye en la Sección 4.<br>Fondo con silueta de Colombia y ventana emergente por pin (problema · cita · acciones · actores · descarga).</p>
-        </div>
+        <!-- Módulo Hoja de ruta: lo llena src/hoja-ruta.js desde paneles.json -->
+        <div data-modulo="hoja-de-ruta"></div>
       </div>
     </section>
 
@@ -145,5 +145,6 @@
   </footer>
 
   <script src="src/app.js"></script>
+  <script src="src/hoja-ruta.js"></script>
 </body>
 </html>

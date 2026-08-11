@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="src/styles/base.css">
   <link rel="stylesheet" href="src/styles/landing.css">
   <link rel="stylesheet" href="src/styles/hoja-ruta.css">
+  <link rel="stylesheet" href="src/styles/buscador.css">
 </head>
 <body>
   <!-- ===================== NAV ===================== -->
@@ -68,9 +69,11 @@
         <div class="seccion__cabecera">
           <span class="etiqueta">Prioridad 2 · Memoria viva</span>
           <h2>Repositorio de los 13 paneles</h2>
-          <p>Cada panel, con su relatoría visual, su nivel de trazabilidad y sus productos descargables. El buscador con filtros llega en la Sección 6.</p>
+          <p>Cada panel, con su relatoría visual, su nivel de trazabilidad y sus productos descargables. Filtra por tipo, eje temático o busca por texto.</p>
         </div>
-        <!-- Vista previa del grid alimentada desde paneles.json -->
+        <!-- Buscador: lo llena src/buscador.js desde paneles.json -->
+        <form class="bus" data-buscador role="search"></form>
+        <!-- Grid alimentado desde paneles.json (app.js) -->
         <div class="grid-paneles" data-grid-paneles></div>
       </div>
     </section>
@@ -147,5 +150,6 @@
   <script src="src/logo.js"></script>
   <script src="src/app.js"></script>
   <script src="src/hoja-ruta.js"></script>
+  <script src="src/buscador.js"></script>
 </body>
 </html>

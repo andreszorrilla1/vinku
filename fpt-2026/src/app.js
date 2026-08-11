@@ -56,8 +56,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const clickable = p.estado !== 'pendiente';
         const tag = clickable ? 'a' : 'div';
         const href = clickable ? ` href="relatoria.html?panel=${p.id}"` : '';
+        // Cadena de búsqueda: título + problema + temas + territorios
+        const haystack = [
+          tituloPanel(p), p.captura?.problema?.sintesis,
+          ...(p.codificacion?.temas || []), ...(p.codificacion?.territorios || []),
+        ].filter((s) => s && !esPlaceholder(s)).join(' ').toLowerCase();
         return `
-      <${tag} class="tarjeta-panel${p.estado === 'pendiente' ? ' es-placeholder' : ''}"${href} data-estado="${p.estado}">
+      <${tag} class="tarjeta-panel${p.estado === 'pendiente' ? ' es-placeholder' : ''}"${href}
+        data-estado="${p.estado}" data-tipo="${p.tipo || ''}" data-eje="${p.ejeTematico || ''}" data-buscar="${haystack.replace(/"/g, '')}">
         <span class="tarjeta-panel__num">${p.numero}</span>
         <span class="chip-confianza" data-nivel="${p.confianza}">${etiquetaEstado[p.estado] || p.estado}</span>
         <h3 class="tarjeta-panel__titulo">${tituloPanel(p)}</h3>
@@ -65,5 +71,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       </${tag}>`;
       })
       .join('');
+    document.dispatchEvent(new CustomEvent('grid:listo'));
   }
 });

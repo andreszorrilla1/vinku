@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "anio": 2026,
+    "evento": "Congreso de Finanzas Públicas Territoriales 2026",
+    "conceptoMadre": "El territorio cobra valor",
+    "productor": "Magna Comunicaciones",
+    "marca": "GOBS Estrategias Públicas",
+    "totalPaneles": 13,
+    "ejesTematicos": [
+      {
+        "id": "eje-provisional-1",
+        "nombre": "‹placeholder — eje provisional›",
+        "nota": "Agrupación PROVISIONAL. El brief advierte que los ejes se hicieron con solo 6 paneles de referencia; no darlos por definitivos hasta revisar las 13 relatorías."
+      }
+    ],
+    "convenciones": {
+      "placeholder": "Cualquier valor que empiece con '‹placeholder' es contenido no ingerido todavía. NO es contenido real; se reemplaza cuando llegue la relatoría/ficha correspondiente.",
+      "estado": "Refleja el estado real del producto de conocimiento: 'final' (relatoría estratégica final existe), 'transcripcion' (hay transcripción/ficha Excel, falta relatoría final), 'pendiente' (panel sin material).",
+      "ingestado": "true solo cuando el texto real ya fue cargado en este JSON. Mientras sea false, los campos de contenido son placeholder aunque 'estado' sea 'final'."
+    }
+  },
+  "paneles": [
+    {
+      "id": "panel-magistral",
+      "numero": "M",
+      "titulo": "‹placeholder — título Panel Magistral›",
+      "subtitulo": "‹placeholder — subtítulo›",
+      "tipo": "nacional",
+      "ejeTematico": null,
+      "estado": "final",
+      "ingestado": false,
+      "confianza": "alto",
+      "anclajePolitico": "‹placeholder — §1 anclaje político: contexto de coyuntura, quién convoca, por qué importa ahora›",
+      "captura": {
+        "problema": {
+          "sintesis": "‹placeholder — síntesis del PROBLEMA que aborda el panel›",
+          "cita": { "texto": "‹placeholder — cita textual que ilustra el problema›", "autor": "‹placeholder›", "rol": "‹placeholder›" }
+        },
+        "reto": {
+          "sintesis": "‹placeholder — síntesis del RETO›",
+          "cita": { "texto": "‹placeholder›", "autor": "‹placeholder›", "rol": "‹placeholder›" }
+        },
+        "solucion": {
+          "sintesis": "‹placeholder — síntesis de la SOLUCIÓN propuesta›",
+          "cita": { "texto": "‹placeholder›", "autor": "‹placeholder›", "rol": "‹placeholder›" }
+        },
+        "sinergia": {
+          "sintesis": "‹placeholder — síntesis de la SINERGIA / actoría conjunta›",
+          "cita": { "texto": "‹placeholder›", "autor": "‹placeholder›", "rol": "‹placeholder›" }
+        }
+      },
+      "lecturaEstrategica": "‹placeholder — §3 lectura estratégica: implicaciones de política pública›",
+      "sintesisEnCaliente": "‹placeholder — §4 síntesis en caliente: el mensaje de una frase que resume el panel›",
+      "codificacion": {
+        "temas": [],
+        "territorios": [],
+        "actores": []
+      },
+      "comunicaciones": {
+        "fraseClave": "‹placeholder — frase clave para comunicaciones›",
+        "hashtags": [],
+        "acciones": []
+      },
+      "recursos": {
+        "pdfRelatoria": null,
+        "pdfHojaRuta": null,
+        "videoEmbed": null,
+        "galeria": []
+      }
+    },
+    { "id": "panel-2", "numero": 2, "titulo": "‹placeholder — Panel 2›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "final", "ingestado": false, "confianza": "alto", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
+    { "id": "panel-3", "numero": 3, "titulo": "‹placeholder — Panel 3›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "final", "ingestado": false, "confianza": "alto", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
+    { "id": "panel-4", "numero": 4, "titulo": "‹placeholder — Panel 4›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
+    { "id": "panel-5", "numero": 5, "titulo": "‹placeholder — Panel 5›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
+    { "id": "panel-6", "numero": 6, "titulo": "‹placeholder — Panel 6›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
+    { "id": "panel-7", "numero": 7, "titulo": "‹placeholder — Panel 7›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "final", "ingestado": false, "confianza": "alto", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
+    { "id": "panel-8", "numero": 8, "titulo": "‹placeholder — Panel 8›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "final", "ingestado": false, "confianza": "alto", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
+    { "id": "panel-9", "numero": 9, "titulo": "‹placeholder — Panel 9›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
+    { "id": "panel-10", "numero": 10, "titulo": "‹placeholder — Panel 10›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
+    { "id": "panel-11", "numero": 11, "titulo": "‹placeholder — Panel 11›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
+    { "id": "panel-12", "numero": 12, "titulo": "‹placeholder — Panel 12›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
+    { "id": "panel-13", "numero": 13, "titulo": "‹placeholder — Panel 13 (cierre)›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "pendiente", "ingestado": false, "confianza": "bajo", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } }
+  ]
+}

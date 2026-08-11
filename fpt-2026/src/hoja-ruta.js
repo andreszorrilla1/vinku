@@ -104,12 +104,12 @@ function construirRuta(paneles) {
   cont.classList.add('ruta');
   cont.innerHTML = '';
 
-  // Geometría horizontal
-  const PASO = 300;         // separación entre pines (px)
-  const MARGEN = 200;       // margen a izquierda/derecha
-  const H = 460;            // alto del lienzo
+  // Geometría horizontal (pines grandes → lienzo más ancho, más desplazamiento)
+  const PASO = 360;         // separación entre pines (px)
+  const MARGEN = 230;       // margen a izquierda/derecha
+  const H = 540;            // alto del lienzo
   const mid = H / 2;
-  const amp = 90;           // amplitud del zig-zag
+  const amp = 110;          // amplitud del zig-zag
   const W = MARGEN * 2 + (paneles.length - 1) * PASO;
 
   const pts = calcularPuntos(paneles.length, PASO, MARGEN, mid, amp);
@@ -156,12 +156,12 @@ function construirRuta(paneles) {
       'aria-label': `Panel ${panel.numero}`,
       transform: `translate(${x} ${y})`,
     });
-    g.appendChild(el('circle', { class: 'pin__estela', r: '34', opacity: '0.12' }));
-    g.appendChild(el('circle', { class: 'pin__disco', r: '34' }));
+    g.appendChild(el('circle', { class: 'pin__estela', r: '58', opacity: '0.12' }));
+    g.appendChild(el('circle', { class: 'pin__disco', r: '50' }));
     g.appendChild(el('text', { class: 'pin__num' }, String(panel.numero)));
 
     const titulo = esPH(panel.titulo) ? `Panel ${panel.numero}` : panel.titulo;
-    const ly = arriba ? -58 : 66;
+    const ly = arriba ? -78 : 88;
     g.appendChild(el('text', { class: 'pin__label', x: '0', y: String(ly), 'text-anchor': 'middle' }, titulo));
 
     const abrir = () => abrirModal(panel);

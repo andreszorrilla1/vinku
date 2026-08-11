@@ -85,7 +85,7 @@
 .pin__disco {
   fill: var(--color-fondo);
   stroke: var(--color-primario);
-  stroke-width: 3;
+  stroke-width: 4;
   transition: transform .15s ease;
   transform-box: fill-box;
   transform-origin: center;
@@ -98,7 +98,7 @@
   fill: var(--color-primario);
   text-anchor: middle;
   dominant-baseline: central;
-  font-size: 26px;
+  font-size: 40px;
 }
 .pin__estela { fill: var(--gobs-cian); }
 /* Pin de panel pendiente/placeholder */
@@ -109,7 +109,7 @@
 /* Etiqueta corta junto al pin */
 .pin__label {
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 19px;
   font-weight: 600;
   fill: var(--color-texto);
 }

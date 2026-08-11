@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="src/styles/landing.css">
   <link rel="stylesheet" href="src/styles/hoja-ruta.css">
   <link rel="stylesheet" href="src/styles/buscador.css">
+  <link rel="stylesheet" href="src/styles/manifiesto.css">
 </head>
 <body>
   <!-- ===================== NAV ===================== -->
@@ -112,9 +113,8 @@
           <h2>El manifiesto</h2>
           <p>Un gesto simbólico de pertenencia al relato de una gestión pública moderna basada en datos. Sin login, sin captación de leads.</p>
         </div>
-        <div class="en-construccion" data-modulo="manifiesto">
-          <p><b>Firma del manifiesto</b> — se construye en la Sección 7.<br>Contador en vivo · firma manuscrita (Caveat) · muro de firmantes vía Google Apps Script.</p>
-        </div>
+        <!-- Módulo Manifiesto: lo llena src/manifiesto.js -->
+        <div data-modulo="manifiesto"></div>
       </div>
     </section>
   </main>
@@ -151,5 +151,6 @@
   <script src="src/app.js"></script>
   <script src="src/hoja-ruta.js"></script>
   <script src="src/buscador.js"></script>
+  <script src="src/manifiesto.js"></script>
 </body>
 </html>

@@ -8,12 +8,54 @@
   margin-top: var(--sp-8);
 }
 
+/* Pista con scroll horizontal: aquí se corre el fondo revelando pines */
+.ruta__pista {
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
+  scrollbar-width: none;              /* Firefox */
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radio-lg);
+  background:
+    linear-gradient(var(--color-fondo-alt), var(--color-fondo-alt));
+  overscroll-behavior-x: contain;
+}
+.ruta__pista::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+.ruta__pista.arrastrando { cursor: grabbing; }
+
 /* Lienzo del camino: la silueta de Colombia y el sendero viven aquí */
 .ruta__lienzo {
-  width: 100%;
-  height: auto;
   display: block;
   overflow: visible;
+  user-select: none;
+  touch-action: pan-x;
+}
+
+/* Flechas de navegación */
+.ruta__flechas {
+  position: absolute; inset: 0; pointer-events: none;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--sp-2);
+}
+.ruta__flecha {
+  pointer-events: auto;
+  width: 48px; height: 48px; border-radius: 999px; border: none;
+  background: var(--gobs-negro); color: #fff; font-size: 26px; line-height: 1;
+  cursor: pointer; box-shadow: var(--sombra); opacity: .92;
+  display: grid; place-items: center;
+}
+.ruta__flecha:hover { background: var(--color-primario); }
+
+/* Barra de progreso del recorrido */
+.ruta__progreso {
+  height: 5px; background: var(--color-borde); border-radius: 999px;
+  margin-top: var(--sp-4); overflow: hidden;
+}
+.ruta__progreso span {
+  display: block; height: 100%; width: 0;
+  background: var(--gobs-cian);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  transition: width .08s linear;
 }
 
 /* Silueta de Colombia — decorativa, tenue */

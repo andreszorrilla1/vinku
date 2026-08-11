@@ -17,6 +17,27 @@
 /* Barra de progreso de lectura */
 .rel-progreso { position: fixed; top: 0; left: 0; height: 4px; width: 0; background: var(--gobs-cian); z-index: 60; }
 
+/* Navegación entre paneles (pasar fichas) — flechas flotantes */
+.rel-flip-nav { position: fixed; inset: 0; z-index: 55; pointer-events: none; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--sp-3); }
+.rel-flip {
+  pointer-events: auto; display: inline-flex; align-items: center; gap: var(--sp-3);
+  text-decoration: none; background: color-mix(in srgb, var(--color-fondo) 92%, transparent);
+  border: 1px solid var(--color-borde); border-radius: 999px; padding: var(--sp-2) var(--sp-4);
+  box-shadow: var(--sombra); backdrop-filter: blur(6px); max-width: 40vw; transition: transform .15s ease;
+}
+.rel-flip:hover { transform: translateY(-2px); }
+.rel-flip__ico { font-size: 26px; line-height: 1; color: var(--color-primario); font-weight: 700; }
+.rel-flip__txt { display: flex; flex-direction: column; font-family: var(--font-sans); line-height: 1.15; min-width: 0; }
+.rel-flip__txt small { font-size: var(--fs-xs); color: var(--color-texto-suave); text-transform: uppercase; letter-spacing: .08em; }
+.rel-flip__txt b { font-size: var(--fs-sm); color: var(--color-texto); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rel-flip--next { flex-direction: row-reverse; text-align: right; }
+.rel-flip--off { opacity: 0; }
+/* En móvil, solo el ícono para no tapar contenido */
+@media (max-width: 640px) {
+  .rel-flip__txt { display: none; }
+  .rel-flip { padding: var(--sp-2); }
+}
+
 /* ---- Portada ---- */
 .rel-portada {
   min-height: 82vh; display: flex; flex-direction: column; justify-content: center;

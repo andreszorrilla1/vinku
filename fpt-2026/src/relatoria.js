@@ -23,9 +23,24 @@ function citaHTML(cita, colorVar) {
   return `<blockquote>“${txt}”</blockquote>${autor ? `<cite><b>${autor}</b>${rol ? rol : ''}</cite>` : ''}`;
 }
 
-function render(panel) {
+function navPaneles(paneles, idx) {
+  const prev = idx > 0 ? paneles[idx - 1] : null;
+  const next = idx < paneles.length - 1 ? paneles[idx + 1] : null;
+  const rot = (p) => (esPH(p.titulo) ? `Panel ${p.numero}` : p.titulo);
+  const btn = (p, dir) =>
+    p
+      ? `<a class="rel-flip rel-flip--${dir}" href="relatoria.html?panel=${p.id}" aria-label="${dir === 'prev' ? 'Panel anterior' : 'Panel siguiente'}">
+           <span class="rel-flip__ico">${dir === 'prev' ? '‹' : '›'}</span>
+           <span class="rel-flip__txt"><small>${dir === 'prev' ? 'Anterior' : 'Siguiente'}</small><b>${rot(p)}</b></span>
+         </a>`
+      : `<span class="rel-flip rel-flip--${dir} rel-flip--off" aria-hidden="true"><span class="rel-flip__ico">${dir === 'prev' ? '‹' : '›'}</span></span>`;
+  return { prev, next, html: `<nav class="rel-flip-nav">${btn(prev, 'prev')}${btn(next, 'next')}</nav>` };
+}
+
+function render(panel, paneles, idx) {
   const cont = document.getElementById('rel-app');
   const titulo = esPH(panel.titulo) ? `Panel ${panel.numero}` : panel.titulo;
+  const nav = navPaneles(paneles, idx);
   const etiqConf = { alto: 'Trazabilidad alta', medio: 'Trazabilidad media', bajo: 'Trazabilidad baja' };
   const sub = limpio(panel.subtitulo) || limpio(panel.anclajePolitico);
   const sintCaliente = limpio(panel.sintesisEnCaliente);
@@ -48,9 +63,10 @@ function render(panel) {
 
   cont.innerHTML = `
     <div class="rel-progreso" id="rel-progreso"></div>
+    ${nav.html}
     <header class="rel-portada">
       <div class="rel-portada__inner">
-        <span class="rel-portada__num">Relatoría estratégica · Panel ${panel.numero} · 2026</span>
+        <span class="rel-portada__num">Relatoría estratégica · Panel ${panel.numero} · ${idx + 1} de ${paneles.length} · 2026</span>
         <h1>${titulo}</h1>
         ${sub ? `<p class="rel-portada__sub">${sub}</p>` : ''}
         <div class="rel-portada__meta">
@@ -71,6 +87,7 @@ function render(panel) {
           ${pdf ? `<a class="btn" href="${pdf}" download>Descargar relatoría (PDF)</a>` : `<button class="btn" disabled style="opacity:.5;cursor:not-allowed">Relatoría PDF próximamente</button>`}
           <a class="btn btn--fantasma" style="border-color:var(--gobs-cian);color:var(--gobs-cian)" href="index.html#repositorio">Volver al repositorio</a>
         </div>
+        ${nav.next ? `<p style="margin-top:var(--sp-8)"><a href="relatoria.html?panel=${nav.next.id}" style="color:var(--gobs-cian);font-family:var(--font-sans);font-weight:600;text-decoration:none">Siguiente panel: ${esPH(nav.next.titulo) ? 'Panel ' + nav.next.numero : nav.next.titulo} →</a></p>` : ''}
         <div class="rel-cierre__logo"><span data-logo data-logo-tono="claro"></span></div>
       </div>
     </section>`;
@@ -93,6 +110,12 @@ function render(panel) {
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
+  // Navegación entre paneles con flechas del teclado
+  window.onkeydown = (e) => {
+    if (e.key === 'ArrowRight' && nav.next) location.href = `relatoria.html?panel=${nav.next.id}`;
+    if (e.key === 'ArrowLeft' && nav.prev) location.href = `relatoria.html?panel=${nav.prev.id}`;
+  };
+
   document.title = `${titulo} · Relatoría FPT 2026`;
 }
 
@@ -109,8 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const id = new URLSearchParams(location.search).get('panel') || window.__PANEL_ID__;
   const arranque = () => {
     if (!window.FPT) return setTimeout(arranque, 40);
-    const panel = (window.FPT.paneles || []).find((p) => p.id === id);
-    if (panel) render(panel); else noEncontrado(id);
+    const paneles = window.FPT.paneles || [];
+    const idx = paneles.findIndex((p) => p.id === id);
+    if (idx >= 0) render(paneles[idx], paneles, idx); else noEncontrado(id);
   };
   arranque();
 });

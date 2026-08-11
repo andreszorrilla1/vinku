@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Congreso FPT 2026 · El territorio cobra valor</title>
+  <meta name="description" content="Sitio del Congreso de Finanzas Públicas Territoriales 2026. Relatorías estratégicas, hojas de ruta de incidencia y memoria viva de los 13 paneles.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/styles/tokens.css">
+  <link rel="stylesheet" href="src/styles/base.css">
+  <link rel="stylesheet" href="src/styles/landing.css">
+</head>
+<body>
+  <!-- ===================== NAV ===================== -->
+  <nav class="nav">
+    <div class="contenedor nav__inner">
+      <a class="nav__marca" href="#inicio" aria-label="Inicio">
+        <span class="nav__logo" aria-hidden="true"></span>
+        <!-- TODO Sección 5: reemplazar por el logo GOBS real -->
+        <span>FPT&nbsp;<b style="color:var(--color-primario)">2026</b></span>
+      </a>
+      <ul class="nav__links">
+        <li><a href="#hojas-de-ruta">Hojas de ruta</a></li>
+        <li><a href="#repositorio">Repositorio</a></li>
+        <li><a href="#manifiesto">Manifiesto</a></li>
+        <li><a href="#creditos">Metodología</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <header class="hero" id="inicio">
+    <div class="contenedor hero__inner">
+      <span class="etiqueta hero__kicker">Congreso de Finanzas Públicas Territoriales · <span data-anio>2026</span></span>
+      <h1>El territorio<br>cobra valor</h1>
+      <p class="hero__lead">Relatorías estratégicas, hojas de ruta de incidencia y memoria viva de los <b data-total-paneles>13</b> paneles del congreso.</p>
+      <div class="hero__cta">
+        <a class="btn" href="#hojas-de-ruta">Ver hojas de ruta</a>
+        <a class="btn btn--fantasma" style="border-color:var(--gobs-cian); color:var(--gobs-cian)" href="#manifiesto">Firmar el manifiesto</a>
+      </div>
+      <div class="hero__stats">
+        <div><b data-total-paneles>13</b><span>paneles sistematizados</span></div>
+        <div><b>7</b><span>secciones por ficha</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HOJAS DE RUTA (prioridad 1) ============ -->
+    <section class="seccion" id="hojas-de-ruta">
+      <div class="contenedor">
+        <div class="seccion__cabecera">
+          <span class="etiqueta">Prioridad 1 · Incidencia</span>
+          <h2>Hojas de ruta</h2>
+          <p>Un camino con pines por eje temático: de cada panel, el problema, la voz que lo dijo, las acciones concretas y quiénes las hacen posibles.</p>
+        </div>
+        <div class="en-construccion" data-modulo="hoja-de-ruta">
+          <p><b>Camino con pines</b> — se construye en la Sección 4.<br>Fondo con silueta de Colombia y ventana emergente por pin (problema · cita · acciones · actores · descarga).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ REPOSITORIO / MEMORIA VIVA (prioridad 2) ============ -->
+    <section class="seccion seccion--alt" id="repositorio">
+      <div class="contenedor">
+        <div class="seccion__cabecera">
+          <span class="etiqueta">Prioridad 2 · Memoria viva</span>
+          <h2>Repositorio de los 13 paneles</h2>
+          <p>Cada panel, con su relatoría visual, su nivel de trazabilidad y sus productos descargables. El buscador con filtros llega en la Sección 6.</p>
+        </div>
+        <!-- Vista previa del grid alimentada desde paneles.json -->
+        <div class="grid-paneles" data-grid-paneles></div>
+      </div>
+    </section>
+
+    <!-- ============ AUDIOVISUAL ============ -->
+    <section class="seccion" id="audiovisual">
+      <div class="contenedor">
+        <div class="seccion__cabecera">
+          <span class="etiqueta">Relatoría audiovisual</span>
+          <h2>El congreso en video</h2>
+        </div>
+        <div class="en-construccion" data-modulo="audiovisual">
+          <p><b>Pendiente de diseño real</b> (Sección 8).<br>Reproductor embebido desde Vimeo/YouTube no listado — el video nunca se aloja en el sitio.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ GALERÍA ============ -->
+    <section class="seccion seccion--alt" id="galeria">
+      <div class="contenedor">
+        <div class="seccion__cabecera">
+          <span class="etiqueta">Galería</span>
+          <h2>Memoria fotográfica</h2>
+        </div>
+        <div class="en-construccion" data-modulo="galeria">
+          <p><b>Pendiente de diseño real</b> (Sección 8).<br>Imágenes optimizadas a .webp, alojadas en /assets/images.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MANIFIESTO ============ -->
+    <section class="seccion" id="manifiesto">
+      <div class="contenedor">
+        <div class="seccion__cabecera">
+          <span class="etiqueta">Adhesión</span>
+          <h2>El manifiesto</h2>
+          <p>Un gesto simbólico de pertenencia al relato de una gestión pública moderna basada en datos. Sin login, sin captación de leads.</p>
+        </div>
+        <div class="en-construccion" data-modulo="manifiesto">
+          <p><b>Firma del manifiesto</b> — se construye en la Sección 7.<br>Contador en vivo · firma manuscrita (Caveat) · muro de firmantes vía Google Apps Script.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer" id="creditos">
+    <div class="contenedor">
+      <div class="footer__grid">
+        <div>
+          <h4>El territorio cobra valor</h4>
+          <p style="color:var(--gobs-azul-claro); font-family:var(--font-sans); font-size:var(--fs-sm); max-width:32ch;">Congreso de Finanzas Públicas Territoriales <span data-anio>2026</span>.</p>
+        </div>
+        <div>
+          <h4>Navegación</h4>
+          <a href="#hojas-de-ruta">Hojas de ruta</a>
+          <a href="#repositorio">Repositorio</a>
+          <a href="#manifiesto">Manifiesto</a>
+        </div>
+        <div>
+          <h4>Metodología</h4>
+          <a href="#">Ficha de panel (7 secciones)</a>
+          <a href="#">Niveles de trazabilidad</a>
+        </div>
+        <div>
+          <h4>Créditos</h4>
+          <p style="color:var(--gobs-azul-claro); font-family:var(--font-sans); font-size:var(--fs-sm);">Producción: Magna Comunicaciones.<br>Marca: GOBS Estrategias Públicas.</p>
+        </div>
+      </div>
+      <p class="footer__nota">© <span data-anio>2026</span> Congreso FPT. Sitio estático · sin cookies · sin muros de acceso.</p>
+    </div>
+  </footer>
+
+  <script src="src/app.js"></script>
+</body>
+</html>

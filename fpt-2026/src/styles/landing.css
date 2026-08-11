@@ -1,0 +1,81 @@
+/* ============================================================
+   Congreso FPT 2026 — Estilos de la landing / Home
+   Depende de tokens.css + base.css.
+   ============================================================ */
+
+/* ---- Navegación ---- */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--color-fondo) 88%, transparent);
+  backdrop-filter: saturate(150%) blur(8px);
+  border-bottom: 1px solid var(--color-borde);
+}
+.nav__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-4); padding: var(--sp-3) 0;
+}
+.nav__marca { display: flex; align-items: center; gap: var(--sp-2); font-weight: 800; font-family: var(--font-sans); letter-spacing: -0.02em; font-size: var(--fs-lg); }
+/* Placeholder del logo GOBS: chip diagonal (se reemplaza por el logo real en la Sección 5) */
+.nav__logo { width: 30px; height: 30px; background: var(--gobs-negro); position: relative; }
+.nav__logo::after { content:""; position:absolute; left:6px; bottom:6px; width:12px; height:12px; background: var(--gobs-cian); clip-path: polygon(0 0,100% 0,100% 100%,30% 100%,0 60%); }
+.nav__links { display: flex; gap: var(--sp-6); list-style: none; margin: 0; padding: 0; font-family: var(--font-sans); font-size: var(--fs-sm); font-weight: 600; }
+.nav__links a { color: var(--color-texto); text-decoration: none; }
+.nav__links a:hover { color: var(--color-primario); }
+@media (max-width: 720px) { .nav__links { display: none; } }
+
+/* ---- Banner / hero ---- */
+.hero {
+  position: relative; overflow: hidden;
+  background: var(--gobs-negro); color: var(--gobs-blanco);
+  padding: var(--sp-32) 0 var(--sp-24);
+}
+.hero::before { /* banda diagonal de acento, cuadrante positivo */
+  content: ""; position: absolute; inset: auto -10% -30% -10%; height: 60%;
+  background: var(--gobs-azul-profundo); transform: skewY(-8deg); transform-origin: bottom left; opacity: .9;
+}
+.hero::after { /* cuña cian arriba-derecha (flecha GOBS) */
+  content: ""; position: absolute; top: 0; right: 0; width: clamp(120px, 22vw, 320px); aspect-ratio: 1;
+  background: var(--gobs-cian); clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+.hero__inner { position: relative; z-index: 1; }
+.hero__kicker { color: var(--gobs-cian); }
+.hero h1 { margin: var(--sp-3) 0; max-width: 14ch; }
+.hero__lead { font-family: var(--font-sans); font-size: var(--fs-lg); color: var(--gobs-azul-claro); max-width: 46ch; }
+.hero__cta { display: flex; flex-wrap: wrap; gap: var(--sp-4); margin-top: var(--sp-8); }
+.hero__stats { display: flex; gap: var(--sp-8); margin-top: var(--sp-12); font-family: var(--font-sans); }
+.hero__stats b { display: block; font-family: var(--font-serif); font-size: var(--fs-2xl); color: var(--gobs-blanco); }
+.hero__stats span { color: var(--gobs-azul-claro); font-size: var(--fs-sm); }
+
+/* ---- Secciones ---- */
+.seccion { padding: var(--sp-24) 0; }
+.seccion--alt { background: var(--color-fondo-alt); }
+.seccion__cabecera { max-width: 52ch; margin-bottom: var(--sp-12); }
+.seccion__cabecera .etiqueta { color: var(--color-primario); }
+.seccion__cabecera h2 { margin: var(--sp-2) 0; }
+
+/* Marca de "en construcción" para las piezas de secciones posteriores */
+.en-construccion {
+  border: 2px dashed var(--color-borde); border-radius: var(--radio-lg);
+  padding: var(--sp-12) var(--sp-6); text-align: center; color: var(--color-texto-suave);
+  font-family: var(--font-sans);
+}
+.en-construccion b { color: var(--color-texto); }
+
+/* ---- Grid de paneles (vista previa; buscador completo en Sección 6) ---- */
+.grid-paneles { display: grid; gap: var(--sp-4); grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.tarjeta-panel {
+  position: relative; background: var(--color-fondo); border: 1px solid var(--color-borde);
+  border-radius: var(--radio-lg); padding: var(--sp-6); display: flex; flex-direction: column; gap: var(--sp-3);
+  transition: transform .15s ease, box-shadow .15s ease; overflow: hidden;
+}
+.tarjeta-panel:hover { transform: translateY(-3px); box-shadow: var(--sombra); }
+.tarjeta-panel::after { content:""; position:absolute; top:0; right:0; width:44px; aspect-ratio:1; background: var(--gobs-cian); clip-path: polygon(100% 0,100% 100%,0 0); opacity:.85; }
+.tarjeta-panel__num { font-family: var(--font-serif); font-size: var(--fs-2xl); font-weight: 700; color: var(--color-primario); line-height: 1; }
+.tarjeta-panel__titulo { font-size: var(--fs-lg); margin: 0; }
+
+/* ---- Footer ---- */
+.footer { background: var(--gobs-negro); color: var(--gobs-blanco); padding: var(--sp-16) 0 var(--sp-8); }
+.footer__grid { display: grid; gap: var(--sp-8); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); font-family: var(--font-sans); }
+.footer h4 { color: var(--gobs-cian); font-family: var(--font-sans); font-size: var(--fs-sm); letter-spacing: .1em; text-transform: uppercase; }
+.footer a { color: var(--gobs-azul-claro); text-decoration: none; display: block; margin-top: var(--sp-2); font-size: var(--fs-sm); }
+.footer__nota { margin-top: var(--sp-12); padding-top: var(--sp-6); border-top: 1px solid #23303F; color: #7c8797; font-size: var(--fs-xs); }

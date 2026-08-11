@@ -1,0 +1,97 @@
+/* ============================================================
+   Congreso FPT 2026 — Base / reset
+   Depende de tokens.css (cárgalo antes).
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  color: var(--color-texto);
+  background: var(--color-fondo);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Titulares y citas en serif (Georgia) */
+h1, h2, h3, h4, .serif, blockquote {
+  font-family: var(--font-serif);
+  line-height: var(--lh-tight);
+  font-weight: 700;
+}
+
+h1 { font-size: var(--fs-3xl); letter-spacing: -0.01em; }
+h2 { font-size: var(--fs-2xl); }
+h3 { font-size: var(--fs-xl); }
+
+p { max-width: var(--ancho-lectura); }
+
+a { color: var(--color-primario); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+img, svg, video { max-width: 100%; height: auto; display: block; }
+
+blockquote {
+  font-size: var(--fs-lg);
+  font-style: italic;
+  border-left: 4px solid var(--color-acento);
+  padding-left: var(--sp-4);
+  margin-inline: 0;
+}
+
+/* Etiquetas / UI en Montserrat con tracking */
+.etiqueta {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Contenedor central */
+.contenedor {
+  width: min(100% - 2 * var(--sp-6), var(--ancho-max));
+  margin-inline: auto;
+}
+
+/* Botón base (UI) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  padding: var(--sp-3) var(--sp-6);
+  border-radius: var(--radio);
+  border: 2px solid var(--color-primario);
+  background: var(--color-primario);
+  color: var(--gobs-blanco);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+  text-decoration: none;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn--fantasma { background: transparent; color: var(--color-primario); }
+
+/* Chip de estado de confianza */
+.chip-confianza {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  font-family: var(--font-sans); font-size: var(--fs-xs); font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: var(--sp-1) var(--sp-3); border-radius: 999px;
+  color: var(--gobs-negro);
+}
+.chip-confianza[data-nivel="alto"]  { background: var(--confianza-alto); }
+.chip-confianza[data-nivel="medio"] { background: var(--confianza-medio); }
+.chip-confianza[data-nivel="bajo"]  { background: var(--confianza-bajo); }
+
+/* Marca visual de contenido placeholder (mientras no hay relatoría real) */
+.es-placeholder {
+  outline: 1px dashed var(--color-borde);
+  opacity: 0.75;
+}

@@ -1,0 +1,138 @@
+/* ============================================================
+   Congreso FPT 2026 — Sistema de diseño (tokens)
+   Marca: GOBS Estrategias Públicas
+   Reglas del manual GOBS incorporadas:
+     · Color plano, SIN degradados (regla explícita)
+     · Diagonales siempre en cuadrante positivo (arriba/derecha),
+       evocando la flecha del logo GOBS
+     · Tipografías: Georgia (serif, titulares/citas),
+       Montserrat (sans, UI/cuerpo), Caveat (script, solo firma)
+   ============================================================ */
+
+:root {
+  /* ---- Paleta de marca GOBS (valores reales, no metodológicos) ---- */
+  --gobs-azul-profundo: #0B43F7;
+  --gobs-cian:          #0AB6F2;
+  --gobs-verde:         #00CC30;
+  --gobs-menta:         #6CD3A5;
+  --gobs-azul-claro:    #88B0FF;
+  --gobs-negro:         #0B0F14;
+  --gobs-blanco:        #FFFFFF;
+
+  /* ---- Roles semánticos (tema claro por defecto) ---- */
+  --color-fondo:            var(--gobs-blanco);
+  --color-fondo-alt:        #F4F6FB;   /* superficie sutil, plano */
+  --color-texto:            var(--gobs-negro);
+  --color-texto-suave:      #47515E;
+  --color-primario:         var(--gobs-azul-profundo);
+  --color-acento:           var(--gobs-cian);
+  --color-exito:            var(--gobs-verde);
+  --color-borde:            #D8DFEA;
+
+  /* Estados de trazabilidad (confianza) — color plano */
+  --confianza-alto:  var(--gobs-verde);
+  --confianza-medio: var(--gobs-cian);
+  --confianza-bajo:  var(--gobs-azul-claro);
+
+  /* ---- Tipografía ---- */
+  --font-serif:  Georgia, "Times New Roman", serif;
+  --font-sans:   "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-script: "Caveat", "Comic Sans MS", cursive;
+
+  /* Escala tipográfica (fluida) */
+  --fs-xs:   0.78rem;
+  --fs-sm:   0.9rem;
+  --fs-base: 1rem;
+  --fs-lg:   clamp(1.13rem, 1rem + 0.5vw, 1.35rem);
+  --fs-xl:   clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  --fs-2xl:  clamp(2rem, 1.5rem + 2.5vw, 3.25rem);
+  --fs-3xl:  clamp(2.75rem, 1.8rem + 4.5vw, 5rem);
+
+  --lh-tight: 1.1;
+  --lh-base:  1.6;
+
+  /* ---- Espaciado (escala 4px) ---- */
+  --sp-1: 0.25rem; --sp-2: 0.5rem;  --sp-3: 0.75rem; --sp-4: 1rem;
+  --sp-6: 1.5rem;  --sp-8: 2rem;    --sp-12: 3rem;   --sp-16: 4rem;
+  --sp-24: 6rem;   --sp-32: 8rem;
+
+  /* ---- Layout ---- */
+  --ancho-max:     1200px;
+  --ancho-lectura: 68ch;
+  --radio:   4px;   /* esquinas discretas; los diagonales llevan el peso */
+  --radio-lg: 8px;
+
+  /* ---- Ángulo canónico de los diagonales (cuadrante positivo) ---- */
+  --diag-angulo: -8deg; /* rotación hacia arriba-derecha */
+
+  /* ---- Sombra plana (sin blur suave excesivo, look editorial) ---- */
+  --sombra: 0 10px 30px rgba(11, 15, 20, 0.10);
+}
+
+/* ---- Tema oscuro (fondo #0B0F14 de marca) ---- */
+:root[data-theme="dark"] {
+  --color-fondo:       var(--gobs-negro);
+  --color-fondo-alt:   #131A22;
+  --color-texto:       var(--gobs-blanco);
+  --color-texto-suave: #A7B2C1;
+  --color-primario:    var(--gobs-azul-claro);
+  --color-acento:      var(--gobs-cian);
+  --color-borde:       #23303F;
+  --sombra: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* ============================================================
+   Bloques diagonales — la firma gráfica del sitio
+   Color PLANO, cuadrante positivo. Utilidades reutilizables.
+   ============================================================ */
+
+/* Franja diagonal de fondo, inclinada hacia arriba-derecha */
+.diag-banda {
+  position: relative;
+  isolation: isolate;
+}
+.diag-banda::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10%;
+  background: var(--diag-color, var(--gobs-azul-profundo));
+  transform: skewY(var(--diag-angulo));
+  transform-origin: top left;
+  z-index: -1;
+}
+
+/* Bloque/chip diagonal (flecha del logo): esquina recortada abajo-izq,
+   dando la sensación de avance hacia arriba-derecha */
+.diag-bloque {
+  --_c: var(--diag-color, var(--gobs-cian));
+  background: var(--_c);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 22% 100%, 0 62%);
+}
+
+/* Acento diagonal fino (subrayado tipo flecha) */
+.diag-acento {
+  display: inline-block;
+  width: 2.5rem;
+  height: 0.4rem;
+  background: var(--gobs-cian);
+  transform: skewX(-20deg);
+}
+
+/* Cuña de esquina — decorativa, apunta arriba-derecha */
+.diag-cuna {
+  position: relative;
+}
+.diag-cuna::after {
+  content: "";
+  position: absolute;
+  top: 0; right: 0;
+  width: clamp(60px, 12vw, 140px);
+  aspect-ratio: 1;
+  background: var(--diag-color, var(--gobs-verde));
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+
+/* ---- Utilidad: reducir movimiento ---- */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}

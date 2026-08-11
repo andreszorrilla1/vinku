@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FPT 2026 · Sistema de diseño GOBS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;1,400&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/styles/tokens.css">
+  <link rel="stylesheet" href="src/styles/base.css">
+  <style>
+    .seccion { padding: var(--sp-16) 0; border-bottom: 1px solid var(--color-borde); }
+    .grid { display: grid; gap: var(--sp-4); grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .swatch { border-radius: var(--radio); overflow: hidden; border: 1px solid var(--color-borde); }
+    .swatch .muestra { height: 88px; }
+    .swatch .meta { padding: var(--sp-2) var(--sp-3); font-size: var(--fs-xs); font-family: var(--font-sans); }
+    .swatch .meta b { display: block; font-size: var(--fs-sm); }
+    .toggle { position: fixed; top: 1rem; right: 1rem; z-index: 10; }
+    .demo-row { display: flex; flex-wrap: wrap; gap: var(--sp-4); align-items: center; margin-top: var(--sp-4); }
+    .caja-diag { height: 120px; border-radius: var(--radio); display: flex; align-items: end; padding: var(--sp-3); color: #fff; font-family: var(--font-sans); font-size: var(--fs-xs); font-weight: 700; }
+    .firma { font-family: var(--font-script); font-size: 3rem; color: var(--color-primario); line-height: 1; }
+  </style>
+</head>
+<body>
+  <button class="btn btn--fantasma toggle" onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme==='dark'?'':'dark'">Alternar tema</button>
+
+  <header class="diag-banda" style="--diag-color: var(--gobs-negro); color:#fff; padding: var(--sp-24) 0 var(--sp-16);">
+    <div class="contenedor">
+      <span class="etiqueta" style="color: var(--gobs-cian);">Sistema de diseño · GOBS</span>
+      <h1 style="margin:.2em 0 0;">El territorio<br>cobra valor</h1>
+      <p style="color: var(--gobs-azul-claro); font-family: var(--font-sans);">Congreso de Finanzas Públicas Territoriales 2026</p>
+      <span class="diag-acento" style="margin-top: var(--sp-4);"></span>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <section class="seccion">
+      <span class="etiqueta">01 · Paleta de marca</span>
+      <div class="grid" style="margin-top: var(--sp-6);">
+        <div class="swatch"><div class="muestra" style="background:#0B43F7"></div><div class="meta"><b>Azul profundo</b>#0B43F7</div></div>
+        <div class="swatch"><div class="muestra" style="background:#0AB6F2"></div><div class="meta"><b>Cian</b>#0AB6F2</div></div>
+        <div class="swatch"><div class="muestra" style="background:#00CC30"></div><div class="meta"><b>Verde</b>#00CC30</div></div>
+        <div class="swatch"><div class="muestra" style="background:#6CD3A5"></div><div class="meta"><b>Menta</b>#6CD3A5</div></div>
+        <div class="swatch"><div class="muestra" style="background:#88B0FF"></div><div class="meta"><b>Azul claro</b>#88B0FF</div></div>
+        <div class="swatch"><div class="muestra" style="background:#0B0F14"></div><div class="meta"><b>Negro / fondo</b>#0B0F14</div></div>
+      </div>
+    </section>
+
+    <section class="seccion">
+      <span class="etiqueta">02 · Tipografía</span>
+      <h2 style="margin-top: var(--sp-4);">Georgia — titulares y citas</h2>
+      <blockquote>“El territorio cobra valor.” — la frase madre, en serif.</blockquote>
+      <p style="font-family: var(--font-sans);">Montserrat — cuerpo de texto y UI. Legible, neutra, para lectura sostenida de funcionarios y tomadores de decisión.</p>
+      <p class="firma">Caveat solo para la firma del manifiesto</p>
+    </section>
+
+    <section class="seccion">
+      <span class="etiqueta">03 · Diagonales (cuadrante positivo)</span>
+      <p style="font-family: var(--font-sans);">Color plano, sin degradados. Evocan la flecha del logo GOBS: siempre hacia arriba-derecha.</p>
+      <div class="demo-row">
+        <div class="caja-diag diag-bloque" style="--diag-color:#0B43F7; width:180px;">diag-bloque</div>
+        <div class="caja-diag diag-cuna" style="background:var(--color-fondo-alt); color:var(--color-texto); --diag-color:#00CC30; width:180px;">diag-cuna</div>
+        <div class="caja-diag" style="background:var(--color-fondo-alt); color:var(--color-texto); width:180px; align-items:center; justify-content:center;"><span class="diag-acento"></span></div>
+      </div>
+    </section>
+
+    <section class="seccion">
+      <span class="etiqueta">04 · Componentes UI</span>
+      <div class="demo-row">
+        <a class="btn">Descargar relatoría</a>
+        <a class="btn btn--fantasma">Ver hoja de ruta</a>
+        <span class="chip-confianza" data-nivel="alto">Confianza alta</span>
+        <span class="chip-confianza" data-nivel="medio">Media</span>
+        <span class="chip-confianza" data-nivel="bajo">Baja</span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="contenedor" style="padding: var(--sp-8) 0; color: var(--color-texto-suave); font-family: var(--font-sans); font-size: var(--fs-sm);">
+    Congreso FPT 2026 · GOBS Estrategias Públicas · Magna Comunicaciones
+  </footer>
+</body>
+</html>

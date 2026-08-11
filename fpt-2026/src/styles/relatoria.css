@@ -1,0 +1,83 @@
+/* ============================================================
+   Congreso FPT 2026 — Relatoría visual inmersiva (tipo Pudding)
+   4 tarjetas: Problema · Reto · Solución · Sinergia.
+   Depende de tokens.css + base.css.
+   ============================================================ */
+
+.rel-nav {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--sp-3) var(--sp-6);
+  background: color-mix(in srgb, var(--color-fondo) 88%, transparent);
+  backdrop-filter: blur(8px); border-bottom: 1px solid var(--color-borde);
+}
+.rel-nav a { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-sm); text-decoration: none; color: var(--color-texto); }
+.rel-nav [data-logo] { display: inline-flex; }
+
+/* Barra de progreso de lectura */
+.rel-progreso { position: fixed; top: 0; left: 0; height: 4px; width: 0; background: var(--gobs-cian); z-index: 60; }
+
+/* ---- Portada ---- */
+.rel-portada {
+  min-height: 82vh; display: flex; flex-direction: column; justify-content: center;
+  padding: var(--sp-24) var(--sp-6); position: relative; overflow: hidden;
+  background: var(--gobs-negro); color: #fff;
+}
+.rel-portada::after { content:""; position:absolute; top:0; right:0; width:clamp(140px,26vw,380px); aspect-ratio:1; background:var(--gobs-cian); clip-path: polygon(100% 0,100% 100%,0 0); }
+.rel-portada__inner { position: relative; z-index: 1; max-width: var(--ancho-max); margin-inline: auto; width: 100%; }
+.rel-portada__num { font-family: var(--font-sans); font-weight: 800; letter-spacing: .18em; text-transform: uppercase; font-size: var(--fs-sm); color: var(--gobs-cian); }
+.rel-portada h1 { font-size: var(--fs-3xl); margin: var(--sp-4) 0; max-width: 18ch; }
+.rel-portada__sub { font-family: var(--font-sans); font-size: var(--fs-lg); color: var(--gobs-azul-claro); max-width: 52ch; }
+.rel-portada__meta { display: flex; gap: var(--sp-4); align-items: center; margin-top: var(--sp-8); flex-wrap: wrap; }
+.rel-scroll-hint { margin-top: var(--sp-12); font-family: var(--font-sans); font-size: var(--fs-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--gobs-azul-claro); animation: rel-bob 1.8s ease-in-out infinite; }
+@keyframes rel-bob { 0%,100%{ transform: translateY(0); opacity:.7 } 50%{ transform: translateY(6px); opacity:1 } }
+
+/* ---- Tarjetas (una por etapa) ---- */
+.rel-tarjeta {
+  min-height: 100vh; display: flex; align-items: center;
+  padding: var(--sp-24) var(--sp-6); position: relative; overflow: hidden;
+}
+.rel-tarjeta__inner { max-width: var(--ancho-max); margin-inline: auto; width: 100%; position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--sp-16); align-items: center; }
+@media (max-width: 820px) { .rel-tarjeta__inner { grid-template-columns: 1fr; gap: var(--sp-8); } }
+
+/* Bloque diagonal de color pleno, cuadrante positivo */
+.rel-tarjeta::before {
+  content:""; position:absolute; inset:-15% -12% -15% 40%;
+  background: var(--rel-color); transform: skewX(-9deg); transform-origin: bottom right; z-index:0; opacity:.14;
+}
+.rel-tarjeta[data-idx="0"] { --rel-color: var(--gobs-azul-profundo); }
+.rel-tarjeta[data-idx="1"] { --rel-color: var(--gobs-cian); }
+.rel-tarjeta[data-idx="2"] { --rel-color: var(--gobs-verde); }
+.rel-tarjeta[data-idx="3"] { --rel-color: var(--gobs-menta); }
+
+.rel-etapa { font-family: var(--font-sans); font-weight: 800; letter-spacing: .16em; text-transform: uppercase; font-size: var(--fs-sm); color: var(--rel-color); display: inline-flex; align-items: center; gap: var(--sp-3); }
+.rel-etapa::before { content:""; width: 2.4rem; height: .45rem; background: var(--rel-color); transform: skewX(-20deg); }
+.rel-tarjeta h2 { font-size: var(--fs-2xl); margin: var(--sp-4) 0 var(--sp-6); }
+.rel-tarjeta__sintesis { font-family: var(--font-serif); font-size: var(--fs-lg); line-height: 1.5; max-width: 40ch; }
+
+.rel-cita {
+  position: relative; background: var(--color-fondo-alt); border-radius: var(--radio-lg);
+  padding: var(--sp-8) var(--sp-6); border-left: 6px solid var(--rel-color);
+}
+.rel-cita blockquote { font-family: var(--font-serif); font-style: italic; font-size: var(--fs-xl); margin: 0; border: 0; padding: 0; }
+.rel-cita cite { display: block; font-style: normal; font-family: var(--font-sans); font-size: var(--fs-sm); color: var(--color-texto-suave); margin-top: var(--sp-4); }
+.rel-cita cite b { display: block; color: var(--color-texto); }
+
+.rel-vacio { color: var(--color-texto-suave); font-style: italic; font-family: var(--font-sans); }
+
+/* Animación de entrada */
+.rel-reveal { opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s ease; }
+.rel-reveal.visible { opacity: 1; transform: none; }
+
+/* ---- Cierre: síntesis en caliente + descarga ---- */
+.rel-cierre { background: var(--gobs-negro); color: #fff; padding: var(--sp-24) var(--sp-6); text-align: center; position: relative; overflow: hidden; }
+.rel-cierre::before { content:""; position:absolute; inset:auto -10% -30% -10%; height:55%; background: var(--gobs-azul-profundo); transform: skewY(-8deg); opacity:.85; }
+.rel-cierre__inner { position: relative; z-index: 1; max-width: 60ch; margin-inline: auto; }
+.rel-cierre .etiqueta { color: var(--gobs-cian); }
+.rel-cierre blockquote { font-family: var(--font-serif); font-size: var(--fs-2xl); font-style: italic; border: 0; margin: var(--sp-4) 0 var(--sp-8); color: #fff; }
+.rel-cierre__acciones { display: flex; gap: var(--sp-4); justify-content: center; flex-wrap: wrap; }
+.rel-cierre__logo { margin-top: var(--sp-16); display: flex; justify-content: center; }
+
+/* Estado no disponible */
+.rel-aviso { max-width: 46ch; margin: var(--sp-16) auto; text-align: center; font-family: var(--font-sans); color: var(--color-texto-suave); }

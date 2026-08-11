@@ -52,14 +52,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   const grid = document.querySelector('[data-grid-paneles]');
   if (grid) {
     grid.innerHTML = paneles
-      .map(
-        (p) => `
-      <article class="tarjeta-panel${p.estado === 'pendiente' ? ' es-placeholder' : ''}" data-estado="${p.estado}">
+      .map((p) => {
+        const clickable = p.estado !== 'pendiente';
+        const tag = clickable ? 'a' : 'div';
+        const href = clickable ? ` href="relatoria.html?panel=${p.id}"` : '';
+        return `
+      <${tag} class="tarjeta-panel${p.estado === 'pendiente' ? ' es-placeholder' : ''}"${href} data-estado="${p.estado}">
         <span class="tarjeta-panel__num">${p.numero}</span>
         <span class="chip-confianza" data-nivel="${p.confianza}">${etiquetaEstado[p.estado] || p.estado}</span>
         <h3 class="tarjeta-panel__titulo">${tituloPanel(p)}</h3>
-      </article>`
-      )
+        ${clickable ? '<span class="tarjeta-panel__cta">Ver relatoría →</span>' : ''}
+      </${tag}>`;
+      })
       .join('');
   }
 });

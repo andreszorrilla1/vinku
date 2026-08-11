@@ -18,9 +18,9 @@
   <nav class="nav">
     <div class="contenedor nav__inner">
       <a class="nav__marca" href="#inicio" aria-label="Inicio">
-        <span class="nav__logo" aria-hidden="true"></span>
-        <!-- TODO Sección 5: reemplazar por el logo GOBS real -->
-        <span>FPT&nbsp;<b style="color:var(--color-primario)">2026</b></span>
+        <!-- Logo GOBS (stand-in SVG; reemplazar por asset oficial del manual) -->
+        <span data-logo></span>
+        <span class="nav__evento">FPT&nbsp;<b style="color:var(--color-primario)">2026</b></span>
       </a>
       <ul class="nav__links">
         <li><a href="#hojas-de-ruta">Hojas de ruta</a></li>
@@ -144,6 +144,7 @@
     </div>
   </footer>
 
+  <script src="src/logo.js"></script>
   <script src="src/app.js"></script>
   <script src="src/hoja-ruta.js"></script>
 </body>

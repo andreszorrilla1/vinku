@@ -14,10 +14,10 @@
   display: flex; align-items: center; justify-content: space-between;
   gap: var(--sp-4); padding: var(--sp-3) 0;
 }
-.nav__marca { display: flex; align-items: center; gap: var(--sp-2); font-weight: 800; font-family: var(--font-sans); letter-spacing: -0.02em; font-size: var(--fs-lg); }
-/* Placeholder del logo GOBS: chip diagonal (se reemplaza por el logo real en la Sección 5) */
-.nav__logo { width: 30px; height: 30px; background: var(--gobs-negro); position: relative; }
-.nav__logo::after { content:""; position:absolute; left:6px; bottom:6px; width:12px; height:12px; background: var(--gobs-cian); clip-path: polygon(0 0,100% 0,100% 100%,30% 100%,0 60%); }
+.nav__marca { display: flex; align-items: center; gap: var(--sp-3); font-weight: 800; font-family: var(--font-sans); letter-spacing: -0.02em; font-size: var(--fs-lg); text-decoration: none; }
+.nav__marca [data-logo] { display: inline-flex; }
+.nav__evento { padding-left: var(--sp-3); border-left: 1px solid var(--color-borde); font-size: var(--fs-sm); color: var(--color-texto-suave); }
+:root[data-theme="dark"] .nav__marca [data-logo] svg text { fill: #fff; }
 .nav__links { display: flex; gap: var(--sp-6); list-style: none; margin: 0; padding: 0; font-family: var(--font-sans); font-size: var(--fs-sm); font-weight: 600; }
 .nav__links a { color: var(--color-texto); text-decoration: none; }
 .nav__links a:hover { color: var(--color-primario); }
@@ -71,7 +71,10 @@
 .tarjeta-panel:hover { transform: translateY(-3px); box-shadow: var(--sombra); }
 .tarjeta-panel::after { content:""; position:absolute; top:0; right:0; width:44px; aspect-ratio:1; background: var(--gobs-cian); clip-path: polygon(100% 0,100% 100%,0 0); opacity:.85; }
 .tarjeta-panel__num { font-family: var(--font-serif); font-size: var(--fs-2xl); font-weight: 700; color: var(--color-primario); line-height: 1; }
-.tarjeta-panel__titulo { font-size: var(--fs-lg); margin: 0; }
+.tarjeta-panel__titulo { font-size: var(--fs-lg); margin: 0; color: var(--color-texto); }
+a.tarjeta-panel { text-decoration: none; }
+.tarjeta-panel__cta { margin-top: auto; font-family: var(--font-sans); font-size: var(--fs-sm); font-weight: 600; color: var(--color-primario); opacity: 0; transform: translateX(-4px); transition: opacity .15s ease, transform .15s ease; }
+.tarjeta-panel:hover .tarjeta-panel__cta { opacity: 1; transform: none; }
 
 /* ---- Footer ---- */
 .footer { background: var(--gobs-negro); color: var(--gobs-blanco); padding: var(--sp-16) 0 var(--sp-8); }

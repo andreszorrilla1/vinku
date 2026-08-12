@@ -41,7 +41,7 @@
           }
         },
         "reto": {
-          "sintesis": "Los retos identificados en el discurso no son meras dificultades operativas, sino barreras estructurales que condicionan la viabilidad de cualquier reforma fiscal territorial. El primero —la ausencia de una ley de definición de competencias claras— emerge como una condición necesaria pero no suficiente para la autonomía. El orador establece una relación causal directa: sin delimitación competencial, la transferencia de recursos carece de sentido estratégico. \"sin una ley de definición de competencias claras es también una indefinición de cuál va a ser el nivel de autonomía que tenemos las entidades territoriales sobre esos recursos.\" Esta barrera normativa se traduce en una paradoja de la de",
+          "sintesis": "El primero —la ausencia de una ley de definición de competencias claras— emerge como una condición necesaria pero no suficiente para la autonomía. El orador establece una relación causal directa: sin delimitación competencial, la transferencia de recursos carece de sentido estratégico. \"sin una ley de definición de competencias claras es también una indefinición de cuál va a ser el nivel de autonomía que tenemos las entidades territoriales sobre esos recursos.\" Esta barrera normativa se traduce en una paradoja de la de",
           "cita": {
             "texto": "‹placeholder›",
             "autor": "‹placeholder›",
@@ -57,7 +57,7 @@
           }
         },
         "sinergia": {
-          "sintesis": "El discurso revela un ecosistema de articulaciones que opera en tres planos simultáneos. El primero es el plano horizontal territorial, donde la Gobernación de Antioquia, la Alcaldía de Medellín y sus entidades adscritas (APP, Catastro, Planeación) conforman una red de coordinación técnica de alta densidad. Esta sinergia no es nominal: el orador nombra a los actores específicos y sus cargos, lo que indica una interacción institucional regular y no meramente ceremonial. El segundo plano es el vertical legislativo. La propuesta de reforma constitucional no se presenta como una iniciativa aislada del ejecutivo departamental, sino como un proyecto político con respaldo parlamentario incipiente: ",
+          "sintesis": "El discurso revela un ecosistema de articulaciones que opera en tres planos simultáneos. El primero es el plano horizontal territorial, donde la Gobernación de Antioquia, la Alcaldía de Medellín y sus entidades adscritas (APP, Catastro, Planeación) conforman una red de coordinación técnica de alta densidad. Esta sinergia no es nominal: el orador nombra a los actores específicos y sus cargos, lo que indica una interacción institucional regular y no meramente ceremonial. El segundo plano es el vertical legislativo. La propuesta de reforma constitucional no se presenta como una iniciativa aislada del ejecutivo departamental, sino como un proyecto político con respaldo parlamentario incipiente:",
           "cita": {
             "texto": "‹placeholder›",
             "autor": "‹placeholder›",
@@ -66,7 +66,7 @@
         }
       },
       "lecturaEstrategica": "La intervención de Luis Fernando Agudelo constituye un diagnóstico de política pública que articula cinco niveles de análisis: (1) una lectura macroeconómica global de la deuda pública y su impacto en la sostenibilidad fiscal; (2) una evaluación histórica del proceso de descentralización colombiano como promesa incumplida; (3) un análisis cuantitativo del centralismo fiscal y su efecto empobrecedor sobre los departamentos; (4) una propuesta normativa concreta (reforma constitucional de los artículos 298, 356, 357 y 358) con cifras de impacto territorial diferenciado; y (5) una convocatoria a la coordinación multinivel como condición de competitividad internacional. El hallazgo principal es q",
-      "sintesisEnCaliente": "El hallazgo principal es que la crisis fiscal territorial colombiana no es un problema de insuficiencia de recursos, sino de arquitectura institucional: se transfirieron recursos sin transferir autonomía, se descentralizaron funciones sin definir competencias, y se prometió equidad sin generar convergencia. La propuesta del Gobernador de ",
+      "sintesisEnCaliente": "El hallazgo principal es que la crisis fiscal territorial colombiana no es un problema de insuficiencia de recursos, sino de arquitectura institucional: se transfirieron recursos sin transferir autonomía, se descentralizaron funciones sin definir competencias, y se prometió equidad sin generar convergencia. La propuesta del Gobernador de",
       "codificacion": {
         "temas": [
           "Fiscalidad territorial",
@@ -149,9 +149,9 @@
       "tipo": null,
       "ejeTematico": null,
       "estado": "final",
-      "ingestado": false,
+      "ingestado": true,
       "confianza": "alto",
-      "anclajePolitico": "",
+      "anclajePolitico": "El panel abordó el estado y los retos de los marcos normativos que estructuran las finanzas públicas territoriales en Colombia. La conversación se organizó en tres bloques: (i) diagnóstico de los marcos normativos locales —presupuestales, tributarios y administrativos—; (ii) mapeo de las reformas nacionales en curso que impactarán directamente a los territorios, con énfasis en el Sistema General de Participaciones (SGP), la disciplina fiscal subnacional y los proyectos de ley sobre impuesto predial; y (iii) definición de los mensajes que el conglomerado territorial debe transmitir al nuevo Gob",
       "captura": {
         "problema": {
           "sintesis": "Rezago estructural y dependencia normativa de los territorios, caracterizada por marcos legales anacrónicos (con normas que datan de 1908, 1913 y 1932) y una contradicción entre el discurso de autonomía y la práctica de replicar mecánicamente el Estatuto Orgánico de Presupuesto Nacional, lo que genera parálisis operativa y mantiene atrapados cerca de 39.6 billones de pesos en cuentas bancarias por excesivo etiquetamiento.",
@@ -162,7 +162,7 @@
           }
         },
         "reto": {
-          "sintesis": "",
+          "sintesis": "Actualizar marcos anacrónicos sin perder autonomía: el Estatuto Orgánico de Presupuestos (Decreto 111) cumplió 30 años sin revisión y buena parte de las normas tributarias territoriales son casi coloniales. A ello se suma la asimetría informativa —el Congreso tramita leyes sin el cálculo de impacto fiscal que exige el artículo 7 de la Ley 819 de 2003— y una reforma del Sistema General de Participaciones, la más importante en 20 años, que avanza casi inadvertida para los territorios.",
           "cita": {
             "texto": "",
             "autor": "",
@@ -170,7 +170,7 @@
           }
         },
         "solucion": {
-          "sintesis": "",
+          "sintesis": "Modernizar los cinco marcos normativos locales —un estatuto de presupuesto propio y no la réplica del Decreto 111, MFMP con visión estratégica, un estatuto tributario depurado, el POT como fuente de financiación y un estatuto ágil de ingresos no tributarios— y avanzar hacia una reforma tributaria territorial estructural que simplifique tributos anacrónicos y libere las rentas 'amarradas' por el etiquetamiento excesivo.",
           "cita": {
             "texto": "",
             "autor": "",
@@ -178,7 +178,7 @@
           }
         },
         "sinergia": {
-          "sintesis": "",
+          "sintesis": "Articulación con el nuevo Gobierno Nacional, cuya posesión coincidió con el Congreso: incidir en nombramientos estratégicos como el Director General de Apoyo Fiscal (MinHacienda) y el Subdirector Territorial del DNP, gestionar las deudas históricas de la Nación con los territorios y construir unidad territorial para dar la discusión de fondo.",
           "cita": {
             "texto": "",
             "autor": "",
@@ -186,12 +186,23 @@
           }
         }
       },
-      "lecturaEstrategica": "",
-      "sintesisEnCaliente": "",
+      "lecturaEstrategica": "El panel deja una serie de implicaciones directas para la política pública territorial y nacional. En el ámbito local, las administraciones territoriales deben iniciar ciclos de actualización normativa sistemáticos: estatutos de presupuesto propios, no réplicas; estatutos tributarios modernizados con análisis costo-eficiencia de cada tributo; POT actualizados con operación activa de sus instrumentos de financiación; y estructuras administrativas de hacienda que trasciendan la figura de la secretaría para articular líneas de ingreso y de gasto. En el ámbito nacional, el Congreso y el Gobierno d",
+      "sintesisEnCaliente": "Los territorios no gestionan con marcos propios, sino replicando normas nacionales anacrónicas: modernizar la infraestructura jurídica de la hacienda territorial es la condición previa de cualquier autonomía real.",
       "codificacion": {
         "temas": [],
         "territorios": [],
-        "actores": []
+        "actores": [
+          {
+            "nombre": "Andrés Urrea",
+            "rol": "Experto en presupuesto y disciplina fiscal territorial",
+            "entidad": ""
+          },
+          {
+            "nombre": "Ricardo Valencia",
+            "rol": "Experto en tributación y hacienda territorial",
+            "entidad": ""
+          }
+        ]
       },
       "comunicaciones": {
         "fraseClave": "",
@@ -247,7 +258,8 @@
           "detalle": "Iniciar en cada entidad territorial la revisión de sus propios estatutos para eliminar las réplicas del Decreto 111 de 1996 y desarrollar instrumentos presupuestales propios que respondan a las dinámicas locales y no a las exigencias estandarizadas del centro."
         }
       ],
-      "hojaRutaIngestada": true
+      "hojaRutaIngestada": true,
+      "relatoriaIngestada": true
     },
     {
       "id": "panel-3",
@@ -259,7 +271,7 @@
       "estado": "final",
       "ingestado": true,
       "confianza": "alto",
-      "anclajePolitico": "El panel abordó el impuesto predial unificado como eje central de las finanzas territoriales, organizando la discusión en cuatro bloques: diagnóstico catastral, gestión catastral, administración y recaudo, y diseño tributario con retos futuros. Se identificó que el predial es la principal renta de libre destinación de los municipios, pero su desempeño depende de cuatro elementos interconectados: calidad de la información catastral, diseño tributario eficiente, capacidad institucional y tecnología orientada al ciudadano. Los panelistas coincidieron en que la relación entre catastro e impuestos debe ser de 'hermanos siameses', no de 'primos lejanos'. Sin embargo, el país enfrenta un rezago cat",
+      "anclajePolitico": "El panel abordó el impuesto predial unificado como eje central de las finanzas territoriales, organizando la discusión en cuatro bloques: diagnóstico catastral, gestión catastral, administración y recaudo, y diseño tributario con retos futuros. Se identificó que el predial es la principal renta de libre destinación de los municipios, pero su desempeño depende de cuatro elementos interconectados: calidad de la información catastral, diseño tributario eficiente, capacidad institucional y tecnología orientada al ciudadano. Los panelistas coincidieron en que la relación entre catastro e impuestos",
       "captura": {
         "problema": {
           "sintesis": "Rezago catastral estructural y ruptura de la equidad tributaria, evidenciada en una desactualización generalizada (municipios con rezagos de 14 a 30 años), una centralización ineficiente en el IGAC que actúa como cuello de botella, y la existencia de leyes obsoletas (Leyes 44 de 1990 y 1955 de 2019) que imponen topes de crecimiento que neutralizan el retorno de la inversión en actualización y perpetúan beneficios para predios de alto valor.",
@@ -270,7 +282,7 @@
           }
         },
         "reto": {
-          "sintesis": "",
+          "sintesis": "Cerrar la brecha de actualización catastral que la centralización no resolvió —el IGAC, con una relación de uno a más de 800 municipios, apenas pasó del 9% al 41% de cobertura—, superar la escasez de capital humano catastral, elevar tasas de recaudo históricamente bajas y sortear la dispersión de facturas y la débil contactabilidad, sin ignorar el costo humano del impuesto en los estratos 1 y 2.",
           "cita": {
             "texto": "",
             "autor": "",
@@ -278,7 +290,7 @@
           }
         },
         "solucion": {
-          "sintesis": "",
+          "sintesis": "Territorializar la gestión catastral (municipios habilitados como gestores o en esquemas provinciales), reemplazar el estrato por matrices híbridas de estrato más rangos de avalúo (caso Cali) y paquetes de incentivos con datos (caso Armenia), indexar los rangos en UVT y no en pesos, ejecutar cobro persuasivo y coactivo con constitución oportuna de títulos, y explorar la retención en la fuente del predial y la sujeción pasiva de fiducias y patrimonios autónomos.",
           "cita": {
             "texto": "",
             "autor": "",
@@ -286,7 +298,7 @@
           }
         },
         "sinergia": {
-          "sintesis": "",
+          "sintesis": "Sincronizar catastro, hacienda y planeación en torno al dato predial; articular a MinHacienda, MinEducación y el IGAC para formar el capital humano catastral que falta; y pasar del país 'sobrediagnosticado' a la redacción de artículos concretos que lleven las propuestas al Congreso.",
           "cita": {
             "texto": "",
             "autor": "",
@@ -294,12 +306,38 @@
           }
         }
       },
-      "lecturaEstrategica": "El panel deja una agenda de política pública con implicaciones directas para las administraciones territoriales. Primero, en gestión catastral: los municipios deben evaluar la viabilidad de habilitarse como gestores catastrales o conformar esquemas asociativos (provincias, áreas metropolitanas) bajo la Ley 1955 de 2019 y su Decreto 148, dado que la centralización del IGAC ha demostrado ser insuficiente para mantener la actualización. Esto requiere inversión en capital humano, tecnología y articulación con la Gobernación. Segundo, en recaudo: las entidades territoriales deben fortalecer la gestión de cobro persuasivo y coactivo, constituir títulos ejecutivos de manera oportuna, y diversificar",
-      "sintesisEnCaliente": "",
+      "lecturaEstrategica": "El panel deja una agenda de política pública con implicaciones directas para las administraciones territoriales. Primero, en gestión catastral: los municipios deben evaluar la viabilidad de habilitarse como gestores catastrales o conformar esquemas asociativos (provincias, áreas metropolitanas) bajo la Ley 1955 de 2019 y su Decreto 148, dado que la centralización del IGAC ha demostrado ser insuficiente para mantener la actualización. Esto requiere inversión en capital humano, tecnología y articulación con la Gobernación. Segundo, en recaudo: las entidades territoriales deben fortalecer la gest",
+      "sintesisEnCaliente": "El predial, segunda renta de los municipios, no rinde por un rezago catastral estructural: sin catastro actualizado y territorializado no hay equidad tributaria ni ingresos propios sostenibles.",
       "codificacion": {
         "temas": [],
         "territorios": [],
-        "actores": []
+        "actores": [
+          {
+            "nombre": "Isabel González",
+            "rol": "Moderadora",
+            "entidad": ""
+          },
+          {
+            "nombre": "Fidel Castaño",
+            "rol": "Experto en predial y catastro",
+            "entidad": ""
+          },
+          {
+            "nombre": "Yeison Miranda",
+            "rol": "Gerencia de Catastro",
+            "entidad": "Gobernación de Antioquia"
+          },
+          {
+            "nombre": "Yeison Pérez",
+            "rol": "Secretaría de Hacienda",
+            "entidad": "Armenia"
+          },
+          {
+            "nombre": "Jhon Quinchua",
+            "rol": "Secretaría de Hacienda",
+            "entidad": "Cali"
+          }
+        ]
       },
       "comunicaciones": {
         "fraseClave": "",
@@ -383,7 +421,7 @@
           }
         },
         "reto": {
-          "sintesis": "Los retos identificados en el discurso no son meras dificultades operativas, sino barreras estructurales que condicionan la viabilidad de cualquier reforma fiscal territorial. El primero ---actualizar el diseño estructural del ICA--- emerge como una condición necesaria pero no suficiente para la autonomía. Actualizar el diseño estructural del ICA sin desarticular su importancia recaudatoria ni la administrabilidad municipal. Barrera normativa y técnica, identificada por ambos panelistas, de impacto transversal alto. Definir territorialidad para servicios digitales, plataformas y actividades sin presencia física, superando la rigidez del artículo 433 de la Ley 1819/2016. Barrera normativa, id",
+          "sintesis": "El primero —actualizar el diseño estructural del ICA— emerge como una condición necesaria pero no suficiente para la autonomía. Actualizar el diseño estructural del ICA sin desarticular su importancia recaudatoria ni la administrabilidad municipal. Barrera normativa y técnica, identificada por ambos panelistas, de impacto transversal alto. Definir territorialidad para servicios digitales, plataformas y actividades sin presencia física, superando la rigidez del artículo 433 de la Ley 1819/2016. Barrera normativa, id",
           "cita": {
             "texto": "",
             "autor": "",
@@ -391,7 +429,7 @@
           }
         },
         "solucion": {
-          "sintesis": "Las propuestas emergen de la intersección entre el diagnóstico técnico y la experiencia operativa, configurando un menú de reformas que van desde la estructura normativa hasta la gestión del relacionamiento con el contribuyente. Reforma estructural integral del ICA: revisar base gravable, tarifas y hecho generador para adecuarlo a la economía actual, sin eliminarlo. Propuesta de Elena y Juan Carlos, de replicabilidad dependiente de reforma legislativa nacional. Tarifas progresivas o diferenciadas que reconozcan márgenes de utilidad distintos por actividad, acotadas a la realidad municipal. Propuesta de Elena, de baja replicabilidad inmediata por requerir capacidad técnica.",
+          "sintesis": "Reforma estructural integral del ICA: revisar base gravable, tarifas y hecho generador para adecuarlo a la economía actual, sin eliminarlo. Propuesta de Elena y Juan Carlos, de replicabilidad dependiente de reforma legislativa nacional. Tarifas progresivas o diferenciadas que reconozcan márgenes de utilidad distintos por actividad, acotadas a la realidad municipal. Propuesta de Elena, de baja replicabilidad inmediata por requerir capacidad técnica.",
           "cita": {
             "texto": "",
             "autor": "",
@@ -399,7 +437,7 @@
           }
         },
         "sinergia": {
-          "sintesis": "El discurso revela un ecosistema de articulaciones que opera en tres planos simultáneos: el horizontal territorial, el vertical legislativo-normativo y el de conocimiento y política pública. En el plano horizontal territorial, la relación entre administración y contribuyente emerge como una sinergia por construir. Elena insiste en que el incumplimiento tributario tiene muchas causas y tiene que ser atacadas de forma diferente, una de ellas siendo la falta de facilidad en el cumplimiento. La transparencia y el reconocimiento público ---como el Día del Contribuyente de Medellín--- operan como palancas de legitimidad.",
+          "sintesis": "El discurso revela un ecosistema de articulaciones que opera en tres planos simultáneos: el horizontal territorial, el vertical legislativo-normativo y el de conocimiento y política pública. En el plano horizontal territorial, la relación entre administración y contribuyente emerge como una sinergia por construir. Elena insiste en que el incumplimiento tributario tiene muchas causas y tiene que ser atacadas de forma diferente, una de ellas siendo la falta de facilidad en el cumplimiento. La transparencia y el reconocimiento público —como el Día del Contribuyente de Medellín— operan como palancas de legitimidad.",
           "cita": {
             "texto": "",
             "autor": "",
@@ -520,7 +558,7 @@
           }
         },
         "reto": {
-          "sintesis": "Los retos identificados en el discurso no son meras dificultades operativas, sino barreras estructurales que condicionan la viabilidad de cualquier reforma del modelo descentralizador. El primero ---la asimetría de capacidades--- emerge como una condición objetiva que impide tratar a todos los territorios con las mismas reglas. Gestionar y descentralizar de manera asimétrica: los departamentos grandes deberán tener mayor autonomía y gestionar a municipios pequeños; las entidades públicas deberían priorizar a municipios pequeños con indicadores de desempeño bajos. Barrera de capacidad, identificada por Santiago Leyva, de impacto transversal alto. Realizar un plan de ajuste fiscal y financiero",
+          "sintesis": "El primero —la asimetría de capacidades— emerge como una condición objetiva que impide tratar a todos los territorios con las mismas reglas. Gestionar y descentralizar de manera asimétrica: los departamentos grandes deberán tener mayor autonomía y gestionar a municipios pequeños; las entidades públicas deberían priorizar a municipios pequeños con indicadores de desempeño bajos. Barrera de capacidad, identificada por Santiago Leyva, de impacto transversal alto. Realizar un plan de ajuste fiscal y financiero",
           "cita": {
             "texto": "",
             "autor": "",
@@ -528,7 +566,7 @@
           }
         },
         "solucion": {
-          "sintesis": "Las propuestas emergen de la intersección entre el diagnóstico académico y la experiencia política territorial, configurando un menú de reformas que van desde la arquitectura institucional hasta la gestión del día a día de los municipios pequeños. Sistema General de Participaciones Territorial (SGPT): reemplazar el SGP actual por un sistema que financie funciones territoriales con recursos propios de renta y patrimonio de personas jurídicas transferidos a departamentos y Distrito Capital. Propuesta de Eugenio Prieto, con evidencia de análisis técnico en Antioquia, de replicabilidad nacional. Descentralización asimétrica: establecer criterios de autonomía que surjan de las mismas capacidades ",
+          "sintesis": "Sistema General de Participaciones Territorial (SGPT): reemplazar el SGP actual por un sistema que financie funciones territoriales con recursos propios de renta y patrimonio de personas jurídicas transferidos a departamentos y Distrito Capital. Propuesta de Eugenio Prieto, con evidencia de análisis técnico en Antioquia, de replicabilidad nacional. Descentralización asimétrica: establecer criterios de autonomía que surjan de las mismas capacidades",
           "cita": {
             "texto": "",
             "autor": "",
@@ -544,7 +582,7 @@
           }
         }
       },
-      "lecturaEstrategica": "La intervención de los panelistas constituye un diagnóstico de política pública que articula cinco niveles de análisis: (1) una lectura histórica de los resultados de la descentralización en 35 años; (2) una evaluación cuantitativa del centralismo fiscal y su efecto empobrecedor sobre departamentos y municipios; (3) un análisis de la fragmentación del sistema de acompañamiento y fortalecimiento; (4) una propuesta normativa y política concreta (SGPT, superintendencia, adelgazamiento del Estado, descentralización asimétrica); y (5) una convocatoria a la coordinación multinivel como condición de viabilidad de cualquier reforma. El hallazgo principal es que la crisis del modelo descentralizador ",
+      "lecturaEstrategica": "La intervención de los panelistas constituye un diagnóstico de política pública que articula cinco niveles de análisis: (1) una lectura histórica de los resultados de la descentralización en 35 años; (2) una evaluación cuantitativa del centralismo fiscal y su efecto empobrecedor sobre departamentos y municipios; (3) un análisis de la fragmentación del sistema de acompañamiento y fortalecimiento; (4) una propuesta normativa y política concreta (SGPT, superintendencia, adelgazamiento del Estado, descentralización asimétrica); y (5) una convocatoria a la coordinación multinivel como condición de viabilidad de cualquier reforma. El hallazgo principal es que la crisis del modelo descentralizador",
       "sintesisEnCaliente": "El hallazgo principal es que la crisis del modelo descentralizador colombiano no es un problema de insuficiencia de recursos, sino de arquitectura institucional: se transfirieron competencias sin transferir capacidades, se descentralizaron funciones sin definir escalas adecuadas, y se prometió autonomía sin generar convergencia. La propue",
       "codificacion": {
         "temas": [
@@ -654,7 +692,7 @@
           }
         },
         "reto": {
-          "sintesis": "Los retos identificados en el discurso no son meras dificultades operativas, sino barreras estructurales que condicionan la viabilidad de cualquier reforma del modelo de financiación territorial. El primero ---la estrechez fiscal nacional--- emerge como una condición objetiva que limita el espacio de maniobra de la descentralización. Profundizar y ampliar las transferencias territoriales sin generar una crisis de sostenibilidad fiscal nacional. Barrera fiscal, identificada por Daniel Felipe Escobar, de impacto transversal alto. Superar el rezago técnico y construir cultura de pago en un contexto donde lleva 32 años sin aplicar ajustes tributarios. Barrera cultural y técnica, identificada por",
+          "sintesis": "El primero —la estrechez fiscal nacional— emerge como una condición objetiva que limita el espacio de maniobra de la descentralización. Profundizar y ampliar las transferencias territoriales sin generar una crisis de sostenibilidad fiscal nacional. Barrera fiscal, identificada por Daniel Felipe Escobar, de impacto transversal alto. Superar el rezago técnico y construir cultura de pago en un contexto donde lleva 32 años sin aplicar ajustes tributarios. Barrera cultural y técnica, identificada por",
           "cita": {
             "texto": "",
             "autor": "",
@@ -662,7 +700,7 @@
           }
         },
         "solucion": {
-          "sintesis": "Las propuestas emergen de la intersección entre la experiencia de gestión pública avanzada (Medellín, gobierno nacional) y el análisis jurídico-tributario de la realidad municipal, configurando un menú de reformas que van desde la cultura tributaria hasta la ingeniería financiera territorial. Concientizar y sensibilizar a los contribuyentes para que sientan que sus impuestos se traducen en servicios públicos visibles. Evidencia en Medellín (campañas telefónicas, agradecimiento al contribuyente). Propuesta de Daniel Felipe Escobar, de alta replicabilidad. Sistema basado en inteligencia artificial y datos regionales/territoriales para hacer más eficiente el recaudo. Propuesta de Daniel Felipe ",
+          "sintesis": "Concientizar y sensibilizar a los contribuyentes para que sientan que sus impuestos se traducen en servicios públicos visibles. Evidencia en Medellín (campañas telefónicas, agradecimiento al contribuyente). Propuesta de Daniel Felipe Escobar, de alta replicabilidad. Sistema basado en inteligencia artificial y datos regionales/territoriales para hacer más eficiente el recaudo. Propuesta de Daniel Felipe",
           "cita": {
             "texto": "",
             "autor": "",
@@ -678,7 +716,7 @@
           }
         }
       },
-      "lecturaEstrategica": "La intervención de los panelistas constituye un diagnóstico de política pública que articula cinco niveles de análisis: (1) una lectura macrofiscal de la estrechez del orden nacional y sus efectos sobre la descentralización; (2) una evaluación técnica del rezago del ICA y la necesidad de modernización frente a la economía digital; (3) un análisis de la competencia tributaria dañina y la necesidad de armonización con piso y techo; (4) una propuesta de ampliación de la caja de herramientas territorial más allá del tributo tradicional (activos, APPs, bonos, valorización); y (5) una convocatoria a la construcción de una cultura de pago y una autonomía real, no de papel. El hallazgo principal es ",
+      "lecturaEstrategica": "La intervención de los panelistas constituye un diagnóstico de política pública que articula cinco niveles de análisis: (1) una lectura macrofiscal de la estrechez del orden nacional y sus efectos sobre la descentralización; (2) una evaluación técnica del rezago del ICA y la necesidad de modernización frente a la economía digital; (3) un análisis de la competencia tributaria dañina y la necesidad de armonización con piso y techo; (4) una propuesta de ampliación de la caja de herramientas territorial más allá del tributo tradicional (activos, APPs, bonos, valorización); y (5) una convocatoria a la construcción de una cultura de pago y una autonomía real, no de papel. El hallazgo principal es",
       "sintesisEnCaliente": "El hallazgo principal es que el modelo de financiación territorial colombiano está en una encrucijada: la estrechez fiscal nacional impide transferir más recursos, y la arquitectura tributaria local (ICA + Predial + transferencias) está erosionada por la economía digital, la informalidad y la competencia dañina entre municipios. El contri",
       "codificacion": {
         "temas": [
@@ -792,7 +830,7 @@
           }
         },
         "reto": {
-          "sintesis": "Si el problema técnico es la no captura de valor, el problema político es la desconfianza. Los tres panelistas coincidieron en que la aceptación ciudadana de una mayor carga tributaria no depende de la sofisticación del instrumento fiscal, sino de la credibilidad de quien lo aplica. La ciudadanía no es un agente egoísta y anárquico que ve en el Estado un enemigo frente al cual no quiere pagar. Es una lectura errada de lo que ocurre en la calle. La gente está dispuesta a pagar más cuando encuentra una administración que responde a los problemas públicos, cuando ve que lo que paga se traduce en patrimonio, seguridad y calidad de vida. Medellín ofrece una evidencia reciente. Una administración ",
+          "sintesis": "Si el problema técnico es la no captura de valor, el problema político es la desconfianza. Los tres panelistas coincidieron en que la aceptación ciudadana de una mayor carga tributaria no depende de la sofisticación del instrumento fiscal, sino de la credibilidad de quien lo aplica. La ciudadanía no es un agente egoísta y anárquico que ve en el Estado un enemigo frente al cual no quiere pagar. Es una lectura errada de lo que ocurre en la calle. La gente está dispuesta a pagar más cuando encuentra una administración que responde a los problemas públicos, cuando ve que lo que paga se traduce en patrimonio, seguridad y calidad de vida. Medellín ofrece una evidencia reciente. Una administración",
           "cita": {
             "texto": "La ciudadanía está dispuesta a pagar más cuando encuentra una administración y cuando encuentra una institucionalidad que responda a los problemas... Creer a la gente ciudadana como un agente absolutamente egoísta... que encuentra en el Estado un enemigo frente al cual no quiere pagar un peso es un error absoluto.",
             "autor": "Andrés Tobón",
@@ -817,7 +855,7 @@
         }
       },
       "lecturaEstrategica": "Interpretaciones que trascienden lo descriptivo y señalan patrones estructurales oportunos para la incidencia. • El suelo remanente de las infraestructuras de transporte es un activo intangible de alto valor —incrementos superiores al 150%— que las entidades operadoras pueden rentabilizar inmobiliariamente, pero solo si la norma urbana lo habilita. Esto convierte al POT en una variable financiera, no solo de planificación.",
-      "sintesisEnCaliente": "Existe un portafolio viable y probado de instrumentos de captura de valor —titularización del predial futuro, obligaciones urbanísticas, aprovechamiento de suelo remanente, DRS, publicidad comercial en infraestructura— que las ciudades pueden desplegar para reducir la dependencia del presupuesto ordinario. Sin embargo, su aplicación está ",
+      "sintesisEnCaliente": "Existe un portafolio viable y probado de instrumentos de captura de valor —titularización del predial futuro, obligaciones urbanísticas, aprovechamiento de suelo remanente, DRS, publicidad comercial en infraestructura— que las ciudades pueden desplegar para reducir la dependencia del presupuesto ordinario. Sin embargo, su aplicación está",
       "codificacion": {
         "temas": [],
         "territorios": [],
@@ -886,7 +924,7 @@
       "estado": "final",
       "ingestado": true,
       "confianza": "alto",
-      "anclajePolitico": "Este panel transitó de la discusión sobre captura de valor del suelo —abordada en el Panel 7— hacia una mirada integral sobre las fuentes alternativas de financiación territorial. La pregunta orientadora fue cómo transformar la visión predominante de financiación del desarrollo territorial, que históricamente se ha apoyado en tres pilares: tributos, transferencias nacionales y deuda pública. El panel propuso una reorganización conceptual: las fuentes alternativas no reemplazan las tradicionales, sino que las complementan para generar finanzas territoriales más sólidas, eficientes y sustentables en el tiempo. La discusión se estructuró en dos categorías: instrumentos de captura de valor del s",
+      "anclajePolitico": "Este panel transitó de la discusión sobre captura de valor del suelo —abordada en el Panel 7— hacia una mirada integral sobre las fuentes alternativas de financiación territorial. La pregunta orientadora fue cómo transformar la visión predominante de financiación del desarrollo territorial, que históricamente se ha apoyado en tres pilares: tributos, transferencias nacionales y deuda pública. El panel propuso una reorganización conceptual: las fuentes alternativas no reemplazan las tradicionales, sino que las complementan para generar finanzas territoriales más sólidas, eficientes y sustentable",
       "captura": {
         "problema": {
           "sintesis": "Dependencia excesiva de las fuentes tradicionales de financiación (tributos como ICA/Predial, transferencias nacionales y deuda pública) y una profunda brecha entre la existencia normativa y la operatividad institucional. A pesar de contar con marcos legales desde hace tres décadas (Ley 388 de 1997), los territorios no han logrado implementar con éxito instrumentos de captura de valor del suelo ni precios públicos, dejando pasar oportunidades masivas de recaudo por falta de capacidad técnica, desarticulación entre Hacienda y Planeación, y discontinuidad política.",
@@ -897,7 +935,7 @@
           }
         },
         "reto": {
-          "sintesis": "",
+          "sintesis": "Superar la dependencia de tributos, transferencias y deuda enfrentando las fricciones que frenan los instrumentos ya disponibles: la débil capacidad técnica local para estructurar 'project finance' territorial, la inseguridad jurídica sobre los ingresos no tributarios y la desconexión entre las decisiones de hacienda y las de ordenamiento territorial.",
           "cita": {
             "texto": "",
             "autor": "",
@@ -905,7 +943,7 @@
           }
         },
         "solucion": {
-          "sintesis": "",
+          "sintesis": "Activar el portafolio que ya existe —contribución de valorización, participación en plusvalía, obligaciones urbanísticas, venta de derechos adicionales de construcción y precios públicos por activos ociosos— y anclarlo en planes financieros de mediano plazo a 12 años que articulen obligatoriamente el presupuesto con el POT y el plan de desarrollo.",
           "cita": {
             "texto": "",
             "autor": "",
@@ -913,7 +951,7 @@
           }
         },
         "sinergia": {
-          "sintesis": "",
+          "sintesis": "Integrar metodológicamente hacienda y planeación en cada territorio y articular en el nivel nacional a MinHacienda, el DNP y MinVivienda para una guía de planes financieros de mediano plazo, apoyándose en la jurisprudencia del Consejo de Estado y la Corte que ya da seguridad a los ingresos no tributarios.",
           "cita": {
             "texto": "",
             "autor": "",
@@ -921,8 +959,8 @@
           }
         }
       },
-      "lecturaEstrategica": "Interpretaciones que trascienden lo descriptivo y señalan patrones estructurales oportunos para la incidencia. La categorización de William en tres fuentes de financiación (recursos propios tradicionales, instrumentos de captura de valor del suelo, fuentes alternativas con el privado) ofrece un marco operativo para el diseño de planes financieros de mediano plazo. Este marco debería ser estandarizado por el Ministerio de Hacienda como guía metodológica para todos los entes territoriales.",
-      "sintesisEnCaliente": "Colombia no necesita nuevos impuestos ni nuevas leyes para diversificar la financiación del desarrollo territorial: necesita implementar lo que ya tiene. La Constitución de 1991, la Ley 388 de 1997 y la jurisprudencia constitucional (Sentencias C-927/2006 y C-401/2010) ya habilitan un portafolio completo de instrumentos: impuesto predial ",
+      "lecturaEstrategica": "Recomendaciones accionables derivadas de la lectura cruzada de argumentos, consensos y tensiones. Fortalecimiento del impuesto predial como pilar del financiamiento territorial mediante actualización catastral masiva, tarifación progresiva y campañas de cultura tributaria que lo presenten como 'cuota de administración de la copropiedad ciudadana' y no como carga fiscal.",
+      "sintesisEnCaliente": "Colombia no necesita nuevos impuestos ni nuevas leyes para diversificar la financiación del desarrollo territorial: necesita implementar lo que ya tiene. La Constitución de 1991, la Ley 388 de 1997 y la jurisprudencia constitucional (Sentencias C-927/2006 y C-401/2010) ya habilitan un portafolio completo de instrumentos: impuesto predial",
       "codificacion": {
         "temas": [],
         "territorios": [],
@@ -1031,7 +1069,7 @@
         }
       },
       "lecturaEstrategica": "Interpretaciones que trascienden lo descriptivo y señalan patrones estructurales oportunos para la incidencia. • El artículo 59 de la Ley 788 opera como una \"falsa autonomía\": le dice a los territorios que pueden simplificar y disminuir sanciones, pero les niega la competencia material para crear un régimen propio. Esa ambigüedad ha generado veinte años de estatutos locales nulos, litigios repetitivos y desconfianza institucional. La solución no es interpretar mejor el artículo 59, sino reformarlo o reemplazarlo por un régimen diferenciado.",
-      "sintesisEnCaliente": "El modelo actual de remisión automática al Estatuto Tributario Nacional —artículo 59 de la Ley 788/2002— ya no resuelve adecuadamente la gestión tributaria territorial. Veinticinco años de aplicación han demostrado que los tributos locales —especialmente los de determinación oficial como el predial, el alumbrado público y la contribución ",
+      "sintesisEnCaliente": "El modelo actual de remisión automática al Estatuto Tributario Nacional —artículo 59 de la Ley 788/2002— ya no resuelve adecuadamente la gestión tributaria territorial. Veinticinco años de aplicación han demostrado que los tributos locales —especialmente los de determinación oficial como el predial, el alumbrado público y la contribución",
       "codificacion": {
         "temas": [],
         "territorios": [],
@@ -1101,50 +1139,56 @@
       "subtitulo": "",
       "tipo": null,
       "ejeTematico": null,
-      "estado": "transcripcion",
-      "ingestado": false,
+      "estado": "final",
+      "ingestado": true,
       "confianza": "medio",
-      "anclajePolitico": "",
+      "anclajePolitico": "El panel se abrió con una advertencia institucional de alto voltaje: la Sección Cuarta del Consejo de Estado se renovó en un 50% durante 2025, lo cual significa que desde 2026 se empiezan a ver nuevas líneas de pensamiento jurídico. Pero esa renovación no es el único factor de incertidumbre. En el último año, la Corte Constitucional ha intentado enmendar la plana al Consejo de Estado en al menos tres ocasiones: con las ciudades capitales, con una estampilla universitaria de Cartagena y con el ICA en servicios de salud. El resultado es un sistema donde la última palabra no llega hasta mucho tiempo después, generando devoluciones masivas, acuer",
       "captura": {
         "problema": {
           "sintesis": "Crisis de latencia institucional e inseguridad jurídica en el control de legalidad tributaria territorial, manifestada en la contradicción de criterios entre el Consejo de Estado y la Corte Constitucional (\"guerra de cortes\"), la nulidad masiva de acuerdos municipales por falta de motivación técnica y la aplicación de sanciones desproporcionadas que generan devoluciones millonarias y erosionan la sostenibilidad fiscal de los territorios.",
           "cita": {
-            "texto": "",
-            "autor": "",
+            "texto": "la sección cuarta del Consejo de estado se renovó en un 50% en el transcurso del año 2025, lo cual supone que a partir de este año 2026 comienza a verse el pensamiento las líneas de aplicación del derecho que los nuevos integrantes de la sección cuarta despliegan a la hora de estudiar los casos.",
+            "autor": "Gabriel Muñoz",
             "rol": ""
           }
         },
         "reto": {
-          "sintesis": "",
+          "sintesis": "Si el problema es la incertidumbre sobre los límites de la autonomía, el reto es navegar un laberinto de conceptos jurídicos que cambian de sentido según la sala que los interprete. El impuesto de alumbrado público es el ejemplo más dramático: buena parte de las mil sentencias anuales de la Sección Cuarta están relacionadas con este tributo, especialmente en pequeños municipios que lo usan como una de sus pocas fuentes de financiación. La historia del alumbrado público es una historia de intentos fallidos de contenerlo. En el gobierno de Juan Manuel Santos se intentó convertirlo en contribución especial con destinación específica; la Corte lo",
           "cita": {
-            "texto": "",
-            "autor": "",
+            "texto": "buena parte de esas mil sentencias que les mencionaba que se prefieren al año están relacionados con el impuesto alumbrado público.",
+            "autor": "Gabriel Muñoz",
             "rol": ""
           }
         },
         "solucion": {
-          "sintesis": "",
+          "sintesis": "Frente al laberinto, el panel trazó tres líneas jurisprudenciales que están reconfigurando el mapa tributario territorial: la autonomía tarifaria de las ciudades capitales, las reglas del alumbrado público, y el criterio empresarial para la tributación de dividendos en ICA. En ciudades capitales, la Corte Constitucional abrió el rango tarifario completo del Decreto Ley 1421 —hasta 30 por mil—, pero condicionó ese poder a una motivación técnica y territorial rigurosa. No basta con invocar la Ley 2082; hay que demostrar que la tarifa elegida responde a las realidades de la ciudad. Eso implica un trabajo de articulación entre concejos, secretarí",
           "cita": {
-            "texto": "",
-            "autor": "",
+            "texto": "aquí queda la indeterminación de cómo queda esa limitación cierto porque listo digamos que la la tarifa va a quedar o la libertad de las de las ciudades capitales va a quedar que la tarifa llegue hasta el 30 por mil.",
+            "autor": "Juan José Rodríguez",
             "rol": ""
           }
         },
         "sinergia": {
-          "sintesis": "",
+          "sintesis": "El panel no pudo cerrar sin abordar el tema que conecta con la sesión anterior: las sanciones. El caso Sabaneta es emblemático. El municipio había establecido una sanción por no declarar el ICA equivalente al 10% de los ingresos del contribuyente. Pero el impuesto de industria y comercio en ese municipio tenía tarifas de hasta 10 por mil —es decir, el 1% de los ingresos—. La sanción, entonces, era diez veces más alta que el propio impuesto. El Consejo de Estado anuló la disposición por falta de proporcionalidad: para recaudar uno, se castigaba con diez. Gabriel Muñoz evocó el criterio que el Consejo de Estado maneja desde hace más de 25 años:",
           "cita": {
-            "texto": "",
-            "autor": "",
+            "texto": "la sanción por no declarar, se cuantificaron una multa igual al 10% de los ingresos de manera que había una desconexión muy grande entre el impuesto y no declarar el impuesto era diez veces más alto que el propio impuesto.",
+            "autor": "Gabriel Muñoz",
             "rol": ""
           }
         }
       },
-      "lecturaEstrategica": "",
-      "sintesisEnCaliente": "",
+      "lecturaEstrategica": "Interpretaciones que trascienden lo descriptivo y señalan patrones estructurales oportunos para la incidencia. • La \"guerra de altas cortes\" —Consejo de Estado vs. Corte Constitucional— no es un espectáculo jurídico: es un costo fiscal concreto para las entidades territoriales. Cada vez que la Corte revierte una interpretación del Consejo vía tutela, se activan devoluciones, se anulan acuerdos y se desploma la recaudación. La solución no es elegir bando, sino construir mecanismos de coordinación jurisprudencial que eviten que la última palabra llegue con años de retraso.",
+      "sintesisEnCaliente": "El sistema de control de legalidad tributaria territorial está atravesando una crisis de latencia institucional: las decisiones del Consejo de Estado y la Corte Constitucional se contradicen, tardan años en consolidarse y generan devoluciones masivas que afectan la sostenibilidad fiscal de ciudades y municipios. La sentencia T-047 de 2026",
       "codificacion": {
         "temas": [],
         "territorios": [],
-        "actores": []
+        "actores": [
+          {
+            "nombre": "Gabriel Muñoz",
+            "rol": "Magistrado Auxiliar, Sección Cuarta del Consejo de Estado), Juan José Rodríguez (Director de Impuestos, ANDI",
+            "entidad": ""
+          }
+        ]
       },
       "comunicaciones": {
         "fraseClave": "",
@@ -1196,7 +1240,8 @@
           "detalle": "Iniciar en cada entidad territorial un plan de revisión técnica para ajustar los acuerdos de ICA y alumbrado público a los nuevos estándares de \"realidad tributaria\" y \"beneficio efectivo\" antes de que sean objeto de demandas de nulidad."
         }
       ],
-      "hojaRutaIngestada": true
+      "hojaRutaIngestada": true,
+      "relatoriaIngestada": true
     },
     {
       "id": "panel-11",
@@ -1205,50 +1250,56 @@
       "subtitulo": "",
       "tipo": null,
       "ejeTematico": null,
-      "estado": "transcripcion",
-      "ingestado": false,
+      "estado": "final",
+      "ingestado": true,
       "confianza": "medio",
-      "anclajePolitico": "",
+      "anclajePolitico": "El panel se abrió con un ejercicio que ilustraba, sin que el auditorio lo supiera de inmediato, el problema central de la gestión tributaria territorial: estamos en automático. Contar del uno al veinticinco, aplaudir en el tres, en el seis, en el nueve, en los números con cero, en los repetidos —parece simple, pero rompe la rutina cognitiva. Esa es la invitación: la transformación digital no es instalar software, es dejar de hacer las cosas en automático. Y en las entidades territoriales, el automático se traduce en 1.500 bases de datos dispersas en los equipos de escritorio de vinculados y contratistas, en versiones de información que nadie",
       "captura": {
         "problema": {
           "sintesis": "Crisis de eficiencia y confianza por la dispersión y baja calidad de los datos (\"El territorio de los datos dispersos\"), manifestada en la existencia de miles de bases de datos aisladas en equipos personales, la ausencia de interoperabilidad entre sistemas (presupuesto, cartera, catastro) y una gestión tributaria que actúa \"en automático\", sin conocer ni segmentar al contribuyente.",
           "cita": {
-            "texto": "",
-            "autor": "",
+            "texto": "llegué a la gobernación de Antioquia... pensaba que iba a encontrar un departamento lleno de sistemas de información con expedientes digitales con procesos de automatización... me encontré un impuesto que era el proceso de vehículos que estaba no completamente sistematizado.",
+            "autor": "Iván Felipe Velásquez",
             "rol": ""
           }
         },
         "reto": {
-          "sintesis": "",
+          "sintesis": "Si el problema es la dispersión y la mala calidad de los datos, el reto es cruzar la brecha que separa \"tener información\" de \"usarla para tomar decisiones\". Los panelistas coincidieron en que el dato, por sí solo, no vale. Lo que vale es el contexto, la integración, la capacidad de explicar el territorio a través de la información y devolverle a la ciudadanía una narrativa comprensible de por qué paga lo que paga. Ingrid Zoraya fue enfática: no se trata de cuánta información se tiene, sino de cuál es la calidad de ese dato. Los municipios hoy cuentan con radiografías territoriales —catastro, planeación, gobierno, riesgos— pero esas bases no",
           "cita": {
-            "texto": "",
-            "autor": "",
+            "texto": "no es Tener información, podrás usar la información dos escenarios totalmente diferentes... me encuentro con una información muy amplia, pero que de pronto no ha surtido procesos de validación.",
+            "autor": "Ingrid Zoraya",
             "rol": ""
           }
         },
         "solucion": {
-          "sintesis": "",
+          "sintesis": "Frente al diagnóstico, el panel no se quedó en la queja. Presentó tres apuestas concretas, probadas y replicables, que demuestran que la tecnología sí puede transformar la recaudación cuando se usa con inteligencia, no con frenesí comprador. La primera apuesta es la contactabilidad diferenciada. En la Gobernación de Antioquia, el equipo de ingresos usó el lago de datos para caracterizar a los propietarios de vehículos y diseñar estrategias preventivas y persuasivas focalizadas. No fue una campaña masiva; fue una conversación segmentada. A los más jóvenes les llegó un mensaje por WhatsApp empresarial. A los rangos de edad medios, correo electr",
           "cita": {
-            "texto": "",
-            "autor": "",
+            "texto": "empezamos a identificar un montón de fuentes de información... creamos de contabilidad, que básicamente en palabras más sencillas es como Lago de datos del estado de información de terceros de diferentes Fuentes.",
+            "autor": "Iván Felipe Velásquez",
             "rol": ""
           }
         },
         "sinergia": {
-          "sintesis": "",
+          "sintesis": "Los tres panelistas convergieron en una visión de fondo: la inteligencia artificial no es el futuro distante; es una capa que se puede agregar hoy sobre los datos que ya existen, siempre y cuando esos datos estén limpios, integrados y gobernados. Pero la IA no sustituye la decisión humana; la facilita. Las decisiones las siguen tomando los administradores. Álvaro Barrios delineó tres niveles de aplicación de la IA en la gestión tributaria. El primero es el más simple: un asistente conversacional —un GPT para gobierno— donde el funcionario pregunta en lenguaje natural y el sistema responde con información del contribuyente, recaudos, reportes.",
           "cita": {
-            "texto": "",
-            "autor": "",
+            "texto": "la Inteligencia artificial y qué tan expuesta? No queda la información utilizando estos modelos de Inteligencia artificial y aprovechando Cómo se puede potenciar la Inteligencia artificial para analizar información territorial.",
+            "autor": "Ingrid Zoraya",
             "rol": ""
           }
         }
       },
-      "lecturaEstrategica": "",
-      "sintesisEnCaliente": "",
+      "lecturaEstrategica": "Interpretaciones que trascienden lo descriptivo y señalan patrones estructurales oportunos para la incidencia. • El \"lago de datos\" de la Gobernación de Antioquia es un modelo replicable de bajo costo y alto impacto. No requiere licencias costosas ni infraestructura exótica; requiere un equipo multidisciplinario, lenguajes libres y una pregunta clara: ¿cómo acercarnos mejor a los contribuyentes? La clave no fue la tecnología, fue la segmentación comportamental y la personalización del mensaje. Eso es policy-ready: cualquier municipio puede hacerlo con recursos existentes.",
+      "sintesisEnCaliente": "La transformación digital de la gestión tributaria territorial no requiere más inversión en software; requiere inversión en datos, en capital humano y en confianza ciudadana. Existen tres apuestas probadas y replicables: (1) la contactabilidad diferenciada, que segmenta al contribuyente por comportamiento y preferencia de comunicación; (2",
       "codificacion": {
         "temas": [],
         "territorios": [],
-        "actores": []
+        "actores": [
+          {
+            "nombre": "Iván Felipe Velásquez",
+            "rol": "Experto en Gestión Pública, Inteligencia Fiscal e Innovación Tributaria), Ingrid Zoraya (Especialista en Gestión Catastral y Tributaria Territorial), Álvaro Barrios (Líder Comercial, K2B",
+            "entidad": ""
+          }
+        ]
       },
       "comunicaciones": {
         "fraseClave": "",
@@ -1304,7 +1355,8 @@
           "detalle": "Articular con el nivel nacional (MinTIC y MinHacienda) la creación de protocolos de intercambio de datos y un \"lago de datos tributario nacional\" que integre información bancaria y registros mercantiles."
         }
       ],
-      "hojaRutaIngestada": true
+      "hojaRutaIngestada": true,
+      "relatoriaIngestada": true
     },
     {
       "id": "panel-12",
@@ -1313,10 +1365,10 @@
       "subtitulo": "",
       "tipo": null,
       "ejeTematico": null,
-      "estado": "transcripcion",
-      "ingestado": false,
+      "estado": "final",
+      "ingestado": true,
       "confianza": "medio",
-      "anclajePolitico": "",
+      "anclajePolitico": "Problema público: ¿Cómo afrontar situaciones de emergencia con un presupuesto limitado y programado bajo un marco de rigidez normativa creciente? El panel se ancla en el contexto post-Sentencia C-036 de 2023 de la Corte Constitucional, que declaró la necesidad de que los presupuestos de gasto sean incorporados por los concejos y asambleas, eliminando la autonomía histórica del ejecutivo territorial para realizar movimientos presupuestales. Esta decisión, originada en una demanda contra normas del nivel departamental pero extendida jurisprudencialmente a los municipios, ha reconfigurado el equilibrio de poderes locales. No se trata de una disc",
       "captura": {
         "problema": {
           "sintesis": "Parálisis operativa y erosión de la autonomía fiscal territorial, detonada por la Sentencia C-036 de 2023 de la Corte Constitucional, que obliga a los ejecutivos locales a acudir a los concejos y asambleas para incorporar cualquier presupuesto de gasto, eliminando la autonomía técnica histórica del alcalde o gobernador. Este diseño, sumado a marcos de crédito público anacrónicos y Marcos Fiscales de Mediano Plazo (MFMP) que operan como meros requisitos contables de corto plazo, impide la respuesta ágil ante emergencias climáticas —como el caso de Montería con 9.000 damnificados y recursos atrapados— y perpetúa una \"trampa de pobreza fiscal\" en los municipios más vulnerables.",
@@ -1327,7 +1379,7 @@
           }
         },
         "reto": {
-          "sintesis": "",
+          "sintesis": "Normativo: La dispersión interpretativa de los tribunales administrativos genera un mapa de incertidumbre. Jaramillo señala que \"en Antioquia, por lo menos del tribunal administrativo, las facultades ya están prohibidas para los movimientos presupuestales\", mientras que Bello reporta que \"nuestro tribunal de Córdoba ha tenido una posición un poco más flexible\". Esta fragmentación jurisprudencial convierte a los tribunales en árbitros no electos de la política fiscal local, donde la misma conducta administrativa puede ser legal en Montería e ilegal en Sabaneta. Político: La proximidad de los procesos electorales y las mayorías concejiles trans",
           "cita": {
             "texto": "",
             "autor": "",
@@ -1335,7 +1387,7 @@
           }
         },
         "solucion": {
-          "sintesis": "",
+          "sintesis": "Desde Sabaneta, Jaramillo propone 'revisar la postura que realmente nos permita volver a esa autonomía', sugiriendo una articulación intermunicipal para incidir ante tribunales y legislativo. Bello defiende una solución intermedia: que los concejos otorguen “facultades temporales y precisas”, nunca abiertas ni permanentes. Esta propuesta se sustenta en una lectura técnica de la sentencia: “la sentencia se refiere a una norma demandada del nivel departamental y ese análisis lo hemos hecho en muchas ocasiones; hoy quieren aplicar a los municipios”. La propuesta más estructural emerge del Secretario de Hacienda de Copacabana, Gabriel Alzate, reg",
           "cita": {
             "texto": "",
             "autor": "",
@@ -1343,7 +1395,7 @@
           }
         },
         "sinergia": {
-          "sintesis": "",
+          "sintesis": "Se identifica una sinergia emergente entre secretarios de hacienda de diferentes territorios. Jaramillo menciona el “fuerte acompañamiento profesional” en Antioquia, mientras Bello reporta haber “hablado con mis compañeros secretarios de ciudades capitales. Esto nos toca a todos. Tenemos que movilizarnos todos, tenemos que establecer una línea, tenemos que defender esa posición”. La ficha registra la propuesta de crear una 'mesa de secretarios de hacienda' desde Sabaneta, que adquiere aquí su sentido político pleno: es un frente de presión gremial para incidir en la jurisprudencia y el legislativo, articulando la experiencia técnica de quiene",
           "cita": {
             "texto": "",
             "autor": "",
@@ -1352,7 +1404,7 @@
         }
       },
       "lecturaEstrategica": "",
-      "sintesisEnCaliente": "",
+      "sintesisEnCaliente": "La Sentencia C-036 de 2023 ha desencadenado una parálisis fiscal territorial que no solo ralentiza la gestión ordinaria sino que pone en riesgo la respuesta a emergencias climáticas. La solución no puede ser meramente jurisprudencial ni legislativa aislada: requiere una reforma constitucional o legal que establezca un régimen de facultade",
       "codificacion": {
         "temas": [],
         "territorios": [],
@@ -1412,7 +1464,8 @@
           "detalle": "Articular con Findeter, la FDN y el Ministerio de Hacienda el diseño de líneas de crédito condicionadas a reformas en autonomía presupuestal y modernización institucional, superando el modelo de asistencia técnica \"engavetado\"."
         }
       ],
-      "hojaRutaIngestada": true
+      "hojaRutaIngestada": true,
+      "relatoriaIngestada": true
     },
     {
       "id": "panel-13",
@@ -1421,10 +1474,10 @@
       "subtitulo": "",
       "tipo": null,
       "ejeTematico": null,
-      "estado": "transcripcion",
-      "ingestado": false,
+      "estado": "final",
+      "ingestado": true,
       "confianza": "medio",
-      "anclajePolitico": "",
+      "anclajePolitico": "Problema público: Deficiencias, desactualizaciones y vacíos en los tributos territoriales que impiden una gestión fiscal eficiente, equitativa y acorde con la realidad económica del siglo XXI. El panel se ancla en una constatación histórica de largo aliento: desde la Constitución de 1991, Colombia no ha tenido una reforma tributaria territorial estructural. Como señala el moderador, 'desde 1991, desde la Constitución, reformas tributarias territoriales tuvimos algunas modificaciones puntuales pero no han sido como tal una reforma estructural'. Este vacío de más de tres décadas ha generado un sistema tributario local anclado en normas de hace",
       "captura": {
         "problema": {
           "sintesis": "Triple fractura del sistema tributario territorial, manifestada en: (1) una arquitectura normativa obsoleta de hace más de 40 años que no captura la economía digital ni los flujos financieros deslocalizados; (2) una hiperfragmentación ineficiente de 26 impuestos municipales donde, en el caso de ciudades como Bogotá, solo 5 generan recaudo significativo; y (3) una autonomía fiscal formal pero no real, debido a que el artículo 150 de la Constitución reserva al Congreso la creación de tributos, convirtiendo a los entes territoriales en meros adoptantes de un menú nacional ajeno a sus realidades.",
@@ -1435,7 +1488,7 @@
           }
         },
         "reto": {
-          "sintesis": "",
+          "sintesis": "El reto es reconstruir las reglas de territorialidad tributaria sin desarticular el principio de autonomía local ni generar una guerra fiscal entre municipios. Verastegui identifica el dilema: las ciudades capitales pueden aplicar tarifas de ICA hasta el 30%, lo que crea un incentivo para que 'un banco o cualquier entidad, sobre todo el tema de servicios, pueda trasladar la operación a un municipio a una ciudad donde por las tasas de tributación podría ser bajo el grado'. Este fenómeno —conocido en la literatura tributaria internacional como 'shopping jurisdiccional'— erosiona la base gravable de las ciudades productivas y concentra el valor",
           "cita": {
             "texto": "",
             "autor": "",
@@ -1443,7 +1496,7 @@
           }
         },
         "solucion": {
-          "sintesis": "",
+          "sintesis": "Verastegui propone una reforma tributaria estructural que 'toca los temas... tiene que revisar el tema de reglas de territorialidad'. Esta reforma no es meramente legal; es conceptual: requiere redefinir el 'establecimiento de comercio' y el 'lugar de prestación del servicio' para incorporar la noción de 'presencia digital significativa' o 'usuario consumidor' como conectores jurisdiccionales. La ficha registra como solución: 'reforma y/o actualización del ICA' con replicabilidad SÍ y evidencia de funcionamiento SÍ, lo que sugiere que existen antecedentes internacionales o pilotos locales que sostienen la viabilidad técnica. Daniel Gómez prop",
           "cita": {
             "texto": "",
             "autor": "",
@@ -1451,7 +1504,7 @@
           }
         },
         "sinergia": {
-          "sintesis": "",
+          "sintesis": "La sinergia identificada en la ficha es una 'tensión interinstitucional' entre entidades territoriales y Gobierno Nacional, de naturaleza 'descentralización de la tributación', calificada como existente y con potencial de incidencia ALTO. Sin embargo, el panel no identifica mecanismos concretos de articulación con el Congreso —que es quien tiene la facultad constitucional de crear y reformar tributos— ni con la DIAN, que controla la información de transacciones digitales. Esta ausencia configura un vacío estratégico: sin el Congreso, no hay reforma estructural; sin la DIAN, no hay captura de la economía digital. Se propone implícitamente una",
           "cita": {
             "texto": "",
             "autor": "",
@@ -1460,7 +1513,7 @@
         }
       },
       "lecturaEstrategica": "",
-      "sintesisEnCaliente": "",
+      "sintesisEnCaliente": "Colombia opera con un sistema tributario territorial diseñado para una economía del siglo XX, en un país que ya vive en la economía digital del siglo XXI. La ausencia de una reforma estructural desde 1991 ha generado una triple fractura: (1) normativa obsoleta que no captura la economía digital ni los flujos financieros deslocalizados; (2",
       "codificacion": {
         "temas": [],
         "territorios": [],
@@ -1524,7 +1577,8 @@
           "detalle": "Articular una mesa técnica permanente entre el Ministerio de Hacienda, el DNP, el Congreso, las asociaciones territoriales y el sector privado (plataformas digitales y bancos) para diseñar mecanismos operativos de retención y cruce de datos en tiempo real."
         }
       ],
-      "hojaRutaIngestada": true
+      "hojaRutaIngestada": true,
+      "relatoriaIngestada": true
     }
   ]
 }

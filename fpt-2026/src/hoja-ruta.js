@@ -21,12 +21,12 @@ function abrirModal(panel) {
   const pdf = panel.recursos?.pdfHojaRuta;
   const titulo = tituloDe(panel);
   const vacio = (t) => `<p class="rm__vacio">${t}</p>`;
-  const etiqConf = { alto: 'Confianza alta', medio: 'Confianza media', bajo: 'Confianza baja' };
+  const tipoTxt = panel.tipo === 'nacional' ? 'Nacional' : panel.tipo === 'territorial' ? 'Territorial' : '';
   const li = (a) =>
     typeof a === 'string' ? `<li>${a}</li>` : `<li><b>${a.titulo}</b>${a.detalle ? `<span>${a.detalle}</span>` : ''}</li>`;
 
   ov.querySelector('.rm__cuerpo').innerHTML = `
-    <div class="rm__num">Panel ${panel.numero} · <span class="chip-confianza" data-nivel="${panel.confianza}" style="vertical-align:middle">${etiqConf[panel.confianza] || panel.confianza}</span></div>
+    <div class="rm__num">Panel ${panel.numero}${tipoTxt ? ` · ${tipoTxt}` : ''}</div>
     <h3 class="rm__titulo">${titulo}</h3>
     <div class="rm__bloque">
       <h5>El problema a resolver</h5>

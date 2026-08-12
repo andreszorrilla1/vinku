@@ -72,7 +72,9 @@
 .rel-portada__num { font-family: var(--font-sans); font-weight: 800; letter-spacing: .18em; text-transform: uppercase; font-size: var(--fs-sm); color: var(--gobs-cian); }
 .rel-portada h1 { font-size: var(--fs-3xl); margin: var(--sp-4) 0; max-width: 18ch; }
 .rel-portada__sub { font-family: var(--font-sans); font-size: var(--fs-lg); color: var(--gobs-azul-claro); max-width: 52ch; }
-.rel-portada__meta { display: flex; gap: var(--sp-4); align-items: center; margin-top: var(--sp-8); flex-wrap: wrap; }
+.rel-portada__meta { display: flex; gap: var(--sp-2); align-items: center; margin-top: var(--sp-8); flex-wrap: wrap; }
+.rel-portada__tipo { font-family: var(--font-sans); font-size: var(--fs-xs); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: var(--sp-1) var(--sp-3); border-radius: 999px; background: var(--gobs-cian); color: var(--gobs-negro); }
+.rel-portada__tema { font-family: var(--font-sans); font-size: var(--fs-xs); color: #fff; border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: var(--sp-1) var(--sp-3); }
 .rel-scroll-hint { margin-top: var(--sp-12); font-family: var(--font-sans); font-size: var(--fs-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--gobs-azul-claro); animation: rel-bob 1.8s ease-in-out infinite; }
 @keyframes rel-bob { 0%,100%{ transform: translateY(0); opacity:.7 } 50%{ transform: translateY(6px); opacity:1 } }
 

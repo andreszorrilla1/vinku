@@ -80,9 +80,15 @@
   transition: transform .15s ease, box-shadow .15s ease; overflow: hidden;
 }
 .tarjeta-panel:hover { transform: translateY(-3px); box-shadow: var(--sombra); }
-.tarjeta-panel::after { content:""; position:absolute; top:0; right:0; width:44px; aspect-ratio:1; background: var(--gobs-cian); clip-path: polygon(100% 0,100% 100%,0 0); opacity:.85; }
+.tarjeta-panel__top { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); }
 .tarjeta-panel__num { font-family: var(--font-serif); font-size: var(--fs-2xl); font-weight: 700; color: var(--color-primario); line-height: 1; }
+.tarjeta-panel__tipo { font-family: var(--font-sans); font-size: var(--fs-xs); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: var(--sp-1) var(--sp-3); border-radius: 999px; }
+.tarjeta-panel__tipo[data-tipo="nacional"] { background: color-mix(in srgb, var(--gobs-azul-profundo) 14%, transparent); color: var(--color-primario); }
+.tarjeta-panel__tipo[data-tipo="territorial"] { background: color-mix(in srgb, var(--gobs-verde) 16%, transparent); color: #0a8f28; }
+:root[data-theme="dark"] .tarjeta-panel__tipo[data-tipo="territorial"] { color: var(--gobs-verde); }
 .tarjeta-panel__titulo { font-size: var(--fs-lg); margin: 0; color: var(--color-texto); }
+.tarjeta-panel__temas { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.tarjeta-panel__temas span { font-family: var(--font-sans); font-size: var(--fs-xs); color: var(--color-texto-suave); background: var(--color-fondo-alt); border: 1px solid var(--color-borde); border-radius: 999px; padding: 2px var(--sp-2); }
 a.tarjeta-panel { text-decoration: none; }
 .tarjeta-panel__cta { margin-top: auto; font-family: var(--font-sans); font-size: var(--fs-sm); font-weight: 600; color: var(--color-primario); opacity: 0; transform: translateX(-4px); transition: opacity .15s ease, transform .15s ease; }
 .tarjeta-panel:hover .tarjeta-panel__cta { opacity: 1; transform: none; }

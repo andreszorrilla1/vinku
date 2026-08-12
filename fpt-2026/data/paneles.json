@@ -22,7 +22,7 @@
   "paneles": [
     {
       "id": "panel-magistral",
-      "numero": "M",
+      "numero": 1,
       "titulo": "Conversación de apertura",
       "subtitulo": "Charla magistral de apertura · dos intervenciones: transición de gobierno nacional y el caso Medellín.",
       "tipo": "nacional",
@@ -69,10 +69,10 @@
       "sintesisEnCaliente": "El hallazgo principal es que la crisis fiscal territorial colombiana no es un problema de insuficiencia de recursos, sino de arquitectura institucional: se transfirieron recursos sin transferir autonomía, se descentralizaron funciones sin definir competencias, y se prometió equidad sin generar convergencia. La propuesta del Gobernador de",
       "codificacion": {
         "temas": [
-          "Fiscalidad territorial",
-          "Descentralización",
-          "Coordinación intergubernamental",
-          "Autonomía fiscal"
+          "Autonomía fiscal",
+          "Transferencias y SGP",
+          "Reforma estructural",
+          "Descentralización"
         ],
         "territorios": [],
         "actores": [
@@ -147,7 +147,7 @@
       "numero": 2,
       "titulo": "Marcos normativos territoriales",
       "subtitulo": "",
-      "tipo": null,
+      "tipo": "territorial",
       "ejeTematico": null,
       "estado": "final",
       "ingestado": true,
@@ -190,7 +190,11 @@
       "lecturaEstrategica": "El panel deja una serie de implicaciones directas para la política pública territorial y nacional. En el ámbito local, las administraciones territoriales deben iniciar ciclos de actualización normativa sistemáticos: estatutos de presupuesto propios, no réplicas; estatutos tributarios modernizados con análisis costo-eficiencia de cada tributo; POT actualizados con operación activa de sus instrumentos de financiación; y estructuras administrativas de hacienda que trasciendan la figura de la secretaría para articular líneas de ingreso y de gasto. En el ámbito nacional, el Congreso y el Gobierno d",
       "sintesisEnCaliente": "Los territorios no gestionan con marcos propios, sino replicando normas nacionales anacrónicas: modernizar la infraestructura jurídica de la hacienda territorial es la condición previa de cualquier autonomía real.",
       "codificacion": {
-        "temas": [],
+        "temas": [
+          "Normatividad y marcos legales",
+          "Autonomía fiscal",
+          "Presupuesto y crédito"
+        ],
         "territorios": [],
         "actores": [
           {
@@ -268,7 +272,7 @@
       "numero": 3,
       "titulo": "Impuesto predial unificado",
       "subtitulo": "",
-      "tipo": null,
+      "tipo": "territorial",
       "ejeTematico": null,
       "estado": "final",
       "ingestado": true,
@@ -311,7 +315,11 @@
       "lecturaEstrategica": "El panel deja una agenda de política pública con implicaciones directas para las administraciones territoriales. Primero, en gestión catastral: los municipios deben evaluar la viabilidad de habilitarse como gestores catastrales o conformar esquemas asociativos (provincias, áreas metropolitanas) bajo la Ley 1955 de 2019 y su Decreto 148, dado que la centralización del IGAC ha demostrado ser insuficiente para mantener la actualización. Esto requiere inversión en capital humano, tecnología y articulación con la Gobernación. Segundo, en recaudo: las entidades territoriales deben fortalecer la gest",
       "sintesisEnCaliente": "El predial, segunda renta de los municipios, no rinde por un rezago catastral estructural: sin catastro actualizado y territorializado no hay equidad tributaria ni ingresos propios sostenibles.",
       "codificacion": {
-        "temas": [],
+        "temas": [
+          "Catastro y predial",
+          "Autonomía fiscal",
+          "Reforma estructural"
+        ],
         "territorios": [],
         "actores": [
           {
@@ -408,7 +416,7 @@
       "numero": 4,
       "titulo": "Impuesto de industria y comercio (ICA)",
       "subtitulo": "",
-      "tipo": null,
+      "tipo": "territorial",
       "ejeTematico": null,
       "estado": "final",
       "ingestado": true,
@@ -452,13 +460,9 @@
       "sintesisEnCaliente": "El hallazgo principal es que la crisis del ICA no es un problema de insuficiencia de recaudo, sino de arquitectura institucional: se diseñó un impuesto simple para municipios simples, pero hoy los municipios simples no pueden administrarlo y los municipios complejos lo necesitan más sofisticado. La simplicidad original se petrificó en rig",
       "codificacion": {
         "temas": [
-          "Fiscalidad territorial",
-          "Tributación municipal",
-          "Economía digital",
+          "ICA y tributación municipal",
           "Reforma estructural",
-          "Costos de cumplimiento",
-          "Autonomía tributaria",
-          "Litigiosidad"
+          "Economía digital"
         ],
         "territorios": [],
         "actores": [
@@ -546,7 +550,7 @@
       "numero": 5,
       "titulo": "Evolución y análisis crítico de la descentralización",
       "subtitulo": "",
-      "tipo": null,
+      "tipo": "nacional",
       "ejeTematico": null,
       "estado": "final",
       "ingestado": true,
@@ -591,13 +595,9 @@
       "codificacion": {
         "temas": [
           "Descentralización",
-          "Autonomía territorial",
-          "Centralismo fiscal",
-          "Capacidades institucionales",
-          "Reforma tributaria territorial",
-          "Ordenamiento territorial",
-          "Finanzas climáticas",
-          "Sistema de participaciones"
+          "Autonomía fiscal",
+          "Transferencias y SGP",
+          "Reforma estructural"
         ],
         "territorios": [],
         "actores": [
@@ -681,7 +681,7 @@
       "numero": 6,
       "titulo": "El futuro de las finanzas públicas territoriales",
       "subtitulo": "",
-      "tipo": null,
+      "tipo": "nacional",
       "ejeTematico": null,
       "estado": "final",
       "ingestado": true,
@@ -725,14 +725,10 @@
       "sintesisEnCaliente": "El hallazgo principal es que el modelo de financiación territorial colombiano está en una encrucijada: la estrechez fiscal nacional impide transferir más recursos, y la arquitectura tributaria local (ICA + Predial + transferencias) está erosionada por la economía digital, la informalidad y la competencia dañina entre municipios. El contri",
       "codificacion": {
         "temas": [
-          "Descentralización fiscal",
-          "Estrechez fiscal",
+          "Reforma estructural",
+          "Fuentes alternativas",
           "Economía digital",
-          "Modernización tributaria",
-          "Competitividad territorial",
-          "Activos públicos",
-          "Bonos verdes",
-          "Cultura de pago"
+          "ICA y tributación municipal"
         ],
         "territorios": [],
         "actores": [
@@ -820,7 +816,7 @@
       "numero": 7,
       "titulo": "Generación de valor a partir de la infraestructura pública",
       "subtitulo": "",
-      "tipo": null,
+      "tipo": "territorial",
       "ejeTematico": null,
       "estado": "final",
       "ingestado": true,
@@ -863,7 +859,10 @@
       "lecturaEstrategica": "Interpretaciones que trascienden lo descriptivo y señalan patrones estructurales oportunos para la incidencia. • El suelo remanente de las infraestructuras de transporte es un activo intangible de alto valor —incrementos superiores al 150%— que las entidades operadoras pueden rentabilizar inmobiliariamente, pero solo si la norma urbana lo habilita. Esto convierte al POT en una variable financiera, no solo de planificación.",
       "sintesisEnCaliente": "Existe un portafolio viable y probado de instrumentos de captura de valor —titularización del predial futuro, obligaciones urbanísticas, aprovechamiento de suelo remanente, DRS, publicidad comercial en infraestructura— que las ciudades pueden desplegar para reducir la dependencia del presupuesto ordinario. Sin embargo, su aplicación está",
       "codificacion": {
-        "temas": [],
+        "temas": [
+          "Infraestructura y captura de valor",
+          "Fuentes alternativas"
+        ],
         "territorios": [],
         "actores": []
       },
@@ -926,7 +925,7 @@
       "numero": 8,
       "titulo": "Fuentes alternativas de financiación",
       "subtitulo": "",
-      "tipo": null,
+      "tipo": "territorial",
       "ejeTematico": null,
       "estado": "final",
       "ingestado": true,
@@ -969,7 +968,11 @@
       "lecturaEstrategica": "Recomendaciones accionables derivadas de la lectura cruzada de argumentos, consensos y tensiones. Fortalecimiento del impuesto predial como pilar del financiamiento territorial mediante actualización catastral masiva, tarifación progresiva y campañas de cultura tributaria que lo presenten como 'cuota de administración de la copropiedad ciudadana' y no como carga fiscal.",
       "sintesisEnCaliente": "Colombia no necesita nuevos impuestos ni nuevas leyes para diversificar la financiación del desarrollo territorial: necesita implementar lo que ya tiene. La Constitución de 1991, la Ley 388 de 1997 y la jurisprudencia constitucional (Sentencias C-927/2006 y C-401/2010) ya habilitan un portafolio completo de instrumentos: impuesto predial",
       "codificacion": {
-        "temas": [],
+        "temas": [
+          "Fuentes alternativas",
+          "Infraestructura y captura de valor",
+          "Presupuesto y crédito"
+        ],
         "territorios": [],
         "actores": []
       },
@@ -1036,7 +1039,7 @@
       "numero": 9,
       "titulo": "Procedimiento tributario territorial",
       "subtitulo": "",
-      "tipo": null,
+      "tipo": "territorial",
       "ejeTematico": null,
       "estado": "final",
       "ingestado": true,
@@ -1079,7 +1082,11 @@
       "lecturaEstrategica": "Interpretaciones que trascienden lo descriptivo y señalan patrones estructurales oportunos para la incidencia. • El artículo 59 de la Ley 788 opera como una \"falsa autonomía\": le dice a los territorios que pueden simplificar y disminuir sanciones, pero les niega la competencia material para crear un régimen propio. Esa ambigüedad ha generado veinte años de estatutos locales nulos, litigios repetitivos y desconfianza institucional. La solución no es interpretar mejor el artículo 59, sino reformarlo o reemplazarlo por un régimen diferenciado.",
       "sintesisEnCaliente": "El modelo actual de remisión automática al Estatuto Tributario Nacional —artículo 59 de la Ley 788/2002— ya no resuelve adecuadamente la gestión tributaria territorial. Veinticinco años de aplicación han demostrado que los tributos locales —especialmente los de determinación oficial como el predial, el alumbrado público y la contribución",
       "codificacion": {
-        "temas": [],
+        "temas": [
+          "Procedimiento tributario",
+          "Normatividad y marcos legales",
+          "Jurisprudencia"
+        ],
         "territorios": [],
         "actores": []
       },
@@ -1146,7 +1153,7 @@
       "numero": 10,
       "titulo": "Novedades jurisprudenciales",
       "subtitulo": "",
-      "tipo": null,
+      "tipo": "nacional",
       "ejeTematico": null,
       "estado": "final",
       "ingestado": true,
@@ -1189,7 +1196,11 @@
       "lecturaEstrategica": "Interpretaciones que trascienden lo descriptivo y señalan patrones estructurales oportunos para la incidencia. • La \"guerra de altas cortes\" —Consejo de Estado vs. Corte Constitucional— no es un espectáculo jurídico: es un costo fiscal concreto para las entidades territoriales. Cada vez que la Corte revierte una interpretación del Consejo vía tutela, se activan devoluciones, se anulan acuerdos y se desploma la recaudación. La solución no es elegir bando, sino construir mecanismos de coordinación jurisprudencial que eviten que la última palabra llegue con años de retraso.",
       "sintesisEnCaliente": "El sistema de control de legalidad tributaria territorial está atravesando una crisis de latencia institucional: las decisiones del Consejo de Estado y la Corte Constitucional se contradicen, tardan años en consolidarse y generan devoluciones masivas que afectan la sostenibilidad fiscal de ciudades y municipios. La sentencia T-047 de 2026",
       "codificacion": {
-        "temas": [],
+        "temas": [
+          "Jurisprudencia",
+          "ICA y tributación municipal",
+          "Procedimiento tributario"
+        ],
         "territorios": [],
         "actores": [
           {
@@ -1258,7 +1269,7 @@
       "numero": 11,
       "titulo": "Nuevas tecnologías y gestión de ingresos",
       "subtitulo": "",
-      "tipo": null,
+      "tipo": "territorial",
       "ejeTematico": null,
       "estado": "final",
       "ingestado": true,
@@ -1301,7 +1312,10 @@
       "lecturaEstrategica": "Interpretaciones que trascienden lo descriptivo y señalan patrones estructurales oportunos para la incidencia. • El \"lago de datos\" de la Gobernación de Antioquia es un modelo replicable de bajo costo y alto impacto. No requiere licencias costosas ni infraestructura exótica; requiere un equipo multidisciplinario, lenguajes libres y una pregunta clara: ¿cómo acercarnos mejor a los contribuyentes? La clave no fue la tecnología, fue la segmentación comportamental y la personalización del mensaje. Eso es policy-ready: cualquier municipio puede hacerlo con recursos existentes.",
       "sintesisEnCaliente": "La transformación digital de la gestión tributaria territorial no requiere más inversión en software; requiere inversión en datos, en capital humano y en confianza ciudadana. Existen tres apuestas probadas y replicables: (1) la contactabilidad diferenciada, que segmenta al contribuyente por comportamiento y preferencia de comunicación; (2",
       "codificacion": {
-        "temas": [],
+        "temas": [
+          "Tecnología y datos",
+          "Catastro y predial"
+        ],
         "territorios": [],
         "actores": [
           {
@@ -1374,7 +1388,7 @@
       "numero": 12,
       "titulo": "Presupuesto, MFMP y crédito público",
       "subtitulo": "",
-      "tipo": null,
+      "tipo": "territorial",
       "ejeTematico": null,
       "estado": "final",
       "ingestado": true,
@@ -1417,7 +1431,11 @@
       "lecturaEstrategica": "",
       "sintesisEnCaliente": "La Sentencia C-036 de 2023 ha desencadenado una parálisis fiscal territorial que no solo ralentiza la gestión ordinaria sino que pone en riesgo la respuesta a emergencias climáticas. La solución no puede ser meramente jurisprudencial ni legislativa aislada: requiere una reforma constitucional o legal que establezca un régimen de facultade",
       "codificacion": {
-        "temas": [],
+        "temas": [
+          "Presupuesto y crédito",
+          "Autonomía fiscal",
+          "Normatividad y marcos legales"
+        ],
         "territorios": [],
         "actores": []
       },
@@ -1484,7 +1502,7 @@
       "numero": 13,
       "titulo": "Propuestas para la modernización de los tributos territoriales",
       "subtitulo": "",
-      "tipo": null,
+      "tipo": "nacional",
       "ejeTematico": null,
       "estado": "final",
       "ingestado": true,
@@ -1527,7 +1545,12 @@
       "lecturaEstrategica": "",
       "sintesisEnCaliente": "Colombia opera con un sistema tributario territorial diseñado para una economía del siglo XX, en un país que ya vive en la economía digital del siglo XXI. La ausencia de una reforma estructural desde 1991 ha generado una triple fractura: (1) normativa obsoleta que no captura la economía digital ni los flujos financieros deslocalizados; (2",
       "codificacion": {
-        "temas": [],
+        "temas": [
+          "Reforma estructural",
+          "ICA y tributación municipal",
+          "Autonomía fiscal",
+          "Normatividad y marcos legales"
+        ],
         "territorios": [],
         "actores": []
       },

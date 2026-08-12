@@ -46,7 +46,6 @@ function navPaneles(paneles, idx) {
 function render(panel, paneles, idx, cont, scroller) {
   scroller = scroller || window;
   const titulo = esPH(panel.titulo) ? `Panel ${panel.numero}` : panel.titulo;
-  const etiqConf = { alto: 'Trazabilidad alta', medio: 'Trazabilidad media', bajo: 'Trazabilidad baja' };
   const sub = limpio(panel.subtitulo) || limpio(panel.anclajePolitico);
   const sintCaliente = limpio(panel.sintesisEnCaliente);
   const pdf = panel.recursos?.pdfRelatoria;
@@ -76,8 +75,8 @@ function render(panel, paneles, idx, cont, scroller) {
         <h1>${titulo}</h1>
         ${sub ? `<p class="rel-portada__sub">${sub}</p>` : ''}
         <div class="rel-portada__meta">
-          <span class="chip-confianza" data-nivel="${panel.confianza}">${etiqConf[panel.confianza] || panel.confianza}</span>
-          ${panel.estado !== 'final' ? `<span class="etiqueta" style="color:var(--gobs-azul-claro)">En sistematización</span>` : ''}
+          <span class="rel-portada__tipo">${panel.tipo === 'nacional' ? 'Nacional' : panel.tipo === 'territorial' ? 'Territorial' : ''}</span>
+          ${(panel.codificacion?.temas || []).slice(0, 3).map((t) => `<span class="rel-portada__tema">${t}</span>`).join('')}
         </div>
         <div class="rel-scroll-hint">Desliza para recorrer ↓</div>
       </div>

@@ -1,22 +1,17 @@
 /* ============================================================
-   Congreso FPT 2026 — Buscador del repositorio
-   Filtros por tipo (nacional/territorial) + eje temático y
-   búsqueda por texto sobre el grid de los 13 paneles.
-   Los valores de los filtros se pueblan desde la fuente única;
-   hoy salen pocos porque tipo/eje aún vienen de fichas sin ingerir.
+   Congreso FPT 2026 — Buscador temático del repositorio
+   Búsqueda sofisticada por temática: alcance (Nacional / Territorial),
+   temas (chips multi-selección) y texto libre, sobre los 13 paneles.
    ============================================================ */
 
 const ETIQ_TIPO = { nacional: 'Nacional', territorial: 'Territorial' };
-const ETIQ_ESTADO = { final: 'Relatoría final', transcripcion: 'En sistematización', pendiente: 'Próximamente' };
 
-function nombreEje(data, id) {
-  const e = (data.meta?.ejesTematicos || []).find((x) => x.id === id);
-  const n = e?.nombre;
-  return n && !n.startsWith('‹placeholder') ? n : null;
-}
-
-function opcionesUnicas(paneles, campo) {
-  return [...new Set(paneles.map((p) => p[campo]).filter(Boolean))];
+function temasConConteo(paneles) {
+  const m = new Map();
+  paneles.forEach((p) => (p.codificacion?.temas || []).forEach((t) => {
+    if (t && !t.startsWith('‹placeholder')) m.set(t, (m.get(t) || 0) + 1);
+  }));
+  return [...m.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 }
 
 function construir(data) {
@@ -24,75 +19,78 @@ function construir(data) {
   if (!barra || barra.dataset.listo) return;
   barra.dataset.listo = '1';
   const paneles = data.paneles || [];
-
-  const tipos = opcionesUnicas(paneles, 'tipo');
-  const ejes = opcionesUnicas(paneles, 'ejeTematico');
-  const estados = opcionesUnicas(paneles, 'estado');
-
-  const opt = (v, txt) => `<option value="${v}">${txt}</option>`;
+  const temas = temasConConteo(paneles);
 
   barra.innerHTML = `
-    <div class="bus__campo bus__campo--texto">
-      <label for="bus-q" class="etiqueta">Buscar</label>
-      <input id="bus-q" type="search" placeholder="Tema, territorio, problema…" autocomplete="off">
+    <div class="bus__fila">
+      <div class="bus__buscar">
+        <span class="bus__lupa" aria-hidden="true">⌕</span>
+        <input id="bus-q" type="search" placeholder="Buscar por tema, problema, actor, territorio…" autocomplete="off" aria-label="Buscar">
+      </div>
+      <div class="bus__alcance" role="group" aria-label="Alcance temático">
+        <button class="bus__seg is-activo" data-tipo="" type="button">Todos</button>
+        <button class="bus__seg" data-tipo="nacional" type="button">Nacional</button>
+        <button class="bus__seg" data-tipo="territorial" type="button">Territorial</button>
+      </div>
     </div>
-    <div class="bus__campo">
-      <label for="bus-tipo" class="etiqueta">Tipo</label>
-      <select id="bus-tipo">${opt('', 'Todos')}${tipos.map((t) => opt(t, ETIQ_TIPO[t] || t)).join('')}</select>
+    <div class="bus__temas" role="group" aria-label="Temas">
+      ${temas.map(([t, n]) => `<button class="bus__chip" type="button" data-tema="${t}">${t}<small>${n}</small></button>`).join('')}
     </div>
-    <div class="bus__campo">
-      <label for="bus-eje" class="etiqueta">Eje temático</label>
-      <select id="bus-eje" ${ejes.length ? '' : 'disabled title="Se activa cuando se ingieran las fichas"'}>
-        ${opt('', ejes.length ? 'Todos' : 'Por definir')}${ejes.map((e) => opt(e, nombreEje(data, e) || e)).join('')}
-      </select>
-    </div>
-    <div class="bus__campo">
-      <label for="bus-estado" class="etiqueta">Estado</label>
-      <select id="bus-estado">${opt('', 'Todos')}${estados.map((s) => opt(s, ETIQ_ESTADO[s] || s)).join('')}</select>
-    </div>
-    <button class="bus__limpiar" type="button" hidden>Limpiar</button>
-    <output class="bus__conteo" aria-live="polite"></output>
-  `;
+    <div class="bus__pie">
+      <output class="bus__conteo" aria-live="polite"></output>
+      <button class="bus__limpiar" type="button" hidden>Limpiar filtros</button>
+    </div>`;
 
   const q = barra.querySelector('#bus-q');
-  const selTipo = barra.querySelector('#bus-tipo');
-  const selEje = barra.querySelector('#bus-eje');
-  const selEstado = barra.querySelector('#bus-estado');
+  const segs = [...barra.querySelectorAll('.bus__seg')];
+  const chips = [...barra.querySelectorAll('.bus__chip')];
   const limpiar = barra.querySelector('.bus__limpiar');
   const conteo = barra.querySelector('.bus__conteo');
   const grid = document.querySelector('[data-grid-paneles]');
+  let fTipo = '';
+  const temasSel = new Set();
 
   function aplicar() {
     const texto = q.value.trim().toLowerCase();
-    const fTipo = selTipo.value, fEje = selEje.value, fEstado = selEstado.value;
     const tarjetas = grid.querySelectorAll('.tarjeta-panel');
     let visibles = 0;
     tarjetas.forEach((c) => {
-      const ok =
-        (!texto || (c.dataset.buscar || '').includes(texto) || c.textContent.toLowerCase().includes(texto)) &&
-        (!fTipo || c.dataset.tipo === fTipo) &&
-        (!fEje || c.dataset.eje === fEje) &&
-        (!fEstado || c.dataset.estado === fEstado);
+      const temasC = (c.dataset.temas || '').split('|').filter(Boolean);
+      const okTexto = !texto || (c.dataset.buscar || '').includes(texto);
+      const okTipo = !fTipo || c.dataset.tipo === fTipo;
+      const okTemas = temasSel.size === 0 || [...temasSel].some((t) => temasC.includes(t));
+      const ok = okTexto && okTipo && okTemas;
       c.hidden = !ok;
       if (ok) visibles++;
     });
     conteo.textContent = `${visibles} de ${tarjetas.length} paneles`;
-    const activo = texto || fTipo || fEje || fEstado;
+    const activo = texto || fTipo || temasSel.size;
     limpiar.hidden = !activo;
     let vacio = grid.querySelector('.bus__vacio');
-    if (visibles === 0) {
-      if (!vacio) {
-        vacio = document.createElement('p');
-        vacio.className = 'bus__vacio';
-        vacio.textContent = 'Ningún panel coincide con estos filtros.';
-        grid.appendChild(vacio);
-      }
-    } else if (vacio) vacio.remove();
+    if (visibles === 0 && !vacio) {
+      vacio = document.createElement('p');
+      vacio.className = 'bus__vacio';
+      vacio.textContent = 'Ningún panel coincide con estos filtros.';
+      grid.appendChild(vacio);
+    } else if (visibles > 0 && vacio) vacio.remove();
   }
 
-  [q, selTipo, selEje, selEstado].forEach((el) => el.addEventListener('input', aplicar));
+  q.addEventListener('input', aplicar);
+  segs.forEach((b) => b.addEventListener('click', () => {
+    segs.forEach((s) => s.classList.toggle('is-activo', s === b));
+    fTipo = b.dataset.tipo;
+    aplicar();
+  }));
+  chips.forEach((b) => b.addEventListener('click', () => {
+    const t = b.dataset.tema;
+    if (temasSel.has(t)) { temasSel.delete(t); b.classList.remove('is-activo'); }
+    else { temasSel.add(t); b.classList.add('is-activo'); }
+    aplicar();
+  }));
   limpiar.addEventListener('click', () => {
-    q.value = ''; selTipo.value = ''; selEje.value = ''; selEstado.value = '';
+    q.value = ''; fTipo = '';
+    segs.forEach((s) => s.classList.toggle('is-activo', s.dataset.tipo === ''));
+    temasSel.clear(); chips.forEach((c) => c.classList.remove('is-activo'));
     aplicar();
   });
   aplicar();

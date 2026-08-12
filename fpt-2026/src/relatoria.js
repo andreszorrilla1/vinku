@@ -62,7 +62,7 @@ function render(panel, paneles, idx, cont, scroller) {
             <span class="rel-etapa">${e.etiqueta}</span>
             ${sintesis ? `<div class="rel-tarjeta__sintesis">${sintesis}</div>` : `<p class="rel-vacio">Síntesis de esta etapa pendiente de la relatoría final del panel.</p>`}
           </div>
-          <div class="rel-cita rel-reveal">${citaHTML(bloque.cita)}</div>
+          ${limpio(bloque.cita?.texto) ? `<div class="rel-cita rel-reveal">${citaHTML(bloque.cita)}</div>` : ''}
         </div>
       </section>`;
   }).join('');
@@ -85,6 +85,7 @@ function render(panel, paneles, idx, cont, scroller) {
     ${tarjetas}
     <section class="rel-cierre">
       <div class="rel-cierre__inner">
+        ${panel.recursos?.fotoSintesis ? `<figure class="rel-cierre__foto"><img src="${panel.recursos.fotoSintesis}" alt="Panel ${panel.numero}: ${titulo}" loading="lazy" onerror="this.closest('.rel-cierre__foto').remove()"></figure>` : ''}
         <span class="etiqueta">Síntesis en caliente</span>
         <blockquote>${sintCaliente ? `“${sintCaliente}”` : 'El territorio cobra valor.'}</blockquote>
         <div class="rel-cierre__acciones">

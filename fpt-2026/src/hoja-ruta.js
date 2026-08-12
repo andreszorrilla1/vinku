@@ -57,32 +57,33 @@ function abrirModal(panel) {
   const problema = limpio(panel.captura?.problema?.sintesis);
   const cita = panel.captura?.problema?.cita || {};
   const citaTxt = limpio(cita.texto);
-  const acciones = (panel.comunicaciones?.acciones || []).filter((a) => !esPH(a) && a);
-  const actores = (panel.codificacion?.actores || []).filter((a) => a && !esPH(a.nombre));
+  const acciones = (panel.comunicaciones?.acciones || []).filter((a) => a && (a.titulo || typeof a === 'string'));
+  const pasos = (panel.pasos || []).filter((a) => a && a.titulo);
   const pdf = panel.recursos?.pdfHojaRuta;
   const titulo = esPH(panel.titulo) ? `Panel ${panel.numero}` : panel.titulo;
   const vacio = (t) => `<p class="rm__vacio">${t}</p>`;
   const etiqConf = { alto: 'Confianza alta', medio: 'Confianza media', bajo: 'Confianza baja' };
+  const li = (a) =>
+    typeof a === 'string'
+      ? `<li>${a}</li>`
+      : `<li><b>${a.titulo}</b>${a.detalle ? `<span>${a.detalle}</span>` : ''}</li>`;
 
   ov.querySelector('.rm__cuerpo').innerHTML = `
     <div class="rm__num">Panel ${panel.numero} · <span class="chip-confianza" data-nivel="${panel.confianza}" style="vertical-align:middle">${etiqConf[panel.confianza] || panel.confianza}</span></div>
     <h3 class="rm__titulo">${titulo}</h3>
     <div class="rm__bloque">
-      <h5>El problema</h5>
-      ${problema ? `<p>${problema}</p>` : vacio('Relatoría en sistematización — el problema se publica con la ficha final.')}
+      <h5>El problema a resolver</h5>
+      ${problema ? `<p>${problema}</p>` : vacio('Ficha en sistematización.')}
     </div>
     ${citaTxt ? `<div class="rm__bloque"><blockquote class="rm__cita">“${citaTxt}”${limpio(cita.autor) ? `<cite>${limpio(cita.autor)}${limpio(cita.rol) ? ` · ${limpio(cita.rol)}` : ''}</cite>` : ''}</blockquote></div>` : ''}
     <div class="rm__bloque">
-      <h5>Acciones de incidencia</h5>
-      ${acciones.length ? `<ul class="rm__lista">${acciones.map((a) => `<li>${a}</li>`).join('')}</ul>` : vacio('Acciones por definir a partir de la relatoría.')}
+      <h5>Propuestas · qué hacer</h5>
+      ${acciones.length ? `<ul class="rm__lista">${acciones.map(li).join('')}</ul>` : vacio('Propuestas por definir.')}
     </div>
-    <div class="rm__bloque">
-      <h5>Quiénes lo hacen posible</h5>
-      ${actores.length ? `<div class="rm__actores">${actores.map((a) => `<span class="rm__actor">${a.nombre}${a.entidad ? ` · ${a.entidad}` : ''}</span>`).join('')}</div>` : vacio('Actoría por codificar.')}
-    </div>
+    ${pasos.length ? `<div class="rm__bloque"><h5>Cómo hacerlo posible</h5><ol class="rm__lista rm__lista--num">${pasos.map(li).join('')}</ol></div>` : ''}
     <div class="rm__pie">
-      ${pdf ? `<a class="btn" href="${pdf}" download>Descargar hoja de ruta</a>` : `<button class="btn" disabled style="opacity:.5;cursor:not-allowed">Hoja de ruta próximamente</button>`}
-      <a class="btn btn--fantasma" href="#repositorio">Ver relatoría del panel</a>
+      ${pdf ? `<a class="btn" href="${pdf}" download>Descargar hoja de ruta</a>` : `<button class="btn" disabled style="opacity:.5;cursor:not-allowed">Descarga próximamente</button>`}
+      <a class="btn btn--fantasma" href="relatoria.html?panel=${panel.id}">Ver relatoría del panel</a>
     </div>
   `;
   ov.dataset.abierto = 'true';

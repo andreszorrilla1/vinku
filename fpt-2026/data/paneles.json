@@ -23,7 +23,7 @@
     {
       "id": "panel-magistral",
       "numero": "M",
-      "titulo": "‹placeholder — título Panel Magistral›",
+      "titulo": "Conversación de apertura",
       "subtitulo": "‹placeholder — subtítulo›",
       "tipo": "nacional",
       "ejeTematico": null,
@@ -33,20 +33,36 @@
       "anclajePolitico": "‹placeholder — §1 anclaje político: contexto de coyuntura, quién convoca, por qué importa ahora›",
       "captura": {
         "problema": {
-          "sintesis": "‹placeholder — síntesis del PROBLEMA que aborda el panel›",
-          "cita": { "texto": "‹placeholder — cita textual que ilustra el problema›", "autor": "‹placeholder›", "rol": "‹placeholder›" }
+          "sintesis": "Crisis de sostenibilidad fiscal y asfixia institucional de los territorios provocada por un centralismo fiscal persistente (la Nación retiene el 83% de los ingresos), una autonomía restringida y un modelo de gestión que prioriza el gasto burocrático sobre la inversión productiva y el bienestar ciudadano.",
+          "cita": {
+            "texto": "‹placeholder — cita textual que ilustra el problema›",
+            "autor": "‹placeholder›",
+            "rol": "‹placeholder›"
+          }
         },
         "reto": {
           "sintesis": "‹placeholder — síntesis del RETO›",
-          "cita": { "texto": "‹placeholder›", "autor": "‹placeholder›", "rol": "‹placeholder›" }
+          "cita": {
+            "texto": "‹placeholder›",
+            "autor": "‹placeholder›",
+            "rol": "‹placeholder›"
+          }
         },
         "solucion": {
           "sintesis": "‹placeholder — síntesis de la SOLUCIÓN propuesta›",
-          "cita": { "texto": "‹placeholder›", "autor": "‹placeholder›", "rol": "‹placeholder›" }
+          "cita": {
+            "texto": "‹placeholder›",
+            "autor": "‹placeholder›",
+            "rol": "‹placeholder›"
+          }
         },
         "sinergia": {
           "sintesis": "‹placeholder — síntesis de la SINERGIA / actoría conjunta›",
-          "cita": { "texto": "‹placeholder›", "autor": "‹placeholder›", "rol": "‹placeholder›" }
+          "cita": {
+            "texto": "‹placeholder›",
+            "autor": "‹placeholder›",
+            "rol": "‹placeholder›"
+          }
         }
       },
       "lecturaEstrategica": "‹placeholder — §3 lectura estratégica: implicaciones de política pública›",
@@ -59,26 +75,1358 @@
       "comunicaciones": {
         "fraseClave": "‹placeholder — frase clave para comunicaciones›",
         "hashtags": [],
-        "acciones": []
+        "acciones": [
+          {
+            "titulo": "Reforma estructural a la soberanía tributaria departamental",
+            "detalle": "Transferir el recaudo de renta y patrimonio de personas jurídicas a los departamentos y al Distrito Capital."
+          },
+          {
+            "titulo": "Transformación del sistema de transferencias",
+            "detalle": "Reemplazar el actual Sistema General de Participaciones (SGP) por un Sistema General de Participaciones Territorial (SGPT)."
+          },
+          {
+            "titulo": "Implementación de un modelo de gerencia pública para conglomerados",
+            "detalle": "Aplicar criterios de gobierno corporativo, ambientes de control y planeación estratégica a las empresas públicas territoriales."
+          },
+          {
+            "titulo": "Estrategia de alivios tributarios para la confianza",
+            "detalle": "Utilizar reducciones estratégicas de presión tributaria para incentivar el recaudo voluntario y formalizar la base de contribuyentes."
+          },
+          {
+            "titulo": "Inversión en infraestructura social tangible",
+            "detalle": "Priorizar la conversión del presupuesto en obras físicas medibles (colegios, jardines, escenarios deportivos) que generen bienestar inmediato."
+          },
+          {
+            "titulo": "Sustitución de burocracia por inversión territorial",
+            "detalle": "Implementar la política de \"menos corbatas, más batas y más botas\" para reducir el gasto administrativo central y ampliar la presencia estatal en salud y educación local."
+          }
+        ]
       },
       "recursos": {
         "pdfRelatoria": null,
         "pdfHojaRuta": null,
         "videoEmbed": null,
         "galeria": []
-      }
+      },
+      "pasos": [
+        {
+          "titulo": "Consolidación de la base legislativa",
+          "detalle": "Impulsar el trámite del Acto Legislativo para reformar los artículos 298, 356, 357 y 358 de la Constitución, ampliando la coalición parlamentaria que hoy cuenta con un 25% de respaldo."
+        },
+        {
+          "titulo": "Definición técnica de competencias",
+          "detalle": "Tramitar una ley de competencias que delimite claramente qué funciones asume cada nivel de gobierno, asegurando que la transferencia de recursos sea estratégica y no meramente tesoral."
+        },
+        {
+          "titulo": "Institucionalización de la asistencia técnica",
+          "detalle": "Sistematizar modelos de acompañamiento técnico especializado (como la alianza GOBS-Medellín) para fortalecer las secretarías de hacienda de ciudades intermedias y municipios."
+        }
+      ],
+      "hojaRutaIngestada": true
     },
-    { "id": "panel-2", "numero": 2, "titulo": "‹placeholder — Panel 2›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "final", "ingestado": false, "confianza": "alto", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
-    { "id": "panel-3", "numero": 3, "titulo": "‹placeholder — Panel 3›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "final", "ingestado": false, "confianza": "alto", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
-    { "id": "panel-4", "numero": 4, "titulo": "‹placeholder — Panel 4›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
-    { "id": "panel-5", "numero": 5, "titulo": "‹placeholder — Panel 5›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
-    { "id": "panel-6", "numero": 6, "titulo": "‹placeholder — Panel 6›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
-    { "id": "panel-7", "numero": 7, "titulo": "‹placeholder — Panel 7›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "final", "ingestado": false, "confianza": "alto", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
-    { "id": "panel-8", "numero": 8, "titulo": "‹placeholder — Panel 8›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "final", "ingestado": false, "confianza": "alto", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
-    { "id": "panel-9", "numero": 9, "titulo": "‹placeholder — Panel 9›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
-    { "id": "panel-10", "numero": 10, "titulo": "‹placeholder — Panel 10›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
-    { "id": "panel-11", "numero": 11, "titulo": "‹placeholder — Panel 11›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
-    { "id": "panel-12", "numero": 12, "titulo": "‹placeholder — Panel 12›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "transcripcion", "ingestado": false, "confianza": "medio", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } },
-    { "id": "panel-13", "numero": 13, "titulo": "‹placeholder — Panel 13 (cierre)›", "subtitulo": "", "tipo": null, "ejeTematico": null, "estado": "pendiente", "ingestado": false, "confianza": "bajo", "anclajePolitico": "", "captura": { "problema": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "reto": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "solucion": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } }, "sinergia": { "sintesis": "", "cita": { "texto": "", "autor": "", "rol": "" } } }, "lecturaEstrategica": "", "sintesisEnCaliente": "", "codificacion": { "temas": [], "territorios": [], "actores": [] }, "comunicaciones": { "fraseClave": "", "hashtags": [], "acciones": [] }, "recursos": { "pdfRelatoria": null, "pdfHojaRuta": null, "videoEmbed": null, "galeria": [] } }
+    {
+      "id": "panel-2",
+      "numero": 2,
+      "titulo": "Marcos normativos territoriales",
+      "subtitulo": "",
+      "tipo": null,
+      "ejeTematico": null,
+      "estado": "final",
+      "ingestado": false,
+      "confianza": "alto",
+      "anclajePolitico": "",
+      "captura": {
+        "problema": {
+          "sintesis": "Rezago estructural y dependencia normativa de los territorios, caracterizada por marcos legales anacrónicos (con normas que datan de 1908, 1913 y 1932) y una contradicción entre el discurso de autonomía y la práctica de replicar mecánicamente el Estatuto Orgánico de Presupuesto Nacional, lo que genera parálisis operativa y mantiene atrapados cerca de 39.6 billones de pesos en cuentas bancarias por excesivo etiquetamiento.",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "reto": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "solucion": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "sinergia": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        }
+      },
+      "lecturaEstrategica": "",
+      "sintesisEnCaliente": "",
+      "codificacion": {
+        "temas": [],
+        "territorios": [],
+        "actores": []
+      },
+      "comunicaciones": {
+        "fraseClave": "",
+        "hashtags": [],
+        "acciones": [
+          {
+            "titulo": "Actualización sistemática de los cinco pilares normativos locales",
+            "detalle": "Revisar y \"afilar\" el Plan de Ordenamiento Territorial (POT), el Estatuto Tributario, el Estatuto de Ingresos no Tributarios, el Manual de Cartera y la Estructura Administrativa de la Hacienda."
+          },
+          {
+            "titulo": "Trámite de una Reforma Tributaria Territorial estructural",
+            "detalle": "Simplificar el sistema eliminando tributos ineficientes, reduciendo la transaccionalidad para el contribuyente y capturando rentas de la economía digital."
+          },
+          {
+            "titulo": "Desetiquetamiento de rentas territoriales",
+            "detalle": "Impulsar medidas legislativas para liberar los recursos \"amarrados\" que impiden a los alcaldes y gobernadores ejecutar inversiones estratégicas según sus planes de desarrollo."
+          },
+          {
+            "titulo": "Gestión de ingresos no tributarios por vía administrativa",
+            "detalle": "Regular estos ingresos preferiblemente mediante decreto y no por acuerdo municipal, para garantizar agilidad y evitar la rigidez del trámite ante el concejo."
+          },
+          {
+            "titulo": "Veeduría activa al impacto fiscal nacional",
+            "detalle": "Exigir el cumplimiento del artículo 7 de la Ley 819 de 2003, asegurando que ninguna ley nacional (como reformas al FOMPET o regímenes prestacionales) se apruebe sin un cálculo real del costo que impone a los territorios."
+          },
+          {
+            "titulo": "Modernización de la disciplina fiscal (Proyecto de Ley 332 de 2024)",
+            "detalle": "Migrar de la satanización del gasto de personal (Ley 617) hacia una contención específica de la burocracia administrativa, valorando el talento humano técnico."
+          },
+          {
+            "titulo": "Institucionalización de contingencias climáticas",
+            "detalle": "Crear marcos fiscales que reconozcan las emergencias por cambio climático como eventos recurrentes y no excepcionales, permitiendo mayor flexibilidad presupuestal."
+          }
+        ]
+      },
+      "recursos": {
+        "pdfRelatoria": null,
+        "pdfHojaRuta": null,
+        "videoEmbed": null,
+        "galeria": []
+      },
+      "pasos": [
+        {
+          "titulo": "Activación de la incidencia gremial colectiva",
+          "detalle": "Unificar a Asocapitales, la Federación Nacional de Departamentos y la Federación Colombiana de Municipios para dejar de ser receptores pasivos de mandamientos nacionales y actuar como una coalición de presión sobre las reformas del SGP y el impuesto predial."
+        },
+        {
+          "titulo": "Vigilancia estratégica de cargos nacionales críticos",
+          "detalle": "Monitorear e incidir en los nombramientos del Director General de Apoyo Fiscal (DAF) del Ministerio de Hacienda y del Subdirector Territorial del DNP para asegurar una dinámica de trabajo horizontal y no de subordinación."
+        },
+        {
+          "titulo": "Auditoría interna de autonomía normativa",
+          "detalle": "Iniciar en cada entidad territorial la revisión de sus propios estatutos para eliminar las réplicas del Decreto 111 de 1996 y desarrollar instrumentos presupuestales propios que respondan a las dinámicas locales y no a las exigencias estandarizadas del centro."
+        }
+      ],
+      "hojaRutaIngestada": true
+    },
+    {
+      "id": "panel-3",
+      "numero": 3,
+      "titulo": "Impuesto predial unificado",
+      "subtitulo": "",
+      "tipo": null,
+      "ejeTematico": null,
+      "estado": "final",
+      "ingestado": false,
+      "confianza": "alto",
+      "anclajePolitico": "",
+      "captura": {
+        "problema": {
+          "sintesis": "Rezago catastral estructural y ruptura de la equidad tributaria, evidenciada en una desactualización generalizada (municipios con rezagos de 14 a 30 años), una centralización ineficiente en el IGAC que actúa como cuello de botella, y la existencia de leyes obsoletas (Leyes 44 de 1990 y 1955 de 2019) que imponen topes de crecimiento que neutralizan el retorno de la inversión en actualización y perpetúan beneficios para predios de alto valor.",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "reto": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "solucion": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "sinergia": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        }
+      },
+      "lecturaEstrategica": "",
+      "sintesisEnCaliente": "",
+      "codificacion": {
+        "temas": [],
+        "territorios": [],
+        "actores": []
+      },
+      "comunicaciones": {
+        "fraseClave": "",
+        "hashtags": [],
+        "acciones": [
+          {
+            "titulo": "Territorialización de la gestión catastral",
+            "detalle": "Promover la habilitación masiva de municipios como gestores catastrales o su asociación en esquemas provinciales para superar la dependencia del IGAC."
+          },
+          {
+            "titulo": "Transición a matrices tarifarias híbridas",
+            "detalle": "Reemplazar el estrato socioeconómico como única variable por modelos que combinen estrato con rangos de avalúo catastral para mejorar la progresividad (Modelo Cali)."
+          },
+          {
+            "titulo": "Ampliación de la sujeción pasiva",
+            "detalle": "Incorporar explícitamente en los estatutos tributarios a las fiducias, fideicomitentes y fiduciarias para cerrar fugas de recaudo en patrimonios \"invisibles\"."
+          },
+          {
+            "titulo": "Implementación de paquetes de mitigación con datos",
+            "detalle": "Diseñar incentivos focalizados (descuentos por generación de empleo o mantenimiento de vocación agrícola) que suavicen el impacto social de la actualización sin sacrificar la base gravable (Modelo Armenia)."
+          },
+          {
+            "titulo": "Sincronización institucional de datos",
+            "detalle": "Establecer flujos de información automáticos y mensuales entre las secretarías de Hacienda, Planeación, Catastro y las oficinas de Registro."
+          },
+          {
+            "titulo": "Pilotaje de retención en la fuente para Predial",
+            "detalle": "Explorar esquemas de recaudo a través de entidades financieras (en cuotas de créditos hipotecarios) y grandes arrendadores para asegurar flujo de caja constante."
+          },
+          {
+            "titulo": "Activación del Predial como ordenador del suelo",
+            "detalle": "Vincular tarifas y beneficios tributarios con los objetivos del POT para incentivar el desarrollo de lotes de engorde y proteger zonas de soberanía alimentaria."
+          },
+          {
+            "titulo": "Modernización técnica de rangos",
+            "detalle": "Indexar los rangos de avalúo en Unidades de Valor Tributario (UVT) en lugar de pesos estáticos para evitar la obsolescencia normativa anual."
+          }
+        ]
+      },
+      "recursos": {
+        "pdfRelatoria": null,
+        "pdfHojaRuta": null,
+        "videoEmbed": null,
+        "galeria": []
+      },
+      "pasos": [
+        {
+          "titulo": "Incidencia legislativa para reforma de topes",
+          "detalle": "Impulsar ante el Congreso la modificación de las Leyes 44 de 1990 y 1955 de 2019, permitiendo que la actualización de la base gravable se traduzca en ingresos reales y equidad distributiva, eliminando el \"techo de cristal\" que desincentiva la gestión."
+        },
+        {
+          "titulo": "Rigor administrativo en la gestión de cobro",
+          "detalle": "Ejecutar sistemáticamente acciones de cobro persuasivo y coactivo, asegurando la constitución oportuna de títulos ejecutivos para evitar la pérdida de fuerza ejecutoria de las facturas tras los términos legales."
+        },
+        {
+          "titulo": "Plan nacional de formación de capital humano catastral",
+          "detalle": "Articular al Ministerio de Hacienda, Educación y el IGAC para expandir la oferta académica en ingeniería catastral y crear programas de retención de talento técnico en los territorios de categorías 4, 5 y 6."
+        }
+      ],
+      "hojaRutaIngestada": true
+    },
+    {
+      "id": "panel-4",
+      "numero": 4,
+      "titulo": "Impuesto de industria y comercio (ICA)",
+      "subtitulo": "",
+      "tipo": null,
+      "ejeTematico": null,
+      "estado": "transcripcion",
+      "ingestado": false,
+      "confianza": "medio",
+      "anclajePolitico": "",
+      "captura": {
+        "problema": {
+          "sintesis": "Desconexión estructural entre la normativa del ICA (diseñada en 1983 para una economía física) y la realidad económica contemporánea, lo que genera una base gravable antitécnica (ingresos brutos), conflictos de territorialidad por la economía digital, altos costos de cumplimiento ante 1.103 administraciones y una asimetría crítica en la capacidad institucional de los municipios.",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "reto": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "solucion": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "sinergia": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        }
+      },
+      "lecturaEstrategica": "",
+      "sintesisEnCaliente": "",
+      "codificacion": {
+        "temas": [],
+        "territorios": [],
+        "actores": []
+      },
+      "comunicaciones": {
+        "fraseClave": "",
+        "hashtags": [],
+        "acciones": [
+          {
+            "titulo": "Reforma estructural integral del ICA",
+            "detalle": "Revisar la base gravable, las tarifas y el hecho generador para adecuarlos a la economía actual sin desfinanciar a los municipios."
+          },
+          {
+            "titulo": "Implementación de tarifas progresivas",
+            "detalle": "Diseñar esquemas que reconozcan los diferentes márgenes de utilidad por actividad económica."
+          },
+          {
+            "titulo": "Clarificación de la territorialidad digital",
+            "detalle": "Definir reglas claras para gravar actividades sin presencia física (influencers, plataformas de servicios digitales)."
+          },
+          {
+            "titulo": "Unificación de regímenes normativos",
+            "detalle": "Eliminar la dispersión entre el régimen del Distrito Capital, el de ciudades capitales y el nacional para reducir la litigiosidad."
+          },
+          {
+            "titulo": "Racionalización de cargas formales",
+            "detalle": "Simplificar declaraciones, reportes de información exógena y calendarios tributarios para reducir los costos de cumplimiento."
+          },
+          {
+            "titulo": "Protocolo vinculante para el Régimen Simple",
+            "detalle": "Garantizar que la DIAN transfiera datos y recursos de manera oportuna para asegurar la autonomía operativa municipal."
+          },
+          {
+            "titulo": "Creación de unidades de Inteligencia Fiscal",
+            "detalle": "Establecer equipos técnicos de análisis de datos para pasar de una fiscalización reactiva a una basada en el comportamiento del contribuyente."
+          },
+          {
+            "titulo": "Estrategia de relación pedagógica",
+            "detalle": "Implementar programas de reconocimiento y transparencia (ej. \"Día del Contribuyente\") para reconstruir la confianza y legitimar el pago."
+          }
+        ]
+      },
+      "recursos": {
+        "pdfRelatoria": null,
+        "pdfHojaRuta": null,
+        "videoEmbed": null,
+        "galeria": []
+      },
+      "pasos": [
+        {
+          "titulo": "Consolidación de una Coalición Parlamentaria y Territorial",
+          "detalle": "Mapear e integrar a congresistas, gobernadores y alcaldes para exigir que la próxima reforma tributaria nacional incluya un componente territorial robusto que modernice el ICA."
+        },
+        {
+          "titulo": "Diálogo Intergubernamental para la Definición de Competencias",
+          "detalle": "Establecer una mesa técnica entre la Nación, departamentos y municipios para delimitar un mapa de competencias claras que preceda cualquier reasignación de recursos."
+        },
+        {
+          "titulo": "Red de Cooperación Técnica Horizontal",
+          "detalle": "Institucionalizar programas de transferencia de capacidades donde las ciudades con modelos avanzados (Bogotá y Medellín) asesoren a municipios pequeños en inteligencia tributaria y oficinas virtuales."
+        }
+      ],
+      "hojaRutaIngestada": true
+    },
+    {
+      "id": "panel-5",
+      "numero": 5,
+      "titulo": "Evolución y análisis crítico de la descentralización",
+      "subtitulo": "",
+      "tipo": null,
+      "ejeTematico": null,
+      "estado": "transcripcion",
+      "ingestado": false,
+      "confianza": "medio",
+      "anclajePolitico": "",
+      "captura": {
+        "problema": {
+          "sintesis": "Crisis de legitimidad y eficacia del modelo descentralizador colombiano, provocada por una desconexión estructural entre el diseño constitucional y los resultados reales tras 35 años. El problema se manifiesta en un centralismo fiscal persistente (la Nación concentra el 85% de los ingresos), una asimetría crítica de capacidades (solo el 22% de los municipios tiene un desempeño alto sostenido) y una excesiva municipalización de competencias transferidas sin los recursos ni la escala técnica necesaria para ejecutarlas.",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "reto": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "solucion": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "sinergia": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        }
+      },
+      "lecturaEstrategica": "",
+      "sintesisEnCaliente": "",
+      "codificacion": {
+        "temas": [],
+        "territorios": [],
+        "actores": []
+      },
+      "comunicaciones": {
+        "fraseClave": "",
+        "hashtags": [],
+        "acciones": [
+          {
+            "titulo": "Implementación del Sistema General de Participaciones Territorial (SGPT)",
+            "detalle": "Reemplazar el actual SGP por un sistema que financie funciones territoriales con el recaudo de renta y patrimonio de personas jurídicas transferido a los departamentos."
+          },
+          {
+            "titulo": "Adopción de la Descentralización Asimétrica",
+            "detalle": "Establecer reglas diferenciadas que otorguen mayor autonomía a territorios con altas capacidades y brinden acompañamiento intensivo a municipios con bajos indicadores de desempeño."
+          },
+          {
+            "titulo": "Creación de la Superintendencia de Descentralización",
+            "detalle": "Instituir una autoridad técnica encargada de asociar las mediciones de desempeño con procesos de intervención, supervisión y fortalecimiento institucional."
+          },
+          {
+            "titulo": "Adelgazamiento del Estado Nacional con enfoque regional",
+            "detalle": "Ejecutar el traslado de entre 1.500 y 3.000 funcionarios nacionales desde Bogotá hacia los territorios, cerrando sedes administrativas centrales ineficientes."
+          },
+          {
+            "titulo": "Estandarización de soluciones para municipios pequeños",
+            "detalle": "Proveer paquetes de \"políticas públicas probadas\" con guías paso a paso para que los alcaldes de categorías 5 y 6 no tengan que diseñar soluciones desde cero con recursos limitados."
+          },
+          {
+            "titulo": "Planeación basada en Cuencas",
+            "detalle": "Superar la lógica político-administrativa tradicional para organizar el desarrollo y el ordenamiento territorial alrededor de las cuencas hidrográficas."
+          },
+          {
+            "titulo": "Reforma de Categorías Municipales",
+            "detalle": "Reclasificar los municipios basándose en población y recursos reales para incentivar la conformación de esquemas asociativos y provincias."
+          }
+        ]
+      },
+      "recursos": {
+        "pdfRelatoria": null,
+        "pdfHojaRuta": null,
+        "videoEmbed": null,
+        "galeria": []
+      },
+      "pasos": [
+        {
+          "titulo": "Trámite de Reforma Constitucional y Legal",
+          "detalle": "Iniciar el análisis jurídico y legislativo para reformar los artículos 298, 356, 357 y 358 de la Constitución, permitiendo la creación del SGPT y la definición de una ley de competencias clara."
+        },
+        {
+          "titulo": "Unificación del Sistema Nacional de Fortalecimiento Territorial",
+          "detalle": "Integrar los actuales esquemas de acompañamiento de los ministerios en un solo modelo liderado por el DNP, que priorice la asistencia técnica en municipios con resultados consistentemente bajos."
+        },
+        {
+          "titulo": "Ejecución del Plan de Desconcentración Administrativa (100 días)",
+          "detalle": "Emitir las decisiones ejecutivas presidenciales para el traslado inmediato de funcionarios a regiones y activar la legislación existente sobre provincias y regiones administrativas."
+        }
+      ],
+      "hojaRutaIngestada": true
+    },
+    {
+      "id": "panel-6",
+      "numero": 6,
+      "titulo": "El futuro de las finanzas públicas territoriales",
+      "subtitulo": "",
+      "tipo": null,
+      "ejeTematico": null,
+      "estado": "transcripcion",
+      "ingestado": false,
+      "confianza": "medio",
+      "anclajePolitico": "",
+      "captura": {
+        "problema": {
+          "sintesis": "Desconexión estructural entre el modelo de financiación territorial heredado (SGP + ICA + transferencias) y las nuevas realidades económicas, fiscales y tecnológicas. Este agotamiento del modelo se manifiesta en una estrechez fiscal nacional sin precedentes (déficit y deuda en dólares), una autonomía \"de papel\" donde los municipios dependen del centro entre el 60% y el 90%, y un régimen tributario arcaico (ICA) que no captura la economía digital ni monetiza los activos públicos.",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "reto": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "solucion": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "sinergia": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        }
+      },
+      "lecturaEstrategica": "",
+      "sintesisEnCaliente": "",
+      "codificacion": {
+        "temas": [],
+        "territorios": [],
+        "actores": []
+      },
+      "comunicaciones": {
+        "fraseClave": "",
+        "hashtags": [],
+        "acciones": [
+          {
+            "titulo": "Universalización de la factura electrónica para fiscalización",
+            "detalle": "Migrar hacia un modelo donde la administración emita liquidaciones oficiales automáticas basadas en datos de la DIAN y medios de pago, eliminando la dependencia de la declaración del contribuyente."
+          },
+          {
+            "titulo": "Tránsito del ICA hacia un Impuesto de Renta Local",
+            "detalle": "Replanteamiento estructural del ICA para convertirlo en un impuesto de renta de carácter local o una sobretasa del IVA al consumo local (modelo estadounidense), eliminando la base antitécnica de ingresos brutos."
+          },
+          {
+            "titulo": "Activación de la Economía Digital en los Estatutos",
+            "detalle": "Definir normativamente las actividades económicas digitales y reglas de territorialidad para plataformas que operan desde el exterior pero generan ingresos en el territorio."
+          },
+          {
+            "titulo": "Monetización de activos públicos improductivos",
+            "detalle": "Implementar una legislación armoniosa que permita transformar bienes inmuebles ociosos o en ruinas en fuentes de ingreso mediante inversión mixta."
+          },
+          {
+            "titulo": "Emisión de Bonos Verdes y Sociales",
+            "detalle": "Diversificar la deuda territorial financiando proyectos de movilidad limpia y gestión hídrica a través de instrumentos de mercado que atraigan capital internacional."
+          },
+          {
+            "titulo": "Implementación de APPs con supervisión estatal",
+            "detalle": "Utilizar alianzas público-privadas para la ejecución de infraestructura y servicios (como colegios mixtos), manteniendo la regulación y garantía del servicio en manos del municipio."
+          },
+          {
+            "titulo": "Unificación de tarifas con \"pisos y techos\"",
+            "detalle": "Establecer un marco nacional que evite la \"guerra de tarifas\" y la competencia dañina entre municipios para atraer capitales móviles."
+          },
+          {
+            "titulo": "Construcción de cultura de pago legítima",
+            "detalle": "Ejecutar campañas de sensibilización y agradecimiento al contribuyente (Modelo Medellín) para que el pago se perciba como una contraprestación por servicios visibles."
+          }
+        ]
+      },
+      "recursos": {
+        "pdfRelatoria": null,
+        "pdfHojaRuta": null,
+        "videoEmbed": null,
+        "galeria": []
+      },
+      "pasos": [
+        {
+          "titulo": "Análisis jurídico de viabilidad constitucional",
+          "detalle": "Iniciar el trámite para reformar los artículos 300 y 356 de la Constitución, permitiendo la creación de la sobretasa al IVA o el impuesto de renta municipal sin quebrar la estabilidad fiscal nacional."
+        },
+        {
+          "titulo": "Protocolo vinculante de intercambio de datos (Nación-Territorio)",
+          "detalle": "Establecer un acuerdo técnico entre la DIAN y las Secretarías de Hacienda para el acceso en tiempo real a la facturación electrónica y registros mercantiles, rompiendo la opacidad actual del sistema financiero."
+        },
+        {
+          "titulo": "Institucionalización de la \"Autonomía Manual\"",
+          "detalle": "Crear un Sistema Nacional de Fortalecimiento Territorial que asocie la transferencia de recursos con la demostración previa de capacidades técnicas, evitando enviar recursos masivos a municipios que no tienen estructura para ejecutarlos."
+        }
+      ],
+      "hojaRutaIngestada": true
+    },
+    {
+      "id": "panel-7",
+      "numero": 7,
+      "titulo": "Generación de valor a partir de la infraestructura pública",
+      "subtitulo": "",
+      "tipo": null,
+      "ejeTematico": null,
+      "estado": "final",
+      "ingestado": false,
+      "confianza": "alto",
+      "anclajePolitico": "",
+      "captura": {
+        "problema": {
+          "sintesis": "La paradoja del valor que se escapa y el déficit de sostenibilidad operativa (Opex), donde las obras públicas redibujan el valor del suelo en beneficio exclusivo del mercado privado por falta de mecanismos de captura estatales, dejando a las ciudades con la factura de la obra, planes de ordenamiento territorial (POT) desactualizados en un 80% y sistemas de transporte deficitarios con riesgo de cierre por falta de recursos para su mantenimiento.",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "reto": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "solucion": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "sinergia": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        }
+      },
+      "lecturaEstrategica": "",
+      "sintesisEnCaliente": "",
+      "codificacion": {
+        "temas": [],
+        "territorios": [],
+        "actores": []
+      },
+      "comunicaciones": {
+        "fraseClave": "",
+        "hashtags": [],
+        "acciones": [
+          {
+            "titulo": "Titularización del impuesto predial futuro",
+            "detalle": "Proyectar y traer a valor presente el recaudo generado por nuevos desarrollos inmobiliarios para financiar infraestructura estructurante inmediata."
+          },
+          {
+            "titulo": "Implementación de obligaciones urbanísticas",
+            "detalle": "Exigir contraprestaciones en dinero o suelo a los desarrolladores privados como condición para el licenciamiento (proyectando cubrir hasta el 42% de la financiación en zonas de renovación)."
+          },
+          {
+            "titulo": "Gestión inmobiliaria de suelos remanentes",
+            "detalle": "Rentabilizar los predios sobrantes de grandes obras de transporte donde se han identificado incrementos de valor de hasta el 150%."
+          },
+          {
+            "titulo": "Monetización de flujos operativos",
+            "detalle": "Activar aprovechamientos comerciales y publicitarios dentro de la infraestructura pública (aprovechando flujos de millones de usuarios diarios) mediante el Derecho de Aprovechamiento de Espacio Público (DRS)."
+          },
+          {
+            "titulo": "Activación del derrame generalizado de plusvalía",
+            "detalle": "Implementar el cobro por el mayor valor generado no solo por la obra física, sino por la habilitación normativa del suelo en el ajuste de los POT."
+          },
+          {
+            "titulo": "Tránsito hacia el Desarrollo Orientado al Transporte (DOT)",
+            "detalle": "Planificar corredores urbanos integrales que unan el transporte con el ordenamiento territorial, superando la lógica de simple obra de ingeniería."
+          }
+        ]
+      },
+      "recursos": {
+        "pdfRelatoria": null,
+        "pdfHojaRuta": null,
+        "videoEmbed": null,
+        "galeria": []
+      },
+      "pasos": [
+        {
+          "titulo": "Ajuste del marco normativo nacional",
+          "detalle": "Tramitar la reglamentación del DRS y reformar la Ley de Metros para superar la rigidez del 70-30, permitiendo que la participación nacional incluya aparatos normativos que faciliten la captura de valor local."
+        },
+        {
+          "titulo": "Fortalecimiento de la gobernanza técnica local",
+          "detalle": "Capacitar a los Concejos Municipales y equipos de planeación para que dominen la hiper-tecnicidad de los instrumentos de suelo y puedan debatir los POT con suficiencia técnica y seguridad jurídica."
+        },
+        {
+          "titulo": "Construcción de una narrativa de confianza basada en resultados",
+          "detalle": "Vincular el recaudo de plusvalía y valorización a inversiones sociales y patrimoniales visibles, bajo el principio de que la ciudadanía paga voluntariamente cuando ve que sus impuestos se traducen en bienestar tangible y calidad de vida."
+        }
+      ],
+      "hojaRutaIngestada": true
+    },
+    {
+      "id": "panel-8",
+      "numero": 8,
+      "titulo": "Fuentes alternativas de financiación",
+      "subtitulo": "",
+      "tipo": null,
+      "ejeTematico": null,
+      "estado": "final",
+      "ingestado": false,
+      "confianza": "alto",
+      "anclajePolitico": "",
+      "captura": {
+        "problema": {
+          "sintesis": "Dependencia excesiva de las fuentes tradicionales de financiación (tributos como ICA/Predial, transferencias nacionales y deuda pública) y una profunda brecha entre la existencia normativa y la operatividad institucional. A pesar de contar con marcos legales desde hace tres décadas (Ley 388 de 1997), los territorios no han logrado implementar con éxito instrumentos de captura de valor del suelo ni precios públicos, dejando pasar oportunidades masivas de recaudo por falta de capacidad técnica, desarticulación entre Hacienda y Planeación, y discontinuidad política.",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "reto": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "solucion": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "sinergia": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        }
+      },
+      "lecturaEstrategica": "",
+      "sintesisEnCaliente": "",
+      "codificacion": {
+        "temas": [],
+        "territorios": [],
+        "actores": []
+      },
+      "comunicaciones": {
+        "fraseClave": "",
+        "hashtags": [],
+        "acciones": [
+          {
+            "titulo": "Fortalecimiento del Impuesto Predial como \"cuota de administración\"",
+            "detalle": "Posicionar el predial no como una carga impositiva, sino como la base recurrente para mantener los bienes públicos de la \"copropiedad ciudadana\"."
+          },
+          {
+            "titulo": "Implementación de Contribuciones de Valorización",
+            "detalle": "Utilizar la lógica de project finance para financiar obras de movilidad específicas con beneficiarios identificables, permitiendo proyectar el recaudo con certeza para garantizar créditos."
+          },
+          {
+            "titulo": "Activación de la Participación en Plusvalía",
+            "detalle": "Aplicar la plusvalía regulatoria en zonas de expansión (cambios de uso de suelo) y la plusvalía por obra pública en zonas consolidadas."
+          },
+          {
+            "titulo": "Exigencia de Obligaciones Urbanísticas",
+            "detalle": "Implementar contraprestaciones en dinero o suelo por parte de desarrolladores privados como mecanismo de cierre financiero para infraestructuras en zonas de renovación."
+          },
+          {
+            "titulo": "Venta de Derechos Adicionales de Construcción",
+            "detalle": "Crear mercados de capacidad edificatoria donde el distrito venda metros cuadrados adicionales sobre el POT para financiar espacio público y equipamientos (Modelo Medellín)."
+          },
+          {
+            "titulo": "Desarrollo de Programas de Precios Públicos",
+            "detalle": "Rentabilizar activos ociosos (maquinaria, inmuebles fiscales, servicios técnicos) mediante tarifas remunerativas que permitan rentabilidad, diferenciándolas de las tasas limitadas al costo."
+          },
+          {
+            "titulo": "Institucionalización de Planes Financieros de Mediano Plazo (PFMP)",
+            "detalle": "Diseñar planes a 12 años que articulen obligatoriamente el presupuesto con el POT y el plan de desarrollo, garantizando que las obras tengan fuentes de financiación definidas desde su planeación."
+          }
+        ]
+      },
+      "recursos": {
+        "pdfRelatoria": null,
+        "pdfHojaRuta": null,
+        "videoEmbed": null,
+        "galeria": []
+      },
+      "pasos": [
+        {
+          "titulo": "Integración estratégica Hacienda-Planeación",
+          "detalle": "Unificar metodológicamente las proyecciones financieras con las decisiones de ordenamiento territorial, eliminando los silos administrativos para que el POT sea una verdadera herramienta fiscal de captura de valor."
+        },
+        {
+          "titulo": "Fortalecimiento de capacidades en \"Project Finance\" Territorial",
+          "detalle": "Capacitar a los equipos técnicos locales en la estructuración de instrumentos complejos (plusvalía, titularización y venta de derechos) mediante alianzas con universidades y cooperación internacional (BID, CAF, Lincoln Institute)."
+        },
+        {
+          "titulo": "Activación de la Seguridad Jurídica sobre Ingresos No Tributarios",
+          "detalle": "Aplicar la jurisprudencia validada por el Consejo de Estado y la Corte Constitucional (Sentencias C-927/2006 y C-401/2010) para implementar precios públicos por servicios y uso de bienes, reduciendo el riesgo de nulidad administrativa."
+        }
+      ],
+      "hojaRutaIngestada": true
+    },
+    {
+      "id": "panel-9",
+      "numero": 9,
+      "titulo": "Procedimiento tributario territorial",
+      "subtitulo": "",
+      "tipo": null,
+      "ejeTematico": null,
+      "estado": "transcripcion",
+      "ingestado": false,
+      "confianza": "medio",
+      "anclajePolitico": "",
+      "captura": {
+        "problema": {
+          "sintesis": "Inadecuación y rigidez del marco procedimental nacional aplicado a los territorios, derivado de la remisión automática del artículo 59 de la Ley 788 de 2002 al Estatuto Tributario Nacional. Este \"molde que no calza\" genera inseguridad jurídica, sanciones desproporcionadas (que pueden superar en miles de veces el valor del impuesto) y riesgos de nulidad por la omisión de garantías como el acto previo en tributos de determinación oficial.",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "reto": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "solucion": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "sinergia": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        }
+      },
+      "lecturaEstrategica": "",
+      "sintesisEnCaliente": "",
+      "codificacion": {
+        "temas": [],
+        "territorios": [],
+        "actores": []
+      },
+      "comunicaciones": {
+        "fraseClave": "",
+        "hashtags": [],
+        "acciones": [
+          {
+            "titulo": "Regulación local de la determinación oficial",
+            "detalle": "Definir y regular expresamente en los estatutos tributarios locales el procedimiento para tributos no declarables (Predial, Alumbrado Público), asegurando la existencia del acto previo."
+          },
+          {
+            "titulo": "Creación de un régimen sancionatorio territorial propio",
+            "detalle": "Impulsar una ley que defina sanciones específicas para la realidad municipal, rompiendo la dependencia mecánica de los montos nacionales."
+          },
+          {
+            "titulo": "Ajuste imperativo al artículo 59 de la Ley 788",
+            "detalle": "Reformar la norma para que la disminución de sanciones y la simplificación de procedimientos sea una obligación para los municipios según su categoría y no una facultad opcional."
+          },
+          {
+            "titulo": "Unificación de cómputo de términos",
+            "detalle": "Establecer normativamente que la caducidad para liquidar inicie desde la causación (1 de enero) y la prescripción de cobro inicie solo desde la ejecutoria del acto administrativo."
+          },
+          {
+            "titulo": "Eliminación de sanciones-recaudo",
+            "detalle": "Ajustar los estatutos para prohibir el uso del régimen sancionatorio como mecanismo de financiación ordinaria de la entidad."
+          },
+          {
+            "titulo": "Implementación de unificación electrónica",
+            "detalle": "Apuntar a la integración de formularios y sistemas de pago electrónicos ágiles que reduzcan los costos de cumplimiento para el contribuyente."
+          },
+          {
+            "titulo": "Protección del derecho de defensa",
+            "detalle": "Asegurar que cualquier simplificación procedural no vacíe el contenido del debido proceso ni elimine etapas de contradicción preventiva."
+          }
+        ]
+      },
+      "recursos": {
+        "pdfRelatoria": null,
+        "pdfHojaRuta": null,
+        "videoEmbed": null,
+        "galeria": []
+      },
+      "pasos": [
+        {
+          "titulo": "Trámite de reforma legislativa nacional",
+          "detalle": "Radicar ante el Congreso un proyecto de ley de \"Régimen Procedimental Tributario Territorial\" o de modificación al artículo 59 de la Ley 788, tomando como antecedente exitoso la Ley Anticontrabando."
+        },
+        {
+          "titulo": "Actualización técnica de estatutos locales",
+          "detalle": "Iniciar auditorías jurídicas en cada secretaría de hacienda para corregir disposiciones de alto riesgo de nulidad, como las sanciones por información exógena en ICA que incluyen ingresos de otras jurisdicciones."
+        },
+        {
+          "titulo": "Mesa de coordinación jurisdiccional-administrativa",
+          "detalle": "Articular al Ministerio de Hacienda, la Sección Cuarta del Consejo de Estado y gremios territoriales para producir una guía de motivación y procedimientos que blinde los actos administrativos locales frente a futuras nulidades."
+        }
+      ],
+      "hojaRutaIngestada": true
+    },
+    {
+      "id": "panel-10",
+      "numero": 10,
+      "titulo": "Novedades jurisprudenciales",
+      "subtitulo": "",
+      "tipo": null,
+      "ejeTematico": null,
+      "estado": "transcripcion",
+      "ingestado": false,
+      "confianza": "medio",
+      "anclajePolitico": "",
+      "captura": {
+        "problema": {
+          "sintesis": "Crisis de latencia institucional e inseguridad jurídica en el control de legalidad tributaria territorial, manifestada en la contradicción de criterios entre el Consejo de Estado y la Corte Constitucional (\"guerra de cortes\"), la nulidad masiva de acuerdos municipales por falta de motivación técnica y la aplicación de sanciones desproporcionadas que generan devoluciones millonarias y erosionan la sostenibilidad fiscal de los territorios.",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "reto": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "solucion": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "sinergia": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        }
+      },
+      "lecturaEstrategica": "",
+      "sintesisEnCaliente": "",
+      "codificacion": {
+        "temas": [],
+        "territorios": [],
+        "actores": []
+      },
+      "comunicaciones": {
+        "fraseClave": "",
+        "hashtags": [],
+        "acciones": [
+          {
+            "titulo": "Ajuste estructural de acuerdos de alumbrado público",
+            "detalle": "Actualizar los acuerdos municipales para migrar de la lógica de \"potencialidad\" al \"beneficio efectivo\" (sentencia de Jericó), vinculando la tarifa al consumo de energía y eliminando categorías por \"riqueza\" o actividad económica aislada."
+          },
+          {
+            "titulo": "Motivación técnica territorial de tarifas ICA",
+            "detalle": "Sustentar las tarifas de industria y comercio en ciudades capitales (hasta el 30 por mil) con datos específicos de la circunscripción (estructura económica, déficit fiscal, tejido empresarial), evitando argumentos genéricos o redactados por IA."
+          },
+          {
+            "titulo": "Creación de un régimen sancionatorio territorial propio",
+            "detalle": "Impulsar una reforma legal que rompa la dependencia del Estatuto Nacional y establezca parámetros de proporcionalidad claros, evitando que las sanciones superen diez veces el valor del impuesto."
+          },
+          {
+            "titulo": "Regulación contra la doble imposición de dividendos",
+            "detalle": "Definir mecanismos en el ICA que atenúen el gravamen en cadenas de sociedades para evitar desincentivar la inversión estructurada."
+          },
+          {
+            "titulo": "Elaboración de una Guía Jurisprudencial Práctica",
+            "detalle": "Producir un documento conjunto entre el Ministerio de Hacienda y el Consejo de Estado que identifique disposiciones de alto riesgo de nulidad y proponga redacciones alternativas blindadas."
+          },
+          {
+            "titulo": "Fortalecimiento de la suficiencia técnica de los Concejos",
+            "detalle": "Implementar módulos de formación para cabildantes y secretarías de Hacienda en diseño de acuerdos tributarios motivados y seguimiento jurisprudencial."
+          }
+        ]
+      },
+      "recursos": {
+        "pdfRelatoria": null,
+        "pdfHojaRuta": null,
+        "videoEmbed": null,
+        "galeria": []
+      },
+      "pasos": [
+        {
+          "titulo": "Priorización legislativa nacional",
+          "detalle": "Radicar ante el Congreso el ajuste al artículo 59 de la Ley 788 de 2002 para permitir que los territorios sancionen de manera proporcional sin depender mecánicamente de la lógica de autoliquidación nacional."
+        },
+        {
+          "titulo": "Institucionalización de la Mesa de Coordinación Jurisprudencial",
+          "detalle": "Establecer un protocolo de comunicación permanente entre las Altas Cortes y el Ministerio de Hacienda para unificar criterios antes de que las sentencias generen impactos fiscales irreversibles en los territorios."
+        },
+        {
+          "titulo": "Auditoría interna preventiva de estatutos locales",
+          "detalle": "Iniciar en cada entidad territorial un plan de revisión técnica para ajustar los acuerdos de ICA y alumbrado público a los nuevos estándares de \"realidad tributaria\" y \"beneficio efectivo\" antes de que sean objeto de demandas de nulidad."
+        }
+      ],
+      "hojaRutaIngestada": true
+    },
+    {
+      "id": "panel-11",
+      "numero": 11,
+      "titulo": "Nuevas tecnologías y gestión de ingresos",
+      "subtitulo": "",
+      "tipo": null,
+      "ejeTematico": null,
+      "estado": "transcripcion",
+      "ingestado": false,
+      "confianza": "medio",
+      "anclajePolitico": "",
+      "captura": {
+        "problema": {
+          "sintesis": "Crisis de eficiencia y confianza por la dispersión y baja calidad de los datos (\"El territorio de los datos dispersos\"), manifestada en la existencia de miles de bases de datos aisladas en equipos personales, la ausencia de interoperabilidad entre sistemas (presupuesto, cartera, catastro) y una gestión tributaria que actúa \"en automático\", sin conocer ni segmentar al contribuyente.",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "reto": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "solucion": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "sinergia": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        }
+      },
+      "lecturaEstrategica": "",
+      "sintesisEnCaliente": "",
+      "codificacion": {
+        "temas": [],
+        "territorios": [],
+        "actores": []
+      },
+      "comunicaciones": {
+        "fraseClave": "",
+        "hashtags": [],
+        "acciones": [
+          {
+            "titulo": "Creación de un \"Lago de Datos\" (Data Lake) Territorial",
+            "detalle": "Integrar la información de procesos internos con datos de terceros y fuentes externas para tener una fuente única de verdad."
+          },
+          {
+            "titulo": "Implementación de estrategias de contactabilidad diferenciada",
+            "detalle": "Segmentar a los contribuyentes por edad, género y comportamiento de pago para enviar mensajes personalizados (WhatsApp para jóvenes, cartas físicas para adultos mayores)."
+          },
+          {
+            "titulo": "Construcción de portales de transparencia informativa",
+            "detalle": "Integrar datos de catastro, POT, estratificación y riesgos para explicarle al ciudadano, de forma personalizada, el valor real de su predio y por qué paga lo que paga."
+          },
+          {
+            "titulo": "Adopción de arquitecturas de interoperabilidad modular",
+            "detalle": "Conectar sistemas especializados existentes mediante capas de integración, en lugar de intentar comprar una plataforma única \"todo en uno\"."
+          },
+          {
+            "titulo": "Aplicación de Inteligencia Artificial (IA) para la detección de omisos",
+            "detalle": "Utilizar insumos georreferenciados para identificar establecimientos de comercio que no declaran ICA y pasar de una fiscalización reactiva a una predictiva."
+          },
+          {
+            "titulo": "Automatización de conciliaciones bancarias mediante IA",
+            "detalle": "Eliminar la carga operativa manual de los equipos de tesorería, transformando el proceso en una verificación automatizada."
+          },
+          {
+            "titulo": "Uso de IA para la conservación catastral",
+            "detalle": "Detectar cambios en áreas construidas y nuevos predios sin necesidad de actualizaciones masivas costosas."
+          }
+        ]
+      },
+      "recursos": {
+        "pdfRelatoria": null,
+        "pdfHojaRuta": null,
+        "videoEmbed": null,
+        "galeria": []
+      },
+      "pasos": [
+        {
+          "titulo": "Institucionalización de la Gobernanza de Datos",
+          "detalle": "Iniciar procesos de inventario, limpieza, validación y versionamiento de la información antes de invertir en software complejo; la IA es la capa final de una pirámide cuya base es la calidad del dato."
+        },
+        {
+          "titulo": "Fortalecimiento del Capital Humano Técnico",
+          "detalle": "Crear equipos multidisciplinarios (científicos de datos, analistas y arquitectos) y capacitar al funcionario de Hacienda en herramientas de analítica y programación bajo lenguajes libres."
+        },
+        {
+          "titulo": "Definición de Estándares Nacionales de Interoperabilidad",
+          "detalle": "Articular con el nivel nacional (MinTIC y MinHacienda) la creación de protocolos de intercambio de datos y un \"lago de datos tributario nacional\" que integre información bancaria y registros mercantiles."
+        }
+      ],
+      "hojaRutaIngestada": true
+    },
+    {
+      "id": "panel-12",
+      "numero": 12,
+      "titulo": "Presupuesto, MFMP y crédito público",
+      "subtitulo": "",
+      "tipo": null,
+      "ejeTematico": null,
+      "estado": "transcripcion",
+      "ingestado": false,
+      "confianza": "medio",
+      "anclajePolitico": "",
+      "captura": {
+        "problema": {
+          "sintesis": "Parálisis operativa y erosión de la autonomía fiscal territorial, detonada por la Sentencia C-036 de 2023 de la Corte Constitucional, que obliga a los ejecutivos locales a acudir a los concejos y asambleas para incorporar cualquier presupuesto de gasto, eliminando la autonomía técnica histórica del alcalde o gobernador. Este diseño, sumado a marcos de crédito público anacrónicos y Marcos Fiscales de Mediano Plazo (MFMP) que operan como meros requisitos contables de corto plazo, impide la respuesta ágil ante emergencias climáticas —como el caso de Montería con 9.000 damnificados y recursos atrapados— y perpetúa una \"trampa de pobreza fiscal\" en los municipios más vulnerables.",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "reto": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "solucion": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "sinergia": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        }
+      },
+      "lecturaEstrategica": "",
+      "sintesisEnCaliente": "",
+      "codificacion": {
+        "temas": [],
+        "territorios": [],
+        "actores": []
+      },
+      "comunicaciones": {
+        "fraseClave": "",
+        "hashtags": [],
+        "acciones": [
+          {
+            "titulo": "Impulso a una Reforma Constitucional de Autonomía Presupuestaria",
+            "detalle": "Tramitar una modificación normativa que restablezca la facultad del ejecutivo para realizar movimientos presupuestales técnicos, evitando que los concejos actúen como \"co-administradores\"."
+          },
+          {
+            "titulo": "Jerarquización de Modificaciones Presupuestales",
+            "detalle": "Diferenciar normativamente entre reasignaciones de bajo impacto (competencia del ejecutivo) y modificaciones de alto impacto, como deuda o nuevos programas (competencia del concejo)."
+          },
+          {
+            "titulo": "Institucionalización de \"Facultades de Emergencia\"",
+            "detalle": "Crear una cláusula en los estatutos orgánicos de presupuesto que habilite al alcalde a reasignar recursos de inversión de manera automática y temporal durante estados de excepción o calamidad pública declarada."
+          },
+          {
+            "titulo": "Flexibilización de la Regulación de Crédito Público",
+            "detalle": "Reformar las leyes 358 de 1997 y 715 de 2001 para desvincular los límites de deuda del mero ingreso corriente y articularlos con indicadores de desarrollo y resultados de inversión."
+          },
+          {
+            "titulo": "Modernización de los MFMP con Visión Estratégica",
+            "detalle": "Transformar los marcos fiscales en herramientas de planeación real a 12 años que articulen obligatoriamente el presupuesto con el POT y el plan de desarrollo."
+          },
+          {
+            "titulo": "Blindaje Técnico de los Estatutos Orgánicos locales",
+            "detalle": "Fortalecer la desagregación presupuestal mediante \"partidas mayorizantes\" para evitar el micromanejo político y la parálisis administrativa en las corporaciones públicas."
+          },
+          {
+            "titulo": "Creación de \"Bonos de Desarrollo Territorial\"",
+            "detalle": "Diseñar instrumentos de financiamiento atados a proyectos específicos con flujos de caja identificables (valorización, mejoras catastrales) para reducir la dependencia de impuestos tradicionales."
+          }
+        ]
+      },
+      "recursos": {
+        "pdfRelatoria": null,
+        "pdfHojaRuta": null,
+        "videoEmbed": null,
+        "galeria": []
+      },
+      "pasos": [
+        {
+          "titulo": "Consolidación de la Mesa Nacional de Secretarios de Hacienda",
+          "detalle": "Formalizar el frente de presión gremial (iniciado por Sabaneta, Montería y Copacabana) para unificar la defensa de la autoridad fiscal ejecutiva ante el Congreso y armonizar la interpretación de los tribunales administrativos."
+        },
+        {
+          "titulo": "Reajuste del Contrato Fiscal Local",
+          "detalle": "Ejecutar un plan de pedagogía política con los concejos municipales para delimitar sus funciones hacia la fiscalización de resultados, reduciendo el \"desgaste administrativo\" y la interferencia en la gestión técnica del presupuesto."
+        },
+        {
+          "titulo": "Activación de Sinergia Vertical con Entidades de Segundo Piso",
+          "detalle": "Articular con Findeter, la FDN y el Ministerio de Hacienda el diseño de líneas de crédito condicionadas a reformas en autonomía presupuestal y modernización institucional, superando el modelo de asistencia técnica \"engavetado\"."
+        }
+      ],
+      "hojaRutaIngestada": true
+    },
+    {
+      "id": "panel-13",
+      "numero": 13,
+      "titulo": "Propuestas para la modernización de los tributos territoriales",
+      "subtitulo": "",
+      "tipo": null,
+      "ejeTematico": null,
+      "estado": "transcripcion",
+      "ingestado": false,
+      "confianza": "medio",
+      "anclajePolitico": "",
+      "captura": {
+        "problema": {
+          "sintesis": "Triple fractura del sistema tributario territorial, manifestada en: (1) una arquitectura normativa obsoleta de hace más de 40 años que no captura la economía digital ni los flujos financieros deslocalizados; (2) una hiperfragmentación ineficiente de 26 impuestos municipales donde, en el caso de ciudades como Bogotá, solo 5 generan recaudo significativo; y (3) una autonomía fiscal formal pero no real, debido a que el artículo 150 de la Constitución reserva al Congreso la creación de tributos, convirtiendo a los entes territoriales en meros adoptantes de un menú nacional ajeno a sus realidades.",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "reto": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "solucion": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        },
+        "sinergia": {
+          "sintesis": "",
+          "cita": {
+            "texto": "",
+            "autor": "",
+            "rol": ""
+          }
+        }
+      },
+      "lecturaEstrategica": "",
+      "sintesisEnCaliente": "",
+      "codificacion": {
+        "temas": [],
+        "territorios": [],
+        "actores": []
+      },
+      "comunicaciones": {
+        "fraseClave": "",
+        "hashtags": [],
+        "acciones": [
+          {
+            "titulo": "Redefinición de la territorialidad (Nexus Digital)",
+            "detalle": "Actualizar las reglas del ICA para incorporar conceptos de \"presencia digital significativa\", permitiendo gravar servicios prestados a usuarios locales por empresas sin sede física en el municipio."
+          },
+          {
+            "titulo": "Creación del Estatuto Tributario Territorial Único",
+            "detalle": "Homogenizar normas sustantivas, procedimentales y bases gravables para reducir los costos de cumplimiento y la litigiosidad."
+          },
+          {
+            "titulo": "Implementación de la Autonomía Diferenciada (Escalera de Capacidades)",
+            "detalle": "Clasificar a los municipios según su capacidad técnica para otorgarles gradualmente mayor autonomía normativa y recaudatoria."
+          },
+          {
+            "titulo": "Activación de un Fondo de Convergencia Regional",
+            "detalle": "Establecer mecanismos de compensación automática donde los territorios de mayor recaudo apoyen la inversión en municipios rezagados para evitar que la autonomía profundice la desigualdad."
+          },
+          {
+            "titulo": "Simplificación y depuración del portafolio tributario",
+            "detalle": "Eliminar impuestos obsoletos o de bajo recaudo (como publicidad exterior tradicional o telefonía fija) y sustituirlos por fuentes más eficientes."
+          },
+          {
+            "titulo": "Flexibilización de destinaciones específicas",
+            "detalle": "Reducir el etiquetamiento de recursos (como las estampillas) para devolver a alcaldes y gobernadores la capacidad de priorizar el gasto según su plan de desarrollo."
+          },
+          {
+            "titulo": "Defensa técnica contra los topes al predial",
+            "detalle": "Rechazar proyectos de ley que limitan rígidamente el crecimiento del predial o que condicionan la actualización catastral exclusivamente a visitas físicas, lo cual paralizaría la gestión en grandes ciudades."
+          },
+          {
+            "titulo": "Transición del catastro hacia infraestructura multipropósito",
+            "detalle": "Convertir la información catastral en una base de datos georreferenciada útil para planeación, vivienda y gestión del riesgo, y no solo para recaudo."
+          }
+        ]
+      },
+      "recursos": {
+        "pdfRelatoria": null,
+        "pdfHojaRuta": null,
+        "videoEmbed": null,
+        "galeria": []
+      },
+      "pasos": [
+        {
+          "titulo": "Impulso de una Reforma Constitucional del Artículo 150",
+          "detalle": "Liderar una iniciativa para habilitar a los departamentos y municipios (especialmente a los de mayor capacidad) para crear tributos propios adecuados a sus dinámicas económicas locales, rompiendo la reserva exclusiva del Congreso."
+        },
+        {
+          "titulo": "Institucionalización del Sistema Nacional de Autonomía Fiscal Diferenciada (SNAFD)",
+          "detalle": "Definir niveles de autonomía progresivos acompañados de un programa masivo de asistencia técnica financiado por la Nación para que los municipios de niveles inferiores puedan subir en la \"escalera de capacidades\"."
+        },
+        {
+          "titulo": "Conformación del Pacto por la Modernización Tributaria Territorial",
+          "detalle": "Articular una mesa técnica permanente entre el Ministerio de Hacienda, el DNP, el Congreso, las asociaciones territoriales y el sector privado (plataformas digitales y bancos) para diseñar mecanismos operativos de retención y cruce de datos en tiempo real."
+        }
+      ],
+      "hojaRutaIngestada": true
+    }
   ]
 }

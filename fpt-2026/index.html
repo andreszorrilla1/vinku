@@ -19,10 +19,10 @@
   <!-- ===================== NAV ===================== -->
   <nav class="nav">
     <div class="contenedor nav__inner">
-      <a class="nav__marca" href="#inicio" aria-label="Inicio">
-        <!-- Logo GOBS (stand-in SVG; reemplazar por asset oficial del manual) -->
-        <span data-logo></span>
-        <span class="nav__evento">FPT&nbsp;<b style="color:var(--color-primario)">2026</b></span>
+      <a class="nav__marca" href="#inicio" aria-label="FPT Colombia 2026 · Inicio">
+        <!-- Logo FPT del evento (reconstrucción SVG; swap 1:1 con vector oficial) -->
+        <span data-logo="fpt" data-logo-compacto></span>
+        <span class="nav__evento">Colombia<br><b>2026</b></span>
       </a>
       <ul class="nav__links">
         <li><a href="#hojas-de-ruta">Hojas de ruta</a></li>
@@ -36,17 +36,22 @@
   <!-- ===================== HERO ===================== -->
   <header class="hero" id="inicio">
     <div class="contenedor hero__inner">
-      <span class="etiqueta hero__kicker">Congreso de Finanzas Públicas Territoriales · <span data-anio>2026</span></span>
-      <h1>El territorio<br>cobra valor</h1>
-      <p class="hero__lead">Relatorías estratégicas, hojas de ruta de incidencia y memoria viva de los <b data-total-paneles>13</b> paneles del congreso.</p>
-      <div class="hero__cta">
-        <a class="btn" href="#hojas-de-ruta">Ver hojas de ruta</a>
-        <a class="btn btn--fantasma" style="border-color:var(--gobs-cian); color:var(--gobs-cian)" href="#manifiesto">Firmar el manifiesto</a>
+      <div class="hero__texto">
+        <span class="etiqueta hero__kicker">#ElTerritorioCobraValor</span>
+        <h1>El territorio<br>cobra <span class="hero__acento">valor</span></h1>
+        <p class="hero__sintesis">Síntesis del Congreso de Finanzas Públicas Territoriales · <span data-anio>2026</span></p>
+        <p class="hero__lead">Relatorías estratégicas, hojas de ruta de incidencia y memoria viva de los <b data-total-paneles>13</b> paneles del congreso.</p>
+        <div class="hero__cta">
+          <a class="btn" href="#hojas-de-ruta">Ver hojas de ruta</a>
+          <a class="btn btn--fantasma" style="border-color:var(--gobs-cian); color:var(--gobs-cian)" href="#manifiesto">Firmar el manifiesto</a>
+        </div>
+        <div class="hero__stats">
+          <div><b data-total-paneles>13</b><span>paneles sistematizados</span></div>
+          <div><b>7</b><span>secciones por ficha</span></div>
+        </div>
       </div>
-      <div class="hero__stats">
-        <div><b data-total-paneles>13</b><span>paneles sistematizados</span></div>
-        <div><b>7</b><span>secciones por ficha</span></div>
-      </div>
+      <!-- Línea gráfica: escalera de paralelogramos azul→cian→verde→menta -->
+      <div class="hero__marca" data-logo="diagonal" aria-hidden="true"></div>
     </div>
   </header>
 
@@ -140,7 +145,8 @@
         </div>
         <div>
           <h4>Créditos</h4>
-          <p style="color:var(--gobs-azul-claro); font-family:var(--font-sans); font-size:var(--fs-sm);">Producción: Magna Comunicaciones.<br>Marca: GOBS Estrategias Públicas.</p>
+          <p style="color:var(--gobs-azul-claro); font-family:var(--font-sans); font-size:var(--fs-sm); margin-bottom:var(--sp-4);">Producción: Magna Comunicaciones.<br>Lineamientos de marca:</p>
+          <span data-logo="gobs" data-logo-tono="claro"></span>
         </div>
       </div>
       <p class="footer__nota">© <span data-anio>2026</span> Congreso FPT. Sitio estático · sin cookies · sin muros de acceso.</p>

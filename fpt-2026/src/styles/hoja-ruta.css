@@ -147,9 +147,12 @@
 .rm__bloque h5 { font-family: var(--font-sans); font-size: var(--fs-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--color-texto-suave); margin: 0 0 var(--sp-2); }
 .rm__cita { font-family: var(--font-serif); font-style: italic; font-size: var(--fs-lg); border-left: 4px solid var(--gobs-cian); padding-left: var(--sp-4); }
 .rm__cita cite { display: block; font-style: normal; font-size: var(--fs-sm); color: var(--color-texto-suave); margin-top: var(--sp-2); }
-.rm__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-2); }
-.rm__lista li { position: relative; padding-left: var(--sp-6); font-family: var(--font-sans); font-size: var(--fs-sm); }
-.rm__lista li::before { content:""; position:absolute; left:0; top:.45em; width:14px; height:8px; background: var(--gobs-verde); clip-path: polygon(0 0,100% 0,100% 100%,30% 100%,0 55%); }
+.rm__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-3); counter-reset: paso; }
+.rm__lista li { position: relative; padding-left: var(--sp-8); font-family: var(--font-sans); font-size: var(--fs-sm); }
+.rm__lista li b { display: block; color: var(--color-texto); }
+.rm__lista li span { color: var(--color-texto-suave); }
+.rm__lista li::before { content:""; position:absolute; left:0; top:.35em; width:16px; height:9px; background: var(--gobs-verde); clip-path: polygon(0 0,100% 0,100% 100%,30% 100%,0 55%); }
+.rm__lista--num li::before { counter-increment: paso; content: counter(paso); width:22px; height:22px; background: var(--color-primario); color:#fff; clip-path:none; border-radius:999px; display:grid; place-items:center; font-size:12px; font-weight:700; top:.1em; }
 .rm__actores { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
 .rm__actor { font-family: var(--font-sans); font-size: var(--fs-xs); background: var(--color-fondo-alt); border: 1px solid var(--color-borde); border-radius: 999px; padding: var(--sp-1) var(--sp-3); }
 .rm__vacio { color: var(--color-texto-suave); font-family: var(--font-sans); font-size: var(--fs-sm); font-style: italic; }

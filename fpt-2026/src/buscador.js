@@ -61,7 +61,7 @@ function construir(data) {
       const okTipo = !fTipo || c.dataset.tipo === fTipo;
       const okTemas = temasSel.size === 0 || [...temasSel].some((t) => temasC.includes(t));
       const ok = okTexto && okTipo && okTemas;
-      c.hidden = !ok;
+      c.style.display = ok ? '' : 'none'; // inline gana al display:flex del CSS
       if (ok) visibles++;
     });
     conteo.textContent = `${visibles} de ${tarjetas.length} paneles`;

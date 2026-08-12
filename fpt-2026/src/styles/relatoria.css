@@ -4,6 +4,21 @@
    Depende de tokens.css + base.css.
    ============================================================ */
 
+/* Overlay: relatoría abierta como capa dentro del Home */
+#rel-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  background: var(--color-fondo);
+}
+#rel-overlay[hidden] { display: none; }
+.rel-cerrar {
+  position: fixed; top: 14px; right: 14px; z-index: 210;
+  width: 46px; height: 46px; border: none; border-radius: 999px;
+  background: var(--gobs-negro); color: #fff; font-size: 24px; line-height: 1;
+  cursor: pointer; box-shadow: var(--sombra);
+}
+.rel-cerrar:hover { background: var(--color-primario); }
+
 .rel-nav {
   position: sticky; top: 0; z-index: 50;
   display: flex; align-items: center; justify-content: space-between;

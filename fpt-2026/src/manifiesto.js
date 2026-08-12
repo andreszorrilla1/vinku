@@ -9,6 +9,7 @@
    Backend: Google Apps Script (ver backend/api_firmantes_apps_script.gs).
    ============================================================ */
 
+(function () {
 // TODO: reemplazar con la URL real del Apps Script desplegado (/exec).
 // Mientras esté vacío, el componente funciona con datos de ejemplo.
 const APPS_SCRIPT_URL = '';
@@ -174,3 +175,4 @@ document.addEventListener('DOMContentLoaded', () => {
   if (cont) construir(cont);
   document.querySelectorAll('[data-anio]').forEach((el) => (el.textContent = '2026'));
 });
+})();

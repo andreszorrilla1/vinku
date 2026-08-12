@@ -7,6 +7,7 @@
 
 // Permite inyectar datos en línea para previews offline; en producción
 // se sirve data/paneles.json por HTTP.
+(function () {
 async function cargarDatos() {
   if (window.__PANELES__) return window.__PANELES__;
   const res = await fetch('data/paneles.json');
@@ -96,3 +97,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.dispatchEvent(new CustomEvent('grid:listo'));
   }
 });
+})();

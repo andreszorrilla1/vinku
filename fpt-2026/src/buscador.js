@@ -4,6 +4,7 @@
    temas (chips multi-selección) y texto libre, sobre los 13 paneles.
    ============================================================ */
 
+(function () {
 const ETIQ_TIPO = { nacional: 'Nacional', territorial: 'Territorial' };
 
 function temasConConteo(paneles) {
@@ -104,3 +105,4 @@ function arranque() {
 }
 document.addEventListener('grid:listo', () => construir(window.FPT));
 document.addEventListener('DOMContentLoaded', arranque);
+})();

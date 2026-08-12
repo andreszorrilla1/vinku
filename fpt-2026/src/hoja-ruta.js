@@ -6,6 +6,7 @@
    Navegación: swipe / arrastre / flechas.
    ============================================================ */
 
+(function () {
 const esPH = (v) => typeof v === 'string' && v.trim().startsWith('‹placeholder');
 const limpio = (v) => (v && !esPH(v) ? v.trim() : '');
 const tituloDe = (p) => (esPH(p.titulo) ? `Panel ${p.numero}` : p.titulo);
@@ -154,3 +155,4 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   arranque();
 });
+})();

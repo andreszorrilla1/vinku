@@ -24,6 +24,24 @@ function esPlaceholder(v) {
   return typeof v === 'string' && v.trim().startsWith('‹placeholder');
 }
 
+// Recoge recursivamente todo el texto real de un panel (ignora placeholders
+// y las rutas de recursos) para el índice de búsqueda de texto completo.
+function textoCompleto(obj, clave) {
+  if (typeof obj === 'string') {
+    if (esPlaceholder(obj)) return '';
+    if (/^(assets\/|https?:|data:)/.test(obj)) return ''; // rutas/URLs no
+    return obj + ' ';
+  }
+  if (Array.isArray(obj)) return obj.map((x) => textoCompleto(x)).join('');
+  if (obj && typeof obj === 'object') {
+    return Object.entries(obj)
+      .filter(([k]) => k !== 'recursos' && k !== 'id' && k !== 'estado' && k !== 'confianza')
+      .map(([k, v]) => textoCompleto(v, k))
+      .join('');
+  }
+  return '';
+}
+
 function tituloPanel(p) {
   return esPlaceholder(p.titulo) ? `Panel ${p.numero}` : p.titulo;
 }
@@ -57,11 +75,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const tag = clickable ? 'a' : 'div';
         const href = clickable ? ` href="relatoria.html?panel=${p.id}"` : '';
         const temas = (p.codificacion?.temas || []).filter((s) => s && !esPlaceholder(s));
-        // Cadena de búsqueda: título + problema + temas + territorios
-        const haystack = [
-          tituloPanel(p), p.captura?.problema?.sintesis, p.tipo,
-          ...temas, ...(p.codificacion?.territorios || []),
-        ].filter((s) => s && !esPlaceholder(s)).join(' ').toLowerCase();
+        // Índice de texto COMPLETO: recoge todo el contenido de la relatoría
+        // (reto, solución, sinergia, citas, anclaje, síntesis, acciones,
+        // pasos, actores…) para que las palabras clave busquen en todo.
+        const haystack = textoCompleto(p).toLowerCase();
         const tipoTxt = p.tipo === 'nacional' ? 'Nacional' : p.tipo === 'territorial' ? 'Territorial' : '';
         return `
       <${tag} class="tarjeta-panel${p.estado === 'pendiente' ? ' es-placeholder' : ''}"${href}

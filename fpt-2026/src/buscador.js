@@ -25,7 +25,7 @@ function construir(data) {
     <div class="bus__fila">
       <div class="bus__buscar">
         <span class="bus__lupa" aria-hidden="true">⌕</span>
-        <input id="bus-q" type="search" placeholder="Buscar por tema, problema, actor, territorio…" autocomplete="off" aria-label="Buscar">
+        <input id="bus-q" type="search" placeholder="Buscar palabras clave en todo el contenido…" autocomplete="off" aria-label="Buscar">
       </div>
       <div class="bus__alcance" role="group" aria-label="Alcance temático">
         <button class="bus__seg is-activo" data-tipo="" type="button">Todos</button>

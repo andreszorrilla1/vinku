@@ -32,25 +32,33 @@
 /* Barra de progreso de lectura */
 .rel-progreso { position: fixed; top: 0; left: 0; height: 4px; width: 0; background: var(--gobs-cian); z-index: 60; }
 
-/* Navegación entre paneles (pasar fichas) — flechas flotantes */
-.rel-flip-nav { position: fixed; inset: 0; z-index: 55; pointer-events: none; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--sp-3); }
-.rel-flip {
-  pointer-events: auto; display: inline-flex; align-items: center; gap: var(--sp-3);
-  text-decoration: none; background: color-mix(in srgb, var(--color-fondo) 92%, transparent);
-  border: 1px solid var(--color-borde); border-radius: 999px; padding: var(--sp-2) var(--sp-4);
-  box-shadow: var(--sombra); backdrop-filter: blur(6px); max-width: 40vw; transition: transform .15s ease;
+/* Navegación entre paneles — barra inferior sutil (no tapa el texto) */
+.rel-barra {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 55;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-4);
+  background: color-mix(in srgb, var(--color-fondo) 82%, transparent);
+  backdrop-filter: saturate(150%) blur(10px);
+  border-top: 1px solid var(--color-borde);
 }
-.rel-flip:hover { transform: translateY(-2px); }
-.rel-flip__ico { font-size: 26px; line-height: 1; color: var(--color-primario); font-weight: 700; }
-.rel-flip__txt { display: flex; flex-direction: column; font-family: var(--font-sans); line-height: 1.15; min-width: 0; }
-.rel-flip__txt small { font-size: var(--fs-xs); color: var(--color-texto-suave); text-transform: uppercase; letter-spacing: .08em; }
-.rel-flip__txt b { font-size: var(--fs-sm); color: var(--color-texto); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.rel-flip--next { flex-direction: row-reverse; text-align: right; }
-.rel-flip--off { opacity: 0; }
-/* En móvil, solo el ícono para no tapar contenido */
-@media (max-width: 640px) {
-  .rel-flip__txt { display: none; }
-  .rel-flip { padding: var(--sp-2); }
+.rel-barra__btn {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  text-decoration: none; color: var(--color-texto);
+  padding: var(--sp-2) var(--sp-3); border-radius: 999px;
+  max-width: 42vw; transition: background .15s ease, color .15s ease; opacity: .8;
+}
+.rel-barra__btn:hover { background: var(--color-fondo-alt); color: var(--color-primario); opacity: 1; }
+.rel-barra__ico { font-size: 24px; line-height: 1; font-weight: 700; color: var(--color-primario); }
+.rel-barra__txt { display: flex; flex-direction: column; font-family: var(--font-sans); line-height: 1.1; min-width: 0; text-align: left; }
+.rel-barra__txt small { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--color-texto-suave); }
+.rel-barra__txt b { font-size: var(--fs-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rel-barra__btn--next { flex-direction: row-reverse; }
+.rel-barra__btn--next .rel-barra__txt { text-align: right; }
+.rel-barra__btn--off { opacity: .25; pointer-events: none; }
+.rel-barra__pos { font-family: var(--font-sans); font-size: var(--fs-xs); font-weight: 700; color: var(--color-texto-suave); white-space: nowrap; }
+@media (max-width: 620px) {
+  .rel-barra__txt small { display: none; }
+  .rel-barra__btn { max-width: 40vw; }
 }
 
 /* ---- Portada ---- */
@@ -107,7 +115,7 @@
 .rel-reveal.visible { opacity: 1; transform: none; }
 
 /* ---- Cierre: síntesis en caliente + descarga ---- */
-.rel-cierre { background: var(--gobs-negro); color: #fff; padding: var(--sp-24) var(--sp-6); text-align: center; position: relative; overflow: hidden; }
+.rel-cierre { background: var(--gobs-negro); color: #fff; padding: var(--sp-24) var(--sp-6) calc(var(--sp-24) + 76px); text-align: center; position: relative; overflow: hidden; }
 .rel-cierre::before { content:""; position:absolute; inset:auto -10% -30% -10%; height:55%; background: var(--gobs-azul-profundo); transform: skewY(-8deg); opacity:.85; }
 .rel-cierre__inner { position: relative; z-index: 1; max-width: 60ch; margin-inline: auto; }
 .rel-cierre .etiqueta { color: var(--gobs-cian); }

@@ -30,12 +30,15 @@ function navPaneles(paneles, idx) {
   const rot = (p) => (esPH(p.titulo) ? `Panel ${p.numero}` : p.titulo);
   const btn = (p, dir) =>
     p
-      ? `<a class="rel-flip rel-flip--${dir}" href="relatoria.html?panel=${p.id}" aria-label="${dir === 'prev' ? 'Panel anterior' : 'Panel siguiente'}">
-           <span class="rel-flip__ico">${dir === 'prev' ? '‹' : '›'}</span>
-           <span class="rel-flip__txt"><small>${dir === 'prev' ? 'Anterior' : 'Siguiente'}</small><b>${rot(p)}</b></span>
+      ? `<a class="rel-barra__btn rel-barra__btn--${dir}" href="relatoria.html?panel=${p.id}" aria-label="${dir === 'prev' ? 'Panel anterior' : 'Panel siguiente'}">
+           <span class="rel-barra__ico">${dir === 'prev' ? '‹' : '›'}</span>
+           <span class="rel-barra__txt"><small>${dir === 'prev' ? 'Anterior' : 'Siguiente'}</small><b>${rot(p)}</b></span>
          </a>`
-      : `<span class="rel-flip rel-flip--${dir} rel-flip--off" aria-hidden="true"><span class="rel-flip__ico">${dir === 'prev' ? '‹' : '›'}</span></span>`;
-  return { prev, next, html: `<nav class="rel-flip-nav">${btn(prev, 'prev')}${btn(next, 'next')}</nav>` };
+      : `<span class="rel-barra__btn rel-barra__btn--off" aria-hidden="true"><span class="rel-barra__ico">${dir === 'prev' ? '‹' : '›'}</span></span>`;
+  return {
+    prev, next,
+    html: `<nav class="rel-barra">${btn(prev, 'prev')}<span class="rel-barra__pos">Panel ${paneles[idx].numero} · ${idx + 1}/${paneles.length}</span>${btn(next, 'next')}</nav>`,
+  };
 }
 
 // Renderiza un panel en `cont`. `scroller` es el elemento que hace scroll
@@ -88,7 +91,6 @@ function render(panel, paneles, idx, cont, scroller) {
           ${pdf ? `<a class="btn" href="${pdf}" download>Descargar relatoría (PDF)</a>` : `<button class="btn" disabled style="opacity:.5;cursor:not-allowed">Relatoría PDF próximamente</button>`}
           <a class="btn btn--fantasma rel-volver" style="border-color:var(--gobs-cian);color:var(--gobs-cian)" href="index.html#repositorio">Volver al repositorio</a>
         </div>
-        ${nav.next ? `<p style="margin-top:var(--sp-8)"><a href="relatoria.html?panel=${nav.next.id}" style="color:var(--gobs-cian);font-family:var(--font-sans);font-weight:600;text-decoration:none">Siguiente panel: ${esPH(nav.next.titulo) ? 'Panel ' + nav.next.numero : nav.next.titulo} →</a></p>` : ''}
         <div class="rel-cierre__logo"><span data-logo="gobs" data-logo-tono="claro"></span></div>
       </div>
     </section>`;

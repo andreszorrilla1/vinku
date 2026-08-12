@@ -1,55 +1,14 @@
 /* ============================================================
-   Congreso FPT 2026 — Hoja de ruta (camino HORIZONTAL con pines)
-   Prioridad 1 del brief. El sendero avanza hacia la derecha; el
-   fondo (silueta de Colombia) se corre revelando nuevos pines.
-   Se navega con swipe/drag y con flechas. Cada pin abre una
-   ventana con problema · cita · acciones · actores · descarga.
+   Congreso FPT 2026 — Hoja de ruta como LÍNEA DE TIEMPO horizontal
+   Línea estilizada con pines numerados (número de panel). Al hacer
+   click se abre una ventana con la ficha (problema · propuestas ·
+   cómo hacerlo posible) y el botón de descarga.
+   Navegación: swipe / arrastre / flechas.
    ============================================================ */
-
-const SVG_NS = 'http://www.w3.org/2000/svg';
-
-// Silueta de Colombia — DECORATIVA y aproximada (el brief la pide así).
-const COLOMBIA_PATH =
-  'M300 120 C360 90 430 110 470 160 C520 130 560 175 545 230 C600 250 620 320 585 370 ' +
-  'C640 400 640 470 590 505 C620 560 590 640 560 690 C600 740 585 820 540 860 ' +
-  'C560 930 520 1010 470 1050 C500 1120 470 1210 430 1270 C400 1360 350 1470 320 1560 ' +
-  'C300 1650 250 1720 210 1690 C230 1600 245 1500 230 1420 C180 1400 150 1340 175 1290 ' +
-  'C120 1250 110 1170 155 1130 C110 1080 120 1000 170 970 C130 910 150 830 200 805 ' +
-  'C160 740 185 660 235 640 C195 580 220 500 270 485 C230 420 260 340 315 335 ' +
-  'C285 280 300 200 300 120 Z';
 
 const esPH = (v) => typeof v === 'string' && v.trim().startsWith('‹placeholder');
 const limpio = (v) => (v && !esPH(v) ? v.trim() : '');
-
-function el(tag, attrs = {}, ...children) {
-  const n = document.createElementNS(SVG_NS, tag);
-  for (const k in attrs) n.setAttribute(k, attrs[k]);
-  children.forEach((c) => n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c));
-  return n;
-}
-
-// Posiciones de los pines a lo largo de un eje horizontal, en zig-zag suave.
-function calcularPuntos(n, paso, margenX, mid, amp) {
-  const pts = [];
-  for (let i = 0; i < n; i++) {
-    const x = margenX + i * paso;
-    const y = mid + (i % 2 === 0 ? -amp : amp);
-    pts.push({ x, y });
-  }
-  return pts;
-}
-
-// Path 'd' que enhebra los puntos con curvas suaves (S horizontales).
-function senderoD(pts) {
-  if (!pts.length) return '';
-  let d = `M ${pts[0].x} ${pts[0].y}`;
-  for (let i = 1; i < pts.length; i++) {
-    const a = pts[i - 1], b = pts[i];
-    const cx = (a.x + b.x) / 2;
-    d += ` C ${cx} ${a.y}, ${cx} ${b.y}, ${b.x} ${b.y}`;
-  }
-  return d;
-}
+const tituloDe = (p) => (esPH(p.titulo) ? `Panel ${p.numero}` : p.titulo);
 
 function abrirModal(panel) {
   const ov = document.getElementById('rm-overlay');
@@ -60,13 +19,11 @@ function abrirModal(panel) {
   const acciones = (panel.comunicaciones?.acciones || []).filter((a) => a && (a.titulo || typeof a === 'string'));
   const pasos = (panel.pasos || []).filter((a) => a && a.titulo);
   const pdf = panel.recursos?.pdfHojaRuta;
-  const titulo = esPH(panel.titulo) ? `Panel ${panel.numero}` : panel.titulo;
+  const titulo = tituloDe(panel);
   const vacio = (t) => `<p class="rm__vacio">${t}</p>`;
   const etiqConf = { alto: 'Confianza alta', medio: 'Confianza media', bajo: 'Confianza baja' };
   const li = (a) =>
-    typeof a === 'string'
-      ? `<li>${a}</li>`
-      : `<li><b>${a.titulo}</b>${a.detalle ? `<span>${a.detalle}</span>` : ''}</li>`;
+    typeof a === 'string' ? `<li>${a}</li>` : `<li><b>${a.titulo}</b>${a.detalle ? `<span>${a.detalle}</span>` : ''}</li>`;
 
   ov.querySelector('.rm__cuerpo').innerHTML = `
     <div class="rm__num">Panel ${panel.numero} · <span class="chip-confianza" data-nivel="${panel.confianza}" style="vertical-align:middle">${etiqConf[panel.confianza] || panel.confianza}</span></div>
@@ -82,7 +39,7 @@ function abrirModal(panel) {
     </div>
     ${pasos.length ? `<div class="rm__bloque"><h5>Cómo hacerlo posible</h5><ol class="rm__lista rm__lista--num">${pasos.map(li).join('')}</ol></div>` : ''}
     <div class="rm__pie">
-      ${pdf ? `<a class="btn" href="${pdf}" download>Descargar hoja de ruta</a>` : `<button class="btn" disabled style="opacity:.5;cursor:not-allowed">Descarga próximamente</button>`}
+      ${pdf ? `<a class="btn" href="${pdf}" download>⭳ Descargar hoja de ruta</a>` : `<button class="btn" disabled title="El PDF se habilita cuando esté disponible" style="opacity:.5;cursor:not-allowed">⭳ Descarga próximamente</button>`}
       <a class="btn btn--fantasma" href="relatoria.html?panel=${panel.id}">Ver relatoría del panel</a>
     </div>
   `;
@@ -102,101 +59,66 @@ function construirRuta(paneles) {
   const cont = document.querySelector('[data-modulo="hoja-de-ruta"]');
   if (!cont || !paneles.length) return;
   cont.classList.remove('en-construccion');
-  cont.classList.add('ruta');
+  cont.classList.add('tl-wrap');
   cont.innerHTML = '';
 
-  // Geometría horizontal (pines grandes → lienzo más ancho, más desplazamiento)
-  const PASO = 360;         // separación entre pines (px)
-  const MARGEN = 230;       // margen a izquierda/derecha
-  const H = 540;            // alto del lienzo
-  const mid = H / 2;
-  const amp = 110;          // amplitud del zig-zag
-  const W = MARGEN * 2 + (paneles.length - 1) * PASO;
-
-  const pts = calcularPuntos(paneles.length, PASO, MARGEN, mid, amp);
-  const d = senderoD(pts);
-
-  // Estructura: pista con scroll horizontal + flechas
   const pista = document.createElement('div');
-  pista.className = 'ruta__pista';
+  pista.className = 'tl-scroll';
 
-  const svg = el('svg', {
-    class: 'ruta__lienzo',
-    viewBox: `0 0 ${W} ${H}`,
-    width: String(W),
-    height: String(H),
-    role: 'list',
-    'aria-label': 'Hoja de ruta: camino de paneles',
-  });
-  svg.style.width = W + 'px';
-  svg.style.height = H + 'px';
+  const tl = document.createElement('div');
+  tl.className = 'tl';
+  tl.style.setProperty('--n', paneles.length);
 
-  // Silueta de Colombia repetida/expandida como fondo que se corre
-  const gcol = el('g', { 'aria-hidden': 'true' });
-  const escala = (H * 1.2) / 1800; // 1800 ~ alto natural del path
-  for (let x = 0; x < W; x += 900) {
-    gcol.appendChild(
-      el('path', { class: 'ruta__colombia', d: COLOMBIA_PATH, transform: `translate(${x} ${mid - 900 * escala}) scale(${escala})` })
-    );
-  }
-  svg.appendChild(gcol);
+  // Línea base + relleno de progreso
+  tl.innerHTML = '<span class="tl__linea" aria-hidden="true"></span><span class="tl__linea tl__linea--fill" aria-hidden="true"></span>';
 
-  // Sendero
-  svg.appendChild(el('path', { class: 'ruta__sendero--trazo', d }));
-  svg.appendChild(el('path', { class: 'ruta__sendero', d }));
-
-  // Pines exactamente sobre los puntos calculados
   paneles.forEach((panel, i) => {
-    const { x, y } = pts[i];
-    const arriba = i % 2 === 0; // etiqueta arriba o abajo según posición
-    const g = el('g', {
-      class: 'pin',
-      'data-estado': panel.estado,
-      role: 'listitem',
-      tabindex: '0',
-      'aria-label': `Panel ${panel.numero}`,
-      transform: `translate(${x} ${y})`,
-    });
-    g.appendChild(el('circle', { class: 'pin__estela', r: '58', opacity: '0.12' }));
-    g.appendChild(el('circle', { class: 'pin__disco', r: '50' }));
-    g.appendChild(el('text', { class: 'pin__num' }, String(panel.numero)));
-
-    const titulo = esPH(panel.titulo) ? `Panel ${panel.numero}` : panel.titulo;
-    const ly = arriba ? -78 : 88;
-    g.appendChild(el('text', { class: 'pin__label', x: '0', y: String(ly), 'text-anchor': 'middle' }, titulo));
-
+    const item = document.createElement('div');
+    item.className = 'tl__item';
+    item.dataset.estado = panel.estado;
+    const etiqEstado = { final: 'Relatoría final', transcripcion: 'En sistematización', pendiente: 'Próximamente' }[panel.estado] || '';
+    item.innerHTML = `
+      <div class="tl__titulo">${tituloDe(panel)}</div>
+      <button class="tl__nodo" type="button" aria-label="Abrir ficha del Panel ${panel.numero}: ${tituloDe(panel)}">
+        <span class="tl__num">${panel.numero}</span>
+      </button>
+      <div class="tl__estado">${etiqEstado}</div>`;
     const abrir = () => abrirModal(panel);
-    g.addEventListener('click', abrir);
-    g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); } });
-    svg.appendChild(g);
+    const btn = item.querySelector('.tl__nodo');
+    btn.addEventListener('click', abrir);
+    tl.appendChild(item);
   });
 
-  pista.appendChild(svg);
+  pista.appendChild(tl);
   cont.appendChild(pista);
 
-  // Flechas de navegación
+  // Flechas
   const flechas = document.createElement('div');
-  flechas.className = 'ruta__flechas';
+  flechas.className = 'tl-flechas';
   flechas.innerHTML = `
-    <button class="ruta__flecha" data-dir="-1" aria-label="Anterior">‹</button>
-    <button class="ruta__flecha" data-dir="1" aria-label="Siguiente">›</button>`;
+    <button class="tl-flecha" data-dir="-1" aria-label="Anterior">‹</button>
+    <button class="tl-flecha" data-dir="1" aria-label="Siguiente">›</button>`;
   cont.appendChild(flechas);
-  flechas.querySelectorAll('.ruta__flecha').forEach((b) => {
-    b.addEventListener('click', () => pista.scrollBy({ left: b.dataset.dir * PASO * 1.6, behavior: 'smooth' }));
-  });
+  const paso = () => Math.max(240, pista.clientWidth * 0.6);
+  flechas.querySelectorAll('.tl-flecha').forEach((b) =>
+    b.addEventListener('click', () => pista.scrollBy({ left: b.dataset.dir * paso(), behavior: 'smooth' }))
+  );
 
-  // Pista de progreso
+  // Progreso (relleno de la línea + barra inferior)
+  const fill = tl.querySelector('.tl__linea--fill');
   const barra = document.createElement('div');
-  barra.className = 'ruta__progreso';
+  barra.className = 'tl-progreso';
   barra.innerHTML = '<span></span>';
   cont.appendChild(barra);
   const relleno = barra.querySelector('span');
   const actualizar = () => {
     const max = pista.scrollWidth - pista.clientWidth;
-    relleno.style.width = (max > 0 ? (pista.scrollLeft / max) * 100 : 0) + '%';
+    const pct = max > 0 ? pista.scrollLeft / max : 0;
+    relleno.style.width = pct * 100 + '%';
+    fill.style.transform = `scaleX(${Math.max(0.02, pct)})`;
   };
-  pista.addEventListener('scroll', actualizar);
-  actualizar();
+  pista.addEventListener('scroll', actualizar, { passive: true });
+  requestAnimationFrame(actualizar);
 
   // Arrastrar para desplazar (escritorio)
   let abajo = false, sx = 0, sl = 0, movido = false;
@@ -205,7 +127,6 @@ function construirRuta(paneles) {
   const soltar = () => { abajo = false; pista.classList.remove('arrastrando'); };
   pista.addEventListener('pointerup', soltar);
   pista.addEventListener('pointerleave', soltar);
-  // Evita abrir modal si venías arrastrando
   pista.addEventListener('click', (e) => { if (movido) { e.stopPropagation(); e.preventDefault(); } }, true);
 }
 
@@ -215,7 +136,7 @@ function montarModal() {
   ov.className = 'rm-overlay';
   ov.id = 'rm-overlay';
   ov.dataset.abierto = 'false';
-  ov.innerHTML = `<div class="rm" role="dialog" aria-modal="true" aria-label="Detalle del panel">
+  ov.innerHTML = `<div class="rm" role="dialog" aria-modal="true" aria-label="Ficha de hoja de ruta">
       <button class="rm__cerrar" aria-label="Cerrar">×</button>
       <div class="rm__cuerpo"></div>
     </div>`;

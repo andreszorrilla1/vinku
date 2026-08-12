@@ -3,116 +3,88 @@
    Depende de tokens.css + base.css + landing.css.
    ============================================================ */
 
-.ruta {
-  position: relative;
-  margin-top: var(--sp-8);
+/* ============================================================
+   Línea de tiempo horizontal
+   ============================================================ */
+.tl-wrap { position: relative; margin-top: var(--sp-8); }
+
+.tl-scroll {
+  overflow-x: auto; overflow-y: hidden; cursor: grab;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain; padding: var(--sp-8) 0;
+}
+.tl-scroll::-webkit-scrollbar { display: none; }
+.tl-scroll.arrastrando { cursor: grabbing; }
+
+.tl {
+  position: relative; display: flex; align-items: center;
+  min-width: max-content; padding: 0 clamp(24px, 8vw, 90px);
 }
 
-/* Pista con scroll horizontal: aquí se corre el fondo revelando pines */
-.ruta__pista {
-  overflow-x: auto;
-  overflow-y: hidden;
-  cursor: grab;
-  scrollbar-width: none;              /* Firefox */
-  -webkit-overflow-scrolling: touch;
-  border-radius: var(--radio-lg);
-  background:
-    linear-gradient(var(--color-fondo-alt), var(--color-fondo-alt));
-  overscroll-behavior-x: contain;
+/* Línea base y su relleno de progreso */
+.tl__linea {
+  position: absolute; left: 0; right: 0; top: 50%; height: 4px;
+  transform: translateY(-50%); background: var(--color-borde); border-radius: 999px;
 }
-.ruta__pista::-webkit-scrollbar { display: none; } /* Chrome/Safari */
-.ruta__pista.arrastrando { cursor: grabbing; }
-
-/* Lienzo del camino: la silueta de Colombia y el sendero viven aquí */
-.ruta__lienzo {
-  display: block;
-  overflow: visible;
-  user-select: none;
-  touch-action: pan-x;
+.tl__linea--fill {
+  right: auto; width: 100%; transform: translateY(-50%) scaleX(0.02);
+  transform-origin: left center; background: var(--gobs-cian);
+  transition: transform .1s linear;
 }
 
-/* Flechas de navegación */
-.ruta__flechas {
-  position: absolute; inset: 0; pointer-events: none;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 var(--sp-2);
-}
-.ruta__flecha {
-  pointer-events: auto;
-  width: 48px; height: 48px; border-radius: 999px; border: none;
-  background: var(--gobs-negro); color: #fff; font-size: 26px; line-height: 1;
-  cursor: pointer; box-shadow: var(--sombra); opacity: .92;
-  display: grid; place-items: center;
-}
-.ruta__flecha:hover { background: var(--color-primario); }
-
-/* Barra de progreso del recorrido */
-.ruta__progreso {
-  height: 5px; background: var(--color-borde); border-radius: 999px;
-  margin-top: var(--sp-4); overflow: hidden;
-}
-.ruta__progreso span {
-  display: block; height: 100%; width: 0;
-  background: var(--gobs-cian);
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  transition: width .08s linear;
+/* Estación (panel) */
+.tl__item {
+  position: relative; z-index: 1; flex: 0 0 clamp(190px, 22vw, 240px);
+  display: flex; flex-direction: column; align-items: center; gap: var(--sp-3);
+  text-align: center;
 }
 
-/* Silueta de Colombia — decorativa, tenue */
-.ruta__colombia {
-  fill: var(--color-primario);
-  opacity: 0.06;
+.tl__titulo {
+  font-family: var(--font-serif); font-weight: 700; font-size: var(--fs-base);
+  line-height: 1.2; max-width: 22ch; min-height: 3em;
+  display: flex; align-items: flex-end; justify-content: center;
 }
 
-/* Sendero */
-.ruta__sendero {
-  fill: none;
-  stroke: var(--color-borde);
-  stroke-width: 6;
-  stroke-dasharray: 2 16;
-  stroke-linecap: round;
+/* Nodo / pin */
+.tl__nodo {
+  width: 74px; height: 74px; border-radius: 999px; cursor: pointer;
+  border: 4px solid var(--color-primario); background: var(--color-fondo);
+  display: grid; place-items: center; position: relative;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-primario) 10%, transparent);
 }
-.ruta__sendero--trazo {
-  fill: none;
-  stroke: var(--color-primario);
-  stroke-width: 3;
-  stroke-linecap: round;
-  opacity: .5;
+.tl__nodo:hover, .tl__nodo:focus-visible {
+  transform: translateY(-4px) scale(1.06); outline: none;
+  box-shadow: 0 10px 22px rgba(11,15,20,.18), 0 0 0 6px color-mix(in srgb, var(--color-primario) 18%, transparent);
+}
+.tl__num { font-family: var(--font-serif); font-weight: 700; font-size: 30px; color: var(--color-primario); line-height: 1; }
+
+/* Estado del nodo */
+.tl__item[data-estado="final"] .tl__nodo { border-color: var(--gobs-verde); background: var(--gobs-verde); }
+.tl__item[data-estado="final"] .tl__num { color: #fff; }
+.tl__item[data-estado="final"] .tl__nodo { box-shadow: 0 0 0 6px color-mix(in srgb, var(--gobs-verde) 16%, transparent); }
+.tl__item[data-estado="transcripcion"] .tl__nodo { border-color: var(--gobs-cian); }
+.tl__item[data-estado="transcripcion"] .tl__num { color: var(--gobs-cian); }
+.tl__item[data-estado="pendiente"] .tl__nodo { border-style: dashed; border-color: var(--color-borde); }
+.tl__item[data-estado="pendiente"] .tl__num { color: var(--color-texto-suave); }
+
+.tl__estado {
+  font-family: var(--font-sans); font-size: var(--fs-xs); font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--color-texto-suave);
 }
 
-/* Pines */
-.pin { cursor: pointer; }
-.pin__disco {
-  fill: var(--color-fondo);
-  stroke: var(--color-primario);
-  stroke-width: 4;
-  transition: transform .15s ease;
-  transform-box: fill-box;
-  transform-origin: center;
+/* Flechas */
+.tl-flechas { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--sp-2); }
+.tl-flecha {
+  pointer-events: auto; width: 48px; height: 48px; border-radius: 999px; border: none;
+  background: var(--gobs-negro); color: #fff; font-size: 26px; line-height: 1; cursor: pointer;
+  box-shadow: var(--sombra); opacity: .95; display: grid; place-items: center;
 }
-.pin:hover .pin__disco,
-.pin:focus-visible .pin__disco { transform: scale(1.15); }
-.pin__num {
-  font-family: var(--font-serif);
-  font-weight: 700;
-  fill: var(--color-primario);
-  text-anchor: middle;
-  dominant-baseline: central;
-  font-size: 40px;
-}
-.pin__estela { fill: var(--gobs-cian); }
-/* Pin de panel pendiente/placeholder */
-.pin[data-estado="pendiente"] .pin__disco { stroke: var(--color-borde); stroke-dasharray: 4 4; }
-.pin[data-estado="pendiente"] .pin__num { fill: var(--color-texto-suave); }
-.pin[data-estado="final"] .pin__disco { stroke: var(--gobs-verde); }
+.tl-flecha:hover { background: var(--color-primario); }
 
-/* Etiqueta corta junto al pin */
-.pin__label {
-  font-family: var(--font-sans);
-  font-size: 19px;
-  font-weight: 600;
-  fill: var(--color-texto);
-}
+/* Barra de progreso inferior */
+.tl-progreso { height: 5px; background: var(--color-borde); border-radius: 999px; margin-top: var(--sp-4); overflow: hidden; }
+.tl-progreso span { display: block; height: 100%; width: 0; background: var(--gobs-cian); transition: width .08s linear; }
 
 /* ---- Ventana emergente (modal) ---- */
 .rm-overlay {

@@ -110,10 +110,30 @@ function render(panel, paneles, idx) {
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  // Navegación entre paneles con flechas del teclado
+  // Navegación entre paneles. En el sitio real cambia de página (URL propia,
+  // compartible); en un preview autocontenido re-renderiza en el sitio.
+  const inline = !!window.__PANELES__;
+  const irA = (p) => {
+    if (!p) return;
+    if (inline) {
+      const paneles2 = window.FPT.paneles || [];
+      render(p, paneles2, paneles2.findIndex((x) => x.id === p.id));
+      window.scrollTo(0, 0);
+    } else {
+      location.href = `relatoria.html?panel=${p.id}`;
+    }
+  };
+  cont.querySelectorAll('a[href*="relatoria.html?panel="]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      if (!inline) return;
+      e.preventDefault();
+      const id = new URL(a.href, location.href).searchParams.get('panel');
+      irA((window.FPT.paneles || []).find((x) => x.id === id));
+    });
+  });
   window.onkeydown = (e) => {
-    if (e.key === 'ArrowRight' && nav.next) location.href = `relatoria.html?panel=${nav.next.id}`;
-    if (e.key === 'ArrowLeft' && nav.prev) location.href = `relatoria.html?panel=${nav.prev.id}`;
+    if (e.key === 'ArrowRight') irA(nav.next);
+    if (e.key === 'ArrowLeft') irA(nav.prev);
   };
 
   document.title = `${titulo} · Relatoría FPT 2026`;

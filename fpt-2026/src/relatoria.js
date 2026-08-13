@@ -76,20 +76,24 @@ function render(panel, paneles, idx, cont, scroller) {
     ${nav.html}
     <header class="rel-portada">
       <div class="rel-portada__inner">
-        <span class="rel-portada__num">Relatoría estratégica · Panel ${panel.numero} · ${idx + 1} de ${paneles.length} · 2026</span>
-        <h1>${titulo}</h1>
-        ${sub ? `<p class="rel-portada__sub">${sub}</p>` : ''}
-        <div class="rel-portada__meta">
-          <span class="rel-portada__tipo">${panel.tipo === 'nacional' ? 'Nacional' : panel.tipo === 'territorial' ? 'Territorial' : ''}</span>
-          ${(panel.codificacion?.temas || []).slice(0, 3).map((t) => `<span class="rel-portada__tema">${t}</span>`).join('')}
+        <div class="rel-portada__texto">
+          <span class="rel-portada__num">Relatoría estratégica · Panel ${panel.numero} · ${idx + 1} de ${paneles.length} · 2026</span>
+          <h1>${titulo}</h1>
+          ${sub ? `<p class="rel-portada__sub">${sub}</p>` : ''}
+          <div class="rel-portada__meta">
+            <span class="rel-portada__tipo">${panel.tipo === 'nacional' ? 'Nacional' : panel.tipo === 'territorial' ? 'Territorial' : ''}</span>
+            ${(panel.codificacion?.temas || []).slice(0, 3).map((t) => `<span class="rel-portada__tema">${t}</span>`).join('')}
+          </div>
+          <div class="rel-scroll-hint">Desliza para recorrer ↓</div>
         </div>
-        <div class="rel-scroll-hint">Desliza para recorrer ↓</div>
+        <figure class="rel-portada__marca">
+          ${panel.recursos?.fotoSintesis ? `<img src="${panel.recursos.fotoSintesis}" alt="Sesión ${panel.numero}: ${titulo}" loading="lazy" onerror="this.remove()">` : ''}
+        </figure>
       </div>
     </header>
     ${tarjetas}
     <section class="rel-cierre">
       <div class="rel-cierre__inner">
-        ${panel.recursos?.fotoSintesis ? `<figure class="rel-cierre__foto"><img src="${panel.recursos.fotoSintesis}" alt="Panel ${panel.numero}: ${titulo}" loading="lazy" onerror="this.closest('.rel-cierre__foto').remove()"></figure>` : ''}
         <span class="etiqueta">Síntesis en caliente</span>
         <blockquote>${sintCaliente ? `“${sintCaliente}”` : 'El territorio cobra valor.'}</blockquote>
         <div class="rel-cierre__acciones">

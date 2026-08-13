@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="src/styles/buscador.css">
   <link rel="stylesheet" href="src/styles/manifiesto.css">
   <link rel="stylesheet" href="src/styles/relatoria.css">
+  <link rel="stylesheet" href="src/styles/gallery.css">
 </head>
 <body>
   <!-- ===================== NAV ===================== -->
@@ -93,8 +94,14 @@
           <span class="etiqueta">Relatoría audiovisual</span>
           <h2>El congreso en video</h2>
         </div>
-        <div class="en-construccion" data-modulo="audiovisual">
-          <p><b>Pendiente de diseño real</b> (Sección 8).<br>Reproductor embebido desde Vimeo/YouTube no listado — el video nunca se aloja en el sitio.</p>
+        <div class="av">
+          <div class="av__player">
+            <iframe src="https://www.youtube.com/embed/videoseries?list=PLKIdTsodcJ3s"
+              title="Relatoría audiovisual · Congreso FPT 2026"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+          </div>
+          <a class="btn" href="https://www.youtube.com/playlist?list=PLKIdTsodcJ3s" target="_blank" rel="noopener">Ver la lista completa en YouTube ↗</a>
         </div>
       </div>
     </section>
@@ -106,9 +113,8 @@
           <span class="etiqueta">Galería</span>
           <h2>Memoria fotográfica</h2>
         </div>
-        <div class="en-construccion" data-modulo="galeria">
-          <p><b>Pendiente de diseño real</b> (Sección 8).<br>Imágenes optimizadas a .webp, alojadas en /assets/images.</p>
-        </div>
+        <!-- Galería: la llena src/gallery.js con las fotos de sesión -->
+        <div data-galeria></div>
       </div>
     </section>
 
@@ -170,5 +176,6 @@
   <script src="src/buscador.js"></script>
   <script src="src/manifiesto.js"></script>
   <script src="src/relatoria.js"></script>
+  <script src="src/gallery.js"></script>
 </body>
 </html>

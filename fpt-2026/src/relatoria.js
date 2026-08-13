@@ -48,7 +48,12 @@ function render(panel, paneles, idx, cont, scroller) {
   const titulo = esPH(panel.titulo) ? `Panel ${panel.numero}` : panel.titulo;
   const sub = limpio(panel.subtitulo) || limpio(panel.anclajePolitico);
   const sintCaliente = limpio(panel.sintesisEnCaliente);
+  const descargas = panel.recursos?.descargas;
   const pdf = panel.recursos?.pdfRelatoria;
+  const descargaHTML = (descargas && descargas.length)
+    ? descargas.map((d) => `<a class="btn" href="${d.url}" download>⭳ ${d.label}</a>`).join('')
+    : (pdf ? `<a class="btn" href="${pdf}" download>⭳ Descargar relatoría</a>`
+           : `<button class="btn" disabled style="opacity:.5;cursor:not-allowed">Relatoría próximamente</button>`);
   const nav = navPaneles(paneles, idx);
 
   const tarjetas = ETAPAS.map((e, i) => {
@@ -88,7 +93,7 @@ function render(panel, paneles, idx, cont, scroller) {
         <span class="etiqueta">Síntesis en caliente</span>
         <blockquote>${sintCaliente ? `“${sintCaliente}”` : 'El territorio cobra valor.'}</blockquote>
         <div class="rel-cierre__acciones">
-          ${pdf ? `<a class="btn" href="${pdf}" download>Descargar relatoría (PDF)</a>` : `<button class="btn" disabled style="opacity:.5;cursor:not-allowed">Relatoría PDF próximamente</button>`}
+          ${descargaHTML}
           <a class="btn btn--fantasma rel-volver" style="border-color:var(--gobs-cian);color:var(--gobs-cian)" href="index.html#repositorio">Volver al repositorio</a>
         </div>
         <div class="rel-cierre__logo"><span data-logo="gobs" data-logo-tono="claro"></span></div>

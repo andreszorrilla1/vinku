@@ -2,21 +2,26 @@
    Congreso FPT 2026 — Área audiovisual + galería
    ============================================================ */
 
-/* ---- Reproductor audiovisual (YouTube) ---- */
+/* ---- Reproductor audiovisual (YouTube, con carátula/facade) ---- */
 .av { display: flex; flex-direction: column; gap: var(--sp-6); align-items: flex-start; }
 .av__player {
   position: relative; width: 100%; aspect-ratio: 16 / 9;
-  border-radius: 20px; overflow: hidden; background: var(--fpt-tinta);
+  border-radius: 20px; overflow: hidden; cursor: pointer;
+  background-color: var(--fpt-navy); background-image: var(--textura-mapa); background-size: 30%;
   box-shadow: var(--sombra); border: 1px solid var(--color-borde);
+  display: grid; place-items: center; gap: var(--sp-4); text-align: center;
 }
-.av__player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-/* Fallback visible si el iframe no carga (p. ej. en el preview con CSP) */
-.av__player::before {
-  content: "▶  Reproductor de YouTube"; position: absolute; inset: 0; z-index: 0;
-  display: grid; place-items: center; color: #fff; opacity: .5;
-  font-family: var(--font-sans); font-weight: 700; letter-spacing: .04em;
+.av__player:hover { filter: brightness(1.06); }
+.av__player:focus-visible { outline: 3px solid var(--gobs-cian); outline-offset: 3px; }
+.av__badge {
+  width: 84px; height: 84px; border-radius: 999px; background: var(--fpt-rojo); color: #fff;
+  display: grid; place-items: center; font-size: 30px; padding-left: 4px;
+  box-shadow: 0 10px 30px rgba(255,68,56,.5); transition: transform .2s ease;
 }
-.av__player iframe { position: absolute; z-index: 1; }
+.av__player:hover .av__badge { transform: scale(1.08); }
+.av__txt { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; color: #fff; font-size: var(--fs-lg); line-height: 1.1; }
+.av__txt small { display: block; font-family: var(--font-sans); font-weight: 600; text-transform: none; font-size: var(--fs-sm); color: var(--gobs-azul-claro); margin-top: var(--sp-2); }
+.av__player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 1; }
 
 /* ---- Galería ---- */
 .galeria {

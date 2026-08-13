@@ -20,10 +20,12 @@
   --gobs-blanco:        #FFFFFF;
 
   /* ---- Extensión de identidad del Congreso FPT (grounds + acento) ---- */
-  --fpt-navy:      #061A4A;   /* azul muy profundo de las láminas del evento */
-  --fpt-navy-2:    #0A2A6E;   /* navy secundario */
-  --fpt-rojo:      #FF4438;   /* círculo/acento cálido del evento */
-  --fpt-arena:     #F2EEE6;   /* superficie clara editorial */
+  --fpt-navy:      #061A4A;   /* azul muy profundo (paneles oscuros) */
+  --fpt-rojo:      #FF4438;   /* círculo rojo del hero */
+  --fpt-naranja:   #F5601A;   /* acento subrayado del evento */
+  --fpt-verde-lima:#7DC400;   /* círculo verde de secciones */
+  --fpt-arena:     #F4F5F7;   /* superficie clara editorial */
+  --fpt-tinta:     #111418;   /* negro tipográfico del evento */
 
   /* ---- Roles semánticos (tema claro por defecto) ---- */
   --color-fondo:            var(--gobs-blanco);

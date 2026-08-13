@@ -1251,7 +1251,7 @@
         ]
       },
       "recursos": {
-        "pdfRelatoria": null,
+        "pdfRelatoria": "assets/docs/relatoria-panel-10.docx",
         "pdfHojaRuta": null,
         "videoEmbed": null,
         "galeria": [],
@@ -1370,7 +1370,7 @@
         ]
       },
       "recursos": {
-        "pdfRelatoria": null,
+        "pdfRelatoria": "assets/docs/relatoria-panel-11.docx",
         "pdfHojaRuta": null,
         "videoEmbed": null,
         "galeria": [],
@@ -1484,7 +1484,7 @@
         ]
       },
       "recursos": {
-        "pdfRelatoria": null,
+        "pdfRelatoria": "assets/docs/relatoria-panel-12.docx",
         "pdfHojaRuta": null,
         "videoEmbed": null,
         "galeria": [],
@@ -1603,7 +1603,7 @@
         ]
       },
       "recursos": {
-        "pdfRelatoria": null,
+        "pdfRelatoria": "assets/docs/relatoria-panel-13.docx",
         "pdfHojaRuta": null,
         "videoEmbed": null,
         "galeria": [],

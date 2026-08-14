@@ -40,7 +40,7 @@ function abrirModal(panel) {
     </div>
     ${pasos.length ? `<div class="rm__bloque"><h5>Cómo hacerlo posible</h5><ol class="rm__lista rm__lista--num">${pasos.map(li).join('')}</ol></div>` : ''}
     <div class="rm__pie">
-      ${pdf ? `<a class="btn" href="${pdf}" download>⭳ Descargar hoja de ruta</a>` : `<button class="btn" disabled title="El PDF se habilita cuando esté disponible" style="opacity:.5;cursor:not-allowed">⭳ Descarga próximamente</button>`}
+      ${pdf ? `<a class="btn" href="${pdf}" target="_blank" rel="noopener" download>⭳ Documento estratégico (PDF)</a>` : `<button class="btn" disabled title="El PDF se habilita cuando esté disponible" style="opacity:.5;cursor:not-allowed">⭳ Documento próximamente</button>`}
       <a class="btn btn--fantasma" href="relatoria.html?panel=${panel.id}">Ver relatoría del panel</a>
     </div>
   `;

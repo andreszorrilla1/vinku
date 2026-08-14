@@ -120,7 +120,7 @@
       },
       "recursos": {
         "pdfRelatoria": null,
-        "pdfHojaRuta": null,
+        "pdfHojaRuta": "assets/docs/doc-estrategico-magistral.pdf",
         "videoEmbed": null,
         "galeria": [],
         "fotoSintesis": "assets/images/sesion-1.webp",
@@ -255,7 +255,7 @@
       },
       "recursos": {
         "pdfRelatoria": "assets/docs/relatoria-panel-2.pdf",
-        "pdfHojaRuta": null,
+        "pdfHojaRuta": "assets/docs/doc-estrategico-panel-2.pdf",
         "videoEmbed": null,
         "galeria": [],
         "fotoSintesis": "assets/images/sesion-2.webp"
@@ -399,7 +399,7 @@
       },
       "recursos": {
         "pdfRelatoria": "assets/docs/relatoria-panel-3.pdf",
-        "pdfHojaRuta": null,
+        "pdfHojaRuta": "assets/docs/doc-estrategico-panel-3.pdf",
         "videoEmbed": null,
         "galeria": [],
         "fotoSintesis": "assets/images/sesion-3.webp"
@@ -533,7 +533,7 @@
       },
       "recursos": {
         "pdfRelatoria": "assets/docs/relatoria-panel-4.pdf",
-        "pdfHojaRuta": null,
+        "pdfHojaRuta": "assets/docs/doc-estrategico-panel-4.pdf",
         "videoEmbed": null,
         "galeria": [],
         "fotoSintesis": "assets/images/sesion-4.webp"
@@ -664,7 +664,7 @@
       },
       "recursos": {
         "pdfRelatoria": "assets/docs/relatoria-panel-5.pdf",
-        "pdfHojaRuta": null,
+        "pdfHojaRuta": "assets/docs/doc-estrategico-panel-5.pdf",
         "videoEmbed": null,
         "galeria": [],
         "fotoSintesis": "assets/images/sesion-5.webp"
@@ -799,7 +799,7 @@
       },
       "recursos": {
         "pdfRelatoria": "assets/docs/relatoria-panel-6.pdf",
-        "pdfHojaRuta": null,
+        "pdfHojaRuta": "assets/docs/doc-estrategico-panel-6.pdf",
         "videoEmbed": null,
         "galeria": [],
         "fotoSintesis": "assets/images/sesion-6.webp"
@@ -908,7 +908,7 @@
       },
       "recursos": {
         "pdfRelatoria": "assets/docs/relatoria-panel-7.pdf",
-        "pdfHojaRuta": null,
+        "pdfHojaRuta": "assets/docs/doc-estrategico-panel-7.pdf",
         "videoEmbed": null,
         "galeria": [],
         "fotoSintesis": "assets/images/sesion-7.webp"
@@ -1022,7 +1022,7 @@
       },
       "recursos": {
         "pdfRelatoria": "assets/docs/relatoria-panel-8.pdf",
-        "pdfHojaRuta": null,
+        "pdfHojaRuta": "assets/docs/doc-estrategico-panel-8.pdf",
         "videoEmbed": null,
         "galeria": [],
         "fotoSintesis": "assets/images/sesion-8.webp"
@@ -1136,7 +1136,7 @@
       },
       "recursos": {
         "pdfRelatoria": "assets/docs/relatoria-panel-9.pdf",
-        "pdfHojaRuta": null,
+        "pdfHojaRuta": "assets/docs/doc-estrategico-panel-9.pdf",
         "videoEmbed": null,
         "galeria": [],
         "fotoSintesis": "assets/images/sesion-9.webp"
@@ -1252,7 +1252,7 @@
       },
       "recursos": {
         "pdfRelatoria": "assets/docs/relatoria-panel-10.pdf",
-        "pdfHojaRuta": null,
+        "pdfHojaRuta": "assets/docs/doc-estrategico-panel-10.pdf",
         "videoEmbed": null,
         "galeria": [],
         "fotoSintesis": "assets/images/sesion-10.webp"
@@ -1371,7 +1371,7 @@
       },
       "recursos": {
         "pdfRelatoria": "assets/docs/relatoria-panel-11.pdf",
-        "pdfHojaRuta": null,
+        "pdfHojaRuta": "assets/docs/doc-estrategico-panel-11.pdf",
         "videoEmbed": null,
         "galeria": [],
         "fotoSintesis": "assets/images/sesion-11.webp"
@@ -1485,7 +1485,7 @@
       },
       "recursos": {
         "pdfRelatoria": "assets/docs/relatoria-panel-12.pdf",
-        "pdfHojaRuta": null,
+        "pdfHojaRuta": "assets/docs/doc-estrategico-panel-12.pdf",
         "videoEmbed": null,
         "galeria": [],
         "fotoSintesis": "assets/images/sesion-12.webp"
@@ -1604,7 +1604,7 @@
       },
       "recursos": {
         "pdfRelatoria": "assets/docs/relatoria-panel-13.pdf",
-        "pdfHojaRuta": null,
+        "pdfHojaRuta": "assets/docs/doc-estrategico-panel-13.pdf",
         "videoEmbed": null,
         "galeria": [],
         "fotoSintesis": "assets/images/sesion-13.webp"

@@ -51,8 +51,8 @@ function render(panel, paneles, idx, cont, scroller) {
   const descargas = panel.recursos?.descargas;
   const pdf = panel.recursos?.pdfRelatoria;
   const descargaHTML = (descargas && descargas.length)
-    ? descargas.map((d) => `<a class="btn" href="${d.url}" download>⭳ ${d.label}</a>`).join('')
-    : (pdf ? `<a class="btn" href="${pdf}" download>⭳ Descargar relatoría</a>`
+    ? descargas.map((d) => `<a class="btn" href="${d.url}" target="_blank" rel="noopener" download>⭳ ${d.label} (PDF)</a>`).join('')
+    : (pdf ? `<a class="btn" href="${pdf}" target="_blank" rel="noopener" download>⭳ Descargar relatoría (PDF)</a>`
            : `<button class="btn" disabled style="opacity:.5;cursor:not-allowed">Relatoría próximamente</button>`);
   const nav = navPaneles(paneles, idx);
 

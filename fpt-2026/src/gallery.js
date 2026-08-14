@@ -14,7 +14,7 @@
       .map((p) => {
         const titulo = (p.titulo && !p.titulo.startsWith('‹placeholder')) ? p.titulo : `Panel ${p.numero}`;
         return `<a class="galeria__item" href="relatoria.html?panel=${p.id}" aria-label="${titulo}">
-            <img src="${p.recursos.fotoSintesis}" alt="Sesión ${p.numero}: ${titulo}" loading="lazy">
+            <img src="${p.recursos.fotoSintesis}" alt="Sesión ${p.numero}: ${titulo}" loading="lazy" onerror="this.closest('.galeria__item').remove()">
             <span class="galeria__cap"><small>Sesión ${p.numero}</small>${titulo}</span>
           </a>`;
       })

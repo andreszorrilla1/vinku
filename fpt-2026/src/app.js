@@ -2,7 +2,7 @@
    Congreso FPT 2026 — App base
    Carga la fuente única de datos y prepara los ganchos de cada
    sección. Los módulos interactivos (hoja de ruta, buscador,
-   manifiesto) se conectan en sus propias secciones del proyecto.
+   relatoría) se conectan en sus propias secciones del proyecto.
    ============================================================ */
 
 // Permite inyectar datos en línea para previews offline; en producción

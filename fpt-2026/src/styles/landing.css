@@ -28,14 +28,32 @@
 .nav__links a:hover { color: var(--fpt-rojo); }
 @media (max-width: 720px) { .nav__links { display: none; } }
 
-/* ---- Banner / hero (identidad Congreso FPT: claro + círculo rojo) ---- */
+/* ---- Banner / hero (imponente: claro + disco rojo dominante) ---- */
 .hero {
   position: relative; overflow: hidden;
   background: var(--color-fondo); color: var(--fpt-tinta);
-  padding: clamp(var(--sp-16), 8vw, var(--sp-24)) 0 var(--sp-24);
+  min-height: min(94vh, 940px);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(var(--sp-16), 7vw, var(--sp-24)) 0 var(--sp-8);
 }
-.hero__inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.35fr 0.65fr; gap: var(--sp-12); align-items: center; }
-@media (max-width: 860px) { .hero__inner { grid-template-columns: 1fr; } .hero__marca { order: -1; } }
+/* Disco rojo enorme, sangra por el borde derecho */
+.hero__fondo { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.hero__circulo {
+  position: absolute; top: 50%; right: -6%; translate: 0 -50%;
+  width: min(50vw, 640px); aspect-ratio: 1; border-radius: 999px;
+  display: grid; place-items: center;
+  background-color: var(--fpt-rojo); background-image: var(--textura-mapa);
+  background-size: 42%; background-blend-mode: soft-light;
+  box-shadow: 0 40px 90px rgba(255,68,56,.28);
+}
+.hero__circulo svg { position: relative; width: 44%; height: auto; filter: drop-shadow(0 20px 40px rgba(0,0,0,.32)); }
+@media (max-width: 900px) {
+  .hero__circulo { right: -28%; top: 8%; translate: 0 0; width: 78vw; opacity: .28; }
+}
+
+.hero__inner { position: relative; z-index: 1; }
+.hero__texto { max-width: 64%; }
+@media (max-width: 900px) { .hero__texto { max-width: 100%; } }
 
 /* Etiqueta-hashtag tipo "tag" del evento */
 .hero__kicker {
@@ -43,10 +61,10 @@
   font-weight: 800; letter-spacing: -0.01em;
   padding: var(--sp-2) var(--sp-4); border-radius: 999px; font-family: var(--font-sans); font-size: var(--fs-sm);
 }
-.hero h1 {
-  font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; color: var(--fpt-tinta);
-  font-size: clamp(2.8rem, 1.5rem + 6.5vw, 6.5rem); line-height: 0.92; text-transform: uppercase;
-  margin: var(--sp-6) 0 var(--sp-4); max-width: 14ch; text-wrap: balance;
+.hero__titulo {
+  font-family: var(--font-display); font-weight: 800; letter-spacing: -0.035em; color: var(--fpt-tinta);
+  font-size: clamp(3rem, 1.1rem + 9vw, 8.5rem); line-height: 0.88; text-transform: uppercase;
+  margin: var(--sp-6) 0 var(--sp-6); text-wrap: balance;
 }
 .hero__acento { color: var(--fpt-rojo); }
 /* Bajada estilo evento: naranja, con subrayado */
@@ -56,32 +74,46 @@
   border-bottom: 3px solid var(--fpt-naranja); padding-bottom: var(--sp-2);
 }
 .hero__lead { font-family: var(--font-sans); font-size: var(--fs-lg); color: var(--color-texto-suave); max-width: 46ch; }
-/* Círculo rojo con textura de mapa + escalera de paralelogramos encima */
-.hero__marca { display: grid; place-items: center; position: relative; z-index: 1; aspect-ratio: 1; }
-.hero__marca::before {
-  content: ""; position: absolute; inset: 0; border-radius: 999px;
-  background-color: var(--fpt-rojo); background-image: var(--textura-mapa); background-size: 55%; background-blend-mode: soft-light;
-}
-.hero__marca svg { position: relative; width: min(72%, 260px); height: auto; filter: drop-shadow(0 16px 32px rgba(0,0,0,.28)); }
-@media (max-width: 860px) { .hero__marca { max-width: 320px; margin-inline: auto; } }
 .hero__cta { display: flex; flex-wrap: wrap; gap: var(--sp-4); margin-top: var(--sp-8); }
-.hero__stats { display: flex; gap: var(--sp-12); margin-top: var(--sp-12); font-family: var(--font-sans); }
+
+/* Pie del hero: métricas + señal de scroll */
+.hero__pie {
+  position: relative; z-index: 1;
+  display: flex; align-items: flex-end; justify-content: space-between; gap: var(--sp-8);
+  margin-top: clamp(var(--sp-12), 6vw, var(--sp-24));
+}
+.hero__stats { display: flex; gap: clamp(var(--sp-6), 4vw, var(--sp-16)); font-family: var(--font-sans); }
 .hero__stats b { display: block; font-family: var(--font-display); font-weight: 800; font-size: var(--fs-2xl); color: var(--fpt-tinta); line-height: 1; }
 .hero__stats span { color: var(--color-texto-suave); font-size: var(--fs-sm); }
+.hero__scroll {
+  font-family: var(--font-sans); font-size: var(--fs-xs); font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--fpt-rojo); text-decoration: none; white-space: nowrap; display: inline-flex; align-items: center; gap: var(--sp-2);
+}
+.hero__scroll span { animation: hero-bob 1.8s ease-in-out infinite; }
+@keyframes hero-bob { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(5px); } }
+@media (max-width: 600px) { .hero__scroll { display: none; } .hero__stats { flex-wrap: wrap; } }
 
 /* ---- Secciones ---- */
-.seccion { padding: clamp(var(--sp-16), 9vw, var(--sp-24)) 0; }
+main { counter-reset: sec; }
+.seccion { padding: clamp(var(--sp-16), 9vw, var(--sp-24)) 0; counter-increment: sec; }
 .seccion--alt { background: var(--fpt-arena); }
 :root[data-theme="dark"] .seccion--alt { background: var(--color-fondo-alt); }
-.seccion__cabecera { max-width: 54ch; margin-bottom: var(--sp-12); }
+.seccion__cabecera { position: relative; max-width: 60ch; margin-bottom: clamp(var(--sp-12), 5vw, var(--sp-16)); }
+/* Número editorial grande y tenue sobre cada cabecera */
+.seccion__cabecera::before {
+  content: counter(sec, decimal-leading-zero);
+  display: block; font-family: var(--font-display); font-weight: 800; line-height: 1;
+  font-size: clamp(2.5rem, 5vw, 4.25rem); color: var(--color-borde); letter-spacing: -0.03em;
+  margin-bottom: var(--sp-4);
+}
 /* Eyebrow como etiqueta roja del evento */
 .seccion__cabecera .etiqueta {
   display: inline-flex; align-items: center; gap: var(--sp-2);
   color: var(--fpt-rojo); font-weight: 800;
 }
 .seccion__cabecera .etiqueta::before { content: ""; width: 22px; height: 3px; background: var(--fpt-rojo); }
-.seccion__cabecera h2 { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.02em; text-transform: uppercase; margin: var(--sp-3) 0 var(--sp-4); }
-.seccion__cabecera p { color: var(--color-texto-suave); }
+.seccion__cabecera h2 { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.025em; text-transform: uppercase; font-size: clamp(2rem, 1.3rem + 2.6vw, 3.5rem); line-height: .98; margin: var(--sp-3) 0 var(--sp-4); }
+.seccion__cabecera p { color: var(--color-texto-suave); font-size: var(--fs-lg); }
 
 /* Marca de "en construcción" para las piezas de secciones posteriores */
 .en-construccion {

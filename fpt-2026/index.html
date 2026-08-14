@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="src/styles/buscador.css">
   <link rel="stylesheet" href="src/styles/relatoria.css">
   <link rel="stylesheet" href="src/styles/gallery.css">
+  <link rel="stylesheet" href="src/styles/voz.css">
 </head>
 <body>
   <!-- ===================== NAV ===================== -->
@@ -29,6 +30,7 @@
       <ul class="nav__links">
         <li><a href="#hojas-de-ruta">Hojas de ruta</a></li>
         <li><a href="#repositorio">Repositorio</a></li>
+        <li><a href="#voz">La voz</a></li>
         <li><a href="#audiovisual">Audiovisual</a></li>
         <li><a href="#creditos">Metodología</a></li>
       </ul>
@@ -37,23 +39,29 @@
 
   <!-- ===================== HERO ===================== -->
   <header class="hero" id="inicio">
+    <!-- Disco rojo dominante con textura de mapa + escalera de paralelogramos -->
+    <div class="hero__fondo" aria-hidden="true">
+      <span class="hero__circulo" data-logo="diagonal"></span>
+    </div>
     <div class="contenedor hero__inner">
       <div class="hero__texto">
         <span class="etiqueta hero__kicker">#ElTerritorioCobraValor</span>
-        <h1>El territorio<br>cobra <span class="hero__acento">valor</span></h1>
-        <p class="hero__sintesis">Síntesis del Congreso de Finanzas Públicas Territoriales · <span data-anio>2026</span></p>
-        <p class="hero__lead">Relatorías estratégicas, hojas de ruta de incidencia y memoria viva de los <b data-total-paneles>13</b> paneles del congreso.</p>
+        <h1 class="hero__titulo">El territorio<br>cobra <span class="hero__acento">valor</span></h1>
+        <p class="hero__sintesis">Congreso de Finanzas Públicas Territoriales · Medellín · <span data-anio>2026</span></p>
+        <p class="hero__lead">La memoria viva del congreso: relatorías estratégicas, hojas de ruta de incidencia y la voz de los <b data-total-paneles>13</b> paneles.</p>
         <div class="hero__cta">
-          <a class="btn" href="#hojas-de-ruta">Ver hojas de ruta</a>
-          <a class="btn btn--fantasma" style="border-color:var(--gobs-cian); color:var(--gobs-cian)" href="#repositorio">Explorar los 13 paneles</a>
-        </div>
-        <div class="hero__stats">
-          <div><b data-total-paneles>13</b><span>paneles sistematizados</span></div>
-          <div><b>7</b><span>secciones por ficha</span></div>
+          <a class="btn btn--grande" href="#hojas-de-ruta">Ver hojas de ruta</a>
+          <a class="btn btn--fantasma btn--grande" href="#repositorio">Explorar los 13 paneles</a>
         </div>
       </div>
-      <!-- Línea gráfica: escalera de paralelogramos azul→cian→verde→menta -->
-      <div class="hero__marca" data-logo="diagonal" aria-hidden="true"></div>
+    </div>
+    <div class="contenedor hero__pie">
+      <div class="hero__stats">
+        <div><b data-total-paneles>13</b><span>paneles sistematizados</span></div>
+        <div><b>14</b><span>relatorías descargables</span></div>
+        <div><b>7</b><span>secciones por ficha</span></div>
+      </div>
+      <a class="hero__scroll" href="#hojas-de-ruta" aria-label="Desplázate al contenido">Desliza <span aria-hidden="true">↓</span></a>
     </div>
   </header>
 
@@ -104,8 +112,22 @@
       </div>
     </section>
 
+    <!-- ============ LA VOZ DEL CONGRESO (audio) ============ -->
+    <section class="seccion seccion--alt" id="voz">
+      <div class="contenedor">
+        <div class="seccion__cabecera">
+          <span class="etiqueta">La voz del congreso</span>
+          <h2>Escucha el relato</h2>
+          <p>La síntesis sonora del congreso: una pieza de audio que recorre el hilo de «El territorio cobra valor».</p>
+        </div>
+        <!-- Reproductor de audio a medida: lo llena src/voz.js -->
+        <!-- data-audio="" ⇒ estado "próximamente"; al enchufar el mp3 se activa -->
+        <div data-voz data-audio="" data-titulo="La voz del congreso" data-sub="Síntesis sonora · FPT 2026"></div>
+      </div>
+    </section>
+
     <!-- ============ GALERÍA ============ -->
-    <section class="seccion seccion--alt" id="galeria">
+    <section class="seccion" id="galeria">
       <div class="contenedor">
         <div class="seccion__cabecera">
           <span class="etiqueta">Galería</span>
@@ -161,5 +183,6 @@
   <script src="src/buscador.js"></script>
   <script src="src/relatoria.js"></script>
   <script src="src/gallery.js"></script>
+  <script src="src/voz.js"></script>
 </body>
 </html>

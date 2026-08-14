@@ -77,6 +77,8 @@ blockquote {
 }
 .btn:hover { transform: translateY(-2px); }
 .btn--fantasma { background: transparent; color: var(--color-primario); }
+/* Botón grande para llamadas del hero */
+.btn--grande { font-size: var(--fs-base); font-weight: 700; padding: var(--sp-4) var(--sp-8); border-radius: 999px; }
 
 /* Chip de estado de confianza */
 .chip-confianza {

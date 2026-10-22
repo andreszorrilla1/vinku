@@ -1,0 +1,203 @@
+@import 'tailwindcss';
+
+/* El modo oscuro sigue al sistema, salvo que <html data-tema="claro|oscuro"> lo fije. */
+@custom-variant dark {
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-tema='claro']) *) {
+      @slot;
+    }
+  }
+  &:where([data-tema='oscuro'] *) {
+    @slot;
+  }
+}
+
+/* Tema claro (valores en src/marca/tokens.ts) */
+:root {
+  color-scheme: light;
+  --naranja: #f28c1e;
+  --naranja-texto: #b45309;
+  --verde: #1e7a3c;
+  --verde-profundo: #14532d;
+  --crema: #fbf6ec;
+  --tarjeta: #ffffff;
+  --tinta: #1c2b22;
+  --tinta-suave: #4a5a50;
+  --borde: #e3dbcb;
+  --dolor: #c2410c;
+  --deseo: #1d6fb8;
+  --proyecto: #1e7a3c;
+  --aviso: #a16207;
+  --error: #b91c1c;
+  /* Texto sobre el botón principal y colores del logo */
+  --sobre-verde: #ffffff;
+  --titulo: #14532d;
+  --logo-arcos: #14532d;
+  --logo-sabaneta: #14532d;
+  --logo-cuenta: #b45309;
+}
+
+/* Tema oscuro */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema='claro']) {
+    color-scheme: dark;
+    --naranja: #f28c1e;
+    --naranja-texto: #f5a04a;
+    --verde: #4cb872;
+    --verde-profundo: #0b1d13;
+    --crema: #11251a;
+    --tarjeta: #183223;
+    --tinta: #f3efe6;
+    --tinta-suave: #b9c2ba;
+    --borde: #2c4a37;
+    --dolor: #fb8b4e;
+    --deseo: #6aa8e8;
+    --proyecto: #4cb872;
+    --aviso: #e8b04a;
+    --error: #f87171;
+    --sobre-verde: #11251a;
+    --titulo: #f3efe6;
+    --logo-arcos: #fbf6ec;
+    --logo-sabaneta: #fbf6ec;
+    --logo-cuenta: #f28c1e;
+  }
+}
+
+:root[data-tema='oscuro'] {
+  color-scheme: dark;
+  --naranja: #f28c1e;
+  --naranja-texto: #f5a04a;
+  --verde: #4cb872;
+  --verde-profundo: #0b1d13;
+  --crema: #11251a;
+  --tarjeta: #183223;
+  --tinta: #f3efe6;
+  --tinta-suave: #b9c2ba;
+  --borde: #2c4a37;
+  --dolor: #fb8b4e;
+  --deseo: #6aa8e8;
+  --proyecto: #4cb872;
+  --aviso: #e8b04a;
+  --error: #f87171;
+  --sobre-verde: #11251a;
+  --titulo: #f3efe6;
+  --logo-arcos: #fbf6ec;
+  --logo-sabaneta: #fbf6ec;
+  --logo-cuenta: #f28c1e;
+}
+
+/* Tamaño de letra «grande» (preferencia del perfil): todo está en rem */
+:root[data-letra='grande'] {
+  font-size: 112.5%;
+}
+
+@theme inline {
+  --color-*: initial;
+  --color-naranja: var(--naranja);
+  --color-naranja-texto: var(--naranja-texto);
+  --color-verde: var(--verde);
+  --color-verde-profundo: var(--verde-profundo);
+  --color-crema: var(--crema);
+  --color-tarjeta: var(--tarjeta);
+  --color-tinta: var(--tinta);
+  --color-tinta-suave: var(--tinta-suave);
+  --color-borde: var(--borde);
+  --color-dolor: var(--dolor);
+  --color-deseo: var(--deseo);
+  --color-proyecto: var(--proyecto);
+  --color-aviso: var(--aviso);
+  --color-error: var(--error);
+  --color-sobre-verde: var(--sobre-verde);
+  --color-titulo: var(--titulo);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --font-titulo: var(--fuente-nunito), ui-rounded, system-ui, sans-serif;
+  --font-texto: var(--fuente-atkinson), system-ui, sans-serif;
+}
+
+@theme {
+  /* Radios: campos y chips 8, tarjetas y botones 16, hojas e insignias 24 */
+  --radius-campo: 0.5rem;
+  --radius-tarjeta: 1rem;
+  --radius-hoja: 1.5rem;
+  /* Alto mínimo de todo lo que se toca */
+  --spacing-tocable: 3.5rem;
+}
+
+/* Escala tipográfica (ningún texto por debajo de 16 px) */
+@utility tipo-display {
+  font-family: var(--font-titulo);
+  font-size: 2.5rem;
+  line-height: 2.75rem;
+  font-weight: 900;
+}
+@utility tipo-titulo-1 {
+  font-family: var(--font-titulo);
+  font-size: 2rem;
+  line-height: 2.375rem;
+  font-weight: 800;
+}
+@utility tipo-titulo-2 {
+  font-family: var(--font-titulo);
+  font-size: 1.5rem;
+  line-height: 1.875rem;
+  font-weight: 800;
+}
+@utility tipo-cifra {
+  font-family: var(--font-titulo);
+  font-size: 3rem;
+  line-height: 3.25rem;
+  font-weight: 900;
+}
+@utility tipo-cuerpo-grande {
+  font-family: var(--font-texto);
+  font-size: 1.25rem;
+  line-height: 1.875rem;
+  font-weight: 400;
+}
+@utility tipo-cuerpo {
+  font-family: var(--font-texto);
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 400;
+}
+@utility tipo-etiqueta {
+  font-family: var(--font-texto);
+  font-size: 1rem;
+  line-height: 1.375rem;
+  font-weight: 700;
+}
+@utility tipo-pequeno {
+  font-family: var(--font-texto);
+  font-size: 1rem;
+  line-height: 1.375rem;
+  font-weight: 400;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background-color: var(--crema);
+    color: var(--tinta);
+    font-family: var(--font-texto);
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  :focus-visible {
+    outline: 3px solid var(--naranja);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

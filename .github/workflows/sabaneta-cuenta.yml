@@ -1,0 +1,82 @@
+name: Sabaneta Cuenta
+
+on:
+  push:
+    paths:
+      - 'sabaneta-cuenta/**'
+      - '.github/workflows/sabaneta-cuenta.yml'
+  pull_request:
+    paths:
+      - 'sabaneta-cuenta/**'
+      - '.github/workflows/sabaneta-cuenta.yml'
+
+concurrency:
+  group: sabaneta-cuenta-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: sabaneta-cuenta
+
+permissions:
+  contents: read
+
+jobs:
+  calidad:
+    name: Lint, tipos, formato y pruebas unitarias
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: sabaneta-cuenta/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run tipos
+      - run: npm run formato:revisar
+      - run: npm run prueba
+
+  e2e:
+    name: Build y pruebas en celular
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: sabaneta-cuenta/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: reporte-playwright
+          path: sabaneta-cuenta/playwright-report
+          retention-days: 7
+
+  base-de-datos:
+    name: Migraciones en Supabase local
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: sabaneta-cuenta/package-lock.json
+      - run: npm ci
+      - name: Iniciar Supabase (aplica migraciones y semilla)
+        run: npx supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor,mailpit,postgres-meta
+      - name: Verificar PostGIS
+        run: |
+          psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -v ON_ERROR_STOP=1 -Atc \
+            "select extensions.postgis_version();"
+      - name: Reaplicar desde cero
+        run: npx supabase db reset --local
+      - if: always()
+        run: npx supabase stop --no-backup

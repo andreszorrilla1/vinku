@@ -17,3 +17,4 @@ Decisiones que no estaban en el prompt o que lo ajustan. La más reciente va al 
 11. **Supabase local:** Docker funciona, pero en este entorno de nube la imagen de Realtime no se pudo descargar (límite del proxy). La migración se validó contra la imagen oficial `supabase/postgres:17`. En la CI de GitHub (`supabase start`) y en un computador normal funciona completo.
 12. **Migraciones con marca de tiempo** (`20261022000000_extensiones.sql`), la convención de Supabase CLI.
 13. **Palabras vetadas** con raíces y límites de palabra (`vot(a|o|ar…)`, `gan(a|ador…)`), para no confundir «organizar» o «devoto».
+14. **`vercel.json` fija `buildCommand` y `outputDirectory: ".next"`.** El proyecto de Vercel se creó primero como Vite y quedó con la carpeta de salida `dist`; `vercel.json` manda sobre el panel, así que el despliegue no depende de esa configuración. Node fijado en `22.x` para que Vercel no suba de versión mayor solo.

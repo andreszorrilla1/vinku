@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "tipos": "tsc --noEmit && tsc --noEmit -p tsconfig.sw.json",
+    "tipos": "next typegen && tsc --noEmit && tsc --noEmit -p tsconfig.sw.json",
     "formato": "prettier --write .",
     "formato:revisar": "prettier --check .",
     "prueba": "vitest run",

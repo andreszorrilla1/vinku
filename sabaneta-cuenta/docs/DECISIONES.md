@@ -18,3 +18,19 @@ Decisiones que no estaban en el prompt o que lo ajustan. La más reciente va al 
 12. **Migraciones con marca de tiempo** (`20261022000000_extensiones.sql`), la convención de Supabase CLI.
 13. **Palabras vetadas** con raíces y límites de palabra (`vot(a|o|ar…)`, `gan(a|ador…)`), para no confundir «organizar» o «devoto».
 14. **`vercel.json` fija `buildCommand` y `outputDirectory: ".next"`.** El proyecto de Vercel se creó primero como Vite y quedó con la carpeta de salida `dist`; `vercel.json` manda sobre el panel, así que el despliegue no depende de esa configuración. Node fijado en `22.x` para que Vercel no suba de versión mayor solo.
+
+## Fase 1
+
+15. **El celular solo vive en `auth.users`.** Ninguna tabla pública lo copia: así nadie lo puede leer por la API, ni siquiera el equipo desde el cliente.
+16. **El consentimiento se guarda antes que el perfil** y apunta a `auth.users`. Un trigger impide crear el perfil sin consentimiento. Los consentimientos son solo inserción (historial); la vista `consentimiento_vigente` da el último.
+17. **Permisos por columna** además de RLS: el vecino no puede escribir `rol`, `bloqueado` ni `codigo_referido`, aunque edite su propio perfil.
+18. **El barrio sale del punto** cuando el vecino usa «Ubícame» (trigger `asignar_territorio`); si no, de la lista. Un punto fuera de Sabaneta se rechaza.
+19. **«Ubícame en el mapa» de la Fase 1 usa el GPS del celular** y una lista de barrios. El mapa para escoger el punto llega con Leaflet en la Fase 2 (se reutiliza para «Contar»).
+20. **Referidos:** el enlace `/s/CODIGO` guarda el código en una cookie de 30 días; al crear el perfil se resuelve con `id_por_codigo_referido()` (solo devuelve el id). La tabla `referidos` y sus puntos llegan en la Fase 6.
+21. **IP de los consentimientos:** solo un HMAC con `IP_HASH_SECRETO`; sin secreto no se guarda nada.
+22. **Sin tipos generados de Supabase por ahora:** `supabase gen types` necesita la imagen `postgres-meta`, que no se pudo descargar en este entorno. Las filas se tipan a mano en `src/lib/sesion.ts`. Pendiente generarlos en la CI.
+23. **Cache Components y sesión:** todo lo que lee la sesión va dentro de `<Suspense>` y `crearClienteServidor()` llama `connection()` antes de leer cookies (Supabase usa `Date.now()` para validar la sesión).
+24. **Service worker con `'use cache'`:** con Cache Components, Serwist podía quedar dinámico según cómo se repartía el build. Envolverlo en `'use cache'` lo deja siempre estático.
+25. **Sin Supabase configurado, la app compila y funciona:** `/ingresar` muestra «Muy pronto». Así el despliegue de Vercel no se rompe mientras se crea el proyecto de Supabase.
+26. **Pila local alterna** (`pruebas/pila/pila.sh`): Postgres + GoTrue + PostgREST + una pasarela en Node, con las mismas llaves y puertos que la CLI de Supabase. Solo para entornos donde `supabase start` no puede descargar todas las imágenes.
+27. **Navegación:** barra inferior con Contar, En vivo, Mi barrio (`/mi-cuadra`) y Yo (`/perfil`); se oculta en el ingreso y la bienvenida. Botón «Aa» para letra grande en todas las pantallas.

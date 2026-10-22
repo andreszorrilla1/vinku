@@ -21,9 +21,13 @@ defaults:
 permissions:
   contents: read
 
+env:
+  # Solo para la configuración local de Supabase (números de prueba, no envía nada).
+  SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN: prueba
+
 jobs:
   calidad:
-    name: Lint, tipos, formato y pruebas unitarias
+    name: Lint, tipos, formato, pruebas unitarias y build sin Supabase
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -37,30 +41,12 @@ jobs:
       - run: npm run tipos
       - run: npm run formato:revisar
       - run: npm run prueba
-
-  e2e:
-    name: Build y pruebas en celular
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: sabaneta-cuenta/package-lock.json
-      - run: npm ci
-      - run: npm run build
-      - run: npx playwright install --with-deps chromium
-      - run: npm run e2e
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: reporte-playwright
-          path: sabaneta-cuenta/playwright-report
-          retention-days: 7
+      # Un despliegue nuevo en Vercel arranca sin variables: debe compilar igual.
+      - name: Build sin variables de entorno
+        run: npm run build
 
   base-de-datos:
-    name: Migraciones en Supabase local
+    name: Migraciones y pruebas de RLS (pgTAP)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -71,12 +57,44 @@ jobs:
           cache-dependency-path: sabaneta-cuenta/package-lock.json
       - run: npm ci
       - name: Iniciar Supabase (aplica migraciones y semilla)
-        run: npx supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor,mailpit,postgres-meta
-      - name: Verificar PostGIS
-        run: |
-          psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -v ON_ERROR_STOP=1 -Atc \
-            "select extensions.postgis_version();"
+        run: npx supabase db start
       - name: Reaplicar desde cero
         run: npx supabase db reset --local
+      - name: Pruebas de base de datos
+        run: npx supabase test db
+      - if: always()
+        run: npx supabase stop --no-backup
+
+  e2e:
+    name: Pruebas en celular con Supabase
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: sabaneta-cuenta/package-lock.json
+      - run: npm ci
+      - name: Iniciar Supabase
+        run: npx supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor,mailpit,realtime
+      - name: Variables locales
+        run: |
+          eval "$(npx supabase status -o env)"
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${ANON_KEY:-$PUBLISHABLE_KEY}"
+            echo "SUPABASE_SERVICE_ROLE_KEY=${SERVICE_ROLE_KEY:-$SECRET_KEY}"
+            echo "IP_HASH_SECRETO=ci"
+          } > .env.local
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: reporte-playwright
+          path: sabaneta-cuenta/playwright-report
+          retention-days: 7
       - if: always()
         run: npx supabase stop --no-backup

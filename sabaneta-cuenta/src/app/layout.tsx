@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from 'next'
 import { Atkinson_Hyperlegible_Next, Nunito } from 'next/font/google'
+import { BarraInferior } from '@/componentes/BarraInferior'
+import { Encabezado } from '@/componentes/Encabezado'
+import { SCRIPT_PREFERENCIAS } from '@/componentes/preferencias'
 import { ProveedorPwa } from '@/componentes/ProveedorPwa'
+import { ScriptInline } from '@/componentes/ScriptInline'
 import { textos } from '@/textos/es'
 import './globals.css'
 
@@ -42,9 +46,20 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="es-CO" className={`${nunito.variable} ${atkinson.variable} h-full antialiased`}>
+    <html
+      lang="es-CO"
+      className={`${nunito.variable} ${atkinson.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        <ScriptInline html={SCRIPT_PREFERENCIAS} />
+      </head>
       <body className="flex min-h-full flex-col">
-        <ProveedorPwa>{children}</ProveedorPwa>
+        <ProveedorPwa>
+          <Encabezado />
+          {children}
+          <BarraInferior />
+        </ProveedorPwa>
       </body>
     </html>
   )

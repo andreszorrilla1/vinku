@@ -4,6 +4,8 @@ type Props = {
   variante?: 'horizontal' | 'simbolo'
   /** `auto` sigue el tema de la página; `claro` u `oscuro` lo fijan. */
   tema?: 'claro' | 'oscuro' | 'auto'
+  /** `compacto` para barras de navegación. */
+  tamano?: 'normal' | 'compacto'
   className?: string
 }
 
@@ -38,7 +40,7 @@ function Simbolo({ className }: { className?: string }) {
   )
 }
 
-export function Logo({ variante = 'horizontal', tema = 'auto', className = '' }: Props) {
+export function Logo({ variante = 'horizontal', tema = 'auto', tamano = 'normal', className = '' }: Props) {
   const estilo = tema === 'auto' ? undefined : coloresFijos[tema]
 
   if (variante === 'simbolo') {
@@ -56,8 +58,11 @@ export function Logo({ variante = 'horizontal', tema = 'auto', className = '' }:
       style={estilo}
       className={`inline-flex items-center gap-2 ${className}`}
     >
-      <Simbolo className="h-14 w-14 shrink-0" />
-      <span className="flex flex-col font-titulo text-[1.625rem] leading-[1.625rem] font-bold" aria-hidden="true">
+      <Simbolo className={`shrink-0 ${tamano === 'compacto' ? 'size-11' : 'size-14'}`} />
+      <span
+        className={`flex flex-col font-titulo font-bold ${tamano === 'compacto' ? 'text-[1.375rem] leading-[1.375rem]' : 'text-[1.625rem] leading-[1.625rem]'}`}
+        aria-hidden="true"
+      >
         <span style={{ color: 'var(--logo-sabaneta)' }}>Sabaneta</span>
         <span style={{ color: 'var(--logo-cuenta)' }}>Cuenta</span>
       </span>

@@ -1,9 +1,8 @@
-import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
-import { buscarPalabrasProhibidas } from '../../src/textos/prohibidas'
+import { revisarPantalla, revisarTocables } from './ayudas'
 
 test.describe('portada', () => {
-  test('muestra la marca y los dos botones principales', async ({ page }) => {
+  test('muestra la marca, los botones principales y cómo funciona', async ({ page }) => {
     await page.goto('/')
     await expect(page).toHaveTitle('Sabaneta Cuenta')
     await expect(page.getByRole('img', { name: 'Sabaneta Cuenta' }).first()).toBeVisible()
@@ -11,42 +10,38 @@ test.describe('portada', () => {
     await expect(page.getByRole('link', { name: 'Contar algo de mi cuadra' })).toHaveAttribute('href', '/contar')
     await expect(page.getByRole('link', { name: 'Ver Cuentas en vivo' })).toHaveAttribute('href', '/en-vivo')
     await expect(page.getByRole('heading', { name: '¿Qué es esto?' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Así funciona' })).toBeVisible()
+    await expect(page.getByRole('link', { name: /Dolor/ })).toHaveAttribute('href', '/contar?tipo=dolor')
   })
 
-  test('los botones y enlaces miden al menos 56 px de alto', async ({ page }) => {
+  test('pasa la revisión de accesibilidad y tamaños', async ({ page }) => {
     await page.goto('/')
-    for (const enlace of await page.getByRole('link').all()) {
-      const caja = await enlace.boundingBox()
-      expect(caja?.height, await enlace.innerText()).toBeGreaterThanOrEqual(56)
+    await revisarPantalla(page)
+    await revisarTocables(page)
+  })
+
+  test('la barra inferior lleva a las 4 secciones', async ({ page }) => {
+    await page.goto('/')
+    const menu = page.getByRole('navigation', { name: 'Menú principal' })
+    for (const [nombre, ruta] of [
+      ['Contar', '/contar'],
+      ['En vivo', '/en-vivo'],
+      ['Mi barrio', '/mi-cuadra'],
+      ['Yo', '/perfil'],
+    ] as const) {
+      await expect(menu.getByRole('link', { name: nombre })).toHaveAttribute('href', ruta)
     }
   })
 
-  test('cabe en 360 px sin desplazamiento horizontal', async ({ page }) => {
+  test('el botón Aa agranda la letra y se recuerda', async ({ page }) => {
     await page.goto('/')
-    const ancho = await page.evaluate(() => document.documentElement.scrollWidth)
-    expect(ancho).toBeLessThanOrEqual(360)
-  })
-
-  test('ningún texto mide menos de 16 px', async ({ page }) => {
-    await page.goto('/')
-    const pequenos = await page.evaluate(() =>
-      [...document.querySelectorAll('body *')]
-        .filter((el) => [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent?.trim()))
-        .filter((el) => parseFloat(getComputedStyle(el).fontSize) < 16)
-        .map((el) => el.textContent?.trim()),
-    )
-    expect(pequenos).toEqual([])
-  })
-
-  test('no pide el voto ni promete premios', async ({ page }) => {
-    await page.goto('/')
-    expect(buscarPalabrasProhibidas(await page.locator('body').innerText())).toEqual([])
-  })
-
-  test('pasa axe sin errores', async ({ page }) => {
-    await page.goto('/')
-    const resultado = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
-    expect(resultado.violations).toEqual([])
+    const boton = page.getByRole('button', { name: 'Letra más grande' })
+    await boton.click()
+    await expect(page.locator('html')).toHaveAttribute('data-letra', 'grande')
+    await page.reload()
+    await expect(page.locator('html')).toHaveAttribute('data-letra', 'grande')
+    await page.getByRole('button', { name: 'Letra normal' }).click()
+    await expect(page.locator('html')).not.toHaveAttribute('data-letra', 'grande')
   })
 })
 
@@ -68,8 +63,7 @@ test.describe('PWA', () => {
     expect(sw.headers()['content-type']).toContain('javascript')
     await page.goto('/~offline')
     await expect(page.getByRole('heading', { name: 'No hay internet' })).toBeVisible()
-    const resultado = await new AxeBuilder({ page }).analyze()
-    expect(resultado.violations).toEqual([])
+    await revisarPantalla(page)
   })
 
   test('registra el service worker', async ({ page }) => {

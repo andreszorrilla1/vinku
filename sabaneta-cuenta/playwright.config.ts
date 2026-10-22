@@ -1,4 +1,8 @@
+import { existsSync } from 'node:fs'
 import { defineConfig, devices } from '@playwright/test'
+
+// Las pruebas de ingreso leen las mismas variables que la app.
+if (existsSync('.env.local')) process.loadEnvFile('.env.local')
 
 const puerto = Number(process.env.PUERTO_E2E ?? 3100)
 

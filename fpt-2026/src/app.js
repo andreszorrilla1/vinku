@@ -47,6 +47,54 @@ function tituloPanel(p) {
   return esPlaceholder(p.titulo) ? `Panel ${p.numero}` : p.titulo;
 }
 
+// Descripción breve para la tarjeta (del subtítulo), recortada a una frase.
+function descripcionPanel(p) {
+  let d = p.subtitulo;
+  if (!d || esPlaceholder(d)) d = p.anclajePolitico;
+  if (!d || esPlaceholder(d)) return '';
+  d = String(d).trim();
+  if (d.length > 110) {
+    const corte = d.slice(0, 110);
+    d = corte.slice(0, corte.lastIndexOf(' ')) + '…';
+  }
+  return d;
+}
+
+// Iconos de línea (outline) para cada tema, coloreados con el acento.
+const SVG_ICONOS = {
+  banco: '<path d="M3 8l7-4 7 4"/><path d="M4 8v8M8 8v8M12 8v8M16 8v8"/><path d="M3 17h14"/>',
+  balanza: '<path d="M10 3v14"/><path d="M4 17h12"/><path d="M6 6l-3 5h6z"/><path d="M14 6l3 5h-6z"/><path d="M6 6h8"/>',
+  casa: '<path d="M3 9l7-6 7 6"/><path d="M5 9v8h10V9"/><path d="M8 17v-4h4v4"/>',
+  red: '<circle cx="10" cy="4" r="2"/><circle cx="4" cy="16" r="2"/><circle cx="16" cy="16" r="2"/><path d="M10 6v3M9 11l-3.5 3M11 11l3.5 3"/>',
+  linea: '<path d="M3 15l4-4 3 3 6-7"/><path d="M13 4h4v4"/>',
+  edificio: '<path d="M4 17V4h8v13"/><path d="M12 17V8h4v9"/><path d="M3 17h14"/><path d="M6 7h2M6 10h2M6 13h2"/>',
+  pastel: '<path d="M10 3a7 7 0 1 0 7 7h-7z"/><path d="M10 3v7h7"/>',
+  idea: '<path d="M7 13a5 5 0 1 1 6 0 3 3 0 0 0-1 2H8a3 3 0 0 0-1-2z"/><path d="M8 17h4"/>',
+  documento: '<path d="M5 3h7l3 3v11H5z"/><path d="M12 3v3h3"/><path d="M7 10h6M7 13h5"/>',
+  calculadora: '<rect x="5" y="3" width="10" height="14" rx="1.5"/><path d="M7 6h6"/><path d="M7.5 10h.1M10 10h.1M12.5 10h.1M7.5 13h.1M10 13h.1M12.5 13h.1"/>',
+  tag: '<path d="M4 4h6l6 6-6 6-6-6z"/><circle cx="7.5" cy="7.5" r="1"/>',
+};
+const TEMA_ICONO = {
+  'Autonomía fiscal': 'banco',
+  'Reforma estructural': 'red',
+  'ICA y tributación municipal': 'calculadora',
+  'Normatividad y marcos legales': 'balanza',
+  'Fuentes alternativas': 'idea',
+  'Presupuesto y crédito': 'pastel',
+  'Catastro y predial': 'casa',
+  'Descentralización': 'red',
+  'Economía digital': 'linea',
+  'Infraestructura y captura de valor': 'edificio',
+  'Jurisprudencia': 'balanza',
+  'Procedimiento tributario': 'documento',
+  'Transferencias y SGP': 'red',
+  'Tecnología y datos': 'linea',
+};
+function iconoTema(t) {
+  const k = TEMA_ICONO[t] || 'tag';
+  return `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SVG_ICONOS[k]}</svg>`;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   // Año siempre 2026 (regla fija del proyecto)
   document.querySelectorAll('[data-anio]').forEach((el) => (el.textContent = '2026'));
@@ -89,8 +137,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           ${tipoTxt ? `<span class="tarjeta-panel__tipo" data-tipo="${p.tipo}">${tipoTxt}</span>` : ''}
         </div>
         <h3 class="tarjeta-panel__titulo">${tituloPanel(p)}</h3>
-        <div class="tarjeta-panel__temas">${temas.slice(0, 3).map((t) => `<span>${t}</span>`).join('')}</div>
-        ${clickable ? '<span class="tarjeta-panel__cta">Ver relatoría →</span>' : ''}
+        ${descripcionPanel(p) ? `<p class="tarjeta-panel__desc">${descripcionPanel(p)}</p>` : ''}
+        <div class="tarjeta-panel__temas">${temas.slice(0, 3).map((t) => `<span class="tarjeta-panel__tema">${iconoTema(t)}${t}</span>`).join('')}</div>
       </${tag}>`;
       })
       .join('');

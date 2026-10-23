@@ -39,10 +39,6 @@
 
   <!-- ===================== HERO ===================== -->
   <header class="hero" id="inicio">
-    <!-- Disco rojo dominante con textura de mapa + escalera de paralelogramos -->
-    <div class="hero__fondo" aria-hidden="true">
-      <span class="hero__circulo" data-logo="diagonal"></span>
-    </div>
     <div class="contenedor hero__inner">
       <div class="hero__texto">
         <span class="etiqueta hero__kicker">#ElTerritorioCobraValor</span>
@@ -51,19 +47,27 @@
         <p class="hero__lead">La memoria viva del congreso: relatorías estratégicas, hojas de ruta de incidencia y la voz de los <b data-total-paneles>13</b> paneles.</p>
         <div class="hero__cta">
           <a class="btn btn--grande" href="#hojas-de-ruta">Ver hojas de ruta</a>
-          <a class="btn btn--fantasma btn--grande" href="#repositorio">Explorar los 13 paneles</a>
+          <a class="btn btn--fantasma btn--grande" href="#repositorio">Explora los 13 paneles</a>
+        </div>
+        <div class="hero__stats">
+          <div><b data-total-paneles>13</b><span>Paneles sistematizados</span></div>
+          <div><b>14</b><span>Relatorías descargables</span></div>
+          <div><b>7</b><span>Secciones por ficha</span></div>
         </div>
       </div>
-    </div>
-    <div class="contenedor hero__pie">
-      <div class="hero__stats">
-        <div><b data-total-paneles>13</b><span>paneles sistematizados</span></div>
-        <div><b>14</b><span>relatorías descargables</span></div>
-        <div><b>7</b><span>secciones por ficha</span></div>
-      </div>
-      <a class="hero__scroll" href="#hojas-de-ruta" aria-label="Desplázate al contenido">Desliza <span aria-hidden="true">↓</span></a>
+      <!-- Collage fotográfico de Medellín (asset del mapa web del cliente) -->
+      <figure class="hero__collage">
+        <img src="assets/images/hero-collage.webp" alt="Collage de Medellín: edificio inteligente EPM, escultura ecuestre, Palacio de la Cultura, orquídeas y colibrí sobre un círculo rojo" loading="eager">
+      </figure>
     </div>
   </header>
+
+  <!-- ===================== APOYAN / ORGANIZA ===================== -->
+  <section class="apoyan" aria-label="Apoyan y organiza">
+    <div class="contenedor apoyan__inner">
+      <img src="assets/images/apoyan-logos.webp" alt="Apoyan: Bancolombia, Asointermedias, Medellín, Alcaldía de Medellín (Ciencia, Tecnología e Innovación). Organiza: Gobs Estrategias Públicas" loading="lazy">
+    </div>
+  </section>
 
   <main>
     <!-- ============ HOJAS DE RUTA (prioridad 1) ============ -->

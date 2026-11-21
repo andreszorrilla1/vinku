@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:SG;src:url(fonts/schibsted-grotesk-latin-400-normal.woff2);font-weight:400}
+@font-face{font-family:SG;src:url(fonts/schibsted-grotesk-latin-500-normal.woff2);font-weight:500}
+@font-face{font-family:SG;src:url(fonts/schibsted-grotesk-latin-700-normal.woff2);font-weight:700}
+@font-face{font-family:SG;src:url(fonts/schibsted-grotesk-latin-800-normal.woff2);font-weight:800}
+@font-face{font-family:IS;src:url(fonts/instrument-serif-latin-400-italic.woff2);font-style:italic}
+@font-face{font-family:PM;src:url(fonts/ibm-plex-mono-latin-500-normal.woff2)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0D2F33}
+body{font-family:SG,sans-serif;color:#EEF4F1;-webkit-font-smoothing:antialiased}
+#lienzo{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at 80% 10%,#123c40 0%,#0D2F33 55%,#0b2629 100%)}
+.puntos{position:absolute;inset:0;background-image:radial-gradient(#86CBB9 1.4px,transparent 1.6px);background-size:44px 44px;opacity:.07}
+.marca-agua{position:absolute;right:-180px;bottom:220px;width:900px;opacity:.06}
+.top{position:absolute;left:80px;right:80px;top:90px;display:flex;align-items:center;gap:18px}
+.top .m{font-weight:800;font-size:44px;letter-spacing:-.04em}
+.top .m em{font-family:IS;font-style:italic;font-weight:400;color:#86CBB9;font-size:40px;letter-spacing:0;margin-left:8px}
+.top .l{margin-left:auto;font-family:PM;font-size:26px;color:#9DB5B0;text-transform:uppercase;letter-spacing:.08em}
+.stage{position:absolute;left:80px;right:80px;top:250px;bottom:420px;display:flex;flex-direction:column;justify-content:center}
+.cap{position:absolute;left:80px;right:80px;bottom:250px;font-size:46px;line-height:1.25;font-weight:500;color:#EEF4F1;min-height:120px;display:flex;align-items:flex-end}
+.cap span{background:rgba(8,26,28,.72);padding:10px 22px;border-radius:14px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.prog{position:absolute;left:80px;right:80px;bottom:90px;height:110px}
+.s{font-family:IS;font-style:italic;font-weight:400;letter-spacing:0;color:#86CBB9}
+.a{font-family:IS;font-style:italic;font-weight:400;letter-spacing:0;color:#FF8A4C}
+.mono{font-family:PM;text-transform:uppercase;letter-spacing:.08em}
+.gancho p{font-weight:800;line-height:1.06;letter-spacing:-.03em}
+.gancho .s,.gancho .a{font-size:1.12em}
+.kick{font-family:PM;font-size:32px;color:#FF8A4C;text-transform:uppercase;letter-spacing:.08em}
+.tit{font-weight:800;font-size:100px;line-height:1.04;letter-spacing:-.03em}
+.card{background:#123a3e;border:2px solid #1E4044;border-radius:32px;padding:34px 36px;display:flex;gap:30px;align-items:center}
+.card h3{font-size:54px;font-weight:800;letter-spacing:-.02em}
+.card p{font-size:36px;color:#B9CDC8;margin-top:4px}
+.ico{flex:none;width:110px;height:110px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:50px}
+.win{background:#F3F6F4;color:#0E2325;border-radius:34px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.35)}
+.win .bar{display:flex;align-items:center;gap:12px;padding:24px 30px;background:#E4ECE8}
+.win .bar i{width:20px;height:20px;border-radius:50%;background:#C8D6D1}
+.win .bar b{margin-left:16px;font-size:34px}
+.win .body{padding:26px 34px 34px}
+.fila{display:flex;align-items:center;gap:22px;padding:20px 0;border-bottom:2px solid #DCE6E2;font-size:40px;font-weight:500}
+.fila .cuad{width:46px;height:46px;border-radius:12px;background:#DCEFE8;flex:none}
+.tag{margin-left:auto;font-size:28px;font-weight:700;padding:8px 18px;border-radius:99px}
+.btn{display:inline-flex;align-items:center;gap:12px;background:#E8692E;color:#fff;font-weight:700;font-size:38px;padding:20px 36px;border-radius:20px}
+.toast{background:#2D7D70;color:#fff;font-size:38px;font-weight:700;padding:24px 34px;border-radius:24px;display:flex;align-items:center;gap:18px}
+.burbuja{font-size:42px;line-height:1.3;padding:28px 34px;border-radius:34px;max-width:860px}
+.yo{align-self:flex-end;background:#E8692E;color:#fff;border-bottom-right-radius:8px;font-weight:600}
+.ia{align-self:flex-start;background:#173B38;color:#EEF4F1;border-bottom-left-radius:8px}
+.quien{font-family:PM;font-size:26px;color:#9DB5B0;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.switch{margin-left:auto;width:120px;height:64px;border-radius:99px;position:relative;flex:none}
+.switch i{position:absolute;top:7px;width:50px;height:50px;border-radius:50%;background:#fff}
+.chip{display:inline-block;font-size:40px;font-weight:600;padding:18px 30px;border-radius:99px;border:3px solid #2a5257;margin:0 14px 18px 0}
+.seccion{background:#fff;border:2px solid #DCE6E2;border-radius:20px;padding:20px 26px;margin-top:16px}
+.seccion b{display:block;font-size:30px;color:#2D7D70}
+.seccion span{font-size:38px}
+.num{font-weight:800;letter-spacing:-.04em;line-height:1}
+.op{font-family:IS;font-style:italic;font-size:90px;color:#FF8A4C;width:80px;text-align:center;flex:none}
+</style></head>
+<body><div id="lienzo"></div>
+<script src="guiones.js"></script>
+<script>
+const Q = new URLSearchParams(location.search);
+const V = window.VIDEOS[Q.get("v")];
+let acc = 0; V.escenas.forEach((e) => { e.ini = acc; acc += e.dur; });
+const TOTAL = acc;
+window.TOTAL = TOTAL;
+const cl = (x) => Math.max(0, Math.min(1, x));
+const ease = (x) => 1 - Math.pow(1 - cl(x), 3);
+const P = (lt, a, d = 0.6) => ease((lt - a) / d);
+const fmt = (s) => s.replace(/\*(.+?)\*/g, '<span class="s">$1</span>').replace(/_(.+?)_/g, '<span class="a">$1</span>');
+const ap = (p, y = 50) => `opacity:${p};transform:translateY(${(1 - p) * y}px)`;
+const check = (c = "#fff", w = 40) => `<svg width="${w}" height="${w}" viewBox="0 0 40 40"><path d="M9 21l7 7 15-16" stroke="${c}" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const ISO = (w) => `<svg width="${w}" height="${w}" viewBox="0 0 40 40"><path d="M9 17v8a11 11 0 0 0 22 0v-8" fill="none" stroke="#EEF4F1" stroke-width="5.5" stroke-linecap="round"/><path d="M9 9.5Q20 1 31 9.5" fill="none" stroke="#86CBB9" stroke-width="3" stroke-linecap="round"/><circle cx="9" cy="10" r="3.4" fill="#0D2F33" stroke="#86CBB9" stroke-width="2.2"/><circle cx="31" cy="10" r="4" fill="#FF8A4C"/></svg>`;
+
+// Puente de progreso (leitmotiv): nodo abierto → arco → nodo lleno
+function puente(f) {
+  const W = 920, Hh = 110, P0 = [20, 90], P1 = [460, -30], P2 = [900, 90];
+  const pt = (t) => [(1 - t) ** 2 * P0[0] + 2 * (1 - t) * t * P1[0] + t * t * P2[0], (1 - t) ** 2 * P0[1] + 2 * (1 - t) * t * P1[1] + t * t * P2[1]];
+  const line = (a, b) => { let s = ""; for (let i = 0; i <= 60; i++) { const [x, y] = pt(a + (b - a) * i / 60); s += `${x.toFixed(1)},${y.toFixed(1)} `; } return s; };
+  const [cx, cy] = pt(f);
+  return `<svg width="${W}" height="${Hh}" viewBox="0 0 ${W} ${Hh}"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#86CBB9"/><stop offset="1" stop-color="#FF8A4C"/></linearGradient></defs>
+  <polyline points="${line(0, 1)}" fill="none" stroke="#86CBB9" stroke-opacity=".18" stroke-width="10" stroke-linecap="round"/>
+  ${f > 0.002 ? `<polyline points="${line(0, f)}" fill="none" stroke="url(#g)" stroke-width="10" stroke-linecap="round"/>` : ""}
+  <circle cx="${P0[0]}" cy="${P0[1]}" r="16" fill="#0D2F33" stroke="#86CBB9" stroke-width="7"/>
+  <circle cx="${P2[0]}" cy="${P2[1]}" r="18" fill="#FF8A4C" opacity="${f > .995 ? 1 : .45}"/>
+  <circle cx="${cx}" cy="${cy}" r="11" fill="#fff"/></svg>`;
+}
+
+const ESC = {
+  gancho(e, lt) {
+    const n = e.lineas.length, size = e.lineas.some((l) => l.length > 19) ? 88 : 108, gap = e.gap || 0.55;
+    return `<div class="gancho">${e.lineas.map((l, i) => `<p style="font-size:${size}px;${ap(P(lt, 0.15 + i * gap, 0.7), 70)}">${fmt(l)}</p>`).join("")}</div>`;
+  },
+  titulo(e, lt) {
+    const p = P(lt, 0.05, 0.6), r = P(lt, 0.1, 1.1);
+    return `<div style="display:flex;flex-direction:column;gap:34px">
+      <svg width="190" height="190" viewBox="0 0 190 190" style="${ap(p)}"><circle cx="95" cy="95" r="82" fill="none" stroke="#86CBB9" stroke-opacity=".25" stroke-width="12"/><circle cx="95" cy="95" r="82" fill="none" stroke="#FF8A4C" stroke-width="12" stroke-linecap="round" stroke-dasharray="${515 * r} 600" transform="rotate(-90 95 95)"/><text x="95" y="128" text-anchor="middle" font-family="SG" font-weight="800" font-size="96" fill="#fff">${e.num}</text></svg>
+      <p class="kick" style="${ap(P(lt, 0.25))}">${e.kicker}</p>
+      <p class="tit" style="${ap(P(lt, 0.4, 0.7), 60)}">${fmt(e.titulo)}</p></div>`;
+  },
+  piezas(e, lt) {
+    const cols = ["#86CBB9", "#FF8A4C", "#EEF4F1"];
+    return `<p class="kick" style="${ap(P(lt, 0))};margin-bottom:34px">${e.titulo}</p><div style="display:flex;flex-direction:column;gap:30px;position:relative">
+      ${e.items.map((it, i) => { const p = P(lt, 0.5 + i * 0.75, 0.7); const ok = e.check && lt > 1.6 + i * 0.75;
+        return `<div class="card" style="${ap(p, 80)}"><div class="ico" style="background:${e.check ? (ok ? "#2D7D70" : "#173B38") : "#0D2F33"};border:5px solid ${e.check ? "#2D7D70" : cols[i % 3]};color:${cols[i % 3]}">${e.check ? (ok ? check("#fff", 60) : "") : it.i}</div><div><h3 style="${e.check ? "font-family:PM;font-weight:500;font-size:42px;letter-spacing:0" : ""}">${it.t}</h3><p>${it.s}</p></div></div>`; }).join("")}</div>`;
+  },
+  ventana(e, lt) {
+    const p = P(lt, 0, 0.7), click = e.click ?? -1, te = e.toastEn ?? (click > 0 ? click + 0.5 : -1);
+    const pulse = click > 0 && lt > click && lt < click + 0.5 ? 1 - (lt - click) / 0.5 : 0;
+    const tags = { Pendiente: "background:#FCE6DA;color:#C4521D", Pagado: "background:#DCEFE8;color:#2D7D70" };
+    return `<div class="win" style="${ap(p, 120)}"><div class="bar"><i></i><i></i><i></i><b>${e.titulo}</b>${e.boton ? `<span class="btn" style="margin-left:auto;font-size:30px;padding:14px 26px;box-shadow:0 0 0 ${pulse * 26}px rgba(232,105,46,${pulse * .4})">${e.boton}</span>` : ""}</div>
+      <div class="body">${e.filas.map((f, i) => `<div class="fila" style="${ap(P(lt, 0.5 + i * 0.28, 0.5), 30)}"><span class="cuad"></span>${f.t}${f.tag ? `<span class="tag" style="${tags[f.tag] || ""}">${f.tag}</span>` : ""}</div>`).join("")}</div></div>
+      ${te > 0 ? `<div class="toast" style="margin-top:40px;align-self:flex-start;${ap(P(lt, te, 0.5), 40)}">${check("#fff", 46)}${e.toast}</div>` : ""}
+      ${click > 0 ? cursor(lt, click) : ""}`;
+  },
+  toggle(e, lt) {
+    return `<div class="win" style="${ap(P(lt, 0, 0.7), 120)}"><div class="bar"><i></i><i></i><i></i><b>${e.titulo}</b></div><div class="body">
+      ${e.items.map((it, i) => { const o = P(lt, it.on, 0.35); return `<div class="fila" style="${ap(P(lt, 0.4 + i * 0.25, 0.5), 30)}"><span class="cuad" style="background:${o > .5 ? "#2D7D70" : "#DCEFE8"}"></span>${it.t}<span class="switch" style="background:${o > .5 ? "#2D7D70" : "#C8D6D1"}"><i style="left:${7 + o * 56}px"></i></span></div>`; }).join("")}
+    </div></div>`;
+  },
+  chat(e, lt) {
+    const tipo = 0.4, chars = Math.floor(cl((lt - tipo) / 1.4) * e.usuario.length), resp = 2.6;
+    const pens = lt > 2.0 && lt < resp;
+    return `<div style="display:flex;flex-direction:column;gap:26px">
+      <p class="quien" style="${ap(P(lt, 0))};align-self:flex-end">Tú</p>
+      <div class="burbuja yo" style="${ap(P(lt, 0.2, 0.4), 30)}">${e.usuario.slice(0, chars)}${lt < tipo + 1.5 ? '<span style="opacity:.7">|</span>' : ""}</div>
+      ${pens ? `<div class="burbuja ia" style="letter-spacing:8px">${".".repeat(1 + Math.floor(lt * 4) % 3)}</div>` : ""}
+      ${lt >= resp ? `<p class="quien" style="${ap(P(lt, resp))}">Claude</p><div class="burbuja ia" style="${ap(P(lt, resp, 0.5), 30)}">${e.respuesta}</div>` : ""}
+      ${e.tarjeta ? `<div class="toast" style="align-self:flex-start;${ap(P(lt, resp + 1.6, 0.5), 40)}">${check("#fff", 46)}${e.tarjeta}</div>` : ""}</div>`;
+  },
+  chips(e, lt) {
+    const sel = lt > e.selEn;
+    return `<p class="kick" style="${ap(P(lt, 0))};margin-bottom:30px">${e.titulo}</p><div style="${ap(P(lt, 0.2))}">${e.chips.map((c, i) => `<span class="chip" style="${i === e.sel && sel ? "background:#EEF4F1;color:#0D2F33;border-color:#EEF4F1" : ""}">${c}</span>`).join("")}</div>
+      <div style="margin-top:30px;display:flex;flex-direction:column;gap:18px">${e.items.map((it, i) => `<div class="card" style="padding:24px 30px;border-color:#2D7D70;${ap(P(lt, e.selEn + 0.6 + i * 0.5, 0.5), 40)}"><span class="s" style="font-size:64px;line-height:1">+</span><h3 style="font-size:46px">${it}</h3></div>`).join("")}</div>`;
+  },
+  transcripcion(e, lt) {
+    return `<div class="win" style="background:#081A1C;color:#EEF4F1;${ap(P(lt, 0, 0.7), 120)}"><div class="bar" style="background:#123a3e"><i style="background:#E8692E"></i><b style="font-size:30px">${e.titulo}</b><span class="mono" style="margin-left:auto;font-size:24px;color:#FF8A4C">● transcribiendo</span></div><div class="body" style="display:flex;flex-direction:column;gap:26px;padding:34px">
+      ${e.lineas.map(([q, t], i) => { const a = 0.7 + i * 1.5, n = Math.floor(cl((lt - a) / 1.1) * t.length); return lt > a ? `<div><p class="quien" style="color:${q === "Laura" ? "#FF8A4C" : "#86CBB9"};margin-bottom:6px">${q}</p><p style="font-size:40px;line-height:1.3">${t.slice(0, n)}</p></div>` : ""; }).join("")}
+    </div></div><p class="mono" style="margin-top:26px;font-size:24px;color:#9DB5B0">Caso ficticio</p>`;
+  },
+  registro(e, lt) {
+    const rev = lt > e.cambia, pc = P(lt, e.cambia, 0.4);
+    return `<div class="win" style="${ap(P(lt, 0, 0.7), 120)}"><div class="bar"><i></i><i></i><i></i><b style="font-size:32px">${e.titulo}</b>
+      <span class="tag" style="font-size:30px;${rev ? "background:#2D7D70;color:#fff" : "background:#FCE6DA;color:#C4521D"};transform:scale(${rev ? 1 + (1 - pc) * .25 : 1})">${rev ? "Revisado" : "Borrador IA"}</span></div>
+      <div class="body" style="padding-top:10px">${e.secciones.map(([t, x], i) => { const a = 0.7 + i * 0.7; const n = Math.floor(cl((lt - a - 0.2) / 0.8) * x.length); return `<div class="seccion" style="${ap(P(lt, a, 0.5), 30)}"><b>${t}</b><span>${x.slice(0, n)}</span></div>`; }).join("")}
+      ${!rev ? `<p style="margin-top:20px;font-size:28px;color:#C4521D;font-weight:600;${ap(P(lt, 3.6, 0.5), 20)}">Borrador generado por IA · revisar antes de aprobar</p>` : `<p style="margin-top:20px;font-size:30px;color:#2D7D70;font-weight:700;display:flex;gap:10px;align-items:center">${check("#2D7D70", 36)}Aprobado por la psicóloga</p>`}
+      </div></div><p class="mono" style="margin-top:26px;font-size:24px;color:#9DB5B0">Caso ficticio</p>`;
+  },
+  numero(e, lt) {
+    const v = Math.round(e.valor * ease((lt - 0.5) / 1.4));
+    return `<p class="kick" style="${ap(P(lt, 0))}">${e.etiqueta}</p>
+      <p class="num" style="font-size:420px;color:#FF8A4C;margin-top:20px;${ap(P(lt, 0.3), 60)}">${v.toLocaleString("es-CO")}<span style="font-size:160px;color:#EEF4F1">${e.sufijo}</span></p>
+      <p style="font-size:44px;color:#B9CDC8;margin-top:24px;${ap(P(lt, 1.6))}">${e.nota}</p>`;
+  },
+  lista(e, lt) {
+    const g = e.gap || 1.1;
+    return `<p class="kick" style="${ap(P(lt, 0))};margin-bottom:36px">${e.titulo}</p><div style="display:flex;flex-direction:column;gap:${e.items.length > 3 ? 26 : 34}px">
+      ${e.items.map((it, i) => { const a = 0.5 + i * g, p = P(lt, a, 0.6), on = lt > a; return `<div style="display:flex;gap:30px;align-items:flex-start;${ap(p, 60)}"><div class="ico" style="width:${e.items.length > 3 ? 96 : 110}px;height:${e.items.length > 3 ? 96 : 110}px;background:${on ? (i === e.items.length - 1 ? "#FF8A4C" : "#2D7D70") : "#173B38"};color:#fff;font-size:48px">${i + 1}</div><div><h3 style="font-size:${e.items.length > 3 ? 52 : 58}px;font-weight:800;letter-spacing:-.02em;line-height:1.1">${it.t}</h3><p style="font-size:${e.items.length > 3 ? 36 : 40}px;color:#B9CDC8;margin-top:6px;line-height:1.3">${it.s}</p></div></div>`; }).join("")}</div>`;
+  },
+  formula(e, lt) {
+    const g = (e.dur - 3.5) / e.filas.length;
+    return `<p class="kick" style="${ap(P(lt, 0))};margin-bottom:34px">${e.titulo}</p><div style="display:flex;flex-direction:column;gap:18px">
+      ${e.filas.map((f, i) => { const fin = f.op === "="; const p = P(lt, 0.5 + i * g, 0.6); return `<div style="display:flex;align-items:center;gap:20px;${ap(p, 50)}"><span class="op">${f.op || ""}</span><div style="flex:1;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:28px 34px;border-radius:26px;${fin ? "background:#FF8A4C;color:#081A1C" : "background:#123a3e;border:2px solid #1E4044"}"><span style="font-size:${fin ? 44 : 40}px;font-weight:${fin ? 800 : 500}">${f.l}</span><span class="num" style="font-size:${fin ? 76 : 58}px">${f.v}</span></div></div>`; }).join("")}</div>
+      <p class="mono" style="margin-top:30px;font-size:26px;color:#9DB5B0;${ap(P(lt, 0.5 + e.filas.length * g))}">${e.nota}</p>`;
+  },
+  alerta(e, lt) {
+    const pulse = 0.5 + 0.5 * Math.sin(lt * 4);
+    return `<div style="border:5px solid #FF8A4C;border-radius:40px;padding:56px 50px;background:rgba(255,138,76,.08);box-shadow:0 0 ${30 + pulse * 40}px rgba(255,138,76,${0.15 + pulse * 0.15});${ap(P(lt, 0, 0.7), 80)}">
+      <svg width="130" height="120" viewBox="0 0 130 120"><path d="M65 8L124 112H6Z" fill="none" stroke="#FF8A4C" stroke-width="9" stroke-linejoin="round"/><path d="M65 45v32" stroke="#FF8A4C" stroke-width="10" stroke-linecap="round"/><circle cx="65" cy="94" r="6" fill="#FF8A4C"/></svg>
+      <p class="tit" style="margin-top:30px;font-size:96px">${e.titulo}</p><p style="font-size:46px;line-height:1.3;margin-top:24px;color:#EEF4F1;${ap(P(lt, 0.8))}">${e.texto}</p></div>`;
+  },
+  cierre(e, lt) {
+    const d = ease((lt - 0.1) / 1.4);
+    return `<div style="display:flex;flex-direction:column;align-items:flex-start;gap:30px">
+      <svg width="300" height="300" viewBox="0 0 40 40" style="${ap(P(lt, 0, 0.6))}"><path d="M9 17v8a11 11 0 0 0 22 0v-8" fill="none" stroke="#EEF4F1" stroke-width="5" stroke-linecap="round"/><path d="M9 9.5Q20 1 31 9.5" fill="none" stroke="#86CBB9" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="${26 * d} 40"/><circle cx="9" cy="10" r="3.2" fill="#0D2F33" stroke="#86CBB9" stroke-width="2"/><circle cx="31" cy="10" r="${3.8 * P(lt, 1.3, 0.4)}" fill="#FF8A4C"/></svg>
+      <p class="tit" style="font-size:92px;${ap(P(lt, 0.5, 0.7), 60)}">${e.linea1}</p>
+      <p class="s" style="font-size:112px;line-height:1.02;${ap(P(lt, 1.0, 0.7), 60)}">${e.linea2}</p>
+      <span class="btn" style="margin-top:20px;font-size:36px;${ap(P(lt, 1.8, 0.6), 30)}">${e.cta}</span>
+      <p class="mono" style="font-size:28px;color:#9DB5B0;${ap(P(lt, 2.2))}">VinkU edu · @vinkuedu</p></div>`;
+  },
+};
+
+function cursor(lt, click) {
+  const p = ease((lt - (click - 1.2)) / 1.1);
+  const x = 700 + (790 - 700) * p, y = 900 + (300 - 900) * p;
+  const press = lt > click && lt < click + 0.25 ? 0.85 : 1;
+  return `<svg width="70" height="70" viewBox="0 0 24 24" style="position:absolute;left:${x}px;top:${y}px;transform:scale(${press});opacity:${P(lt, click - 1.4, 0.3)};filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))"><path d="M4 2l16 9-7 2-3 7z" fill="#fff" stroke="#0D2F33" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+}
+
+function capDe(e, lt) {
+  if (!e.cap) return "";
+  const lista = Array.isArray(e.cap) ? e.cap : [[0, e.cap]];
+  let cur = lista[0], ini = lista[0][0];
+  for (const c of lista) if (lt >= c[0]) { cur = c; ini = c[0]; }
+  return `<span style="opacity:${P(lt, ini + 0.35, 0.4)}">${cur[1]}</span>`;
+}
+
+window.render = function (t) {
+  const i = Math.max(0, V.escenas.findIndex((e) => t >= e.ini && t < e.ini + e.dur));
+  const e = V.escenas[t >= TOTAL ? V.escenas.length - 1 : i];
+  const lt = t - e.ini;
+  const fi = e === V.escenas[0] ? 1 : cl(lt / 0.25);
+  const fo = e === V.escenas[V.escenas.length - 1] ? 1 : cl((e.dur - lt) / 0.25);
+  document.getElementById("lienzo").innerHTML = `<div class="puntos"></div>
+    <div class="marca-agua">${ISO(900)}</div>
+    <div class="top">${ISO(64)}<span class="m">VinkU<em>edu</em></span><span class="l">${V.serie} · ${V.n}</span></div>
+    <div class="stage" style="opacity:${Math.min(fi, fo)}">${ESC[e.tipo](e, lt)}</div>
+    <div class="cap" style="opacity:${Math.min(fi, fo)}">${capDe(e, lt)}</div>
+    <div class="prog">${puente(t / TOTAL)}</div>`;
+};
+window.render(0);
+</script></body></html>

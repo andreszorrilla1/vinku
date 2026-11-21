@@ -3,14 +3,16 @@ import { herramientaPorId, eventosDe, fechaLarga, formatoCOP, wa, type Capsula }
 import { ENFOQUES, POBLACIONES } from "../data/consultorio";
 import {
   MOMENTOS, ULTIMO, avance, kitMarkdown, adaptarCapsula, retroalimentar, afinarPregunta, leerVictoria,
-  type Progreso, type Perfil,
+  type Progreso, type Perfil, type PerfilPublico,
 } from "../lib/motor";
+import Certificar, { Sello } from "./Certificar";
+import { certDe } from "../data/certificacion";
 import { relacionadas } from "../lib/repositorio";
 import { descargar } from "../lib/descarga";
 import Puente from "./Puente";
 import skillEnfoque from "../../piloto/consultorio-enfoque/SKILL.md?raw";
 
-interface Props { p: Progreso; perfil: Perfil; guardar: (p: Progreso) => void }
+interface Props { p: Progreso; perfil: Perfil; guardar: (p: Progreso) => void; perfilRed: PerfilPublico; setPerfilRed: (x: PerfilPublico) => void }
 
 const GUIA_CONSULTORIO = `
 ## Instalación paso a paso
@@ -25,7 +27,7 @@ const GUIA_CONSULTORIO = `
 Piloto: masterclass el martes 1 de diciembre y laboratorio el martes 15 de diciembre, 7:00 p. m., virtual.
 `;
 
-export default function HerramientaView({ p, perfil, guardar }: Props) {
+export default function HerramientaView({ p, perfil, guardar, perfilRed, setPerfilRed }: Props) {
   const h = herramientaPorId(p.herramientaId)!;
   const [vista, setVista] = useState(Math.min(p.momento, ULTIMO));
   const [cargando, setCargando] = useState(false);
@@ -93,6 +95,7 @@ export default function HerramientaView({ p, perfil, guardar }: Props) {
       </section>
 
       <div className="ficha">
+        <div className="principal">
         <section className="panel" style={{ marginTop: 0 }}>
           <div className="quien"><span className={m.lado === "IA" ? "etq" : "etq h"}>{m.set} · {m.lado === "IA" ? "a tu ritmo, con IA" : "en vivo"}</span><span className="dim">{m.texto}</span></div>
 
@@ -169,8 +172,12 @@ export default function HerramientaView({ p, perfil, guardar }: Props) {
                     {vistas.includes(n) && <span className="mono dim">Vista ✓</span>}
                   </div>
                   <h3 style={{ marginTop: 8 }}>{c.titulo}</h3>
+                  {c.formato === "Video" && c.serie && <p className="mono dim" style={{ fontSize: 12 }}>{c.serie}</p>}
                   <p className="dim">{c.idea}</p>
-                  {c.formato === "Video" && (
+                  {c.formato === "Video" && c.src && (
+                    <video className="clip" controls playsInline preload="none" poster={`videos/${c.src}.jpg`} src={`videos/${c.src}.mp4`} onPlay={() => marcar(n)} />
+                  )}
+                  {c.formato === "Video" && !c.src && (
                     <>
                       <button className="video" onClick={() => { marcar(n); setAbierta(abierta === n ? null : n); }} aria-expanded={abierta === n}>
                         <svg width="52" height="52" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="27" fill="#FF8A4C" /><path d="M23 18l15 10-15 10z" fill="#fff" /></svg>
@@ -284,8 +291,15 @@ export default function HerramientaView({ p, perfil, guardar }: Props) {
           {aviso && <p className="nota" role="status">{aviso}</p>}
           {error && <p className="aviso" role="alert">{error}</p>}
         </section>
+        <Certificar h={h} p={p} guardar={guardar} perfilRed={perfilRed} setPerfilRed={setPerfilRed} />
+        </div>
 
         <aside className="lateral">
+          <div className="cert-mini">
+            <Sello activo={p.cert?.estado === "verificada"} tam={64} />
+            <div><h3>Certifica la habilidad</h3><p className="dim" style={{ fontSize: 14, marginTop: 4 }}>{certDe(h).habilidad}</p>
+              <button className="btn sec" style={{ marginTop: 10, minHeight: 40, padding: "8px 14px" }} onClick={() => document.getElementById("certificar")?.scrollIntoView({ behavior: "smooth" })}>{p.cert?.estado === "verificada" ? "Ver credencial" : "Cómo se certifica"}</button></div>
+          </div>
           <div>
             <h3>Toolset · Skillset · Mindset</h3>
             <p className="dim" style={{ fontSize: 14, marginTop: 6 }}>{h.toolset.length} piezas · {h.skillset.length} habilidades · {h.capsulas.length} cápsulas</p>

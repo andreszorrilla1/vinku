@@ -21,8 +21,17 @@ export interface Progreso {
   logradas: number[];
   pregunta?: string;
   victoria?: { valores: Record<string, string>; fecha: string; consejo?: string };
+  cert?: Cert;
   actualizado: string;
 }
+
+export interface EvalCriterio { criterio: string; nivel: "Logrado" | "En proceso" | "No evidenciado"; comentario: string }
+export interface Cert {
+  estado: "en curso" | "en validación" | "verificada";
+  prueba?: { texto: string; eval: EvalCriterio[]; resumen: string; lista: boolean };
+  codigo?: string; fecha?: string; evaluador?: string;
+}
+export interface PerfilPublico { nombre: string; ciudad: string; modalidad: string; servicio: string; desde: string; publicado: boolean }
 
 export const MOMENTOS = [
   { nombre: "Descargar", set: "Toolset", lado: "IA", peso: 10, texto: "Te llevas la herramienta lista para usar." },
@@ -111,6 +120,26 @@ Responde SOLO con JSON: {"consejo":""}`;
     consejo: `Consejo demo: ya tienes datos reales de tu piloto. Tu siguiente paso natural es «${h.siguiente[0].nombre}».`,
   }));
   return r.consejo || "";
+}
+
+// ---------- Certificación: primera lectura de la prueba con la rúbrica ----------
+export async function evaluarPrueba(h: Herramienta, habilidad: string, caso: string, rubrica: string[], texto: string): Promise<{ eval: EvalCriterio[]; resumen: string; lista: boolean }> {
+  const system = `${VOZ}
+${ctxH(h)}
+Eres la primera lectura (no la decisión final) de una prueba práctica para certificar la habilidad "${habilidad}".
+CASO: ${caso}
+RÚBRICA: ${rubrica.map((r, i) => `${i + 1}. ${r}`).join(" ")}
+Evalúa la respuesta de la persona con cada criterio: "Logrado", "En proceso" o "No evidenciado", con un comentario concreto de máximo 25 palabras. Sé exigente: si no hay evidencia en el texto, es "No evidenciado". "lista" es true solo si todos los criterios están en "Logrado". "resumen" en máximo 40 palabras, con lo que debe ajustar si no está lista.
+Responde SOLO con JSON: {"eval":[{"criterio":"","nivel":"Logrado","comentario":""}],"resumen":"","lista":false}`;
+  const r = await pedirJSON<{ eval: EvalCriterio[]; resumen: string; lista: boolean }>(system, [{ role: "user", content: texto }], () => {
+    const largo = texto.trim().split(/\s+/).length >= 40;
+    return {
+      eval: rubrica.map((c) => ({ criterio: c, nivel: largo ? "Logrado" : "En proceso", comentario: largo ? "Lectura demo: hay evidencia suficiente en tu respuesta." : "Lectura demo: amplía tu respuesta con lo que hiciste y por qué." })),
+      resumen: largo ? "Lectura demo: lista para validación humana." : "Lectura demo: explica con más detalle (mínimo 40 palabras) para pasar a validación.",
+      lista: largo,
+    };
+  });
+  return { eval: (r.eval || []).slice(0, rubrica.length), resumen: r.resumen || "", lista: !!r.lista };
 }
 
 export function kitMarkdown(h: Herramienta): string {

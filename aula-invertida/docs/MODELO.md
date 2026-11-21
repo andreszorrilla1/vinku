@@ -19,7 +19,36 @@ Modelo pedagógico y de producto (borrador 2, 20 de noviembre de 2026). Reemplaz
   - Suscripción mensual (precio por definir).
 - **Canal:** plataforma web de VinkU para aprender y WhatsApp para avisos y comunidad.
 - **Escalera:** de la herramienta a la suscripción y al programa De Profesional a Emprendedor.
-- **Sin certificación como eje.** Cómo se demuestra lo que la persona puede hacer está por definir.
+- **Certificación de habilidades como valor central** (decisión del 20 de noviembre, por la noche): ver la sección "Dónde está el valor".
+
+## Dónde está el valor: las herramientas son abiertas, la habilidad se certifica
+Una herramienta se comparte con facilidad, así que no es barrera de entrada: es la puerta. El valor por el que se paga se acumula en cuatro capas:
+1. **Herramienta:** gratis o de $30.000 a $50.000. Se puede compartir y funciona como mercadeo.
+2. **Formación:** cápsulas, masterclasses, laboratorios y retroalimentación con IA. Va en la suscripción.
+3. **Certificación de habilidad:** demostrar que sabes hacerlo. Es el valor principal.
+4. **Red de profesionales verificados:** un marketplace donde quien certificó ofrece sus servicios de psicología, consultoría o metodología a personas, empresas y entidades.
+
+### Cómo se certifica una habilidad
+Cada herramienta certifica una habilidad. En Consultorio es "Gestión de consulta psicológica con IA".
+| Requisito | Qué es |
+|---|---|
+| Evidencia real | La victoria temprana con datos, registrada en el laboratorio |
+| Prueba práctica | Un caso que VinkU entrega y la persona resuelve con la herramienta. La IA hace una primera lectura con la rúbrica. |
+| Validación humana | Un evaluador de VinkU revisa la prueba y conversa 15 minutos con la persona |
+
+**Resultado:** una credencial con código verificable (por ejemplo, VKU-CONS-0001), vigente 12 meses. Se renueva con las actualizaciones de la herramienta, lo que sostiene la formación permanente.
+
+**Respaldo institucional (ruta):**
+- VinkU, como SaaS, emite su propia credencial de habilidad. No es un título.
+- El respaldo crece con co-emisión junto a universidades aliadas (la línea de universidades ya existe), gremios y empresas que contratan desde la Red.
+- Antes de lanzar, conviene revisar con un abogado cómo nombrarla legalmente (por ejemplo, "credencial" o "certificado de educación informal") para no confundirla con una certificación de competencias acreditada.
+
+### La Red (marketplace)
+- **Quién entra:** solo profesionales con al menos una habilidad verificada y vigente.
+- **Requisito para servicios de psicología:** además, la tarjeta profesional vigente, verificada antes de publicar.
+- **El perfil muestra:** habilidades verificadas con su código, la evidencia (la victoria temprana), los servicios con "precio desde" y la modalidad.
+- **Quién contrata:** personas, empresas (bienestar, investigación, consultoría) y entidades. Conecta con las líneas B2B del laboratorio y del upskilling.
+- **Ingresos posibles (por decidir):** suscripción del perfil, comisión por servicio contratado, o perfil incluido mientras la certificación esté vigente.
 
 ## La idea en una frase
 Cada experiencia de aprendizaje es una **herramienta** que la persona descarga, ajusta a su oficio y usa en un caso real. Al usarla desarrolla tres cosas:
@@ -83,7 +112,10 @@ Sin sello ni certificado: el cierre es la victoria temprana con datos reales.
 - **Universidades:** las asignaturas se convierten en herramientas que el estudiante se lleva al sector real.
 
 ## Decisiones abiertas
-- Cómo se demuestra el logro sin certificación (portafolio, victorias tempranas, evidencia validada en laboratorio…).
+- Precio de la certificación y de la renovación anual.
+- Modelo de ingresos de la Red (suscripción, comisión o incluida en la certificación).
+- Quiénes evalúan (consultores VinkU, pares certificados, docentes de universidades aliadas) y cómo se les paga.
+- Nombre legal de la credencial y primeras alianzas para co-emitirla.
 - Precio de la suscripción mensual y qué incluye.
 - Cuál es la herramienta gratis de entrada (Consultorio ya se regala hoy).
 - Frecuencia y formato de laboratorios frente a masterclasses.

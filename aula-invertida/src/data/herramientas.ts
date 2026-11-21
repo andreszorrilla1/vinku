@@ -14,7 +14,7 @@ export const FORMATOS: Formato[] = ["Kit con IA", "Plantilla", "Guía", "Hoja de
 
 export interface Pieza { nombre: string; tipo: TipoPieza; detalle: string }
 export type Capsula =
-  | { formato: "Video"; titulo: string; minutos: number; idea: string; guion: string[] }
+  | { formato: "Video"; titulo: string; minutos: number; idea: string; guion: string[]; src?: string; serie?: string }
   | { formato: "Infográfico"; titulo: string; minutos: number; idea: string; pasos?: string[]; comparacion?: { izq: string; der: string; filas: [string, string][] } }
   | { formato: "Texto"; titulo: string; minutos: number; idea: string; cuerpo: string[] };
 
@@ -82,12 +82,18 @@ export const HERRAMIENTAS: Herramienta[] = [
     skillset: ["Documentar con IA sin perder el criterio clínico", "Gestionar cartera y cobros", "Proteger datos sensibles", "Diseñar el proceso de tu consulta"],
     mindset: { de: "Atiendo pacientes", a: "Dirijo mi consultorio" },
     capsulas: [
-      { formato: "Video", titulo: "Instala Consultorio en 15 minutos", minutos: 6, idea: "Duplicar la plantilla, conectar Notion, subir las skills y configurar.",
+      { formato: "Video", titulo: "Instala Consultorio en 15 minutos", minutos: 1, src: "consultorio-01-instala", serie: "Instalar y usar", idea: "Duplicar la plantilla, conectar Notion, subir las skills y configurar.",
         guion: ["«Si terminas la consulta y te faltan tres historias, este video es para ti»", "Las piezas: Notion, Claude y Tactiq", "Duplicar la plantilla", "Conectar Notion y subir las dos skills", "«configura mi consultorio»", "Personalízalo a tu enfoque"] },
-      { formato: "Video", titulo: "De la sesión a la historia", minutos: 5, idea: "Una sesión de prueba convertida en borrador, revisada, aprobada y cobrada.",
+      { formato: "Video", titulo: "De la sesión a la historia", minutos: 1, src: "consultorio-02-sesion", serie: "Instalar y usar", idea: "Una sesión de prueba convertida en borrador, revisada, aprobada y cobrada.",
         guion: ["Sesión de prueba con Tactiq y frase de apertura", "«procesa la sesión de Laura»", "Revisar, corregir y aprobar", "Riesgo primero: lo que la IA avisa"] },
-      { formato: "Video", titulo: "Tu consultorio como negocio", minutos: 5, idea: "Tres números que casi nadie mira: horas fuera de sesión, cartera y abandono.",
+      { formato: "Video", titulo: "Tu consultorio como negocio", minutos: 1, src: "crecer-01-negocio", serie: "Haz crecer tu consultorio", idea: "Tres números que casi nadie mira: horas fuera de sesión, cartera y abandono.",
         guion: ["Eres psicóloga y diriges una pequeña empresa", "Horas, cartera y abandono", "Cierre semanal y «¿quién me debe?»", "Qué hacer con las horas ganadas"] },
+      { formato: "Video", titulo: "Convierte tus horas en ingresos", minutos: 1, src: "crecer-02-horas", serie: "Haz crecer tu consultorio", idea: "Cuatro ideas para las horas que recuperas: talleres, bienestar para empresas, supervisión y contenido.",
+        guion: ["Recuperaste horas, ¿y ahora qué?", "Cuatro formas de convertirlas en ingresos", "Haz la cuenta de un taller", "Elige una y pruébala en 30 días"] },
+      { formato: "Video", titulo: "Tu precio sin miedo", minutos: 1, src: "crecer-03-precio", serie: "Haz crecer tu consultorio", idea: "Tu precio piso en tres pasos y tres formas de cobrar.",
+        guion: ["¿Cobras lo que te da pena cobrar?", "Tu precio piso", "Sesión, paquete y programa", "Ajusta el alcance, no tu valor"] },
+      { formato: "Video", titulo: "Alianzas que traen consultantes", minutos: 1, src: "crecer-04-alianzas", serie: "Haz crecer tu consultorio", idea: "Cuatro alianzas para empezar y cómo escribir el primer mensaje.",
+        guion: ["Tus próximos consultantes ya conocen a alguien", "Cuatro alianzas para empezar", "El primer mensaje", "Una alianza por semana"] },
       { formato: "Infográfico", titulo: "El recorrido de una sesión", minutos: 2, idea: "Del diálogo en consulta a la historia aprobada.",
         pasos: ["Sesión con Tactiq", "Borrador IA en Notion", "Revisas y apruebas", "Cobro creado", "Cierre semanal"] },
       { formato: "Infográfico", titulo: "Lo que hace la IA, lo que decides tú", minutos: 2, idea: "La firma sigue siendo tuya.",
@@ -283,9 +289,9 @@ export const formatoCOP = (n: number) => (n === 0 ? "Gratis" : `$${n.toLocaleStr
 // ---------- Planes ----------
 export interface Plan { nombre: string; precio: string; incluye: string[]; destacado?: boolean }
 export const PLANES: Plan[] = [
-  { nombre: "Herramienta de entrada", precio: "Gratis", incluye: ["Consultorio completo durante el piloto", "Cápsulas en video, infografía y texto", "Masterclass y laboratorio"] },
-  { nombre: "Por herramienta", precio: "$30.000 a $50.000", incluye: ["Kit descargable y su personalización", "Cápsulas", "Masterclass y laboratorio de esa herramienta"] },
-  { nombre: "Suscripción", precio: "Precio por definir", incluye: ["Todas las herramientas del repositorio", "Una herramienta nueva cada semana", "Todas las masterclasses y laboratorios"], destacado: true },
+  { nombre: "Herramientas", precio: "Gratis a $50.000", incluye: ["Kit descargable y su personalización", "Se puede compartir: es la puerta de entrada", "Consultorio gratis durante el piloto"] },
+  { nombre: "Formación", precio: "Suscripción · precio por definir", incluye: ["Cápsulas en video, infografía y texto de todas las herramientas", "Masterclasses y laboratorios en vivo cada semana", "Retroalimentación con IA sobre tu trabajo real"] },
+  { nombre: "Certificación de habilidad", precio: "Precio por definir", incluye: ["Evidencia real, prueba práctica y validación humana", "Credencial verificable con código, vigente 12 meses", "Tu perfil en la Red de profesionales verificados"], destacado: true },
 ];
 export const ESCALERA = [
   { nombre: "Acompañamientos 1:1", precio: "$190.000 · 3 por $490.000", detalle: "Instalas una herramienta con un consultor sobre tu caso." },

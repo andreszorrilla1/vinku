@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { HERRAMIENTAS, EVENTOS, PLANES, ESCALERA, OBJETIVOS, FORMATOS, herramientaPorId, formatoCOP, fechaLarga, fechaCorta, wa, type Objetivo, type Formato } from "./data/herramientas";
-import { avance, nuevoProgreso, buscarConIA, MOMENTOS, ULTIMO, type Progreso, type Perfil, type Resultado } from "./lib/motor";
+import { avance, nuevoProgreso, buscarConIA, MOMENTOS, ULTIMO, type Progreso, type Perfil, type Resultado, type PerfilPublico } from "./lib/motor";
+import { certDe, codigoNuevo, EJEMPLOS_RED, type PerfilRed } from "./data/certificacion";
+import { Sello } from "./components/Certificar";
 import { filtrar, demoBusqueda, proximoEvento, type Filtros } from "./lib/repositorio";
 import { modoIA, type ModoIA } from "./lib/ia";
 import Puente, { Isotipo } from "./components/Puente";
@@ -8,6 +10,7 @@ import HerramientaView from "./components/HerramientaView";
 
 const LS = "vinkuedu_abh_v2";
 const LS_PERFIL = "vinkuedu_perfil_v1";
+const LS_RED = "vinkuedu_red_v1";
 const leer = <T,>(k: string, d: T): T => { try { const v = localStorage.getItem(k); return v ? (JSON.parse(v) as T) : d; } catch { return d; } };
 
 function useHash() {
@@ -20,7 +23,9 @@ export default function App() {
   const ruta = useHash();
   const [prog, setProg] = useState<Record<string, Progreso>>(() => Object.fromEntries(Object.entries(leer<Record<string, Progreso>>(LS, {})).filter(([k]) => herramientaPorId(k))));
   const [perfil, setPerfil] = useState<Perfil>(() => leer<Perfil>(LS_PERFIL, { oficio: "", objetivo: "", situacion: "" }));
+  const [perfilRed, setPerfilRed] = useState<PerfilPublico>(() => leer<PerfilPublico>(LS_RED, { nombre: "", ciudad: "", modalidad: "Virtual", servicio: "", desde: "", publicado: false }));
   const [modo, setModo] = useState<ModoIA | null>(null);
+  useEffect(() => { try { localStorage.setItem(LS_RED, JSON.stringify(perfilRed)); } catch { /* sin almacenamiento */ } }, [perfilRed]);
   useEffect(() => { modoIA().then(setModo); }, []);
   useEffect(() => { try { localStorage.setItem(LS, JSON.stringify(prog)); } catch { /* sin almacenamiento */ } }, [prog]);
   useEffect(() => { try { localStorage.setItem(LS_PERFIL, JSON.stringify(perfil)); } catch { /* sin almacenamiento */ } }, [perfil]);
@@ -37,12 +42,14 @@ export default function App() {
         <nav className="nav" aria-label="Secciones">
           <a href="#repositorio" aria-current={seccion === "repositorio" ? "page" : undefined}>Repositorio</a>
           <a href="#agenda" aria-current={seccion === "agenda" ? "page" : undefined}>Agenda</a>
+          <a href="#red" aria-current={seccion === "red" || seccion.startsWith("verificar") ? "page" : undefined}>Red</a>
           <a href="#planes" aria-current={seccion === "planes" ? "page" : undefined}>Planes</a>
         </nav>
       </header>
       <main>
-        {hid ? <HerramientaView key={hid} p={{ ...nuevoProgreso(hid), ...prog[hid] }} perfil={perfil} guardar={guardar} />
-          : seccion === "agenda" ? <Agenda prog={prog} />
+        {hid ? <HerramientaView key={hid} p={{ ...nuevoProgreso(hid), ...prog[hid] }} perfil={perfil} guardar={guardar} perfilRed={perfilRed} setPerfilRed={setPerfilRed} />
+          : seccion === "agenda" ? <Agenda prog={prog} guardar={guardar} />
+          : seccion === "red" || seccion.startsWith("verificar") ? <Red prog={prog} perfilRed={perfilRed} codigo={seccion.startsWith("verificar-") ? seccion.slice(10) : ""} />
           : seccion === "planes" ? <Planes />
           : <Repositorio prog={prog} perfil={perfil} setPerfil={setPerfil} />}
       </main>
@@ -74,7 +81,8 @@ function Repositorio({ prog, perfil, setPerfil }: { prog: Record<string, Progres
       <section className="band hero">
         <div>
           <h1>Herramientas para <em className="s">hacer</em> y <em className="s">ser</em>.</h1>
-          <p className="lead">Para profesionales de ciencias sociales y humanas que quieren abrir nuevos campos de acción, trabajar como independientes o emprender. Descargas una herramienta, la ajustas a tu manera, la usas con tu trabajo real y la validas en vivo. No importa el título: importa lo que puedes hacer.</p>
+          <p className="lead">Para profesionales de ciencias sociales y humanas que quieren abrir nuevos campos de acción, trabajar como independientes o emprender. Descargas una herramienta, la ajustas a tu manera, la usas con tu trabajo real y la validas en vivo. No importa el título: importa lo que puedes hacer, y lo certificamos.</p>
+          <div className="fila" style={{ marginTop: 18 }}><a className="btn sec" href="#red">Ver la Red de profesionales verificados</a></div>
         </div>
         <article className="destacada">
           <div className="fila" style={{ gap: 8 }}><span className="etq h">Piloto abierto</span><span className="mono" style={{ color: "#9DB5B0" }}>15 cupos · gratis</span></div>
@@ -206,7 +214,9 @@ function Repositorio({ prog, perfil, setPerfil }: { prog: Record<string, Progres
   );
 }
 
-function Agenda({ prog }: { prog: Record<string, Progreso> }) {
+function Agenda({ prog, guardar }: { prog: Record<string, Progreso>; guardar: (p: Progreso) => void }) {
+  const [evaluador, setEvaluador] = useState("Andrés Zorrilla");
+  const pendientes = Object.values(prog).filter((p) => p.cert?.estado === "en validación");
   const preguntas = Object.values(prog).filter((p) => p.pregunta);
   const victorias = Object.values(prog).filter((p) => p.victoria);
   return (
@@ -246,6 +256,13 @@ function Agenda({ prog }: { prog: Record<string, Progreso> }) {
         <article className="card"><h3>Preguntas para la masterclass</h3>
           {preguntas.length ? <ul className="mini">{preguntas.map((p) => <li key={p.herramientaId}><b>{herramientaPorId(p.herramientaId)!.nombre}:</b> {p.pregunta}</li>)}</ul> : <p className="dim">Aún no hay preguntas.</p>}
         </article>
+        <article className="card"><h3>Para quien evalúa: certificaciones</h3>
+          <label className="campo">Evaluador<input type="text" value={evaluador} onChange={(x) => setEvaluador(x.target.value)} /></label>
+          {pendientes.length ? pendientes.map((p) => { const h = herramientaPorId(p.herramientaId)!; return (
+            <div key={h.id} className="pend"><b>{certDe(h).habilidad}</b><p className="dim">{p.cert!.prueba?.resumen}</p>
+              <button className="btn" onClick={() => guardar({ ...p, cert: { ...p.cert!, estado: "verificada", codigo: codigoNuevo(h), fecha: new Date().toISOString(), evaluador: evaluador || "Evaluador VinkU" }, actualizado: new Date().toISOString() })}>Validar y emitir credencial</button></div>
+          ); }) : <p className="dim">No hay pruebas esperando validación.</p>}
+        </article>
         <article className="card"><h3>Victorias para el laboratorio</h3>
           {victorias.length ? <ul className="mini">{victorias.map((p) => <li key={p.herramientaId}><b>{herramientaPorId(p.herramientaId)!.nombre}:</b> {Object.entries(p.victoria!.valores).map(([k, v]) => `${k}: ${v}`).join(" · ")}</li>)}</ul> : <p className="dim">Aún no hay victorias registradas.</p>}
         </article>
@@ -273,6 +290,74 @@ function Planes() {
       <h2 style={{ marginTop: 32 }}>Cuando quieras ir más lejos</h2>
       <div className="grid" style={{ marginTop: 12 }}>
         {ESCALERA.map((e) => <article className="card" key={e.nombre}><span className="precio" style={{ fontSize: 15 }}>{e.precio}</span><h3>{e.nombre}</h3><p className="dim">{e.detalle}</p></article>)}
+      </div>
+    </section>
+  );
+}
+
+function Red({ prog, perfilRed, codigo }: { prog: Record<string, Progreso>; perfilRed: PerfilPublico; codigo: string }) {
+  const [hab, setHab] = useState("");
+  const [q, setQ] = useState("");
+  const [cod, setCod] = useState(codigo);
+  const mias = Object.values(prog).filter((p) => p.cert?.estado === "verificada");
+  const propio: PerfilRed | null = mias.length && perfilRed.publicado ? {
+    codigo: mias[0].cert!.codigo!, nombre: perfilRed.nombre, oficio: "Perfil tuyo", ciudad: perfilRed.ciudad || "Sin ciudad", modalidad: perfilRed.modalidad,
+    habilidades: mias.map((p) => certDe(herramientaPorId(p.herramientaId)!).habilidad),
+    servicios: [{ nombre: perfilRed.servicio, desde: perfilRed.desde || "A convenir" }],
+    victoria: Object.entries(mias[0].victoria?.valores || {}).map(([k, v]) => `${k}: ${v}`).join(" · "), fecha: mias[0].cert!.fecha!,
+  } : null;
+  const todos = [...(propio ? [propio] : []), ...EJEMPLOS_RED];
+  const habilidades = Array.from(new Set(todos.flatMap((x) => x.habilidades)));
+  const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const lista = todos.filter((x) => (!hab || x.habilidades.includes(hab)) && (!q || norm([x.nombre, x.oficio, x.ciudad, ...x.servicios.map((s) => s.nombre)].join(" ")).includes(norm(q))));
+  const encontrado = cod ? todos.find((x) => x.codigo.toLowerCase() === cod.trim().toLowerCase()) : undefined;
+
+  return (
+    <section className="band">
+      <h1>La Red de profesionales <em className="s">verificados</em></h1>
+      <p className="lead" style={{ marginTop: 12, maxWidth: "40em" }}>Cada persona de la Red demostró su habilidad con evidencia real, una prueba práctica y una validación humana. Si buscas a alguien que lo sepa hacer, empieza aquí.</p>
+
+      <div className="verifica">
+        <Sello activo={!!encontrado} tam={70} />
+        <form onSubmit={(x) => { x.preventDefault(); }} style={{ flex: 1 }}>
+          <label className="campo" style={{ marginTop: 0 }}>Verifica una credencial
+            <input type="text" value={cod} onChange={(x) => setCod(x.target.value)} placeholder="Ej.: VKU-CONS-0001" />
+          </label>
+        </form>
+        {cod && (encontrado
+          ? <p className="ok-ver"><b>Verificada:</b> {encontrado.nombre} · {encontrado.habilidades.join(", ")} · desde {new Date(encontrado.fecha).toLocaleDateString("es-CO")}{encontrado.ejemplo ? " (ejemplo)" : ""}</p>
+          : <p className="dim">No encontramos ese código.</p>)}
+      </div>
+
+      <div className="busca" style={{ marginTop: 20 }}>
+        <input type="search" aria-label="Buscar en la Red" value={q} onChange={(x) => setQ(x.target.value)} placeholder="Busca por servicio, ciudad u oficio" />
+      </div>
+      <div className="chips" role="group" aria-label="Habilidad">
+        <button className="chip chico" aria-pressed={!hab} onClick={() => setHab("")}>Todas</button>
+        {habilidades.map((h) => <button key={h} className="chip chico" aria-pressed={hab === h} onClick={() => setHab(hab === h ? "" : h)}>{h}</button>)}
+      </div>
+      <p className="nota">Los perfiles marcados como ejemplo son ilustrativos: no son personas reales.</p>
+      <div className="grid" style={{ marginTop: 12 }}>
+        {lista.map((x) => (
+          <article className={`card perfil-red ${x.ejemplo ? "" : "propio"}`} key={x.codigo}>
+            <div className="meta"><span className="avatar">{x.nombre.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>{x.ejemplo ? <span className="etq gris">Ejemplo</span> : <span className="etq h">Tu perfil</span>}</div>
+            <h3>{x.nombre}</h3>
+            <p className="dim" style={{ fontSize: 14 }}>{x.oficio} · {x.ciudad} · {x.modalidad}</p>
+            {x.habilidades.map((hb) => <p key={hb} className="verif"><Sello activo tam={26} />{hb}</p>)}
+            <ul className="mini">{x.servicios.map((s) => <li key={s.nombre}>{s.nombre} · <b>desde {s.desde}</b></li>)}</ul>
+            {x.victoria && <p className="nota">Evidencia: {x.victoria}</p>}
+            <div className="fila" style={{ marginTop: "auto" }}>
+              {x.ejemplo ? <button className="btn sec" disabled>Contactar</button> : <a className="btn sec" href={`#verificar-${x.codigo}`}>Mi verificación</a>}
+              <span className="mono dim" style={{ fontSize: 12 }}>{x.codigo}</span>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="lienzo modelo" style={{ marginTop: 32 }}>
+        <div><h2 style={{ color: "#fff" }}>¿Quieres estar en la Red?</h2>
+          <p style={{ color: "#CFE0DB", marginTop: 10 }}>Usa una herramienta, registra tu victoria temprana y certifica la habilidad. Tu perfil queda visible para personas, empresas y entidades que buscan a alguien que ya lo demostró.</p></div>
+        <div className="fila"><a className="btn" href="#h-consultorio">Empezar con Consultorio</a><a className="btn sec claro" href="#planes">Ver planes</a></div>
       </div>
     </section>
   );

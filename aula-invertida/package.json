@@ -1,0 +1,26 @@
+{
+  "name": "aula-invertida-vinkuedu",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Aula Invertida de VinkU edu: encargos reales, 60 % IA y 40 % humano.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "build:artifact": "tsc --noEmit && vite build --mode artifact",
+    "preview": "vite preview",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.1",
+    "@vitejs/plugin-react": "^5.0.4",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.3",
+    "vite-plugin-singlefile": "^2.2.0"
+  }
+}

@@ -169,3 +169,79 @@ blockquote{margin:8px 0 0;padding:12px 14px;border-left:3px solid var(--salvia);
 .calendario li .dim{grid-column:2;font-size:14px}
 .servicio2{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
 @media(min-width:760px){.servicio2{grid-template-columns:minmax(0,2fr) minmax(0,3fr)}}
+
+/* ===== Repositorio y ficha (v3) ===== */
+select{width:100%;font-size:16px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);min-height:46px}
+.btn.sec.claro{color:#EEF4F1;border-color:#2a5257}
+.destacada{background:var(--petroleo);color:#EEF4F1;border-radius:22px;padding:clamp(18px,3vw,28px);position:relative;overflow:hidden}
+.destacada:after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;border:14px solid #86CBB9;opacity:.08}
+.destacada h2{font-size:clamp(30px,5vw,44px);margin:10px 0 6px;color:#fff}
+.destacada>p{color:#CFE0DB}
+.eventos-mini{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.eventos-mini div{background:#173B38;border-radius:12px;padding:8px 14px;display:grid}
+.eventos-mini .mono{color:#FF8A4C}
+.carril{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(240px,300px);gap:12px;overflow-x:auto;padding:12px 2px 6px;scroll-snap-type:x mandatory}
+.carril>*{scroll-snap-align:start}
+.buscador{display:grid;gap:12px}
+.busca{display:flex;gap:8px;flex-wrap:wrap}
+.busca input{flex:1 1 280px;font-size:16px;padding:14px 16px;border-radius:14px;border:2px solid var(--line);background:var(--card);min-height:52px}
+.busca input:focus{border-color:var(--salvia);outline:none}
+.perfil{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:4px 16px}
+.perfil summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:500;color:var(--salvia)}
+.perfil[open]{padding-bottom:14px}
+.perfil-campos{display:grid;gap:0 14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.facetas .chips{margin:4px 0}
+.chip.chico{font-size:14px;padding:7px 13px;min-height:40px}
+.ia-res{border:2px solid var(--salvia);border-radius:18px;padding:16px;margin-top:14px;background:var(--card);display:grid;gap:10px}
+.ia-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;text-decoration:none;color:inherit;padding:10px;border-radius:12px}
+.ia-item:hover{background:var(--tinte)}
+.ia-item p{font-size:15px;color:var(--dim);margin-top:2px}
+.num{width:30px;height:30px;border-radius:50%;background:var(--salvia);color:light-dark(#fff,#081A1C);display:grid;place-items:center;font-weight:800}
+.card.herr{gap:8px}
+.card .meta{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.pie{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:12px}
+.parati{color:var(--albar);font-weight:700;margin-left:auto}
+.modelo{display:grid;gap:24px;grid-template-columns:minmax(0,1fr);align-items:center}
+@media(min-width:900px){.modelo{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+
+.ficha{display:grid;gap:20px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:980px){.ficha{grid-template-columns:minmax(0,1fr) 300px;align-items:start}.lateral{position:sticky;top:84px}}
+.lateral{display:grid;gap:14px}
+.lateral>div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.mini{margin:8px 0 0;padding-left:18px;font-size:15px}.mini li{margin-bottom:4px}
+.evento{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px;margin-top:8px}
+.rel{display:grid;gap:2px;padding:10px 0;border-top:1px solid var(--line);text-decoration:none;color:inherit;font-size:14px}
+.rel:first-of-type{border-top:0}
+.pasos.seis{grid-template-columns:repeat(6,minmax(64px,1fr));overflow-x:auto}
+.pasos.seis button{font-size:12.5px;padding:6px 2px}
+.personalizador .campo{font-weight:500;margin:10px 0 0}
+.preview{border:1px dashed var(--salvia);border-radius:16px;padding:16px;margin-top:12px;background:var(--bg)}
+.secciones{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px}
+.secciones li{padding:8px 12px;border-radius:10px;border:1px solid var(--line);font-size:15px}
+.secciones li.nueva{border-color:var(--salvia);background:var(--tinte);font-weight:500}
+.secciones li.nueva:before{content:"+ ";color:var(--salvia);font-weight:800}
+.comando{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--petroleo);color:#EEF4F1}
+.comando code{flex:1 1 200px;font-family:"IBM Plex Mono",monospace;font-size:14px}
+.comando .btn.sec{color:#EEF4F1;border-color:#2a5257;min-height:40px;padding:8px 14px}
+.cap-cab{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.compara{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:12px;border-radius:14px;overflow:hidden;font-size:14px}
+.compara>*{padding:10px 12px}
+.compara b{background:var(--petroleo);color:#fff}
+.compara b+b{background:#E8692E}
+.compara span{background:var(--tinte);border-top:1px solid var(--line)}
+.compara span.tu{background:var(--albar-tinte)}
+.victoria-meta{margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--albar-tinte)}
+.victoria-meta .mono{color:var(--albar)}
+.victoria-meta p{font-size:18px;font-weight:700;margin-top:4px}
+.victoria{display:flex;gap:16px;align-items:flex-start;padding:18px;border:2px solid var(--albar);border-radius:18px;margin-top:16px}
+.victoria dl{margin:8px 0 0;display:grid;gap:4px}
+.victoria dl div{display:flex;gap:8px;flex-wrap:wrap}.victoria dt{color:var(--dim)}.victoria dd{margin:0;font-weight:700}
+.agenda{display:grid;gap:14px;margin-top:20px}
+.evento-card{display:grid;grid-template-columns:76px minmax(0,1fr);gap:16px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
+.dia{background:var(--petroleo);color:#fff;border-radius:14px;display:grid;place-items:center;align-content:center;height:76px}
+.dia b{font-size:30px;line-height:1}.dia span{font-size:13px;color:#FF8A4C;text-transform:capitalize}
+.planes{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));margin-top:20px}
+.plan{gap:10px}.plan.dest{border:2px solid var(--albar)}
+.precio.grande{font-size:28px}
+.plan .btn{margin-top:auto}
+@media(max-width:600px){.evento-card{grid-template-columns:minmax(0,1fr)}.dia{height:auto;padding:8px;grid-auto-flow:column;gap:8px;justify-content:start}}

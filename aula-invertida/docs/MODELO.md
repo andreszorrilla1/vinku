@@ -42,14 +42,23 @@ El foco inicial es **De Profesional a Emprendedor**: cada herramienta nace de un
 
 **Ritmo:** propuesta de una herramienta nueva por semana, con masterclass en vivo los martes a las 7:00 p. m., virtual. Fechas por definir.
 
-## La ruta de una herramienta (60 % IA · 40 % humano)
-| Momento | Set | Quién | Qué pasa |
-|---|---|---|---|
-| 1. Descargar | Toolset | IA | La IA hace 3 preguntas, ajusta la herramienta al oficio y genera el kit personalizado para descargar |
-| 2. Cápsulas | Skillset | IA | Video, infografía y texto, escritos para el caso |
-| 3. Usar | Skillset | IA | Reto de primer uso en un caso real, con retroalimentación de la IA sobre lo que hizo |
-| 4. En vivo | Mindset | Humano | La persona llega a la masterclass con su pregunta preparada; quien dicta recibe todas las preguntas antes |
-| 5. Lanzar | Mindset | Humano y mundo | La usa o la ofrece con personas reales, registra la evidencia y recibe el sello |
+## La ruta de una herramienta (60 % a tu ritmo con IA · 40 % en vivo)
+| Momento | Set | Qué pasa |
+|---|---|---|
+| 1. Descargar | Toolset | La persona se lleva la herramienta genérica, lista para usar |
+| 2. Personalizar | Toolset | La ajusta ella misma con la pieza de personalización de la herramienta (en Consultorio, la skill `consultorio-enfoque`) |
+| 3. Cápsulas | Skillset | Video, infografía y texto; las de texto se pueden adaptar a su caso con IA |
+| 4. Usar | Skillset | Reto en su trabajo real, con retroalimentación de la IA |
+| 5. Masterclass | Mindset | Un experto entrega conocimiento; la persona llega con su pregunta afinada |
+| 6. Laboratorio | Mindset | Se valida el piloto entre todos y la persona registra su victoria temprana; la IA sugiere el siguiente paso |
+
+Sin sello ni certificado: el cierre es la victoria temprana con datos reales.
+
+## Repositorio inteligente
+- Búsqueda instantánea y por lenguaje natural con IA, que ordena las herramientas y explica por qué le sirven a cada persona.
+- Perfil corto (oficio, situación y objetivo) que ordena el repositorio para cada quien.
+- Filtros por objetivo (nuevo campo de acción, independiente o emprendedor), formato, acceso gratis y disponibilidad.
+- En cada herramienta: fechas en vivo y herramientas relacionadas.
 
 ## Catálogo inicial (propuesta)
 | Semana | Herramienta | Para | Mindset | Precio |
@@ -84,7 +93,8 @@ El foco inicial es **De Profesional a Emprendedor**: cada herramienta nace de un
 - Si la herramienta de la semana queda disponible después de su semana y a qué precio.
 
 ## Próximos pasos técnicos
-1. Prototipo navegable: carpeta `aula-invertida/` del repo `vinku`, rama `aula-invertida`.
-2. Pagos con links de Wompi por herramienta.
-3. Cuentas y persistencia en Supabase (esquema propuesto en `supabase/schema.sql`, por adaptar a herramientas).
-4. Subir los kits reales de cada herramienta: Consultorio primero.
+1. Piloto Consultorio: `piloto/PILOTO-CONSULTORIO.md` y la skill `piloto/consultorio-enfoque/SKILL.md`.
+2. Prototipo navegable: carpeta `aula-invertida/` del repo `vinku`, rama `aula-invertida`.
+3. Pagos con links de Wompi por herramienta.
+4. Cuentas y persistencia en Supabase (esquema propuesto en `supabase/schema.sql`, por adaptar a herramientas).
+5. Subir los kits reales de cada herramienta: Consultorio primero.

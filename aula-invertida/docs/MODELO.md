@@ -1,6 +1,26 @@
 # Aprendizaje Basado en Herramientas · VinkU edu
 Modelo pedagógico y de producto (borrador 2, 20 de noviembre de 2026). Reemplaza al borrador "Aula Invertida".
 
+## Propuesta de valor (definida el 20 de noviembre de 2026)
+**Para** profesionales de ciencias sociales y humanas (desempleados, empleados o independientes) que quieren abrir nuevos campos de acción, fortalecer su perfil independiente o emprender,
+**VinkU edu entrega** herramientas impulsadas con IA para crear, implementar y gestionar productos, servicios y procesos,
+**con** una formación guiada que lleva a victorias tempranas (prototipos y pruebas piloto), contenido que se actualiza todo el tiempo y precios accesibles.
+**No importa el título, importa lo que el profesional puede hacer y ser.**
+
+## Decisiones de experiencia
+- **Herramientas de todo formato:** kits con IA como Consultorio, plantillas, guías, hojas de cálculo y mini apps de VinkU, según el oficio.
+- **Genéricas con personalización autónoma:** cada herramienta arranca genérica y trae su propia forma de personalizarse, que la persona usa sola. Ejemplo: Consultorio tendrá una skill que la ajusta al enfoque psicológico de cada profesional.
+- **Dos espacios en vivo:**
+  - **Masterclass:** un experto entrega conocimiento.
+  - **Laboratorio:** se validan prototipos y pilotos de forma colaborativa.
+- **Tres formas de compra:**
+  - Una herramienta de entrada gratis.
+  - Pago por herramienta ($30.000 a $50.000).
+  - Suscripción mensual (precio por definir).
+- **Canal:** plataforma web de VinkU para aprender y WhatsApp para avisos y comunidad.
+- **Escalera:** de la herramienta a la suscripción y al programa De Profesional a Emprendedor.
+- **Sin certificación como eje.** Cómo se demuestra lo que la persona puede hacer está por definir.
+
 ## La idea en una frase
 Cada experiencia de aprendizaje es una **herramienta** que la persona descarga, ajusta a su oficio y usa en un caso real. Al usarla desarrolla tres cosas:
 - **Toolset:** lo que se lleva (plantillas, skills de Claude, conectores, guías).
@@ -54,8 +74,12 @@ El foco inicial es **De Profesional a Emprendedor**: cada herramienta nace de un
 - **Universidades:** las asignaturas se convierten en herramientas que el estudiante se lleva al sector real.
 
 ## Decisiones abiertas
-- Precio de Consultorio: hoy el kit se regala y la instalación cuesta $50.000. Falta decidir si pasa a $50.000 con todo incluido.
-- Día y hora de la masterclass semanal.
+- Cómo se demuestra el logro sin certificación (portafolio, victorias tempranas, evidencia validada en laboratorio…).
+- Precio de la suscripción mensual y qué incluye.
+- Cuál es la herramienta gratis de entrada (Consultorio ya se regala hoy).
+- Frecuencia y formato de laboratorios frente a masterclasses.
+- Precio de Consultorio: hoy el kit se regala y la instalación cuesta $50.000.
+- Día y hora de los espacios en vivo.
 - Quién graba los videos de las cápsulas (la voz de la marca hoy es Andrés Zorrilla).
 - Si la herramienta de la semana queda disponible después de su semana y a qué precio.
 

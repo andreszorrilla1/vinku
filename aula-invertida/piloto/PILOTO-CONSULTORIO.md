@@ -197,10 +197,10 @@ Va en línea con la parrilla de comunidad: invita a un piloto gratuito, no vende
 > Comenta CONSULTORIO y te escribimos.
 
 ## 9. Pendientes para lanzar
-- [ ] Grabar los videos 1, 2 y 3 (guiones arriba).
-- [ ] Diseñar las infografías en piezas de marca (los contenidos están arriba; la plataforma ya las muestra en versión web).
+- [x] Videos animados: 6 listos (2 de instalar y usar, 4 de hacer crecer el consultorio). Opcional: grabar voz encima.
+- [x] Infografías como piezas de marca (1080×1350): descargables en la plataforma, en Recursos y práctica.
 - [ ] Enlace de la plantilla Consultorio para duplicar.
 - [ ] Probar `consultorio-enfoque` en un Notion de prueba con dos enfoques distintos.
 - [ ] Enlaces de Meet para la masterclass y el laboratorio.
-- [ ] Encuesta de cierre (5 preguntas).
+- [x] Encuesta de cierre: lista en `piloto/microcertificacion-consultorio.md` (sección 8).
 - [ ] Definir el precio de la suscripción antes del 16 de diciembre.

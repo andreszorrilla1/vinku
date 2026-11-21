@@ -3,15 +3,18 @@
 // No solo contenido: cosas para hacer, sobre casos reales o simulados.
 // ============================================================
 
-export type TipoArtefacto = "Caso simulado" | "Simulador" | "Calculadora" | "Checklist" | "Plantillas" | "Autoevaluación";
+export type TipoArtefacto = "Caso simulado" | "Simulador" | "Calculadora" | "Checklist" | "Plantillas" | "Autoevaluación" | "Dilemas" | "Piezas";
 export interface Artefacto { id: string; tipo: TipoArtefacto; titulo: string; para: string; minutos: number }
 
 export const ARTEFACTOS_CONSULTORIO: Artefacto[] = [
   { id: "caso-laura", tipo: "Caso simulado", titulo: "Expediente de práctica: Laura Prueba", para: "Practica todo Consultorio sin tocar datos reales: tres sesiones transcritas, un instrumento, pagos y una señal de riesgo.", minutos: 45 },
+  { id: "dilemas", tipo: "Dilemas", titulo: "Seis decisiones difíciles", para: "Situaciones reales de privacidad, riesgo y documentos. Decides y recibes la explicación.", minutos: 10 },
   { id: "sim-precio", tipo: "Simulador", titulo: "«Está caro»: conversación de precio", para: "Una consultante potencial te pide descuento. Practica sostener tu precio.", minutos: 10 },
   { id: "sim-aliado", tipo: "Simulador", titulo: "Preséntate a una médica", para: "Tienes 3 minutos con una médica general ocupada. Propón remisiones mutuas.", minutos: 10 },
   { id: "sim-empresa", tipo: "Simulador", titulo: "Un taller para una empresa", para: "El jefe de gestión humana de una pyme quiere un taller de estrés con poco presupuesto.", minutos: 12 },
   { id: "numeros", tipo: "Calculadora", titulo: "Mis números del consultorio", para: "Tu precio piso, las horas que se te van y lo que vale tu cartera, con tus datos.", minutos: 8 },
+  { id: "consentimiento", tipo: "Plantillas", titulo: "Consentimiento con autorización de transcripción", para: "Modelo para adaptar: confidencialidad, IA, transcripción opcional y datos personales.", minutos: 10 },
+  { id: "piezas", tipo: "Piezas", titulo: "Infografías para descargar", para: "Las tres infografías de Consultorio en formato de post, para estudiar o compartir.", minutos: 3 },
   { id: "checklist", tipo: "Checklist", titulo: "Instalación y primera semana", para: "Marca cada paso y sabrás exactamente dónde vas.", minutos: 5 },
   { id: "mensajes", tipo: "Plantillas", titulo: "Mensajes listos para WhatsApp", para: "Recordatorio, cobro amable, seguimiento y presentación a un aliado, sin información clínica.", minutos: 5 },
   { id: "rubrica", tipo: "Autoevaluación", titulo: "¿Estás lista para certificarte?", para: "La misma rúbrica de la certificación, para que te evalúes antes.", minutos: 5 },

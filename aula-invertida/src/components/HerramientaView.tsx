@@ -6,7 +6,6 @@ import {
   type Progreso, type Perfil, type PerfilPublico,
 } from "../lib/motor";
 import Certificar, { Sello } from "./Certificar";
-import { certDe } from "../data/certificacion";
 import { relacionadas } from "../lib/repositorio";
 import { descargar } from "../lib/descarga";
 import Puente from "./Puente";
@@ -262,7 +261,7 @@ export default function HerramientaView({ tab: tab0 = "ruta", p, perfil, guardar
         <aside className="lateral">
           <div className="cert-mini">
             <Sello activo={p.cert?.estado === "verificada"} tam={64} />
-            <div><h3>Certifica la habilidad</h3><p className="dim" style={{ fontSize: 14, marginTop: 4 }}>{certDe(h).habilidad}</p>
+            <div><h3>Habilidades certificables</h3>{h.certificables.map((x) => <p key={x.nombre} className="dim" style={{ fontSize: 14, marginTop: 4 }}>{x.nombre}{x.estado === "Próximamente" ? " · próximamente" : ""}</p>)}
               <button className="btn sec" style={{ marginTop: 10, minHeight: 40, padding: "8px 14px" }} onClick={() => document.getElementById("certificar")?.scrollIntoView({ behavior: "smooth" })}>{p.cert?.estado === "verificada" ? "Ver credencial" : "Cómo se certifica"}</button></div>
           </div>
           <div>

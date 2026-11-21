@@ -27,6 +27,7 @@ export interface Progreso {
   numeros?: Record<string, string>;
   simulaciones?: Record<string, { historial: Msg[]; eval?: { eval: EvalCriterio[]; consejo: string } }>;
   autoeval?: Record<string, string>;
+  dilemas?: Record<number, number>;
   actualizado: string;
 }
 
@@ -35,6 +36,7 @@ export interface Cert {
   estado: "en curso" | "en validación" | "verificada";
   prueba?: { texto: string; eval: EvalCriterio[]; resumen: string; lista: boolean };
   codigo?: string; fecha?: string; evaluador?: string;
+  dictamen?: { niveles: Record<string, string>; resultado: "Otorgada" | "Aplazada"; plan?: string };
 }
 export interface PerfilPublico { nombre: string; ciudad: string; modalidad: string; servicio: string; desde: string; publicado: boolean }
 

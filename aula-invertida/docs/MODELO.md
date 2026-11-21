@@ -29,7 +29,11 @@ Una herramienta se comparte con facilidad, así que no es barrera de entrada: es
 4. **Red de profesionales verificados:** marketplace sin costo para quien tenga una microcertificación vigente.
 
 ### Microcertificaciones con insignias digitales
-Cada herramienta certifica una habilidad. En Consultorio es "Gestión de consulta psicológica con IA". La evaluación tiene tres partes:
+Cada herramienta queda amarrada a las habilidades que se pueden microcertificar con ella. En Consultorio:
+- **Disponible:** "Optimización con IA de procesos administrativos y clínicos en consultorio psicológico".
+- **Próximamente:** "Protección de datos y confidencialidad en la práctica psicológica digital".
+
+La tabla completa por herramienta, la ficha, la rúbrica, el caso de evaluación y la guía están en `piloto/microcertificacion-consultorio.md`. La evaluación tiene tres partes:
 | Parte | Qué es |
 |---|---|
 | Evidencia real | La victoria temprana con datos, registrada en el laboratorio |

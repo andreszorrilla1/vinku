@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Herramienta } from "../data/herramientas";
 import { ARTEFACTOS_CONSULTORIO, CASO_LAURA, ESCENARIOS, MENSAJES, CHECKLIST_CONSULTORIO, casoLauraMarkdown, type Artefacto } from "../data/artefactos";
 import { certDe } from "../data/certificacion";
+import { DILEMAS, CONSENTIMIENTO } from "../data/consultorio-micro";
 import { turnoSimulado, evaluarSimulacion, type Perfil, type Progreso } from "../lib/motor";
 import { descargar } from "../lib/descarga";
 import CapsulaCard from "./CapsulaCard";
@@ -18,7 +19,8 @@ export default function Recursos({ h, p, perfil, act }: Props) {
     a.id === "checklist" ? (p.checklist?.length || 0) === CHECKLIST_CONSULTORIO.length
     : a.tipo === "Simulador" ? !!p.simulaciones?.[a.id]?.eval
     : a.id === "numeros" ? !!p.numeros?.meta
-    : a.id === "rubrica" ? Object.keys(p.autoeval || {}).length > 0 : false;
+    : a.id === "rubrica" ? Object.keys(p.autoeval || {}).length > 0
+    : a.id === "dilemas" ? Object.keys(p.dilemas || {}).length === DILEMAS.length : false;
 
   return (
     <div className="recursos">
@@ -43,6 +45,9 @@ export default function Recursos({ h, p, perfil, act }: Props) {
             {sel.id === "checklist" && <Checklist p={p} act={act} />}
             {sel.id === "mensajes" && <Mensajes />}
             {sel.id === "rubrica" && <Rubrica h={h} p={p} act={act} />}
+            {sel.id === "dilemas" && <Dilemas p={p} act={act} />}
+            {sel.id === "consentimiento" && <Consentimiento />}
+            {sel.id === "piezas" && <Piezas />}
           </div>
         )}
       </section>
@@ -242,6 +247,61 @@ function Rubrica({ h, p, act }: { h: Herramienta; p: Progreso; act: (x: Partial<
         </div>
       ))}
       {Object.keys(v).length === c.rubrica.length && <p className={listo ? "accion" : "aviso"}>{listo ? "Estás lista: ve a la certificación al final de tu ruta." : "Practica con el expediente de Laura y los simuladores lo que marcaste como pendiente."}</p>}
+    </>
+  );
+}
+
+function Dilemas({ p, act }: { p: Progreso; act: (x: Partial<Progreso>) => void }) {
+  const r = p.dilemas || {};
+  const aciertos = DILEMAS.filter((d, i) => r[i] === d.correcta).length;
+  return (
+    <>
+      <h3>Seis decisiones difíciles</h3>
+      <p className="nota">Situaciones que pasan en la vida real. Elige y lee por qué.</p>
+      {DILEMAS.map((d, i) => (
+        <div key={i} className="dilema">
+          <p><b>{i + 1}.</b> {d.situacion}</p>
+          <div className="opciones">
+            {d.opciones.map((o, k) => {
+              const elegida = r[i] === k, resp = r[i] !== undefined;
+              return <button key={k} className={`opcion ${resp && k === d.correcta ? "bien" : ""} ${elegida && k !== d.correcta ? "mal" : ""}`} disabled={resp} onClick={() => act({ dilemas: { ...r, [i]: k } })}>{o}</button>;
+            })}
+          </div>
+          {r[i] !== undefined && <p className={r[i] === d.correcta ? "accion" : "aviso"}><b>{r[i] === d.correcta ? "Bien decidido." : "Revisa esta."}</b> {d.porque}</p>}
+        </div>
+      ))}
+      {Object.keys(r).length === DILEMAS.length && (
+        <div className="fila" style={{ marginTop: 12 }}><p><b>{aciertos} de {DILEMAS.length}</b> decisiones alineadas con los principios de Consultorio.</p><button className="btn sec" onClick={() => act({ dilemas: {} })}>Repetir</button></div>
+      )}
+    </>
+  );
+}
+
+function Consentimiento() {
+  const { msg, copiar } = useCopiar();
+  return (
+    <>
+      <h3>Consentimiento con autorización de transcripción</h3>
+      <p className="aviso">Es un modelo para adaptar a tu práctica. Revísalo con tu asesoría jurídica o con Colpsic antes de usarlo.</p>
+      <pre className="doc">{CONSENTIMIENTO}</pre>
+      <div className="fila" style={{ marginTop: 10 }}>
+        <button className="btn sal" onClick={() => copiar(CONSENTIMIENTO)}>Copiar</button>
+        <button className="btn sec" onClick={() => descargar("Consentimiento modelo - Consultorio.md", CONSENTIMIENTO)}>Descargar</button>
+      </div>
+      {msg && <p className="nota" role="status">{msg}</p>}
+    </>
+  );
+}
+
+function Piezas() {
+  const ps = [["consultorio-info1", "El recorrido de una sesión"], ["consultorio-info2", "Lo que hace la IA, lo que decides tú"], ["consultorio-info3", "Tu semana con Consultorio"]];
+  return (
+    <>
+      <h3>Infografías para descargar</h3>
+      <p className="nota">Formato de post (1080 × 1350). Mantén presionada la imagen en el celular para guardarla.</p>
+      <div className="carril piezas-g">
+        {ps.map(([f, t]) => <figure key={f}><img src={`piezas/${f}.png`} alt={t} loading="lazy" /><figcaption>{t}</figcaption><a className="btn sec" href={`piezas/${f}.png`} target="_blank" rel="noreferrer">Abrir en tamaño completo</a></figure>)}
+      </div>
     </>
   );
 }

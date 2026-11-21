@@ -16,14 +16,14 @@ export interface Certificacion {
 
 const ESPECIFICAS: Record<string, Omit<Certificacion, "herramientaId">> = {
   consultorio: {
-    habilidad: "Gestión de consulta psicológica con IA",
-    caso: "Te enviamos un expediente de evaluación distinto al de práctica, con la transcripción ficticia de una sesión de seguimiento. Con Consultorio genera el registro de la sesión, el cobro y un mensaje de recordatorio para la consultante. Pega aquí lo que entregaste y explica tus decisiones, sobre todo las de riesgo y privacidad.",
-    rubrica: ["Registro fiel a lo dicho, sin información inventada", "Riesgo y datos sensibles bien manejados", "Cobro y seguimiento correctos", "Mensaje a la consultante sin información clínica"],
+    habilidad: "Optimización con IA de procesos administrativos y clínicos en consultorio psicológico",
+    caso: "Caso de evaluación Daniel Prueba: resuelve en tu Notion de práctica la sesión 4 (con PHQ-9 y una señal de riesgo), el abono, el mensaje de la esposa y la constancia para el colegio. Aquí pega tu nota de decisiones y un resumen de tus entregables.",
+    rubrica: ["Fidelidad del registro", "Riesgo y datos sensibles", "Cobros, documentos y constancias", "Comunicación con terceros", "Criterio profesional frente a la IA"],
     requisitoRed: "Tarjeta profesional de psicología vigente (se verifica antes de publicar servicios clínicos).",
     servicioRed: "Consulta psicológica independiente con procesos documentados",
   },
   consultora: {
-    habilidad: "Diseño y venta de servicios de consultoría",
+    habilidad: "Diseño, precio y venta de servicios de consultoría",
     caso: "Te damos el caso de una fundación que necesita evaluar un programa. Arma la oferta en una página, el precio en tres niveles y la propuesta.",
     rubrica: ["Oferta clara: cliente, problema y alcance", "Precio con piso calculado y tres niveles", "Propuesta coherente y verificable"],
     servicioRed: "Consultoría por proyecto",
@@ -35,7 +35,7 @@ export function certDe(h: Herramienta): Certificacion {
   if (e) return { herramientaId: h.id, ...e };
   return {
     herramientaId: h.id,
-    habilidad: h.promesa.replace(/\.$/, ""),
+    habilidad: h.certificables[0]?.nombre || h.promesa.replace(/\.$/, ""),
     caso: `Prueba práctica: ${h.reto.tarea} Usa un caso que te asignamos y explica tus decisiones.`,
     rubrica: h.skillset,
     servicioRed: h.promesa.replace(/\.$/, ""),
@@ -55,13 +55,13 @@ export interface PerfilRed {
 }
 export const EJEMPLOS_RED: PerfilRed[] = [
   { codigo: "VKU-CONS-0001", nombre: "María Restrepo", oficio: "Psicóloga clínica", ciudad: "Medellín", modalidad: "Presencial y virtual",
-    habilidades: ["Gestión de consulta psicológica con IA"], servicios: [{ nombre: "Sesión individual adultos", desde: "$130.000" }, { nombre: "Taller de manejo de ansiedad para empresas", desde: "$900.000" }],
+    habilidades: ["Optimización con IA de procesos administrativos y clínicos en consultorio psicológico"], servicios: [{ nombre: "Sesión individual adultos", desde: "$130.000" }, { nombre: "Taller de manejo de ansiedad para empresas", desde: "$900.000" }],
     victoria: "Cerró 3 semanas seguidas sin borradores pendientes", ejemplo: true, fecha: "2026-12-16" },
   { codigo: "VKU-CONS-0002", nombre: "Julián Ospina", oficio: "Psicólogo sistémico", ciudad: "Bogotá", modalidad: "Virtual",
-    habilidades: ["Gestión de consulta psicológica con IA"], servicios: [{ nombre: "Terapia de pareja", desde: "$160.000" }],
+    habilidades: ["Optimización con IA de procesos administrativos y clínicos en consultorio psicológico"], servicios: [{ nombre: "Terapia de pareja", desde: "$160.000" }],
     victoria: "Recuperó 4 horas por semana de documentación", ejemplo: true, fecha: "2026-12-16" },
   { codigo: "VKU-CNSL-0001", nombre: "Laura Gómez", oficio: "Socióloga y consultora", ciudad: "Cali", modalidad: "Virtual",
-    habilidades: ["Diseño y venta de servicios de consultoría"], servicios: [{ nombre: "Evaluación de programas sociales", desde: "$3.500.000" }],
+    habilidades: ["Diseño, precio y venta de servicios de consultoría"], servicios: [{ nombre: "Evaluación de programas sociales", desde: "$3.500.000" }],
     victoria: "Envió su primera propuesta con precio por resultado", ejemplo: true, fecha: "2027-01-10" },
 ];
 

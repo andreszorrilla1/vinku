@@ -1,0 +1,33 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
+  ],
+  "type": ["VerifiableCredential", "OpenBadgeCredential"],
+  "id": "https://«dominio-vinkuedu»/credenciales/VKU-CONS-0001",
+  "name": "Optimización con IA de procesos administrativos y clínicos en consultorio psicológico",
+  "issuer": {
+    "id": "https://«dominio-vinkuedu»/emisor",
+    "type": ["Profile"],
+    "name": "VinkU edu",
+    "url": "https://«dominio-vinkuedu»"
+  },
+  "validFrom": "2026-12-16T00:00:00-05:00",
+  "validUntil": "2027-12-16T00:00:00-05:00",
+  "credentialSubject": {
+    "type": ["AchievementSubject"],
+    "identifier": [{ "type": "IdentityObject", "identityHash": "«hash del correo de la persona»", "identityType": "emailAddress", "hashed": true }],
+    "achievement": {
+      "id": "https://«dominio-vinkuedu»/microcertificaciones/consultorio",
+      "type": ["Achievement"],
+      "achievementType": "MicroCredential",
+      "name": "Optimización con IA de procesos administrativos y clínicos en consultorio psicológico",
+      "description": "Optimiza con inteligencia artificial los procesos administrativos y clínicos de su consultorio psicológico independiente, manteniendo la fidelidad del registro clínico, la prioridad del riesgo, la confidencialidad y el control profesional de cada decisión.",
+      "criteria": {
+        "narrative": "Evaluación exhaustiva en tres partes: evidencia real de uso (victoria temprana), caso simulado de evaluación (Daniel Prueba) y evaluación en vivo de 30 minutos (simulación y sustentación). Se otorga con nivel «Competente» o superior en los cinco criterios de la rúbrica: fidelidad del registro; riesgo y datos sensibles; cobros, documentos y constancias; comunicación con terceros; criterio profesional frente a la IA."
+      },
+      "image": { "id": "https://«dominio-vinkuedu»/insignias/consultorio.png", "type": "Image" },
+      "tag": ["psicología", "inteligencia artificial", "gestión de consulta", "VinkU edu"]
+    }
+  }
+}

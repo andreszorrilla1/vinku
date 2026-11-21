@@ -3,6 +3,7 @@ import { HERRAMIENTAS, EVENTOS, PLANES, ESCALERA, OBJETIVOS, FORMATOS, herramien
 import { avance, nuevoProgreso, buscarConIA, MOMENTOS, ULTIMO, type Progreso, type Perfil, type Resultado, type PerfilPublico } from "./lib/motor";
 import { certDe, codigoNuevo, EJEMPLOS_RED, type PerfilRed } from "./data/certificacion";
 import { Sello } from "./components/Certificar";
+import { RUBRICA, NIVELES, GUIA_VIVO, CASO_DANIEL } from "./data/consultorio-micro";
 import { filtrar, demoBusqueda, proximoEvento, type Filtros } from "./lib/repositorio";
 import { modoIA, type ModoIA } from "./lib/ia";
 import Puente, { Isotipo } from "./components/Puente";
@@ -179,6 +180,7 @@ function Repositorio({ prog, perfil, setPerfil }: { prog: Record<string, Progres
                 <p>{h.promesa}</p>
                 <p className="dim" style={{ fontSize: 14 }}>{h.oficio}</p>
                 <p className="mindset chico">De <s>{h.mindset.de}</s> a <em className="s">{h.mindset.a}</em></p>
+                {h.certificables[0] && <p className="certifica"><Sello activo tam={22} /><span>Certifica: {h.certificables[0].nombre}{h.certificables.length > 1 ? ` y ${h.certificables.length - 1} más` : ""}</span></p>}
                 <div className="pie">
                   <span className="etq">{h.formato}</span>
                   {h.objetivos.map((o) => <span className="etq gris" key={o}>{o}</span>)}
@@ -260,10 +262,15 @@ function Agenda({ prog, guardar }: { prog: Record<string, Progreso>; guardar: (p
         </article>
         <article className="card"><h3>Para quien evalúa: microcertificaciones</h3>
           <label className="campo">Evaluador<input type="text" value={evaluador} onChange={(x) => setEvaluador(x.target.value)} /></label>
-          {pendientes.length ? pendientes.map((p) => { const h = herramientaPorId(p.herramientaId)!; return (
-            <div key={h.id} className="pend"><b>{certDe(h).habilidad}</b><p className="dim">{p.cert!.prueba?.resumen}</p>
-              <button className="btn" onClick={() => guardar({ ...p, cert: { ...p.cert!, estado: "verificada", codigo: codigoNuevo(h), fecha: new Date().toISOString(), evaluador: evaluador || "Evaluador VinkU" }, actualizado: new Date().toISOString() })}>Validar y emitir insignia</button></div>
-          ); }) : <p className="dim">No hay pruebas esperando validación.</p>}
+          <details className="perfil" style={{ marginTop: 10 }}>
+            <summary>Guía de la evaluación en vivo</summary>
+            <ul className="mini">{GUIA_VIVO.agenda.map((a) => <li key={a.min}><b>{a.min} · {a.bloque}:</b> {a.texto}</li>)}</ul>
+            <p style={{ marginTop: 8 }}><b>Frases para la simulación (rector del colegio)</b></p>
+            <ul className="mini">{GUIA_VIVO.simulacion.map((x) => <li key={x}>{x}</li>)}</ul>
+            <p style={{ marginTop: 8 }}><b>Respuestas esperadas del caso</b></p>
+            <ul className="mini">{CASO_DANIEL.claves.map((x) => <li key={x}>{x}</li>)}</ul>
+          </details>
+          {pendientes.length ? pendientes.map((p) => <Dictamen key={p.herramientaId} p={p} evaluador={evaluador} guardar={guardar} />) : <p className="dim">No hay pruebas esperando validación.</p>}
         </article>
         <article className="card"><h3>Victorias para el laboratorio</h3>
           {victorias.length ? <ul className="mini">{victorias.map((p) => <li key={p.herramientaId}><b>{herramientaPorId(p.herramientaId)!.nombre}:</b> {Object.entries(p.victoria!.valores).map(([k, v]) => `${k}: ${v}`).join(" · ")}</li>)}</ul> : <p className="dim">Aún no hay victorias registradas.</p>}
@@ -362,5 +369,30 @@ function Red({ prog, perfilRed, codigo }: { prog: Record<string, Progreso>; perf
         <div className="fila"><a className="btn" href="#h-consultorio">Empezar con Consultorio</a><a className="btn sec claro" href="#planes">Ver planes</a></div>
       </div>
     </section>
+  );
+}
+
+function Dictamen({ p, evaluador, guardar }: { p: Progreso; evaluador: string; guardar: (p: Progreso) => void }) {
+  const h = herramientaPorId(p.herramientaId)!;
+  const crits = h.id === "consultorio" ? RUBRICA.map((r) => r.criterio) : certDe(h).rubrica;
+  const [niv, setNiv] = useState<Record<string, string>>({});
+  const [plan, setPlan] = useState("");
+  const completos = crits.every((c) => niv[c]);
+  const otorgada = completos && crits.every((c) => NIVELES.indexOf(niv[c] as typeof NIVELES[number]) >= 2);
+  const emitir = () => guardar({ ...p, cert: otorgada
+    ? { ...p.cert!, estado: "verificada", codigo: codigoNuevo(h), fecha: new Date().toISOString(), evaluador: evaluador || "Evaluador VinkU", dictamen: { niveles: niv, resultado: "Otorgada" } }
+    : { ...p.cert!, estado: "en curso", prueba: p.cert!.prueba ? { ...p.cert!.prueba, lista: false, resumen: `Aplazada por el evaluador. Plan de mejora: ${plan || "revisar los criterios marcados por debajo de Competente"}. Nuevo intento en 30 días.` } : undefined, dictamen: { niveles: niv, resultado: "Aplazada", plan } },
+    actualizado: new Date().toISOString() });
+  return (
+    <div className="pend">
+      <b>{certDe(h).habilidad}</b>
+      <p className="dim">{p.cert!.prueba?.resumen}</p>
+      {crits.map((c) => (
+        <div key={c}><p style={{ fontSize: 14, fontWeight: 600 }}>{c}</p>
+          <div className="chips" style={{ margin: "4px 0" }}>{NIVELES.map((n) => <button key={n} className="chip chico" aria-pressed={niv[c] === n} onClick={() => setNiv({ ...niv, [c]: n })}>{n}</button>)}</div></div>
+      ))}
+      {completos && !otorgada && <label className="campo">Plan de mejora<input type="text" value={plan} onChange={(x) => setPlan(x.target.value)} /></label>}
+      <button className="btn" disabled={!completos} onClick={emitir}>{!completos ? "Marca todos los criterios" : otorgada ? "Otorgar y emitir insignia" : "Aplazar con plan de mejora"}</button>
+    </div>
   );
 }

@@ -40,6 +40,7 @@ export interface Herramienta {
   metricas: string[];          // lo que se reporta en el laboratorio
   negocio: string;
   siguiente: { nombre: string; detalle: string; precio: string }[];
+  certificables: { nombre: string; estado: "Disponible" | "Próximamente" }[]; // habilidades que se pueden microcertificar con esta herramienta
 }
 
 const SIGUIENTE_BASE = [
@@ -47,7 +48,19 @@ const SIGUIENTE_BASE = [
   { nombre: "De Profesional a Emprendedor", detalle: "Seis semanas para armar tu caja de herramientas y lanzar una al mercado. Cohorte 1: 20 de enero de 2027.", precio: "$2.400.000 · preventa $1.990.000" },
 ];
 
-type Corta = Omit<Herramienta, "id" | "nombre" | "capsulas" | "siguiente"> & { capsulas?: Capsula[] };
+const CERTIFICABLES: Record<string, Herramienta["certificables"]> = {
+  consultorio: [{ nombre: "Optimización con IA de procesos administrativos y clínicos en consultorio psicológico", estado: "Disponible" }, { nombre: "Protección de datos y confidencialidad en la práctica psicológica digital", estado: "Próximamente" }],
+  consultora: [{ nombre: "Diseño, precio y venta de servicios de consultoría", estado: "Próximamente" }],
+  radar: [{ nombre: "Identificación de oportunidades de negocio en el cumplimiento normativo", estado: "Próximamente" }],
+  mapa: [{ nombre: "Traducción del perfil humanista a nuevos campos de acción", estado: "Próximamente" }],
+  insights: [{ nombre: "Investigación cualitativa rápida asistida por IA para decisiones empresariales", estado: "Próximamente" }],
+  contenido: [{ nombre: "Gestión de sistemas de contenido con IA para pymes", estado: "Próximamente" }],
+  proyectos: [{ nombre: "Formulación de proyectos sociales asistida por IA", estado: "Próximamente" }],
+  clima: [{ nombre: "Diagnóstico de clima organizacional para pymes", estado: "Próximamente" }],
+  tarifa: [{ nombre: "Cálculo y defensa de tarifas profesionales", estado: "Próximamente" }],
+};
+
+type Corta = Omit<Herramienta, "id" | "nombre" | "capsulas" | "siguiente" | "certificables"> & { capsulas?: Capsula[] };
 const corta = (id: string, nombre: string, x: Corta): Herramienta => ({
   ...x,
   id, nombre,
@@ -57,6 +70,7 @@ const corta = (id: string, nombre: string, x: Corta): Herramienta => ({
     { formato: "Texto", titulo: "Cómo se vuelve negocio", minutos: 4, idea: x.negocio, cuerpo: [x.oportunidad, x.negocio, `El cambio de mentalidad: de «${x.mindset.de}» a «${x.mindset.a}».`] },
   ],
   siguiente: SIGUIENTE_BASE,
+  certificables: CERTIFICABLES[id] || [],
 });
 
 export const HERRAMIENTAS: Herramienta[] = [
@@ -121,6 +135,7 @@ export const HERRAMIENTAS: Herramienta[] = [
       { nombre: "Instalación asistida 1:1", detalle: "Una hora con un consultor de VinkU para dejar tu Consultorio funcionando y personalizado.", precio: "$50.000" },
       ...SIGUIENTE_BASE,
     ],
+    certificables: CERTIFICABLES.consultorio,
   },
   corta("consultora", "Consultora en una caja", {
     oficio: "Profesionales de ciencias sociales y humanas que quieren vender consultoría",

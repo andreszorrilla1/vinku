@@ -32,9 +32,9 @@ export default function Certificar({ h, p, guardar, perfilRed, setPerfilRed }: P
     <section className="panel cert" id="certificar">
       <div className="cert-cab">
         <div>
-          <span className="mono" style={{ color: "var(--albar)" }}>Certificación de habilidad</span>
+          <span className="mono" style={{ color: "var(--albar)" }}>Microcertificación · insignia digital</span>
           <h2 style={{ marginTop: 6 }}>{c.habilidad}</h2>
-          <p className="dim" style={{ marginTop: 6 }}>La herramienta se puede compartir; la habilidad no. Demuéstrala con evidencia, una prueba práctica y una validación humana, y entra a la Red de profesionales verificados.</p>
+          <p className="dim" style={{ marginTop: 6 }}>La herramienta se puede compartir; la habilidad no. Demuéstrala en una evaluación exhaustiva (evidencia real, caso simulado y evaluación en vivo), obtén tu insignia digital y entra gratis a la Red de profesionales verificados.</p>
         </div>
         <Sello activo={hecho.validacion} />
       </div>
@@ -52,7 +52,7 @@ export default function Certificar({ h, p, guardar, perfilRed, setPerfilRed }: P
 
       {p.victoria && cert.estado !== "verificada" && (
         <div className="prueba">
-          <h3>Prueba práctica</h3>
+          <h3>Caso simulado de evaluación</h3>
           <p>{c.caso}</p>
           <p className="nota"><b>Rúbrica:</b> {c.rubrica.join(" · ")}</p>
           <label className="campo">Tu entrega y tus decisiones
@@ -66,7 +66,7 @@ export default function Certificar({ h, p, guardar, perfilRed, setPerfilRed }: P
                 <div key={e.criterio} className={`crit ${e.nivel === "Logrado" ? "ok" : e.nivel === "En proceso" ? "medio" : ""}`}><b>{e.criterio}</b><em>{e.nivel}</em><span>{e.comentario}</span></div>
               ))}
               <p className="nota">{cert.prueba.resumen}</p>
-              {cert.estado === "en validación" && <p className="aviso">Tu prueba pasó la primera lectura. Un evaluador de VinkU la revisará y agendará contigo 15 minutos. En el prototipo, la validación se hace desde <a href="#agenda">Agenda › Para quien evalúa</a>.</p>}
+              {cert.estado === "en validación" && <p className="aviso">Tu prueba pasó la primera lectura. Un evaluador de VinkU la revisará y agendará contigo la evaluación en vivo (30 minutos). En el prototipo, la validación se hace desde <a href="#agenda">Agenda › Para quien evalúa</a>.</p>}
             </div>
           )}
         </div>
@@ -77,17 +77,17 @@ export default function Certificar({ h, p, guardar, perfilRed, setPerfilRed }: P
           <div className="cred-tarjeta">
             <Sello activo />
             <div>
-              <span className="mono">VinkU edu · Habilidad verificada</span>
+              <span className="mono">VinkU edu · Insignia digital · Microcertificación</span>
               <h3>{c.habilidad}</h3>
               <p>Código <b>{cert.codigo}</b> · {new Date(cert.fecha!).toLocaleDateString("es-CO")} · vigente 12 meses</p>
               <p className="dim">Validada por {cert.evaluador}</p>
             </div>
           </div>
           <div className="fila" style={{ marginTop: 12 }}>
-            <button className="btn sec" onClick={() => copiar(`Habilidad verificada por VinkU edu: ${c.habilidad}. Código ${cert.codigo}. Verifícala en vinkuedu · Red.`)}>Copiar para LinkedIn</button>
+            <button className="btn sec" onClick={() => copiar(`Microcertificación VinkU edu (insignia digital): ${c.habilidad}. Código ${cert.codigo}. Verifícala en la Red de VinkU edu.`)}>Copiar insignia para LinkedIn</button>
             <a className="btn sec" href={`#verificar-${cert.codigo}`}>Ver verificación pública</a>
           </div>
-          <h3 style={{ marginTop: 20 }}>Tu perfil en la Red</h3>
+          <h3 style={{ marginTop: 20 }}>Tu perfil en la Red · gratis</h3>
           {c.requisitoRed && <p className="nota">{c.requisitoRed}</p>}
           <div className="perfil-campos">
             <label className="campo">Nombre<input type="text" value={perfilRed.nombre} onChange={(x) => setPerfilRed({ ...perfilRed, nombre: x.target.value })} /></label>

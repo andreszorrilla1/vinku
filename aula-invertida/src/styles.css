@@ -275,3 +275,32 @@ select{width:100%;font-size:16px;padding:12px 14px;border-radius:12px;border:1px
 .perfil-red.propio{border:2px solid var(--albar)}
 .avatar{width:52px;height:52px;border-radius:50%;background:var(--petroleo);color:#EEF4F1;display:grid;place-items:center;font-weight:800}
 .verif{display:flex;gap:8px;align-items:center;font-size:14px;font-weight:600;color:var(--salvia)}
+
+/* ===== Recursos y práctica ===== */
+.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:5px}
+.tabs button{flex:1;border:0;background:none;border-radius:10px;min-height:44px;font-weight:600;color:var(--dim)}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--bg)}
+.recursos{display:grid;gap:20px}
+.recursos .panel{margin-top:0}
+.artefactos{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));margin-top:14px}
+.artefacto{display:grid;gap:6px;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:14px;font-size:14px;color:inherit}
+.artefacto b{font-size:16px}
+.artefacto.on{border:2px solid var(--albar);background:var(--card)}
+.art-panel{margin-top:16px;border-top:2px solid var(--albar);padding-top:16px}
+.carril.videos{grid-auto-columns:minmax(250px,290px)}
+.carril.videos .capsula{margin-top:0}
+.carril.videos .clip{width:100%}
+.transcripcion{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;margin-top:10px;font-size:15px;max-height:340px;overflow:auto}
+.transcripcion b{color:var(--salvia)}.transcripcion b.laura{color:var(--albar)}
+.chat.sim{max-height:420px;overflow:auto;padding:4px}
+.quien-sim{display:block;font-size:11px;color:var(--salvia);margin-bottom:4px}
+.resultados{display:grid;gap:8px;margin-top:14px}
+.resultados>div{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
+.resultados>div.dest{background:var(--albar);color:#fff;border-color:var(--albar)}
+.resultados b{white-space:nowrap}
+.check{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:6px}
+.check label{display:flex;gap:12px;align-items:center;min-height:44px;padding:6px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer}
+.check input{width:22px;height:22px;accent-color:#2D7D70}
+.plantilla{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px;display:grid;gap:8px}
+.plantilla .btn{justify-self:start}
+.auto{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}

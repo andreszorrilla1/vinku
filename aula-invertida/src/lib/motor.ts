@@ -5,7 +5,8 @@
 // ============================================================
 
 import { HERRAMIENTAS, type Herramienta, type Objetivo } from "../data/herramientas";
-import { pedirJSON } from "./ia";
+import { pedirJSON, type Msg } from "./ia";
+import type { Escenario } from "../data/artefactos";
 
 export interface Perfil { oficio: string; objetivo: Objetivo | ""; situacion: "" | "Desempleado" | "Empleado" | "Independiente" }
 export interface Retro { retro: string; logradas: number[]; siguiente: string }
@@ -22,6 +23,10 @@ export interface Progreso {
   pregunta?: string;
   victoria?: { valores: Record<string, string>; fecha: string; consejo?: string };
   cert?: Cert;
+  checklist?: number[];
+  numeros?: Record<string, string>;
+  simulaciones?: Record<string, { historial: Msg[]; eval?: { eval: EvalCriterio[]; consejo: string } }>;
+  autoeval?: Record<string, string>;
   actualizado: string;
 }
 
@@ -140,6 +145,35 @@ Responde SOLO con JSON: {"eval":[{"criterio":"","nivel":"Logrado","comentario":"
     };
   });
   return { eval: (r.eval || []).slice(0, rubrica.length), resumen: r.resumen || "", lista: !!r.lista };
+}
+
+// ---------- Simuladores: juego de roles ----------
+// En el historial, "user" es la profesional que practica y "assistant" es el personaje.
+export async function turnoSimulado(e: Escenario, historial: Msg[]): Promise<string> {
+  const system = `Juego de roles para practicar una conversación profesional real. ${e.rol}
+Mantente siempre en el personaje, en español de Colombia. Nunca des consejos ni evalúes a la otra persona: solo responde como el personaje, en máximo 45 palabras.
+Responde SOLO con JSON: {"respuesta":""}`;
+  const msgs: Msg[] = [{ role: "user", content: `(Empieza la conversación. Tu primera frase fue: "${e.abre}")` }, { role: "assistant", content: JSON.stringify({ respuesta: e.abre }) },
+    ...historial.slice(1).map((m) => (m.role === "assistant" ? { role: "assistant" as const, content: JSON.stringify({ respuesta: m.content }) } : m))];
+  const r = await pedirJSON<{ respuesta: string }>(system, msgs, () => {
+    const n = historial.filter((m) => m.role === "user").length;
+    return { respuesta: e.demo[Math.min(n - 1, e.demo.length - 1)] || "Listo, gracias." };
+  });
+  return r.respuesta || "…";
+}
+
+export async function evaluarSimulacion(e: Escenario, historial: Msg[]): Promise<{ eval: EvalCriterio[]; consejo: string }> {
+  const system = `${VOZ}
+Evalúas una práctica de conversación (simulador) con "${e.personaje}". Contexto: ${e.contexto}
+CRITERIOS: ${e.criterios.map((c, i) => `${i + 1}. ${c}`).join(" ")}
+Para cada criterio: "Logrado", "En proceso" o "No evidenciado", con un comentario concreto que cite lo que la profesional dijo (máximo 25 palabras). Luego un consejo de máximo 40 palabras con una frase que podría usar la próxima vez.
+Responde SOLO con JSON: {"eval":[{"criterio":"","nivel":"Logrado","comentario":""}],"consejo":""}`;
+  const texto = historial.map((m) => `${m.role === "user" ? "Profesional" : e.personaje}: ${m.content}`).join("\n");
+  const r = await pedirJSON<{ eval: EvalCriterio[]; consejo: string }>(system, [{ role: "user", content: texto }], () => ({
+    eval: e.criterios.map((c) => ({ criterio: c, nivel: "En proceso", comentario: "Lectura demo: con la IA activa, aquí ves qué dijiste bien y qué ajustar." })),
+    consejo: "Consejo demo: practica una frase que explique tu valor en menos de 20 palabras.",
+  }));
+  return { eval: (r.eval || []).slice(0, e.criterios.length), consejo: r.consejo || "" };
 }
 
 export function kitMarkdown(h: Herramienta): string {

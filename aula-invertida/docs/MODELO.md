@@ -19,36 +19,51 @@ Modelo pedagógico y de producto (borrador 2, 20 de noviembre de 2026). Reemplaz
   - Suscripción mensual (precio por definir).
 - **Canal:** plataforma web de VinkU para aprender y WhatsApp para avisos y comunidad.
 - **Escalera:** de la herramienta a la suscripción y al programa De Profesional a Emprendedor.
-- **Certificación de habilidades como valor central** (decisión del 20 de noviembre, por la noche): ver la sección "Dónde está el valor".
+- **Microcertificaciones con insignias digitales como valor central**, cobradas por ser evaluaciones exhaustivas. La Red es gratis. Ver "Dónde está el valor".
 
 ## Dónde está el valor: las herramientas son abiertas, la habilidad se certifica
-Una herramienta se comparte con facilidad, así que no es barrera de entrada: es la puerta. El valor por el que se paga se acumula en cuatro capas:
+Una herramienta se comparte con facilidad, así que no es barrera de entrada: es la puerta. El valor se acumula en cuatro capas:
 1. **Herramienta:** gratis o de $30.000 a $50.000. Se puede compartir y funciona como mercadeo.
-2. **Formación:** cápsulas, masterclasses, laboratorios y retroalimentación con IA. Va en la suscripción.
-3. **Certificación de habilidad:** demostrar que sabes hacerlo. Es el valor principal.
-4. **Red de profesionales verificados:** un marketplace donde quien certificó ofrece sus servicios de psicología, consultoría o metodología a personas, empresas y entidades.
+2. **Formación y práctica:** cápsulas, artefactos de práctica, masterclasses y laboratorios. Va en la suscripción.
+3. **Microcertificación (insignia digital):** es lo que se cobra, porque es una experiencia de evaluación exhaustiva de la competencia.
+4. **Red de profesionales verificados:** marketplace sin costo para quien tenga una microcertificación vigente.
 
-### Cómo se certifica una habilidad
-Cada herramienta certifica una habilidad. En Consultorio es "Gestión de consulta psicológica con IA".
-| Requisito | Qué es |
+### Microcertificaciones con insignias digitales
+Cada herramienta certifica una habilidad. En Consultorio es "Gestión de consulta psicológica con IA". La evaluación tiene tres partes:
+| Parte | Qué es |
 |---|---|
 | Evidencia real | La victoria temprana con datos, registrada en el laboratorio |
-| Prueba práctica | Un caso que VinkU entrega y la persona resuelve con la herramienta. La IA hace una primera lectura con la rúbrica. |
-| Validación humana | Un evaluador de VinkU revisa la prueba y conversa 15 minutos con la persona |
+| Caso simulado de evaluación | Un expediente distinto al de práctica, resuelto con la herramienta. La IA hace una primera lectura con la rúbrica. |
+| Evaluación en vivo | Con un evaluador de VinkU: una simulación de una situación real y la sustentación del caso (30 min) |
 
-**Resultado:** una credencial con código verificable (por ejemplo, VKU-CONS-0001), vigente 12 meses. Se renueva con las actualizaciones de la herramienta, lo que sostiene la formación permanente.
+**Resultado:** una insignia digital con código verificable (por ejemplo, VKU-CONS-0001), vigente 12 meses. Se puede compartir en LinkedIn y se verifica en la Red. La renovación anual sostiene la formación permanente.
+
+**Recomendación técnica:** emitir las insignias con el estándar abierto Open Badges, para que se puedan llevar a otras plataformas y tengan más respaldo.
 
 **Respaldo institucional (ruta):**
-- VinkU, como SaaS, emite su propia credencial de habilidad. No es un título.
-- El respaldo crece con co-emisión junto a universidades aliadas (la línea de universidades ya existe), gremios y empresas que contratan desde la Red.
-- Antes de lanzar, conviene revisar con un abogado cómo nombrarla legalmente (por ejemplo, "credencial" o "certificado de educación informal") para no confundirla con una certificación de competencias acreditada.
+- VinkU, como SaaS, emite sus propias microcertificaciones. No son títulos.
+- El respaldo crece con co-emisión junto a universidades aliadas, gremios y empresas que contratan desde la Red.
+- Conviene revisar con un abogado el nombre legal antes de lanzar.
 
 ### La Red (marketplace)
-- **Quién entra:** solo profesionales con al menos una habilidad verificada y vigente.
+- **Costo:** ninguno. Se cobra la microcertificación, no la presencia en la Red.
+- **Quién entra:** solo profesionales con al menos una microcertificación vigente.
 - **Requisito para servicios de psicología:** además, la tarjeta profesional vigente, verificada antes de publicar.
-- **El perfil muestra:** habilidades verificadas con su código, la evidencia (la victoria temprana), los servicios con "precio desde" y la modalidad.
-- **Quién contrata:** personas, empresas (bienestar, investigación, consultoría) y entidades. Conecta con las líneas B2B del laboratorio y del upskilling.
-- **Ingresos posibles (por decidir):** suscripción del perfil, comisión por servicio contratado, o perfil incluido mientras la certificación esté vigente.
+- **El perfil muestra:** las insignias con su código, la evidencia (la victoria temprana), los servicios con "precio desde" y la modalidad.
+- **Quién contrata:** personas, empresas y entidades. Conecta con las líneas B2B.
+
+### Artefactos de aprendizaje (no solo contenido)
+Todo centrado en la vida real o en casos simulados. Para Consultorio:
+- **Expediente de práctica "Laura Prueba":** tres sesiones transcritas (primera vez, seguimiento con GAD-7 y una señal de riesgo), pagos y lo que la psicóloga debería ver en cada ejercicio.
+- **Simuladores con IA (juego de roles con retroalimentación por criterios):**
+  - "Está caro".
+  - Presentarse a una médica.
+  - Un taller para una empresa.
+- **Calculadora "Mis números del consultorio":** precio piso, horas fuera de sesión y cartera, descargable en CSV.
+- **Para ejecutar y prepararse:**
+  - Checklist de instalación y primera semana.
+  - Plantillas de mensajes sin información clínica.
+  - Autoevaluación con la rúbrica de la microcertificación.
 
 ## La idea en una frase
 Cada experiencia de aprendizaje es una **herramienta** que la persona descarga, ajusta a su oficio y usa en un caso real. Al usarla desarrolla tres cosas:
@@ -112,8 +127,7 @@ Sin sello ni certificado: el cierre es la victoria temprana con datos reales.
 - **Universidades:** las asignaturas se convierten en herramientas que el estudiante se lleva al sector real.
 
 ## Decisiones abiertas
-- Precio de la certificación y de la renovación anual.
-- Modelo de ingresos de la Red (suscripción, comisión o incluida en la certificación).
+- Precio de cada microcertificación y de su renovación anual.
 - Quiénes evalúan (consultores VinkU, pares certificados, docentes de universidades aliadas) y cómo se les paga.
 - Nombre legal de la credencial y primeras alianzas para co-emitirla.
 - Precio de la suscripción mensual y qué incluye.

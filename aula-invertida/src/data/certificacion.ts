@@ -17,7 +17,7 @@ export interface Certificacion {
 const ESPECIFICAS: Record<string, Omit<Certificacion, "herramientaId">> = {
   consultorio: {
     habilidad: "Gestión de consulta psicológica con IA",
-    caso: "Te enviamos la transcripción ficticia de una sesión de seguimiento. Con Consultorio genera el registro de la sesión, el cobro y un mensaje de recordatorio para la consultante. Pega aquí lo que entregaste y explica tus decisiones, sobre todo las de riesgo y privacidad.",
+    caso: "Te enviamos un expediente de evaluación distinto al de práctica, con la transcripción ficticia de una sesión de seguimiento. Con Consultorio genera el registro de la sesión, el cobro y un mensaje de recordatorio para la consultante. Pega aquí lo que entregaste y explica tus decisiones, sobre todo las de riesgo y privacidad.",
     rubrica: ["Registro fiel a lo dicho, sin información inventada", "Riesgo y datos sensibles bien manejados", "Cobro y seguimiento correctos", "Mensaje a la consultante sin información clínica"],
     requisitoRed: "Tarjeta profesional de psicología vigente (se verifica antes de publicar servicios clínicos).",
     servicioRed: "Consulta psicológica independiente con procesos documentados",
@@ -44,8 +44,8 @@ export function certDe(h: Herramienta): Certificacion {
 
 export const REQUISITOS = [
   { id: "evidencia", nombre: "Evidencia real", detalle: "Tu victoria temprana con datos, registrada en el laboratorio." },
-  { id: "prueba", nombre: "Prueba práctica", detalle: "Resuelves un caso con la herramienta. La IA hace una primera lectura con la rúbrica." },
-  { id: "validacion", nombre: "Validación humana", detalle: "Un evaluador de VinkU revisa tu prueba y conversa contigo 15 minutos." },
+  { id: "prueba", nombre: "Caso simulado de evaluación", detalle: "Resuelves un caso completo con la herramienta. La IA hace una primera lectura con la rúbrica." },
+  { id: "validacion", nombre: "Evaluación en vivo", detalle: "Con un evaluador de VinkU: una simulación de una situación real y la sustentación de tu caso (30 min)." },
 ] as const;
 
 // Perfiles de ejemplo para el prototipo de la Red (no son personas reales).

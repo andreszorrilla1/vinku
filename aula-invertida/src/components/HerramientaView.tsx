@@ -2,7 +2,7 @@ import { useState } from "react";
 import { herramientaPorId, eventosDe, fechaLarga, formatoCOP, wa, type Capsula } from "../data/herramientas";
 import { ENFOQUES, POBLACIONES } from "../data/consultorio";
 import {
-  MOMENTOS, ULTIMO, avance, kitMarkdown, adaptarCapsula, retroalimentar, afinarPregunta, leerVictoria,
+  MOMENTOS, ULTIMO, avance, kitMarkdown, retroalimentar, afinarPregunta, leerVictoria,
   type Progreso, type Perfil, type PerfilPublico,
 } from "../lib/motor";
 import Certificar, { Sello } from "./Certificar";
@@ -10,9 +10,11 @@ import { certDe } from "../data/certificacion";
 import { relacionadas } from "../lib/repositorio";
 import { descargar } from "../lib/descarga";
 import Puente from "./Puente";
+import CapsulaCard from "./CapsulaCard";
+import Recursos from "./Recursos";
 import skillEnfoque from "../../piloto/consultorio-enfoque/SKILL.md?raw";
 
-interface Props { p: Progreso; perfil: Perfil; guardar: (p: Progreso) => void; perfilRed: PerfilPublico; setPerfilRed: (x: PerfilPublico) => void }
+interface Props { tab?: "ruta" | "recursos"; p: Progreso; perfil: Perfil; guardar: (p: Progreso) => void; perfilRed: PerfilPublico; setPerfilRed: (x: PerfilPublico) => void }
 
 const GUIA_CONSULTORIO = `
 ## Instalación paso a paso
@@ -27,7 +29,7 @@ const GUIA_CONSULTORIO = `
 Piloto: masterclass el martes 1 de diciembre y laboratorio el martes 15 de diciembre, 7:00 p. m., virtual.
 `;
 
-export default function HerramientaView({ p, perfil, guardar, perfilRed, setPerfilRed }: Props) {
+export default function HerramientaView({ tab: tab0 = "ruta", p, perfil, guardar, perfilRed, setPerfilRed }: Props) {
   const h = herramientaPorId(p.herramientaId)!;
   const [vista, setVista] = useState(Math.min(p.momento, ULTIMO));
   const [cargando, setCargando] = useState(false);
@@ -35,11 +37,11 @@ export default function HerramientaView({ p, perfil, guardar, perfilRed, setPerf
   const [aviso, setAviso] = useState("");
   const [uso, setUso] = useState("");
   const [filtroCap, setFiltroCap] = useState<"" | Capsula["formato"]>("");
-  const [abierta, setAbierta] = useState<number | null>(null);
   const [enfoque, setEnfoque] = useState(ENFOQUES[0].id);
   const [poblacion, setPoblacion] = useState("Adultos");
   const [ajuste, setAjuste] = useState("");
   const [valores, setValores] = useState<Record<string, string>>({});
+  const [tab, setTab] = useState<"ruta" | "recursos">(tab0);
 
   const act = (c: Partial<Progreso>) => guardar({ ...p, ...c, actualizado: new Date().toISOString() });
   const ir = (m: number, c: Partial<Progreso> = {}) => { act({ ...c, momento: Math.max(p.momento, m) }); setVista(Math.min(m, ULTIMO)); setAviso(""); window.scrollTo({ top: 0, behavior: "smooth" }); };
@@ -62,7 +64,6 @@ export default function HerramientaView({ p, perfil, guardar, perfilRed, setPerf
   const enf = ENFOQUES.find((e) => e.id === enfoque)!;
   const caps = h.capsulas.map((c, n) => ({ c, n })).filter(({ c }) => !filtroCap || c.formato === filtroCap);
   const vistas = p.capsulasVistas;
-  const marcar = (n: number, extra: Partial<Progreso> = {}) => act({ ...extra, capsulasVistas: vistas.includes(n) ? vistas : [...vistas, n] });
   const m = MOMENTOS[vista];
   const pct = Math.round(avance(p));
 
@@ -96,6 +97,11 @@ export default function HerramientaView({ p, perfil, guardar, perfilRed, setPerf
 
       <div className="ficha">
         <div className="principal">
+        <div className="tabs" role="tablist">
+          <button role="tab" aria-selected={tab === "ruta"} onClick={() => setTab("ruta")}>Mi ruta</button>
+          <button role="tab" aria-selected={tab === "recursos"} onClick={() => setTab("recursos")}>Recursos y práctica</button>
+        </div>
+        {tab === "recursos" ? <Recursos h={h} p={p} perfil={perfil} act={act} /> : <>
         <section className="panel" style={{ marginTop: 0 }}>
           <div className="quien"><span className={m.lado === "IA" ? "etq" : "etq h"}>{m.set} · {m.lado === "IA" ? "a tu ritmo, con IA" : "en vivo"}</span><span className="dim">{m.texto}</span></div>
 
@@ -165,49 +171,7 @@ export default function HerramientaView({ p, perfil, guardar, perfilRed, setPerf
               <div className="chips" role="group" aria-label="Formato">
                 {(["", "Video", "Infográfico", "Texto"] as const).map((f) => <button key={f || "todo"} className="chip" aria-pressed={f === filtroCap} onClick={() => setFiltroCap(f)}>{f || "Todo"}</button>)}
               </div>
-              {caps.map(({ c, n }) => (
-                <article className="capsula" key={c.titulo}>
-                  <div className="cap-cab">
-                    <span className={c.formato === "Texto" ? "etq" : "etq h"}>{c.formato} · {c.minutos} min</span>
-                    {vistas.includes(n) && <span className="mono dim">Vista ✓</span>}
-                  </div>
-                  <h3 style={{ marginTop: 8 }}>{c.titulo}</h3>
-                  {c.formato === "Video" && c.serie && <p className="mono dim" style={{ fontSize: 12 }}>{c.serie}</p>}
-                  <p className="dim">{c.idea}</p>
-                  {c.formato === "Video" && c.src && (
-                    <video className="clip" controls playsInline preload="none" poster={`videos/${c.src}.jpg`} src={`videos/${c.src}.mp4`} onPlay={() => marcar(n)} />
-                  )}
-                  {c.formato === "Video" && !c.src && (
-                    <>
-                      <button className="video" onClick={() => { marcar(n); setAbierta(abierta === n ? null : n); }} aria-expanded={abierta === n}>
-                        <svg width="52" height="52" viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="27" fill="#FF8A4C" /><path d="M23 18l15 10-15 10z" fill="#fff" /></svg>
-                        <span>Video en producción · ver el guion</span>
-                      </button>
-                      {abierta === n && c.guion.length > 0 && <ol className="lista">{c.guion.map((g) => <li key={g}>{g}</li>)}</ol>}
-                    </>
-                  )}
-                  {c.formato === "Infográfico" && c.pasos && (
-                    <div className="info" style={{ gridTemplateColumns: `repeat(${c.pasos.length},minmax(0,1fr))` }} onClick={() => marcar(n)} onMouseEnter={() => !vistas.includes(n) && marcar(n)}>
-                      {c.pasos.map((x, k) => <div key={x} className={k === c.pasos!.length - 1 ? "lleno" : k === 0 ? "abierto" : ""}><i />{x}</div>)}
-                    </div>
-                  )}
-                  {c.formato === "Infográfico" && c.comparacion && (
-                    <div className="compara" onClick={() => marcar(n)} onMouseEnter={() => !vistas.includes(n) && marcar(n)}>
-                      <b>{c.comparacion.izq}</b><b>{c.comparacion.der}</b>
-                      {c.comparacion.filas.map(([a, b]) => [<span key={a}>{a}</span>, <span key={b} className="tu">{b}</span>])}
-                    </div>
-                  )}
-                  {c.formato === "Texto" && (
-                    abierta === n || p.adaptadas[n] ? (
-                      <div className="texto">
-                        {(p.adaptadas[n] ? p.adaptadas[n].split(/\n+/) : c.cuerpo).map((x, k) => <p key={k}>{x}</p>)}
-                        {p.adaptadas[n] && <p className="nota">Adaptada a tu caso por la IA.</p>}
-                        {!p.adaptadas[n] && <button className="btn sec" disabled={cargando} onClick={() => correr(async () => { const t = await adaptarCapsula(h, perfil, c.titulo, c.cuerpo.join(" ")); marcar(n, { adaptadas: { ...p.adaptadas, [n]: t } }); })}>Adáptala a mi caso con IA</button>}
-                      </div>
-                    ) : <button className="btn sec" style={{ marginTop: 10 }} onClick={() => { setAbierta(n); marcar(n); }}>Leer · {c.minutos} min</button>
-                  )}
-                </article>
-              ))}
+              {caps.map(({ c, n }) => <CapsulaCard key={c.titulo} h={h} c={c} n={n} p={p} perfil={perfil} act={act} />)}
               <div className="fila" style={{ marginTop: 16 }}><button className="btn" disabled={vistas.length === 0} onClick={() => ir(3)}>Ir al reto →</button></div>
             </>
           )}
@@ -292,6 +256,7 @@ export default function HerramientaView({ p, perfil, guardar, perfilRed, setPerf
           {error && <p className="aviso" role="alert">{error}</p>}
         </section>
         <Certificar h={h} p={p} guardar={guardar} perfilRed={perfilRed} setPerfilRed={setPerfilRed} />
+        </>}
         </div>
 
         <aside className="lateral">

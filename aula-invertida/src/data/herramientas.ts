@@ -291,7 +291,7 @@ export interface Plan { nombre: string; precio: string; incluye: string[]; desta
 export const PLANES: Plan[] = [
   { nombre: "Herramientas", precio: "Gratis a $50.000", incluye: ["Kit descargable y su personalización", "Se puede compartir: es la puerta de entrada", "Consultorio gratis durante el piloto"] },
   { nombre: "Formación", precio: "Suscripción · precio por definir", incluye: ["Cápsulas en video, infografía y texto de todas las herramientas", "Masterclasses y laboratorios en vivo cada semana", "Retroalimentación con IA sobre tu trabajo real"] },
-  { nombre: "Certificación de habilidad", precio: "Precio por definir", incluye: ["Evidencia real, prueba práctica y validación humana", "Credencial verificable con código, vigente 12 meses", "Tu perfil en la Red de profesionales verificados"], destacado: true },
+  { nombre: "Microcertificación", precio: "Precio por definir", incluye: ["Evaluación exhaustiva: evidencia real, caso simulado y evaluación en vivo", "Insignia digital verificable con código, vigente 12 meses", "Perfil gratis en la Red de profesionales verificados"], destacado: true },
 ];
 export const ESCALERA = [
   { nombre: "Acompañamientos 1:1", precio: "$190.000 · 3 por $490.000", detalle: "Instalas una herramienta con un consultor sobre tu caso." },

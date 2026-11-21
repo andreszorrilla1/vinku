@@ -31,7 +31,9 @@ export default function App() {
   useEffect(() => { try { localStorage.setItem(LS_PERFIL, JSON.stringify(perfil)); } catch { /* sin almacenamiento */ } }, [perfil]);
 
   const guardar = (p: Progreso) => setProg((x) => ({ ...x, [p.herramientaId]: p }));
-  const hid = ruta.startsWith("h-") && herramientaPorId(ruta.slice(2)) ? ruta.slice(2) : "";
+  const rutaH = ruta.startsWith("h-") ? ruta.slice(2).replace(/-recursos$/, "") : "";
+  const hid = rutaH && herramientaPorId(rutaH) ? rutaH : "";
+  const tabH = ruta.endsWith("-recursos") ? "recursos" : "ruta";
   const seccion = hid ? "repositorio" : ruta;
 
   return (
@@ -47,7 +49,7 @@ export default function App() {
         </nav>
       </header>
       <main>
-        {hid ? <HerramientaView key={hid} p={{ ...nuevoProgreso(hid), ...prog[hid] }} perfil={perfil} guardar={guardar} perfilRed={perfilRed} setPerfilRed={setPerfilRed} />
+        {hid ? <HerramientaView key={ruta} tab={tabH} p={{ ...nuevoProgreso(hid), ...prog[hid] }} perfil={perfil} guardar={guardar} perfilRed={perfilRed} setPerfilRed={setPerfilRed} />
           : seccion === "agenda" ? <Agenda prog={prog} guardar={guardar} />
           : seccion === "red" || seccion.startsWith("verificar") ? <Red prog={prog} perfilRed={perfilRed} codigo={seccion.startsWith("verificar-") ? seccion.slice(10) : ""} />
           : seccion === "planes" ? <Planes />
@@ -81,7 +83,7 @@ function Repositorio({ prog, perfil, setPerfil }: { prog: Record<string, Progres
       <section className="band hero">
         <div>
           <h1>Herramientas para <em className="s">hacer</em> y <em className="s">ser</em>.</h1>
-          <p className="lead">Para profesionales de ciencias sociales y humanas que quieren abrir nuevos campos de acción, trabajar como independientes o emprender. Descargas una herramienta, la ajustas a tu manera, la usas con tu trabajo real y la validas en vivo. No importa el título: importa lo que puedes hacer, y lo certificamos.</p>
+          <p className="lead">Para profesionales de ciencias sociales y humanas que quieren abrir nuevos campos de acción, trabajar como independientes o emprender. Descargas una herramienta, la ajustas a tu manera, la usas con tu trabajo real y la validas en vivo. No importa el título: importa lo que puedes hacer, y lo certificamos con microcertificaciones.</p>
           <div className="fila" style={{ marginTop: 18 }}><a className="btn sec" href="#red">Ver la Red de profesionales verificados</a></div>
         </div>
         <article className="destacada">
@@ -256,11 +258,11 @@ function Agenda({ prog, guardar }: { prog: Record<string, Progreso>; guardar: (p
         <article className="card"><h3>Preguntas para la masterclass</h3>
           {preguntas.length ? <ul className="mini">{preguntas.map((p) => <li key={p.herramientaId}><b>{herramientaPorId(p.herramientaId)!.nombre}:</b> {p.pregunta}</li>)}</ul> : <p className="dim">Aún no hay preguntas.</p>}
         </article>
-        <article className="card"><h3>Para quien evalúa: certificaciones</h3>
+        <article className="card"><h3>Para quien evalúa: microcertificaciones</h3>
           <label className="campo">Evaluador<input type="text" value={evaluador} onChange={(x) => setEvaluador(x.target.value)} /></label>
           {pendientes.length ? pendientes.map((p) => { const h = herramientaPorId(p.herramientaId)!; return (
             <div key={h.id} className="pend"><b>{certDe(h).habilidad}</b><p className="dim">{p.cert!.prueba?.resumen}</p>
-              <button className="btn" onClick={() => guardar({ ...p, cert: { ...p.cert!, estado: "verificada", codigo: codigoNuevo(h), fecha: new Date().toISOString(), evaluador: evaluador || "Evaluador VinkU" }, actualizado: new Date().toISOString() })}>Validar y emitir credencial</button></div>
+              <button className="btn" onClick={() => guardar({ ...p, cert: { ...p.cert!, estado: "verificada", codigo: codigoNuevo(h), fecha: new Date().toISOString(), evaluador: evaluador || "Evaluador VinkU" }, actualizado: new Date().toISOString() })}>Validar y emitir insignia</button></div>
           ); }) : <p className="dim">No hay pruebas esperando validación.</p>}
         </article>
         <article className="card"><h3>Victorias para el laboratorio</h3>
@@ -315,7 +317,7 @@ function Red({ prog, perfilRed, codigo }: { prog: Record<string, Progreso>; perf
   return (
     <section className="band">
       <h1>La Red de profesionales <em className="s">verificados</em></h1>
-      <p className="lead" style={{ marginTop: 12, maxWidth: "40em" }}>Cada persona de la Red demostró su habilidad con evidencia real, una prueba práctica y una validación humana. Si buscas a alguien que lo sepa hacer, empieza aquí.</p>
+      <p className="lead" style={{ marginTop: 12, maxWidth: "40em" }}>Cada persona de la Red tiene al menos una microcertificación: demostró su habilidad con evidencia real, una prueba práctica y una validación humana, y la lleva como insignia digital. Si buscas a alguien que lo sepa hacer, empieza aquí.</p>
 
       <div className="verifica">
         <Sello activo={!!encontrado} tam={70} />
@@ -356,7 +358,7 @@ function Red({ prog, perfilRed, codigo }: { prog: Record<string, Progreso>; perf
 
       <div className="lienzo modelo" style={{ marginTop: 32 }}>
         <div><h2 style={{ color: "#fff" }}>¿Quieres estar en la Red?</h2>
-          <p style={{ color: "#CFE0DB", marginTop: 10 }}>Usa una herramienta, registra tu victoria temprana y certifica la habilidad. Tu perfil queda visible para personas, empresas y entidades que buscan a alguien que ya lo demostró.</p></div>
+          <p style={{ color: "#CFE0DB", marginTop: 10 }}>Usa una herramienta, registra tu victoria temprana y certifica la habilidad. Estar en la Red no tiene costo: solo se paga la microcertificación. Tu perfil queda visible para personas, empresas y entidades que buscan a alguien que ya lo demostró.</p></div>
         <div className="fila"><a className="btn" href="#h-consultorio">Empezar con Consultorio</a><a className="btn sec claro" href="#planes">Ver planes</a></div>
       </div>
     </section>

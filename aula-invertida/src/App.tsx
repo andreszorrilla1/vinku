@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
-import { ENCARGOS, SERVICIOS, LINEAS, encargoPorId, type Linea } from "./data/encargos";
-import { avance, nuevoProgreso, MOMENTOS, type Progreso } from "./lib/motor";
+import { HERRAMIENTAS, SERVICIOS, EN_VIVO, herramientaPorId, formatoCOP } from "./data/herramientas";
+import { avance, nuevoProgreso, recomendar, MOMENTOS, ULTIMO, type Progreso } from "./lib/motor";
 import { modoIA, type ModoIA } from "./lib/ia";
 import Puente, { Isotipo } from "./components/Puente";
-import EncargoView from "./components/EncargoView";
+import HerramientaView from "./components/HerramientaView";
 
-const LS = "aula_invertida_v1";
-const cargar = (): Record<string, Progreso> => { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch { return {}; } };
+const LS = "vinkuedu_abh_v1";
+const cargar = (): Record<string, Progreso> => {
+  try {
+    const d = JSON.parse(localStorage.getItem(LS) || "{}") as Record<string, Progreso>;
+    return Object.fromEntries(Object.entries(d).filter(([k]) => herramientaPorId(k)));
+  } catch { return {}; }
+};
 
 function useHash() {
-  const [h, setH] = useState(() => location.hash.slice(1) || "cuaderno");
-  useEffect(() => { const f = () => { setH(location.hash.slice(1) || "cuaderno"); window.scrollTo(0, 0); }; addEventListener("hashchange", f); return () => removeEventListener("hashchange", f); }, []);
+  const [h, setH] = useState(() => location.hash.slice(1) || "taller");
+  useEffect(() => { const f = () => { setH(location.hash.slice(1) || "taller"); window.scrollTo(0, 0); }; addEventListener("hashchange", f); return () => removeEventListener("hashchange", f); }, []);
   return h;
 }
-
-const pctIA = (min: number, minH: number) => Math.round((min / (min + minH)) * 100);
 
 export default function App() {
   const ruta = useHash();
@@ -23,66 +26,83 @@ export default function App() {
   useEffect(() => { modoIA().then(setModo); }, []);
   useEffect(() => { try { localStorage.setItem(LS, JSON.stringify(prog)); } catch { /* sin almacenamiento */ } }, [prog]);
 
-  const guardar = (p: Progreso) => setProg((x) => ({ ...x, [p.encargoId]: p }));
-  const encId = ruta.startsWith("e-") ? ruta.slice(2) : "";
-  const enc = encId && ENCARGOS.some((x) => x.id === encId) ? encId : "";
-  const seccion = enc ? "cuaderno" : ruta;
+  const guardar = (p: Progreso) => setProg((x) => ({ ...x, [p.herramientaId]: p }));
+  const hid = ruta.startsWith("h-") && herramientaPorId(ruta.slice(2)) ? ruta.slice(2) : "";
+  const seccion = hid ? "taller" : ruta;
 
   return (
     <>
       <header className="top">
-        <a className="marca" href="#cuaderno"><Isotipo />VinkU<em>edu</em><small>Aula Invertida</small></a>
-        {modo && <span className={`modo ${modo === "demo" ? "demo" : ""}`} title="Origen de la IA">{modo === "claude" ? "IA activa" : modo === "plataforma" ? "IA de la plataforma" : "IA en modo demo"}</span>}
+        <a className="marca" href="#taller"><Isotipo />VinkU<em>edu</em><small>Aprendizaje basado en herramientas</small></a>
+        {modo && <span className={`modo ${modo === "demo" ? "demo" : ""}`}>{modo === "claude" ? "IA activa" : modo === "plataforma" ? "IA de la plataforma" : "IA en modo demo"}</span>}
         <nav className="nav" aria-label="Secciones">
-          <a href="#cuaderno" aria-current={seccion === "cuaderno" ? "page" : undefined}>Cuaderno</a>
+          <a href="#taller" aria-current={seccion === "taller" ? "page" : undefined}>Herramientas</a>
           <a href="#servicios" aria-current={seccion === "servicios" ? "page" : undefined}>Servicios</a>
-          <a href="#mesa" aria-current={seccion === "mesa" ? "page" : undefined}>Mesa</a>
+          <a href="#envivo" aria-current={seccion === "envivo" ? "page" : undefined}>En vivo</a>
         </nav>
       </header>
       <main>
-        {enc ? <EncargoView key={enc} p={prog[enc] || nuevoProgreso(enc)} guardar={guardar} />
+        {hid ? <HerramientaView key={hid} p={{ ...nuevoProgreso(hid), ...prog[hid] }} guardar={guardar} />
           : seccion === "servicios" ? <Servicios />
-          : seccion === "mesa" ? <Mesa prog={prog} guardar={guardar} />
-          : <Cuaderno prog={prog} />}
+          : seccion === "envivo" ? <EnVivo prog={prog} guardar={guardar} />
+          : <Taller prog={prog} />}
       </main>
     </>
   );
 }
 
-function Cuaderno({ prog }: { prog: Record<string, Progreso> }) {
-  const [linea, setLinea] = useState<Linea>("personas");
-  const enCurso = Object.values(prog).sort((a, b) => b.actualizado.localeCompare(a.actualizado));
+function Taller({ prog }: { prog: Record<string, Progreso> }) {
+  const mias = Object.values(prog).sort((a, b) => b.actualizado.localeCompare(a.actualizado));
+  const [texto, setTexto] = useState("");
+  const [rec, setRec] = useState<{ id: string; porque: string } | null>(null);
+  const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState("");
+  const buscar = async () => {
+    setCargando(true); setError("");
+    try { const r = await recomendar(texto); setRec(herramientaPorId(r.id) ? r : { id: "consultora", porque: r.porque }); }
+    catch (e) { setError(e instanceof Error ? e.message : "No se pudo recomendar."); }
+    setCargando(false);
+  };
+  const recH = rec && herramientaPorId(rec.id);
+
   return (
     <>
       <section className="band hero">
         <div>
-          <h1>No tomas cursos. Traes un <em className="s">encargo</em>.</h1>
-          <p className="lead">Llegas con un problema real de tu oficio y sales con un entregable real. La IA hace el 60 % del camino contigo; el 40 % es con personas: un consultor humanista de VinkU edu y el mundo donde lo pruebas.</p>
-          <div className="fila" style={{ marginTop: 20 }}>
-            <a className="btn" href="#e-oferta">Empezar por mi oferta</a>
-            <a className="btn sec" href="#servicios">Ver cómo funciona cada servicio</a>
-          </div>
+          <h1>Aprende con una <em className="s">herramienta</em> en la mano.</h1>
+          <p className="lead">Cada experiencia es una herramienta que descargas, ajustas a tu oficio y usas en un caso real. Te llevas el toolset, desarrollas el skillset y cambias el mindset: de profesional a emprendedor.</p>
+          <form className="recomendador" onSubmit={(x) => { x.preventDefault(); if (texto.trim()) buscar(); }}>
+            <label className="campo">¿Cuál es tu herramienta? Cuéntanos tu oficio y qué quieres lograr
+              <textarea value={texto} onChange={(x) => setTexto(x.target.value)} rows={2} placeholder="Ej.: soy socióloga y quiero venderle investigación a empresas" />
+            </label>
+            <div className="fila" style={{ marginTop: 10 }}><button className="btn" disabled={cargando || !texto.trim()}>Recomiéndame una</button></div>
+            {cargando && <p className="cargando">Buscando tu herramienta…</p>}
+            {error && <p className="aviso" role="alert">{error}</p>}
+            {recH && <a className="card" href={`#h-${recH.id}`} style={{ marginTop: 12 }}><span className="etq h">Tu herramienta</span><h3>{recH.nombre}</h3><p>{rec!.porque}</p></a>}
+          </form>
         </div>
         <div className="lienzo">
           <div className="fig-label mono"><span>Lo que sabes</span><span>Donde se necesita</span></div>
           <Puente avance={60} alto={170} />
-          <div className="reparto">
-            <div><b>60 % IA</b>Leer tu caso · Contenido justo a tiempo · Borrador contigo</div>
-            <div><b>40 % humano</b>Mesa con consultor · Prueba real y sello</div>
+          <div className="sets">
+            <div><b>Toolset</b>La herramienta que descargas y ajustas a tu oficio</div>
+            <div><b>Skillset</b>Lo que aprendes a hacer al usarla en tu caso</div>
+            <div className="h"><b>Mindset</b>Cómo cambias de profesional a emprendedor</div>
           </div>
+          <p className="mono" style={{ color: "#9DB5B0", marginTop: 12 }}>60 % IA · 40 % en vivo y en el mundo</p>
         </div>
       </section>
 
-      {enCurso.length > 0 && (
+      {mias.length > 0 && (
         <section className="band">
-          <h2>Mi bitácora</h2>
+          <h2>Mi caja de herramientas</h2>
           <div className="grid" style={{ marginTop: 14 }}>
-            {enCurso.map((p) => {
-              const e = encargoPorId(p.encargoId);
+            {mias.map((p) => {
+              const h = herramientaPorId(p.herramientaId)!;
               return (
-                <a className="card" key={p.encargoId} href={`#e-${p.encargoId}`}>
-                  <div className="meta"><span className={p.momento >= 3 ? "etq h" : "etq"}>{p.sello ? "Sellado" : MOMENTOS[Math.min(p.momento, 4)].nombre}</span><span className="mono dim">{avance(p)} %</span></div>
-                  <h3>{e.titulo}</h3>
+                <a className="card" key={h.id} href={`#h-${h.id}`}>
+                  <div className="meta"><span className={p.momento >= 3 ? "etq h" : "etq"}>{p.sello ? "Sellada" : MOMENTOS[Math.min(p.momento, ULTIMO)].nombre}</span><span className="mono dim">{avance(p)} %</span></div>
+                  <h3>{h.nombre}</h3>
                   <div className="barra" aria-hidden="true"><i style={{ width: `${Math.min(avance(p), 60)}%` }} /><i style={{ width: `${Math.max(avance(p) - 60, 0)}%` }} /></div>
                 </a>
               );
@@ -92,32 +112,22 @@ function Cuaderno({ prog }: { prog: Record<string, Progreso> }) {
       )}
 
       <section className="band">
-        <h2>Elige tu encargo</h2>
-        <div className="chips" role="group" aria-label="Línea">
-          {(Object.keys(LINEAS) as Linea[]).map((l) => <button key={l} className="chip" aria-pressed={l === linea} onClick={() => setLinea(l)}>{LINEAS[l]}</button>)}
-        </div>
-        <div className="grid">
-          {ENCARGOS.filter((e) => e.linea === linea).map((e) => (
-            <a className="card" key={e.id} href={`#e-${e.id}`}>
-              <h3>{e.titulo}</h3>
-              <p>{e.teLlevas}</p>
-              <p className="dim" style={{ fontSize: 14 }}>{e.paraQuien}</p>
-              <div className="barra" aria-hidden="true"><i style={{ width: `${pctIA(e.minutosIA, e.minutosHumano)}%` }} /><i style={{ width: `${100 - pctIA(e.minutosIA, e.minutosHumano)}%` }} /></div>
-              <div className="meta mono dim"><span>IA {Math.round(e.minutosIA / 60 * 10) / 10} h</span><span>Humano {Math.round(e.minutosHumano / 60 * 10) / 10} h</span></div>
+        <h2>Una herramienta por semana</h2>
+        <p className="dim" style={{ marginTop: 6 }}>Cada una trae su kit descargable, cápsulas en video, infografía y texto, y su masterclass en vivo los {EN_VIVO.dia} a las {EN_VIVO.hora}.</p>
+        <div className="grid" style={{ marginTop: 16 }}>
+          {HERRAMIENTAS.map((h) => (
+            <a className="card herr" key={h.id} href={`#h-${h.id}`}>
+              <div className="meta"><span className="mono dim">Semana {h.semana}</span><span className="precio">{formatoCOP(h.precio)}</span></div>
+              <h3>{h.nombre}</h3>
+              <p className="dim" style={{ fontSize: 14 }}>{h.oficio}</p>
+              <p>{h.oportunidad}</p>
+              <p className="mindset chico">De <s>{h.mindset.de}</s> a <em className="s">{h.mindset.a}</em></p>
+              <div className="fila" style={{ gap: 6 }}>
+                {h.toolset.map((t) => <span className="etq" key={t.nombre}>{t.tipo}</span>)}
+                {h.estado === "Disponible" ? <span className="etq h">Disponible</span> : <span className="etq gris">En diseño</span>}
+              </div>
             </a>
           ))}
-        </div>
-      </section>
-
-      <section className="band">
-        <h2>Por qué no se parece a ninguna aula</h2>
-        <div className="principios">
-          <div><h3>Encargos, no cursos</h3><p>La unidad es un problema tuyo con un entregable verificable.</p></div>
-          <div><h3>Contenido justo a tiempo</h3><p>Solo te llega lo que tu caso pide, escrito sobre tu caso.</p></div>
-          <div><h3>La IA coproduce, no califica</h3><p>Sin quices: la IA redacta contigo y tú decides.</p></div>
-          <div><h3>El humano donde la IA no alcanza</h3><p>Tu consultor llega con el brief: criterio, sector, ética y red.</p></div>
-          <div><h3>Se evalúa con el mundo</h3><p>El sello llega con evidencia de personas reales, no con una nota.</p></div>
-          <div><h3>Humanidades como método</h3><p>Leer, interpretar, crear y probar: el método del Laboratorio VinkU.</p></div>
         </div>
       </section>
     </>
@@ -127,23 +137,16 @@ function Cuaderno({ prog }: { prog: Record<string, Progreso> }) {
 function Servicios() {
   return (
     <section className="band">
-      <h1>Un aula, <em className="s">todos</em> los servicios</h1>
-      <p className="lead" style={{ marginTop: 12, maxWidth: "38em" }}>Cada servicio de VinkU edu se arma con los mismos encargos. Cambia quién lo contrata y cuánto dura; la regla 60/40 se mantiene.</p>
-      {(Object.keys(LINEAS) as Linea[]).map((l) => (
+      <h1>Todo se arma con <em className="s">herramientas</em></h1>
+      <p className="lead" style={{ marginTop: 12, maxWidth: "38em" }}>La herramienta de la semana es la puerta de entrada. Los demás servicios instalan más herramientas, con más acompañamiento humano.</p>
+      {(["personas", "organizaciones"] as const).map((l) => (
         <div key={l} style={{ marginTop: 28 }}>
-          <h2>{LINEAS[l]}</h2>
+          <h2>{l === "personas" ? "Personas: de profesional a emprendedor" : "Organizaciones"}</h2>
           <div style={{ display: "grid", gap: 12, marginTop: 12 }}>
             {SERVICIOS.filter((s) => s.linea === l).map((s) => (
-              <article className="card servicio" key={s.id}>
-                <div>
-                  <h3>{s.nombre}</h3>
-                  <p className="mono dim" style={{ marginTop: 4 }}>{s.precio}</p>
-                  <div className="chips" style={{ margin: "10px 0 0" }}>
-                    {s.encargos.map((id) => <a key={id} className="etq" href={`#e-${id}`} style={{ textDecoration: "none" }}>{encargoPorId(id).titulo}</a>)}
-                  </div>
-                </div>
-                <div className="lado"><b className="etq">60 % IA</b><p style={{ marginTop: 6 }}>{s.ia}</p></div>
-                <div className="lado"><b className="etq h">40 % humano</b><p style={{ marginTop: 6 }}>{s.humano}</p></div>
+              <article className="card servicio2" key={s.id}>
+                <div><h3>{s.nombre}</h3><p className="mono dim" style={{ marginTop: 4 }}>{s.precio}</p></div>
+                <p>{s.como}</p>
               </article>
             ))}
           </div>
@@ -153,39 +156,41 @@ function Servicios() {
   );
 }
 
-function Mesa({ prog, guardar }: { prog: Record<string, Progreso>; guardar: (p: Progreso) => void }) {
-  const lista = Object.values(prog).filter((p) => p.brief);
+function EnVivo({ prog, guardar }: { prog: Record<string, Progreso>; guardar: (p: Progreso) => void }) {
   const [nombre, setNombre] = useState("Andrés Zorrilla");
   const [notas, setNotas] = useState<Record<string, string>>({});
+  const conBrief = Object.values(prog).filter((p) => p.brief);
   return (
     <section className="band">
-      <h1>La <em className="s">Mesa</em> del consultor</h1>
-      <p className="lead" style={{ marginTop: 12, maxWidth: "38em" }}>Vista del consultor humanista de VinkU edu: recibe los briefs que deja la IA, atiende la Mesa y pone el sello cuando hay evidencia del mundo real.</p>
-      <label className="campo" style={{ maxWidth: 360 }}>Consultor<input type="text" value={nombre} onChange={(x) => setNombre(x.target.value)} /></label>
-      {lista.length === 0 && <p className="aviso">Aún no hay briefs. Cuando un participante termina la parte de IA de un encargo, su brief aparece aquí.</p>}
-      <div style={{ display: "grid", gap: 14, marginTop: 18 }}>
-        {lista.map((p) => {
-          const e = encargoPorId(p.encargoId);
+      <h1>Las masterclasses <em className="s">en vivo</em></h1>
+      <p className="lead" style={{ marginTop: 12, maxWidth: "38em" }}>Vista de quien dicta: el calendario de herramientas, las preguntas que llegan preparadas por la IA y el sello para quienes ya la lanzaron.</p>
+
+      <h2 style={{ marginTop: 28 }}>Calendario</h2>
+      <p className="nota">Propuesta: una herramienta nueva por semana, en vivo los {EN_VIVO.dia} a las {EN_VIVO.hora}, {EN_VIVO.modalidad}. Fechas por definir.</p>
+      <ol className="calendario">
+        {HERRAMIENTAS.map((h) => <li key={h.id}><span className="mono">Semana {h.semana}</span><b>{h.nombre}</b><span className="dim">{h.oficio}</span></li>)}
+      </ol>
+
+      <h2 style={{ marginTop: 28 }}>Preguntas para el en vivo</h2>
+      <label className="campo" style={{ maxWidth: 360 }}>Quien dicta<input type="text" value={nombre} onChange={(x) => setNombre(x.target.value)} /></label>
+      {conBrief.length === 0 && <p className="aviso">Aún no llegan preguntas. Aparecen cuando alguien usa su herramienta y se prepara para el en vivo.</p>}
+      <div style={{ display: "grid", gap: 14, marginTop: 16 }}>
+        {conBrief.map((p) => {
+          const h = herramientaPorId(p.herramientaId)!;
           const b = p.brief!;
           return (
-            <article className="panel" key={p.encargoId} style={{ marginTop: 0 }}>
-              <div className="meta" style={{ display: "flex", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
-                <h2>{e.titulo}</h2><span className="etq h">{p.sello ? "Sellado" : p.momento >= 4 ? "Probando" : "Mesa pendiente"}</span>
-              </div>
+            <article className="panel" key={h.id} style={{ marginTop: 0 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}><h2>{h.nombre}</h2><span className="etq h">{p.sello ? "Sellada" : p.momento >= 4 ? "Lanzando" : "Viene al en vivo"}</span></div>
+              <p className="aviso"><b>Pregunta:</b> {b.pregunta}</p>
               <p className="nota">{b.resumen}</p>
               <div className="brief">
-                <div><h3>Decisiones</h3><ul>{b.decisiones.map((d) => <li key={d}>{d}</li>)}</ul></div>
-                <div><h3>Preguntas para hacer</h3><ul>{b.preguntas.map((d) => <li key={d}>{d}</li>)}</ul></div>
+                <div><h3>Mindset</h3><p>{b.mindset}</p></div>
+                <div><h3>Para responder en vivo</h3><ul>{b.preguntas.map((d) => <li key={d}>{d}</li>)}</ul></div>
               </div>
-              <p className="aviso"><b>Tu parte:</b> {b.soloHumano}</p>
               <p style={{ marginTop: 12 }}><b>Evidencias:</b> {p.evidencias.length ? p.evidencias.map((x) => x.conQuien).join(" · ") : "todavía ninguna"}</p>
-              <div className="fila" style={{ marginTop: 12 }}>
-                {p.momento === 3 && <button className="btn sec" onClick={() => guardar({ ...p, momento: 4, actualizado: new Date().toISOString() })}>Marcar Mesa realizada</button>}
-                <a className="btn sec" href={`#e-${p.encargoId}`}>Abrir el entregable</a>
-              </div>
               {!p.sello && p.evidencias.length > 0 && (
-                <form onSubmit={(x) => { x.preventDefault(); guardar({ ...p, momento: 5, sello: { consultor: nombre || "Consultor VinkU", nota: notas[p.encargoId] || "Entregable probado con personas reales.", fecha: new Date().toISOString() }, actualizado: new Date().toISOString() }); }}>
-                  <label className="campo">Nota del sello<input type="text" value={notas[p.encargoId] || ""} onChange={(x) => setNotas({ ...notas, [p.encargoId]: x.target.value })} placeholder="Qué quedó demostrado" /></label>
+                <form onSubmit={(x) => { x.preventDefault(); guardar({ ...p, momento: MOMENTOS.length, sello: { consultor: nombre || "Consultor VinkU", nota: notas[h.id] || "Herramienta usada y lanzada con personas reales.", fecha: new Date().toISOString() }, actualizado: new Date().toISOString() }); }}>
+                  <label className="campo">Nota del sello<input type="text" value={notas[h.id] || ""} onChange={(x) => setNotas({ ...notas, [h.id]: x.target.value })} placeholder="Qué quedó demostrado" /></label>
                   <div className="fila" style={{ marginTop: 10 }}><button className="btn">Poner el sello</button></div>
                 </form>
               )}

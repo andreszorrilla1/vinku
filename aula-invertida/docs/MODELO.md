@@ -1,69 +1,66 @@
-# Aula Invertida · VinkU edu
-Modelo pedagógico y de producto (borrador 1, 20 de noviembre de 2026)
+# Aprendizaje Basado en Herramientas · VinkU edu
+Modelo pedagógico y de producto (borrador 2, 20 de noviembre de 2026). Reemplaza al borrador "Aula Invertida".
 
 ## La idea en una frase
-En el Aula Invertida no se toman cursos: **llegas con un encargo real y sales con un entregable real**. La IA hace el 60 % del recorrido (leer tu caso, enseñarte justo lo que la tarea pide y coproducir el borrador) y el 40 % humano se reserva para lo que la IA no puede dar: criterio, lectura del sector, ética, red de contactos y la validación con personas reales.
+Cada experiencia de aprendizaje es una **herramienta** que la persona descarga, ajusta a su oficio y usa en un caso real. Al usarla desarrolla tres cosas:
+- **Toolset:** lo que se lleva (plantillas, skills de Claude, conectores, guías).
+- **Skillset:** lo que aprende a hacer al usarla.
+- **Mindset:** la nueva forma de pensar; el paso de profesional a emprendedor.
 
-Se llama "invertida" por dos razones:
-1. Invierte el aula tradicional: no hay temario que se recorra antes de hacer. Primero aparece la tarea; el contenido llega cuando la tarea lo necesita (just in time).
-2. Invierte el rol de la IA en educación: no examina ni resume clases. Trabaja contigo sobre tu caso, y le entrega al consultor un brief para que la sesión humana empiece "en el minuto 60", no en el cero.
+El foco inicial es **De Profesional a Emprendedor**: cada herramienta nace de una oportunidad de negocio o una necesidad por cubrir. El modelo de referencia es **Consultorio**, la herramienta para psicólogas independientes (plantilla de Notion + skill de Claude + Tactiq).
 
-## Seis principios (lo que lo hace distinto)
-1. **Encargos, no cursos.** La unidad no es la lección, es un encargo con un entregable verificable: una oferta, un precio, una propuesta, un modelo validado, un rediseño de programa.
-2. **Contenido justo a tiempo.** Cada encargo tiene una biblioteca de cápsulas (3 a 7 min). La IA solo te entrega las que tu caso necesita, escritas sobre tu caso, y te dice por qué te llegan ahora.
-3. **La IA coproduce, no califica.** Sin quices. La IA redacta contigo, tú editas y decides.
-4. **El humano entra donde la IA no alcanza.** La Mesa (sesión con un consultor humanista de VinkU) trabaja sobre el brief que dejó la IA: decisiones abiertas, riesgos y lo que solo una persona con experiencia en el sector puede juzgar.
-5. **Se evalúa con el mundo.** El cierre no es una nota: es evidencia de que el entregable funcionó con personas reales (clientes, usuarios, comités). Con esa evidencia, el consultor pone el **sello**.
-6. **Las humanidades son el método.** Todo encargo sigue los cuatro momentos del Laboratorio de VinkU: Leer → Interpretar → Crear → Probar.
+## Qué trae cada herramienta
+| Componente | Qué es |
+|---|---|
+| Kit descargable | Las piezas de la herramienta y una guía de instalación personalizada por la IA, con instrucciones para el proyecto de Claude de la persona |
+| Cápsulas | Video, infografía y texto, solo lo necesario para usarla (unos 15 minutos). Las de texto se reescriben con IA sobre el caso de cada persona |
+| Masterclass en vivo | Una por herramienta, en la semana de su lanzamiento. Ahí trabaja el mindset y el modelo de negocio |
+| Reto de primer uso | Una tarea real con la herramienta, con retroalimentación de la IA |
+| Sello | Lo pone el consultor cuando hay evidencia de que la herramienta se usó con personas reales |
 
-## La ruta de un encargo
-| Momento | Qué pasa | Quién | Peso |
+**Precio:** de $30.000 a $50.000 por herramienta, con kit, cápsulas y masterclass en vivo incluidos. Es la puerta de entrada y reemplaza a la masterclass suelta de $59.000.
+
+**Ritmo:** propuesta de una herramienta nueva por semana, con masterclass en vivo los martes a las 7:00 p. m., virtual. Fechas por definir.
+
+## La ruta de una herramienta (60 % IA · 40 % humano)
+| Momento | Set | Quién | Qué pasa |
 |---|---|---|---|
-| 1. Leer | Diagnóstico conversacional del caso (máx. 4 preguntas). Sale un perfil del caso. | IA | 60 % IA |
-| 2. Interpretar | Cápsulas justo a tiempo elegidas y escritas para el caso. | IA | |
-| 3. Crear | Borrador del entregable por secciones; la persona edita y pide mejoras. | IA + persona | |
-| 4. Mesa | Sesión 1:1 o grupal con consultor VinkU, que llega con el brief generado por la IA. | Humano | 40 % humano |
-| 5. Probar | Se lleva el entregable a personas reales, se registra la evidencia y el consultor sella. | Humano + mundo | |
+| 1. Descargar | Toolset | IA | La IA hace 3 preguntas, ajusta la herramienta al oficio y genera el kit personalizado para descargar |
+| 2. Cápsulas | Skillset | IA | Video, infografía y texto, escritos para el caso |
+| 3. Usar | Skillset | IA | Reto de primer uso en un caso real, con retroalimentación de la IA sobre lo que hizo |
+| 4. En vivo | Mindset | Humano | La persona llega a la masterclass con su pregunta preparada; quien dicta recibe todas las preguntas antes |
+| 5. Lanzar | Mindset | Humano y mundo | La usa o la ofrece con personas reales, registra la evidencia y recibe el sello |
 
-Toda la ruta queda en la **Bitácora**: el cuaderno de laboratorio de la persona, con sus casos, versiones, evidencias y sellos. Es su portafolio.
+## Catálogo inicial (propuesta)
+| Semana | Herramienta | Para | Mindset | Precio |
+|---|---|---|---|---|
+| 1 | Consultorio (disponible) | Psicólogas independientes | De "atiendo pacientes" a "dirijo mi consultorio" | $50.000 |
+| 2 | Consultora en una caja | Cualquier humanista que quiera vender consultoría | De "vendo mis horas" a "vendo resultados" | $39.000 |
+| 3 | Radar normativo | Abogados, politólogos, sector público | De "la norma es un trámite" a "la norma es un mercado" | $49.000 |
+| 4 | Laboratorio de insights | Sociólogos, antropólogos | De "investigo para publicar" a "investigo para que alguien decida" | $45.000 |
+| 5 | Estudio de contenido | Comunicadores, periodistas | De "publico por inspiración" a "opero un sistema por suscripción" | $35.000 |
+| 6 | Formulador de proyectos sociales | Trabajadores sociales, gestores culturales | De "ejecuto proyectos de otros" a "diseño y vendo los proyectos" | $39.000 |
+| 7 | Termómetro de clima | Psicólogos organizacionales, talento humano | De "entrego un informe" a "acompaño un cambio que se mide" | $45.000 |
 
-La regla 60/40 se mide en tiempo de trabajo del participante: por cada hora con un humano hay hora y media de trabajo guiado por IA.
+## Cómo se arma cada servicio con herramientas
+- **Herramienta de la semana** ($30.000 a $50.000): la puerta de entrada.
+- **Acompañamientos 1:1** ($190.000; 3 por $490.000): la persona instala una herramienta con un consultor y la deja funcionando sobre su caso.
+- **Bootcamps de un día** ($490.000): instalan varias herramientas en un día.
+  - Escuela de Consultores → Consultora en una caja.
+  - Emprendimiento de Base Humanista → Radar normativo.
+  - Nuevos Campos de Acción → la herramienta del oficio de cada persona.
+- **De Profesional a Emprendedor** (6 semanas): la persona arma su caja de herramientas y lanza una al mercado, con Mesa grupal los miércoles.
+- **Empresas:** el laboratorio diseña herramientas a la medida de la organización y sus profesionales aprenden instalándolas en su puesto.
+- **Universidades:** las asignaturas se convierten en herramientas que el estudiante se lleva al sector real.
 
-## Cómo se aplica a cada servicio
-Las horas son una propuesta para cumplir la regla 60/40 sin cambiar los precios vigentes.
-
-### Personas (B2C)
-| Servicio | 60 % IA | 40 % humano |
-|---|---|---|
-| 6 acompañamientos 1:1 ($190.000) | 2 h 15 min de encargo en el aula (Leer, Interpretar, Crear) | 90 min de Mesa 1:1 + sello |
-| Masterclass ($59.000) | Antes: "tu pregunta" en 10 min. Después: "tu primer paso" con un mini encargo | La clase en vivo |
-| Bootcamps de un día ($490.000) | 9 h en dos semanas: 3 h antes (caso y borrador) y 6 h después (aplicación) | 6 h de bootcamp presencial con Mesas por equipos |
-| De Profesional a Emprendedor (6 semanas) | 4 h 30 min por semana: un encargo semanal (oferta, precio, propuesta, modelo, validación, lanzamiento) | Miércoles de 6 a 9 p. m.: Mesa grupal de cohorte de 5 + sello semanal |
-
-Ruta consultor y ruta emprendedor usan los mismos encargos con plantillas distintas.
-
-### Empresas (B2B)
-- **Laboratorio de Innovación basado en Humanidades.** La IA hace el grueso de Leer e Interpretar: síntesis de entrevistas, análisis documental, mapas de actores, de normas y de comportamiento. Los talleres humanos hacen Crear y Probar con personas reales. Así, un Lab Express de 4 h llega con el diagnóstico listo, y un Lab Sprint dedica sus semanas a prototipar y probar.
-- **Upskilling y reskilling.** Cada profesional trae un encargo de su propio puesto. El aula lo acompaña y el facilitador VinkU hace las Mesas in-company. La empresa ve un tablero de evidencias aplicadas (no de horas cursadas).
-
-### Universidades y organizaciones
-- **Transformación de programas académicos.** El aula es el mecanismo: VinkU convierte asignaturas en encargos con aliados del sector real. La IA hace el análisis de brecha entre el currículo y la demanda, y los docentes asumen el rol de la Mesa. Licencia del aula como parte de la consultoría.
-- **Ruta de Empleabilidad Humanista y cupos patrocinados.** Las mismas rutas B2C; la entidad patrocina y recibe el reporte de evidencias.
-
-## Roles en la plataforma
-- **Participante:** trabaja sus encargos y lleva su bitácora.
-- **Consultor VinkU:** recibe briefs, atiende Mesas y pone sellos.
-- **Organización:** asigna encargos a su equipo y ve evidencias.
-
-## Indicadores
-- Encargos con entregable terminado
-- Evidencias reales registradas
-- Sellos otorgados
-- Tiempo desde la entrada hasta el primer entregable
-- Paso de acompañamiento o bootcamp al programa (abono de $250.000)
+## Decisiones abiertas
+- Precio de Consultorio: hoy el kit se regala y la instalación cuesta $50.000. Falta decidir si pasa a $50.000 con todo incluido.
+- Día y hora de la masterclass semanal.
+- Quién graba los videos de las cápsulas (la voz de la marca hoy es Andrés Zorrilla).
+- Si la herramienta de la semana queda disponible después de su semana y a qué precio.
 
 ## Próximos pasos técnicos
-1. Prototipo navegable (en `aula-invertida/`, este repo).
-2. Persistir bitácora, encargos y Mesas en Supabase (esquema propuesto en `aula-invertida/supabase/schema.sql`).
-3. La IA de la plataforma usa la Edge Function `diagnostico-ia` existente (la clave de Anthropic vive en el servidor).
-4. Pagos con los links de Wompi y agendamiento de Mesas por WhatsApp mientras no haya calendario propio.
+1. Prototipo navegable: carpeta `aula-invertida/` del repo `vinku`, rama `aula-invertida`.
+2. Pagos con links de Wompi por herramienta.
+3. Cuentas y persistencia en Supabase (esquema propuesto en `supabase/schema.sql`, por adaptar a herramientas).
+4. Subir los kits reales de cada herramienta: Consultorio primero.

@@ -1,8 +1,9 @@
-# Aula Invertida · VinkU edu
+# Aprendizaje Basado en Herramientas · VinkU edu
 
 LMS de upskilling y reskilling justo a tiempo para ciencias sociales y humanas.
-No hay cursos: cada persona trae un **encargo** real y sale con un entregable real.
-**60 % IA** (Leer, Interpretar, Crear) y **40 % humano** (Mesa con consultor VinkU y Probar con el mundo).
+Cada experiencia de aprendizaje es una **herramienta** que se descarga y se usa en un caso real:
+**toolset** (lo que te llevas), **skillset** (lo que aprendes a hacer) y **mindset** (de profesional a emprendedor).
+**60 % IA** (Descargar, Cápsulas, Usar) y **40 % humano** (masterclass en vivo semanal y Lanzar con el mundo).
 
 Modelo completo: [`docs/MODELO.md`](docs/MODELO.md).
 
@@ -19,11 +20,12 @@ npm run build:artifact   # un solo index.html para publicarlo como página de cl
 ```
 
 ## Dónde vive cada cosa
-- `src/data/encargos.ts`: catálogo de encargos y cómo se arma cada servicio (B2C, empresas, universidades).
-- `src/lib/motor.ts`: los cinco momentos y los prompts de la IA.
+- `src/data/herramientas.ts`: catálogo de herramientas (kit, cápsulas, precio, semana) y cómo se arma cada servicio.
+- `src/lib/motor.ts`: los cinco momentos, el kit descargable y los prompts de la IA.
+- `src/lib/descarga.ts`: descarga del kit (capacidad `downloads` en claude.ai o enlace normal).
 - `src/lib/ia.ts`: adaptador de IA (claude.ai `sample` → Supabase `diagnostico-ia` → demo).
-- `src/components/`: el puente (medidor 60/40), la vista del encargo y la Mesa del consultor.
-- `supabase/schema.sql`: esquema propuesto para persistir bitácoras, Mesas, evidencias y sellos.
+- `src/components/`: el puente (medidor 60/40), la vista del encargo y la vista de la masterclass en vivo.
+- `supabase/schema.sql`: esquema propuesto para persistir progreso, evidencias y sellos (por adaptar a herramientas).
 
 ## Estado
 Prototipo: el avance se guarda en el navegador. Siguiente fase: autenticación y persistencia en Supabase,

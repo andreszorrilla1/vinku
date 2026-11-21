@@ -128,3 +128,44 @@ label.campo{display:grid;gap:6px;font-weight:500;margin-top:12px}
   .modo{margin-left:auto}
   .burbuja{max-width:92%}
 }
+
+/* Aprendizaje basado en herramientas */
+.mindset{margin-top:14px;font-size:18px}
+.mindset.chico{font-size:15px;margin:0}
+.mindset s{color:var(--dim);text-decoration-thickness:1.5px}
+.sets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:6px}
+.sets div{border-top:3px solid #86CBB9;padding-top:8px;font-size:14px;color:#CFE0DB}
+.sets div.h{border-color:#FF8A4C}
+.sets b{display:block;color:#fff;font-size:19px;font-weight:800}
+@media(max-width:520px){.sets{grid-template-columns:minmax(0,1fr)}}
+.recomendador{margin-top:20px;max-width:34em}
+.precio{font-weight:800;color:var(--albar);font-size:18px;white-space:nowrap}
+.etq.gris{background:var(--line);color:var(--dim)}
+.piezas{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));margin:14px 0}
+.piezas>div{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:6px;align-content:start}
+.piezas .etq{justify-self:start}
+.kit{border:2px solid var(--salvia);border-radius:18px;padding:18px;margin-top:16px}
+.kit ul{margin:8px 0 0;padding-left:20px}
+blockquote{margin:8px 0 0;padding:12px 14px;border-left:3px solid var(--salvia);background:var(--tinte);border-radius:0 10px 10px 0;font-size:15px}
+.lista{margin:12px 0 0;padding-left:22px}.lista li{margin-bottom:6px}
+.skills{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:6px}
+.skills li{padding:8px 12px 8px 36px;border-radius:10px;border:1px solid var(--line);position:relative}
+.skills li:before{content:"";position:absolute;left:12px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;border:2px solid var(--salvia)}
+.skills li.ok{background:var(--tinte)}
+.skills li.ok:before{background:var(--salvia)}
+.video{width:100%;margin-top:10px;aspect-ratio:16/8;border:0;border-radius:14px;background:linear-gradient(135deg,#0D2F33,#173B38);color:#CFE0DB;display:grid;place-items:center;align-content:center;gap:8px;font-size:14px}
+.info{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:12px;background:var(--petroleo);border-radius:14px;padding:18px 12px;color:#EEF4F1;font-size:14px;text-align:center;cursor:default}
+.info div{display:grid;justify-items:center;gap:8px;position:relative}
+.info div+div:after{content:"";position:absolute;top:9px;right:calc(50% + 14px);width:calc(100% - 28px);height:3px;background:linear-gradient(90deg,#86CBB9,#FF8A4C);border-radius:3px}
+.info i{width:20px;height:20px;border-radius:50%;background:#86CBB9;position:relative;z-index:1}
+.info .abierto i{background:#0D2F33;border:4px solid #86CBB9}
+.info .lleno i{background:#FF8A4C}
+.texto{margin-top:10px;display:grid;gap:8px}
+.envivo{background:var(--petroleo);color:#EEF4F1;border-radius:16px;padding:18px;margin:12px 0}
+.envivo .mono{color:#FF8A4C}
+.envivo h3{margin:6px 0}
+.calendario{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:0}
+.calendario li{display:grid;grid-template-columns:6.5em minmax(0,1fr);gap:2px 12px;padding:12px 0;border-top:1px solid var(--line)}
+.calendario li .dim{grid-column:2;font-size:14px}
+.servicio2{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:760px){.servicio2{grid-template-columns:minmax(0,2fr) minmax(0,3fr)}}
